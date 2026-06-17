@@ -1,0 +1,11 @@
+
+
+
+.venv_ttfs
+__pycache__
+
+*.pth
+*.rar
+*.zip
+
+*.jpg

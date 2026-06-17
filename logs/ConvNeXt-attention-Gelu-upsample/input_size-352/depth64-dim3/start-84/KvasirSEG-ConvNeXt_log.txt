@@ -1,0 +1,7 @@
+2026-06-17 07:18:46 - INFO - Logging initialized to ./logs/ConvNeXt-attention-Gelu-upsample/input_size-352/depth64-dim3/start-84/KvasirSEG-ConvNeXt_log.txt
+2026-06-17 07:18:56 - INFO - #### Loading checkpoint ####
+2026-06-17 07:18:56 - INFO - Resumed from epoch 1265
+2026-06-17 07:18:56 - INFO - Previous best accuracy: 0.8384
+2026-06-17 07:18:56 - INFO - Starting with fresh scheduler at LR: 0.000741
+2026-06-17 07:18:56 - INFO - Restored LR: 0.0007411297456594595
+2026-06-17 07:19:31 - INFO - First EvaluationTest Loss: 0.0992, Test Dice: 0.9121, Test IoU: 0.8402
