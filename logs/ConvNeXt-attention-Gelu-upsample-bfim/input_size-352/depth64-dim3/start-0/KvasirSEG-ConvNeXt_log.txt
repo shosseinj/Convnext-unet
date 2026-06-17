@@ -1,0 +1,98 @@
+2026-06-17 14:59:21 - INFO - Logging initialized to ./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/start-0/KvasirSEG-ConvNeXt_log.txt
+2026-06-17 14:59:30 - INFO - #### Loading checkpoint ####
+2026-06-17 14:59:31 - INFO - Resumed from epoch 1265
+2026-06-17 14:59:31 - INFO - Previous best accuracy: 0.8384
+2026-06-17 14:59:31 - INFO - Starting with fresh scheduler at LR: 0.000900
+2026-06-17 14:59:31 - INFO - Restored LR: 0.0009
+2026-06-17 14:59:31 - INFO - #### Training ####
+2026-06-17 14:59:31 - INFO - initial LR: 0.000900
+2026-06-17 14:59:37 - INFO - Backbone frozen for first 5 epochs
+2026-06-17 15:00:20 - INFO - Epoch 1267/50000: Train Loss: 0.1858, Test Loss: 0.1114, Test Dice: 0.8888, Test IoU: 0.8023
+2026-06-17 15:01:04 - INFO - Epoch 1268/50000: Train Loss: 0.1346, Test Loss: 0.1000, Test Dice: 0.8958, Test IoU: 0.8137
+2026-06-17 15:01:47 - INFO - Epoch 1269/50000: Train Loss: 0.1241, Test Loss: 0.0975, Test Dice: 0.8966, Test IoU: 0.8148
+2026-06-17 15:02:29 - INFO - Epoch 1270/50000: Train Loss: 0.1118, Test Loss: 0.0968, Test Dice: 0.8990, Test IoU: 0.8188
+2026-06-17 15:03:14 - INFO - Epoch 1271/50000: Train Loss: 0.1096, Test Loss: 0.0973, Test Dice: 0.8998, Test IoU: 0.8201
+2026-06-17 15:04:01 - INFO - Epoch 1272/50000: Train Loss: 0.1082, Test Loss: 0.0967, Test Dice: 0.8978, Test IoU: 0.8168
+2026-06-17 15:04:47 - INFO - Epoch 1273/50000: Train Loss: 0.1060, Test Loss: 0.0927, Test Dice: 0.8994, Test IoU: 0.8194
+2026-06-17 15:05:32 - INFO - Epoch 1274/50000: Train Loss: 0.1003, Test Loss: 0.0894, Test Dice: 0.9006, Test IoU: 0.8212
+2026-06-17 15:06:18 - INFO - Epoch 1275/50000: Train Loss: 0.0978, Test Loss: 0.0915, Test Dice: 0.9010, Test IoU: 0.8220
+2026-06-17 15:07:03 - INFO - Epoch 1276/50000: Train Loss: 0.1048, Test Loss: 0.0922, Test Dice: 0.9033, Test IoU: 0.8256
+2026-06-17 15:07:46 - INFO - Epoch 1277/50000: Train Loss: 0.1040, Test Loss: 0.0978, Test Dice: 0.9027, Test IoU: 0.8246
+2026-06-17 15:08:30 - INFO - Epoch 1278/50000: Train Loss: 0.0983, Test Loss: 0.0986, Test Dice: 0.9020, Test IoU: 0.8234
+2026-06-17 15:09:13 - INFO - Epoch 1279/50000: Train Loss: 0.0949, Test Loss: 0.0939, Test Dice: 0.9056, Test IoU: 0.8295
+2026-06-17 15:09:58 - INFO - Epoch 1280/50000: Train Loss: 0.0949, Test Loss: 0.0962, Test Dice: 0.9060, Test IoU: 0.8302
+2026-06-17 15:10:44 - INFO - Epoch 1281/50000: Train Loss: 0.0962, Test Loss: 0.0996, Test Dice: 0.8987, Test IoU: 0.8192
+2026-06-17 15:11:30 - INFO - Epoch 1282/50000: Train Loss: 0.0952, Test Loss: 0.0905, Test Dice: 0.9065, Test IoU: 0.8315
+2026-06-17 15:12:16 - INFO - Epoch 1283/50000: Train Loss: 0.0949, Test Loss: 0.0957, Test Dice: 0.9061, Test IoU: 0.8303
+2026-06-17 15:13:03 - INFO - Epoch 1284/50000: Train Loss: 0.0952, Test Loss: 0.0896, Test Dice: 0.9085, Test IoU: 0.8344
+2026-06-17 15:13:49 - INFO - Epoch 1285/50000: Train Loss: 0.0934, Test Loss: 0.0908, Test Dice: 0.9109, Test IoU: 0.8383
+2026-06-17 15:14:35 - INFO - Epoch 1286/50000: Train Loss: 0.0956, Test Loss: 0.0944, Test Dice: 0.9063, Test IoU: 0.8310
+2026-06-17 15:15:03 - INFO - Epoch 1286: Backbone unfrozen, all params training
+2026-06-17 15:16:08 - INFO - Epoch 1287/50000: Train Loss: 0.0783, Test Loss: 0.0921, Test Dice: 0.9067, Test IoU: 0.8312
+2026-06-17 15:16:52 - INFO - Epoch 1288/50000: Train Loss: 0.1012, Test Loss: 0.0951, Test Dice: 0.9093, Test IoU: 0.8355
+2026-06-17 15:17:35 - INFO - Epoch 1289/50000: Train Loss: 0.0883, Test Loss: 0.0946, Test Dice: 0.9071, Test IoU: 0.8320
+2026-06-17 15:18:18 - INFO - Epoch 1290/50000: Train Loss: 0.0919, Test Loss: 0.0925, Test Dice: 0.9080, Test IoU: 0.8334
+2026-06-17 15:19:02 - INFO - Epoch 1291/50000: Train Loss: 0.0876, Test Loss: 0.0973, Test Dice: 0.9036, Test IoU: 0.8266
+2026-06-17 15:19:45 - INFO - Epoch 1292/50000: Train Loss: 0.0883, Test Loss: 0.0922, Test Dice: 0.9086, Test IoU: 0.8344
+2026-06-17 15:20:28 - INFO - Epoch 1293/50000: Train Loss: 0.0862, Test Loss: 0.0993, Test Dice: 0.9060, Test IoU: 0.8306
+2026-06-17 15:21:11 - INFO - Epoch 1294/50000: Train Loss: 0.0845, Test Loss: 0.0940, Test Dice: 0.9098, Test IoU: 0.8365
+2026-06-17 15:21:54 - INFO - Epoch 1295/50000: Train Loss: 0.0869, Test Loss: 0.0938, Test Dice: 0.9109, Test IoU: 0.8382
+2026-06-17 15:22:38 - INFO - Epoch 1296/50000: Train Loss: 0.0881, Test Loss: 0.0972, Test Dice: 0.9088, Test IoU: 0.8352
+2026-06-17 15:23:21 - INFO - Epoch 1297/50000: Train Loss: 0.0944, Test Loss: 0.0951, Test Dice: 0.9075, Test IoU: 0.8330
+2026-06-17 15:24:04 - INFO - Epoch 1298/50000: Train Loss: 0.0898, Test Loss: 0.0940, Test Dice: 0.9112, Test IoU: 0.8386
+2026-06-17 15:24:04 - INFO - New best model saved with accuracy: 0.84%
+2026-06-17 15:24:48 - INFO - Epoch 1299/50000: Train Loss: 0.0947, Test Loss: 0.0944, Test Dice: 0.9102, Test IoU: 0.8371
+2026-06-17 15:25:32 - INFO - Epoch 1300/50000: Train Loss: 0.0918, Test Loss: 0.0972, Test Dice: 0.9095, Test IoU: 0.8362
+2026-06-17 15:26:15 - INFO - Epoch 1301/50000: Train Loss: 0.0917, Test Loss: 0.0994, Test Dice: 0.9083, Test IoU: 0.8341
+2026-06-17 15:26:58 - INFO - Epoch 1302/50000: Train Loss: 0.0876, Test Loss: 0.0971, Test Dice: 0.9104, Test IoU: 0.8376
+2026-06-17 15:27:41 - INFO - Epoch 1303/50000: Train Loss: 0.0859, Test Loss: 0.0962, Test Dice: 0.9089, Test IoU: 0.8352
+2026-06-17 15:28:24 - INFO - Epoch 1304/50000: Train Loss: 0.0852, Test Loss: 0.0977, Test Dice: 0.9074, Test IoU: 0.8329
+2026-06-17 15:29:07 - INFO - Epoch 1305/50000: Train Loss: 0.0868, Test Loss: 0.0987, Test Dice: 0.9062, Test IoU: 0.8311
+2026-06-17 15:29:51 - INFO - Epoch 1306/50000: Train Loss: 0.0867, Test Loss: 0.0962, Test Dice: 0.9078, Test IoU: 0.8337
+2026-06-17 15:30:34 - INFO - Epoch 1307/50000: Train Loss: 0.0921, Test Loss: 0.0951, Test Dice: 0.9086, Test IoU: 0.8347
+2026-06-17 15:31:17 - INFO - Epoch 1308/50000: Train Loss: 0.0792, Test Loss: 0.0952, Test Dice: 0.9073, Test IoU: 0.8329
+2026-06-17 15:32:01 - INFO - Epoch 1309/50000: Train Loss: 0.0871, Test Loss: 0.0977, Test Dice: 0.9116, Test IoU: 0.8393
+2026-06-17 15:32:02 - INFO - New best model saved with accuracy: 0.84%
+2026-06-17 15:33:24 - INFO - Epoch 1310/50000: Train Loss: 0.0827, Test Loss: 0.0920, Test Dice: 0.9059, Test IoU: 0.8300
+2026-06-17 15:34:24 - INFO - Epoch 1311/50000: Train Loss: 0.0846, Test Loss: 0.0948, Test Dice: 0.9126, Test IoU: 0.8409
+2026-06-17 15:34:24 - INFO - New best model saved with accuracy: 0.84%
+2026-06-17 15:35:24 - INFO - Epoch 1312/50000: Train Loss: 0.0931, Test Loss: 0.0946, Test Dice: 0.9112, Test IoU: 0.8390
+2026-06-17 15:36:24 - INFO - Epoch 1313/50000: Train Loss: 0.0892, Test Loss: 0.0952, Test Dice: 0.9107, Test IoU: 0.8380
+2026-06-17 15:37:23 - INFO - Epoch 1314/50000: Train Loss: 0.0855, Test Loss: 0.0921, Test Dice: 0.9131, Test IoU: 0.8419
+2026-06-17 15:37:24 - INFO - New best model saved with accuracy: 0.84%
+2026-06-17 15:38:26 - INFO - Epoch 1315/50000: Train Loss: 0.0764, Test Loss: 0.0937, Test Dice: 0.9106, Test IoU: 0.8377
+2026-06-17 15:39:28 - INFO - Epoch 1316/50000: Train Loss: 0.0926, Test Loss: 0.0873, Test Dice: 0.9032, Test IoU: 0.8269
+2026-06-17 15:40:30 - INFO - Epoch 1317/50000: Train Loss: 0.0911, Test Loss: 0.0923, Test Dice: 0.9074, Test IoU: 0.8335
+2026-06-17 15:41:32 - INFO - Epoch 1318/50000: Train Loss: 0.0850, Test Loss: 0.0957, Test Dice: 0.9102, Test IoU: 0.8379
+2026-06-17 15:42:32 - INFO - Epoch 1319/50000: Train Loss: 0.0843, Test Loss: 0.0934, Test Dice: 0.9079, Test IoU: 0.8349
+2026-06-17 15:43:32 - INFO - Epoch 1320/50000: Train Loss: 0.0892, Test Loss: 0.0945, Test Dice: 0.9126, Test IoU: 0.8419
+2026-06-17 15:43:33 - INFO - New best model saved with accuracy: 0.84%
+2026-06-17 15:44:33 - INFO - Epoch 1321/50000: Train Loss: 0.0781, Test Loss: 0.0980, Test Dice: 0.9097, Test IoU: 0.8365
+2026-06-17 15:45:32 - INFO - Epoch 1322/50000: Train Loss: 0.0865, Test Loss: 0.0973, Test Dice: 0.9083, Test IoU: 0.8342
+2026-06-17 15:46:32 - INFO - Epoch 1323/50000: Train Loss: 0.0823, Test Loss: 0.1021, Test Dice: 0.9065, Test IoU: 0.8314
+2026-06-17 15:47:31 - INFO - Epoch 1324/50000: Train Loss: 0.0799, Test Loss: 0.1006, Test Dice: 0.9161, Test IoU: 0.8469
+2026-06-17 15:47:32 - INFO - New best model saved with accuracy: 0.85%
+2026-06-17 15:48:32 - INFO - Epoch 1325/50000: Train Loss: 0.0834, Test Loss: 0.0972, Test Dice: 0.9151, Test IoU: 0.8454
+2026-06-17 15:49:32 - INFO - Epoch 1326/50000: Train Loss: 0.0838, Test Loss: 0.1001, Test Dice: 0.9125, Test IoU: 0.8410
+2026-06-17 15:50:32 - INFO - Epoch 1327/50000: Train Loss: 0.0801, Test Loss: 0.0973, Test Dice: 0.9126, Test IoU: 0.8414
+2026-06-17 15:51:31 - INFO - Epoch 1328/50000: Train Loss: 0.0812, Test Loss: 0.1008, Test Dice: 0.9051, Test IoU: 0.8292
+2026-06-17 15:52:32 - INFO - Epoch 1329/50000: Train Loss: 0.0930, Test Loss: 0.1016, Test Dice: 0.9095, Test IoU: 0.8364
+2026-06-17 15:53:32 - INFO - Epoch 1330/50000: Train Loss: 0.0785, Test Loss: 0.1016, Test Dice: 0.9112, Test IoU: 0.8389
+2026-06-17 15:54:32 - INFO - Epoch 1331/50000: Train Loss: 0.0810, Test Loss: 0.1004, Test Dice: 0.9093, Test IoU: 0.8361
+2026-06-17 15:55:22 - WARNING - Batch 99: Loss is nan. Skipping batch.
+2026-06-17 15:55:22 - WARNING - Skipped 1/100 batches due to NaN/Inf loss
+2026-06-17 15:55:31 - INFO - Epoch 1332/50000: Train Loss: 0.0776, Test Loss: nan, Test Dice: 0.0000, Test IoU: 0.0000
+2026-06-17 15:55:31 - WARNING - Batch 0: Loss is nan. Skipping batch.
+2026-06-17 15:55:49 - WARNING - Batch 1: Loss is nan. Skipping batch.
+2026-06-17 15:55:50 - WARNING - Batch 2: Loss is nan. Skipping batch.
+2026-06-17 15:56:04 - WARNING - Batch 3: Loss is nan. Skipping batch.
+2026-06-17 15:56:04 - WARNING - Batch 4: Loss is nan. Skipping batch.
+2026-06-17 15:56:12 - WARNING - Batch 5: Loss is nan. Skipping batch.
+2026-06-17 15:56:17 - WARNING - Batch 6: Loss is nan. Skipping batch.
+2026-06-17 15:56:20 - WARNING - Batch 7: Loss is nan. Skipping batch.
+2026-06-17 15:56:24 - WARNING - Batch 8: Loss is nan. Skipping batch.
+2026-06-17 15:56:29 - WARNING - Batch 9: Loss is nan. Skipping batch.
+2026-06-17 15:56:33 - WARNING - Batch 10: Loss is nan. Skipping batch.
+2026-06-17 15:56:37 - WARNING - Batch 11: Loss is nan. Skipping batch.
+2026-06-17 15:56:38 - WARNING - Batch 12: Loss is nan. Skipping batch.
+2026-06-17 15:56:41 - WARNING - Batch 13: Loss is nan. Skipping batch.

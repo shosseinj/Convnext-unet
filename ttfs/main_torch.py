@@ -201,11 +201,22 @@ class Dataset:
         print ('Train data:', np.shape(self.x_train), np.shape(self.y_train))
         print ('Test data:', np.shape(self.x_test), np.shape(self.y_test))
 
+    def convert_ttfs(self):
+        """
+        Convert input values into time-to-first-spike spiking times.
+        """
+        self.x_test, self.x_train = (self.x_test - self.p)/(self.q-self.p), (self.x_train - self.p)/(self.q-self.p)
+        self.x_train, self.x_test=1 - np.array(self.x_train), 1 - np.array(self.x_test)
+        self.x_test=np.maximum(0, self.x_test + np.random.randn(*self.x_test.shape).astype('float32') * self.noise)
+
+
+
+
 
 
 bce = nn.BCEWithLogitsLoss()
-def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, threshold):
-    """Training function for segmentation tasks."""
+def train_epoch_segmentation(model, train_loader, optimizer, criterion, device):
+    """Training function for segmentation tasks with mixup."""
     model.train()
     running_loss = 0.0
     skipped_batches = 0
@@ -217,77 +228,46 @@ def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, 
         # Normalize input
         data = torch.clamp(data, 0.0, 1.0)
         
+        # For segmentation, target shape should be (B, 1, H, W) or (B, H, W)
         if target.dim() == 3:
             target = target.unsqueeze(1)
     
+        # ===========================================
+        
         optimizer.zero_grad()
+        output = model(data)
         
-        # ===== ADD NaN DETECTION IN FORWARD PASS =====
-        with torch.autograd.detect_anomaly(False):  # Turn off global anomaly detection
-            output = model(data)
-            
-            # Check forward pass for NaN
-            if not torch.isfinite(output).all():
-                print(f"NaN in output at batch {batch_idx}, skipping...")
-                skipped_batches += 1
-                optimizer.zero_grad(set_to_none=True)
-                continue
-        
+        # Ensure output and target have same shape
         if output.shape != target.shape:
-            output = F.interpolate(output, size=target.shape[2:], 
-                                 mode='bilinear', align_corners=False)
+            output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
         
-        # ===== SAFE LOSS COMPUTATION =====
-        loss = criterion(output, target)
+        loss = criterion(output, target) +  0.2 * bce(output, target)
         
         # Check for NaN/Inf loss
         if not torch.isfinite(loss):
             logging.warning(f"Batch {batch_idx}: Loss is {loss.item()}. Skipping batch.")
             skipped_batches += 1
-            optimizer.zero_grad(set_to_none=True)
+            optimizer.zero_grad()
             continue
         
-        # ===== SAFE BACKWARD PASS =====
-        try:
-            loss.backward()
-        except RuntimeError as e:
-            print(f"Error in backward pass at batch {batch_idx}: {e}")
-            skipped_batches += 1
-            optimizer.zero_grad(set_to_none=True)
-            continue
+        loss.backward()
         
-        # ===== CHECK GRADIENTS =====
-        has_nan = False
+        # Gradient clipping
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+        
+        # Check for NaN gradients
         for name, param in model.named_parameters():
             if param.grad is not None:
-                if not torch.isfinite(param.grad).all():
-                    print(f"Bad gradient in {name} at batch {batch_idx}")
-                    has_nan = True
-                    break
-        
-        if has_nan:
-            optimizer.zero_grad(set_to_none=True)
-            skipped_batches += 1
-            continue
-        
-        # ===== GRADIENT CLIPPING =====
-        try:
-            grad_norm = torch.nn.utils.clip_grad_norm_(
-                model.parameters(),
-                1.0,
-                error_if_nonfinite=True
-            )
-        except RuntimeError:
-            print(f"Gradient clipping failed at batch {batch_idx}")
-            optimizer.zero_grad(set_to_none=True)
-            skipped_batches += 1
-            continue
+                if torch.isnan(param.grad).any():
+                    print(f"NaN gradient in {name}")
+                if torch.isinf(param.grad).any():
+                    print(f"Inf gradient in {name}")
         
         optimizer.step()
         
         # Calculate Dice coefficient for monitoring
         with torch.no_grad():
-            pred = (torch.sigmoid(output) > threshold).float()
+            pred = (torch.sigmoid(output) > 0.3).float()
             dice = dice_coefficient(pred, target)
         
         running_loss += loss.item()
@@ -295,7 +275,6 @@ def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, 
         pbar.set_postfix({
             'Loss': f'{loss.item():.4f}',
             'Dice': f'{dice:.4f}',
-            'GradNorm': f'{grad_norm:.4f}',
             'LR': f'{optimizer.param_groups[0]["lr"]:.6f}',
             'Skip': f'{skipped_batches}'
         })
@@ -304,6 +283,7 @@ def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, 
         logging.warning(f"Skipped {skipped_batches}/{len(train_loader)} batches due to NaN/Inf loss")
     
     return running_loss / max(1, len(train_loader) - skipped_batches)
+
 
 
 def dice_coefficient(pred, target, smooth=1e-6):
@@ -323,6 +303,7 @@ def iou_score(pred, target, smooth=1e-6):
     union = pred.sum() + target.sum() - intersection
     iou = (intersection + smooth) / (union + smooth)
     return iou.item()  # Return as Python float
+
 
 
 def evaluate_with_tta(model, test_loader, device, threshold=0.40):
@@ -475,26 +456,11 @@ from tqdm import tqdm
 
 
 
-
-def mixup_data(x, y, alpha=0.2):
-    lam = np.random.beta(alpha, alpha)
-
-    batch_size = x.size(0)
-    index = torch.randperm(batch_size).to(x.device)
-
-    mixed_x = lam * x + (1 - lam) * x[index]
-    y_a = y
-    y_b = y[index]
-
-    return mixed_x, y_a, y_b, lam
-
-
-def mixup_criterion(criterion, pred, y_a, y_b, lam):
-    return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
-
-
-
 import math
+
+
+
+
 
 
 class DiceBCELoss(nn.Module):
@@ -1230,22 +1196,21 @@ if __name__ == "__main__":
     strtobool = (lambda s: s=='True')
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/start3-85/', help='Directory for logging')
-    parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample/input_size-352/depth64-dim3/start-84/', help='Directory for logging')
+    parser.add_argument('--data_path', type=str, default='../data/', help='Directory for logging')
     # parser.add_argument('--checkpoint_path', type=str, default='', help='Directory for logging')
-    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/start2-85/checkpoints_KvasirSEG-ConvNeXt/1361-test0.85.pth', help='Directory for logging')
+    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample/input_size-352/depth64-dim3/start2-82/checkpoints_KvasirSEG-ConvNeXt/1265-test0.84.pth', help='Directory for logging')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
-    parser.add_argument('--lr', type=float, default=3e-4, help='Learning rate')
+    parser.add_argument('--lr', type=float, default=8e-4, help='Learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--escape_lr', type=float, default=1e-4, help='Learning rate for escape')
     parser.add_argument('--batch_size', type=int, default=8, help='Batch size')
-    parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
+    parser.add_argument('--epochs', type=int, default=0, help='Epochs. 0 -skip training')
     parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
     parser.add_argument('--warmup_epochs', type=int, default=4, help='Epochs. 0 -skip training')
-    parser.add_argument('--testing', type=strtobool, default=False, help='Execute testing.')
-    parser.add_argument('--tta_check', type=strtobool, default=False, help='Execute testing.')
-    parser.add_argument('--training', type=strtobool, default=True, help='Execute training.')
+    parser.add_argument('--testing', type=strtobool, default=True, help='Execute testing.')
+    parser.add_argument('--training', type=strtobool, default=False, help='Execute training.')
     parser.add_argument('--load', type=str, default=False, help='Load before training.')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
@@ -1282,6 +1247,20 @@ if __name__ == "__main__":
         data_path= args.data_path,
         input_size= args.input_size
     )
+    # if not args.testing :
+    # # Create data loaders
+    #     train_loader = DataLoader(
+    #         list(zip(data.x_train, data.y_train)),
+    #         batch_size=args.batch_size,
+    #         shuffle=True
+    #     )
+    # test_loader = DataLoader(
+    #     list(zip(data.x_test, data.y_test)),
+    #     batch_size=args.batch_size,
+    #     shuffle=False
+    # )
+
+
 
     train_dataset = KvasirSEGDataset(data.x_train, data.y_train, is_train=True, target_size=args.input_size[0])  # Pass target size to dataset
     test_dataset = KvasirSEGDataset(data.x_test, data.y_test, is_train=False, target_size=args.input_size[0])  # Pass target size to dataset
@@ -1294,10 +1273,47 @@ if __name__ == "__main__":
 
     from models.convnext_unet import *
 
+    if 'FC2' in args.model_name:
+        if 'SNN' in args.model_type:
+            model = create_fc_model_SNN(layers=2, robustness_params=robustness_params)
+        elif 'ReLU' in args.model_type:
+            model = create_fc_model_ReLU(layers=2)
+    elif 'VGG' in args.model_name:
+        if 'MNIST' in args.data_name:
+            layers2D = [64, 64, 128, 128, 'pool', 256, 256, 256, 'pool', 
+                       512, 512, 512, 'pool', 512, 512, 512, 'pool']
+            layers1D = [512, 512]
+        elif 'Kvasir' in args.data_name:
+            layers2D = [
+                64, 64, 'pool',
+                128, 128, 'pool',
+                256, 256, 256, 'pool',
+                512, 512, 512, 'pool',
+                512, 512, 512
+            ]
+
+            layers1D = [512, 512]
+
+        else:
+            layers2D = [64, 64, 'pool', 128, 128, 'pool', 256, 256, 256, 'pool',
+                       512, 512, 512, 'pool', 512, 512, 512, 'pool']
+            layers1D = [512]
+        
+        kernel_size = (3, 3)
+        BN = 'BN' in args.model_name
+        
+        if 'SNN' in args.model_type:
+            model = create_vgg_model_SNN(layers2D, kernel_size, layers1D, data, 
+                                        robustness_params=robustness_params)
+        elif 'ReLU' in args.model_type:
+            if 'Kvasir' in args.data_name:
+                model = create_vgg_segmentation(layers2D, kernel_size, layers1D, data, BN=BN, dropout= 0.4)
+            else:
+                model = create_vgg_model_ReLU(layers2D, kernel_size, layers1D, data, BN=BN, dropout= 0.4)
+    
 
 
-
-    if 'ConvNeXt' in args.model_name:
+    elif 'ConvNeXt' in args.model_name:
         if 'Kvasir' in args.data_name:
             layers2D = [
                 64, 64, 'pool',
@@ -1316,9 +1332,12 @@ if __name__ == "__main__":
         
         kernel_size = (3, 3)
         BN = 'BN' in args.model_name
-
-        if 'Gelu' in args.model_type:
-            from models.convnext_attention_BFIM import *
+        
+        if 'SNN' in args.model_type:
+            model = create_vgg_model_SNN(layers2D, kernel_size, layers1D, data, 
+                                        robustness_params=robustness_params)
+        elif 'Gelu' in args.model_type:
+            from models.convnext_attention import *
             model = ConvNeXtTinyUNetAttention(
                         # in_chans=3,
                         # num_classes=1,
@@ -1330,8 +1349,8 @@ if __name__ == "__main__":
                         # dims=(64, 128, 256, 512),
                         # depths=(1, 2, 2, 1),  # Very shallow
 
-                        dropout=0.15,  # INCREASE from 0.1 to 0.3
-                        drop_path_rate=0.15,  # INCREASE from 0.2 to 0.3
+                        dropout=0.01,  # INCREASE from 0.1 to 0.3
+                        drop_path_rate=0.01,  # INCREASE from 0.2 to 0.3
 
     #                         dropout=0.05,        # REDUCE from 0.1
     # drop_path_rate=0.1,  # REDUCE from 0.3 (this is very aggressive!)
@@ -1352,7 +1371,11 @@ if __name__ == "__main__":
             device="cuda"
         )
     
-
+    # Optimizer and loss
+    # if 'VGG' in args.model_name and not BN and 'ReLU' in args.model_type:
+    #     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+    # else:
+    #     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     
 
     if 'Kvasir' in args.data_name:
@@ -1364,7 +1387,6 @@ if __name__ == "__main__":
         #     )
 
         optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-5)
- 
         # criterion = nn.BCEWithLogitsLoss()
         # criterion = DiceBCELoss(weight_bce=0.3, weight_dice=0.7)
         # criterion = FocalLoss(alpha=0.75, gamma=2.0)
@@ -1416,13 +1438,13 @@ if __name__ == "__main__":
     #     T_mult=2,    # Double period each restart
     #     eta_min=1e-5 # Minimum LR
     # )
-    # scheduler = ReduceLROnPlateau(
-    #     optimizer,
-    #     mode='max',
-    #     factor=0.5,
-    #     patience=2,
-    #     min_lr=1e-6
-    # )
+    scheduler = ReduceLROnPlateau(
+        optimizer,
+        mode='max',
+        factor=0.5,
+        patience=2,
+        min_lr=1e-6
+    )
 
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
@@ -1462,8 +1484,8 @@ if __name__ == "__main__":
             checkpoint = torch.load(checkpoint_file, map_location=device)
             
             # Load model and optimizer states
-            model.load_state_dict(checkpoint['model_state_dict'], strict=False)
-            # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             
             # DON'T load scheduler state - it was a different scheduler!
             # scheduler.load_state_dict(checkpoint['scheduler_state_dict'])  # REMOVE THIS
@@ -1500,23 +1522,52 @@ if __name__ == "__main__":
                         f"First EvaluationTest Loss: {test_loss:.4f}, "
                         f"Test Dice: {test_dice:.4f}, "
                         f"Test IoU: {test_iou:.4f}")
-        if args.tta_check:
-            tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=0.40)
-            print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
-            print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")        
-    else:
-        best_threshold = 0.4
-    if  args.epochs > 0:
+        tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=0.40)
+        print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
+        print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")        
+
+    if not args.testing and args.epochs > 0:
         logging.info("#### Training ####")
         total_steps = len(train_loader) * args.epochs
         warmup_steps = len(train_loader) * args.warmup_epochs
-            
+        
+        
+        
         last_step = -1
+ 
+        
         
         saved_lr = args.lr  # Default to args.lr if not resuming
         
         os.makedirs(f"{args.logging_dir}checkpoints_{args.model_name}", exist_ok=True)
         
+      
+        # Create scheduler with ADJUSTED warmup and base LR
+        # scheduler =  ReduceLROnPlateau(
+        #         optimizer, 
+        #         mode='max', 
+        #         factor=0.5, 
+        #         patience=10, 
+        #         verbose=True,
+        #         min_lr=args.min_lr
+        #     )  
+
+        
+        # scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+        #     optimizer,
+        #     T_0=20,  # Restart every 20 epochs
+        #     T_mult=2,  # Double the period after each restart
+        #     eta_min=1e-6  # Minimum learning rate
+        # )
+# 
+        
+        # scheduler = torch.optim.lr_scheduler.StepLR(
+        #     optimizer, 
+        #     step_size=50,  # Decay every 10 epochs
+        #     gamma=0.9      # Multiply LR by 0.9 each step
+        # )
+        
+
 
         # Log the actual starting LR
         current_lr = optimizer.param_groups[0]['lr']
@@ -1525,53 +1576,68 @@ if __name__ == "__main__":
         # Training loop
         best_dice = 0
 
-        FREEZE_EPOCHS = start_epoch + 4
+        
         if args.training:
-            for name, param in model.named_parameters():
-                if 'bfim'  in name:
-                    param.requires_grad = False
-            logging.info("Backbone frozen for first 5 epochs")
-
             for epoch in range(start_epoch, args.epochs):
-                # if epoch == FREEZE_EPOCHS:
-                #     for name, param in model.named_parameters():
-                #         param.requires_grad = True
-                #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
+                
+                
+                # if epoch < 10:
+                #     warmup_scheduler.step(epoch)
+                # else:
+                #     scheduler.step(epoch - 5)
+
+                # In the main training section, replace the training/testing calls for KvasirSEG:
+
                 if 'Kvasir' in args.data_name:
-                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,threshold=best_threshold)
-                    test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device, threshold=best_threshold)
-                   
+                    # Use segmentation-specific training/testing
+                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device)
+                    test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device)
+                    tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=0.40)
 
                     logging.info(f"Epoch {epoch+1}/{args.epochs}: "
                                 f"Train Loss: {train_loss:.4f}, "
                                 f"Test Loss: {test_loss:.4f}, "
                                 f"Test Dice: {test_dice:.4f}, "
                                 f"Test IoU: {test_iou:.4f}")
-                    if args.tta_check:
-                        tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
-                        print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
-                        print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")
+                    print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
+                    print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")
                     # Flush immediately for Kvasir
                     for handler in logging.root.handlers:
                         handler.flush()
                     
                     test_acc  = test_iou
+                else:
+                    # Use classification-specific training/testing (existing code)
+                    train_loss, train_acc = train_epoch(model, train_loader, optimizer, criterion, device)
+                    test_loss, test_acc = test(model, test_loader, criterion, device)
 
-                scheduler.step()
-   
+
+
+
+                # scheduler.step()  # Step scheduler based on validation loss
+                # scheduler.step(epoch + 1)
+                scheduler.step(test_iou)
+                logging.info(f"Epoch {epoch+1}/{args.epochs}: "
+                            f"Train Loss: {train_loss:.4f}, "
+                            f"Test Loss: {test_loss:.4f}")
+                
+                # Flush logging to disk immediately
                 for handler in logging.root.handlers:
                     handler.flush()
+                # Save checkpoint with full scheduler state
+                checkpoint_dict = {
+                    'epoch': epoch,
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
+                    'best_acc': best_acc,
+            
+            
+                }
+                
 
                 # Save best model
                 if test_acc > best_acc:
-                    checkpoint_dict = {
-                            'epoch': epoch,
-                            'model_state_dict': model.state_dict(),
-                            'optimizer_state_dict': optimizer.state_dict(),
-                            'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
-                            'best_acc': best_acc,
-                        }
-                
                     best_acc = test_acc
                     torch.save(checkpoint_dict, 
                             f"{args.logging_dir}checkpoints_{args.model_name}/{epoch}-test{test_acc:.2f}.pth")
@@ -1579,32 +1645,19 @@ if __name__ == "__main__":
                     # Flush after saving
                     for handler in logging.root.handlers:
                         handler.flush()
+
+    # Final testing
+    # if args.testing :
+    #     logging.info("#### Final test set accuracy testing ####")
+    #     test_loss, test_acc = test(model, test_loader, criterion, device)
+    #     fused_model = fuse_bn_torch(model.to(device), p=0.0, q=1.0, BN=True, BN_before_ReLU=False)
+    #     test_loss, test_acc_fused = test(fused_model, test_loader, criterion, device)
+
+    #     logging.info(f"Final testing accuracy is {test_acc:.2f}%.   fused testing accuracy is {test_acc_fused:.2f}%")
+    
     # Save model
     if args.save and 'ReLU' in args.model_type:
         logging.info("#### Saving ReLU model ####")
         torch.save(model.state_dict(), f"{args.logging_dir}/{args.model_name}_weights.pth")
     
     print(f'### Total elapsed time [s]: {time.time() - start_time:.2f}')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

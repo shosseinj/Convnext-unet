@@ -1,0 +1,1 @@
+2026-06-17 18:18:59 - INFO - Logging initialized to ./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/start3-85/KvasirSEG-ConvNeXt_log.txt
