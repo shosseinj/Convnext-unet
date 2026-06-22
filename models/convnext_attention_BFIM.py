@@ -21,43 +21,7 @@ class DropPath(nn.Module):
         output = x.div(keep_prob) * random_tensor
         return output
 
-# ============================================================
-# ATTENTION GATE - Updated to use GELU instead of ReLU
-# ============================================================
-class AttentionGate(nn.Module):
-    def __init__(self, F_g, F_l, F_int):
-        super().__init__()
-        
-        self.W_g = nn.Sequential(
-            nn.Conv2d(F_g, F_int, kernel_size=1, stride=1, padding=0, bias=True),
-            nn.BatchNorm2d(F_int)
-        )
-        
-        self.W_x = nn.Sequential(
-            nn.Conv2d(F_l, F_int, kernel_size=1, stride=1, padding=0, bias=True),
-            nn.BatchNorm2d(F_int)
-        )
-        
-        self.psi = nn.Sequential(
-            nn.Conv2d(F_int, 1, kernel_size=1, stride=1, padding=0, bias=True),
-            nn.Sigmoid()
-        )
-        
-        # CHANGED: ReLU -> GELU
-        self.act = nn.GELU() 
-        
-    def forward(self, g, x):
-        if g.shape[2:] != x.shape[2:]:
-            g = F.interpolate(g, size=x.shape[2:], mode='bilinear', align_corners=False)
-        
-        g1 = self.W_g(g)
-        x1 = self.W_x(x)
-        
-        # CHANGED: self.relu -> self.act
-        psi = self.act(g1 + x1) 
-        psi = self.psi(psi)  
-        
-        return x * psi
+
 
 
 
@@ -65,193 +29,76 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class FFD(nn.Module):
-    """Frequency Feature Decomposer - Numerically Stable Version"""
-    def __init__(self, channels):
-        super().__init__()
-        self.high_conv = nn.Sequential(
-            nn.Conv2d(channels, channels, 1),
-            nn.BatchNorm2d(channels), 
-            nn.ReLU(inplace=True)
-        )
-        self.low_conv = nn.Sequential(
-            nn.Conv2d(channels, channels, 1),
-            nn.BatchNorm2d(channels), 
-            nn.ReLU(inplace=True)
-        )
-        self.channel_mix = nn.Conv2d(channels * 2, channels, 1)
 
-    def forward(self, x):
-        B, C, H, W = x.shape
-        
-        # Add input check
-        if not torch.isfinite(x).all():
-            print("Warning: NaN detected in FFD input")
-            # Return identity if input is bad
-            return x, x, self.channel_mix(torch.cat([x, x], dim=1))
-        
-        # FFT with numerical safety
-        try:
-            freq = torch.fft.rfft2(x, norm='ortho')
-        except:
-            print("FFT failed, returning identity")
-            return x, x, self.channel_mix(torch.cat([x, x], dim=1))
-        
-        # Safe magnitude computation
-        mag = torch.abs(freq).clamp(min=1e-8)  # Prevent division by zero
-        
-        # Create frequency masks
-        mask_h = torch.ones_like(mag)
-        cx, cy = H // 2, W // 4
-        
-        # Ensure indices are within bounds
-        cx_start = max(1, cx // 4)
-        cx_end = min(H - 1, 3 * cx // 4)
-        cy_start = max(1, cy // 4)
-        cy_end = min(mag.shape[-1] - 1, 3 * cy // 4)
-        
-        mask_h[:, :, cx_start:cx_end, cy_start:cy_end] = 0
-        mask_l = 1 - mask_h
-        
-        # Safe inverse FFT
-        try:
-            f_high = torch.fft.irfft2(freq * mask_h, s=(H, W), norm='ortho')
-            f_low = torch.fft.irfft2(freq * mask_l, s=(H, W), norm='ortho')
-        except:
-            print("Inverse FFT failed, returning identity")
-            return x, x, self.channel_mix(torch.cat([x, x], dim=1))
-        
-        # Clamp to prevent extreme values
-        f_high = torch.clamp(f_high, -10, 10)
-        f_low = torch.clamp(f_low, -10, 10)
-        
-        # Replace NaN with 0
-        f_high = torch.nan_to_num(f_high, nan=0.0, posinf=10.0, neginf=-10.0)
-        f_low = torch.nan_to_num(f_low, nan=0.0, posinf=10.0, neginf=-10.0)
-        
-        out_h = self.high_conv(f_high)
-        out_l = self.low_conv(f_low)
-        
-        # Final safety check
-        out_h = torch.nan_to_num(out_h, nan=0.0)
-        out_l = torch.nan_to_num(out_l, nan=0.0)
-        
-        return out_h, out_l, self.channel_mix(
-            torch.cat([out_h, out_l], dim=1))
+
 
 
 class BSEI(nn.Module):
-    """Boundary-guided Squeeze-Excitation Injection - Numerically Stable"""
-    def __init__(self, channels):
+    """
+    Boundary-Semantic Enhancement with Interaction (BSEI).
+    FFTEnhance removed — did not improve performance.
+    ASG lives outside this class in the decoder (parallel, trainable).
+    """
+    def __init__(self, channels, pool_size=4):
         super().__init__()
-        kx = torch.tensor(
-            [[-1,0,1],[-2,0,2],[-1,0,1]],
-            dtype=torch.float32).view(1,1,3,3)
-        ky = kx.transpose(-1,-2)
-        self.register_buffer('kx', kx.repeat(channels,1,1,1))
-        self.register_buffer('ky', ky.repeat(channels,1,1,1))
-        self.C = channels
-        self.q_proj = nn.Conv2d(channels, channels // 4, 1)
-        self.k_proj = nn.Conv2d(channels, channels // 4, 1)
-        self.v_proj = nn.Conv2d(channels, channels, 1)
-        self.out_proj = nn.Conv2d(channels, channels, 1)
-        self.alpha = nn.Parameter(torch.zeros(1))
 
-    def forward(self, f_skip, f_dec):
-        # Input check
-        if not torch.isfinite(f_skip).all() or not torch.isfinite(f_dec).all():
-            return f_skip  # Return skip as-is if inputs are bad
-        
-        # Safe boundary map computation
-        gx = F.conv2d(f_skip, self.kx, padding=1, groups=self.C)
-        gy = F.conv2d(f_skip, self.ky, padding=1, groups=self.C)
-        bmap = torch.sqrt(torch.clamp(gx**2 + gy**2, min=1e-8))  # Prevent sqrt of negative
-        
-        # Safe normalization
-        bmap_max = bmap.amax(dim=(1,2,3), keepdim=True)
-        bmap = bmap / (bmap_max + 1e-4)
-        bmap = torch.clamp(bmap, 0, 3)
-        bmap = torch.nan_to_num(bmap, nan=0.0)
-        
-        # Weight encoder skip by boundary salience
-        f_skip_w = f_skip * (1 + bmap)
-        f_skip_w = torch.nan_to_num(f_skip_w, nan=0.0)
-        
-        # Safe cross-attention
-        pool_size = (max(1, f_skip.shape[2] // 4), max(1, f_skip.shape[3] // 4))
-        
-        Q = self.q_proj(F.adaptive_avg_pool2d(f_dec, pool_size))
-        K = self.k_proj(F.adaptive_avg_pool2d(f_skip_w, pool_size))
-        V = self.v_proj(F.adaptive_avg_pool2d(f_skip_w, pool_size))
-        
-        B, Cq, Hp, Wp = Q.shape
-        Q = Q.flatten(2).permute(0,2,1)
-        K = K.flatten(2).permute(0,2,1)
-        V = V.flatten(2).permute(0,2,1)
-        
-        # Stable attention
-        attn = (Q @ K.transpose(-2,-1)) / (Cq**0.5)
-        
-        # Numerical stability for softmax
-        attn = attn - attn.max(dim=-1, keepdim=True)[0]
-        attn = torch.nan_to_num(attn, nan=0.0, neginf=-10.0)
-        attn = attn.softmax(-1)
-        
-        ctx = (attn @ V).permute(0,2,1).reshape(B, self.C, Hp, Wp)
-        ctx = F.interpolate(self.out_proj(ctx),
-                            size=f_skip.shape[2:], mode='bilinear',
-                            align_corners=False)
-        
-        # Safe residual connection
-        result = f_skip + self.alpha * ctx
-        result = torch.nan_to_num(result, nan=0.0)
-        
-        return result
+        self.channels  = channels
+        self.pool_size = pool_size
 
-class MFAF(nn.Module):
-    """Multi-scale Frequency Adaptive Fusion.
-    Learns soft per-channel weights between FFD outputs
-    and BSEI output, then merges into a single refined feature."""
-    def __init__(self, channels):
-        super().__init__()
-        # gating weights over 3 branches: f_high, f_low, f_bsei
-        self.gate = nn.Sequential(
-            nn.AdaptiveAvgPool2d(1),
-            nn.Flatten(),
-            nn.Linear(channels * 3, channels * 3 // 4),
-            nn.ReLU(inplace=True),
-            nn.Linear(channels * 3 // 4, 3),  # 3 branch weights
-            nn.Softmax(dim=-1)
-        )
-        self.fuse = nn.Sequential(
-            nn.Conv2d(channels, channels, 3, padding=1, groups=channels),
-            nn.Conv2d(channels, channels, 1),
-            nn.BatchNorm2d(channels), nn.ReLU(inplace=True)
+        # 1. Edge enhancement
+        self.edge_conv = nn.Sequential(
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1,
+                      groups=channels, bias=False),
+            nn.BatchNorm2d(channels),
+            nn.Sigmoid()
         )
 
-    def forward(self, f_high, f_low, f_bsei):
-        combined = torch.cat([f_high, f_low, f_bsei], dim=1)
-        w = self.gate(combined)  # (B, 3)
-        w0, w1, w2 = w[:,0:1,None,None], w[:,1:2,None,None], w[:,2:3,None,None]
-        fused = w0 * f_high + w1 * f_low + w2 * f_bsei
-        return self.fuse(fused)
+        # 2. Pooled cross-attention (decoder=q, skip=k/v)
+        attn_dim = max(channels // 8, 16)
+
+        self.q    = nn.Conv2d(channels, attn_dim, 1, bias=False)
+        self.k    = nn.Conv2d(channels, attn_dim, 1, bias=False)
+        self.v    = nn.Conv2d(channels, channels,  1, bias=False)
+
+        self.proj = nn.Sequential(
+            nn.Conv2d(channels, channels, 1, bias=False),
+            nn.BatchNorm2d(channels)
+        )
+
+        # Zero-init → identity at start
+        self.alpha = nn.Parameter(torch.tensor(0.0))
+
+    def forward(self, skip, dec):
+        # ---- 1. Edge enhancement ----------------------------------------
+        edge      = self.edge_conv(skip)
+        skip_edge = skip * (1.0 + edge)
+
+        # ---- 2. Pooled cross-attention -----------------------------------
+        q = F.adaptive_avg_pool2d(self.q(dec),       (self.pool_size, self.pool_size))
+        k = F.adaptive_avg_pool2d(self.k(skip_edge), (self.pool_size, self.pool_size))
+        v = F.adaptive_avg_pool2d(self.v(skip_edge), (self.pool_size, self.pool_size))
+
+        B, Cq, Hp, Wp = q.shape
+
+        q = q.flatten(2).transpose(1, 2)   # (B, S, attn_dim)
+        k = k.flatten(2).transpose(1, 2)   # (B, S, attn_dim)
+        v = v.flatten(2).transpose(1, 2)   # (B, S, C)
+
+        attn = torch.matmul(q, k.transpose(-1, -2)) * (Cq ** -0.5)
+        attn = F.softmax(attn, dim=-1)
+
+        ctx = torch.matmul(attn, v)
+        ctx = ctx.transpose(1, 2).reshape(B, self.channels, Hp, Wp)
+        ctx = self.proj(ctx)
+
+        ctx = F.interpolate(ctx, size=skip.shape[2:],
+                            mode='bilinear', align_corners=False)
+
+        # ---- 3. Output --------------------------------------------------
+        return skip_edge + self.alpha * ctx
 
 
-class BFIM(nn.Module):
-    """Full Boundary-Frequency Injection Module.
-    Drop-in replacement for skip connections in your U-Net.
-    Attach one per decoder scale (3 total for a 4-stage encoder)."""
-    def __init__(self, channels):
-        super().__init__()
-        self.ffd  = FFD(channels)
-        self.bsei = BSEI(channels)
-        self.mfaf = MFAF(channels)
 
-    def forward(self, f_skip, f_dec):
-        f_high, f_low, _ = self.ffd(f_skip)
-        f_bsei = self.bsei(f_skip, f_dec)
-        f_out  = self.mfaf(f_high, f_low, f_bsei)
-        return f_out  # replace your current skip in the decoder
 # ============================================================
 # ConvNeXt Block (Renamed from BlockReLU, uses GELU)
 # ============================================================
@@ -339,19 +186,48 @@ class ConvNeXtStage(nn.Module):
     def forward(self, x):
         return self.blocks(x)
 
+class AttentionGate(nn.Module):
+    def __init__(self, F_g, F_l, F_int):
+        super().__init__()
+        self.W_g = nn.Sequential(nn.Conv2d(F_g, F_int, 1, bias=True), nn.BatchNorm2d(F_int))
+        self.W_x = nn.Sequential(nn.Conv2d(F_l, F_int, 1, bias=True), nn.BatchNorm2d(F_int))
+        self.psi = nn.Sequential(nn.Conv2d(F_int, 1, 1, bias=True), nn.BatchNorm2d(1), nn.Sigmoid())
+        self.relu = nn.ReLU(inplace=True)
 
+    def forward(self, g, x):
+        g1 = self.W_g(g)
+        x1 = self.W_x(x)
+        psi = self.psi(self.relu(g1 + x1))
+        return x * psi
+class HCABlock(nn.Module):
+    """Lightweight add-on to your existing BSEI"""
+    def __init__(self, channels, pool_size=4):
+        super().__init__()
+        # Dual-branch local (Innovation 1 core)
+        self.branch_1x1 = nn.Conv2d(channels, channels, 1, bias=False)
+        self.branch_3x3 = nn.Sequential(
+            nn.Conv2d(channels, channels, 3, padding=1,
+                      groups=channels, bias=False),
+            nn.BatchNorm2d(channels),
+            nn.GELU()
+        )
+        self.norm = nn.BatchNorm2d(channels)
+        self.alpha = nn.Parameter(torch.zeros(1))
 
+    def forward(self, x):
+        # Local dual-branch fusion
+        f_loc = self.branch_1x1(x) + self.branch_3x3(x)
+        f_loc = self.norm(f_loc)
+        return x + self.alpha * f_loc
+    
 
-# ============================================================
-# Main Model: ConvNeXt Tiny U-Net with Attention Gates
-# ============================================================
 class ConvNeXtTinyUNetAttention(nn.Module):
     def __init__(
         self,
         in_chans=3,
         num_classes=1,
         dims=(96, 192, 384, 768),
-        depths=(3, 3, 9, 3),
+        depths=(2,2,4,2),
         dropout=0.1,
         drop_path_rate=0.2,
         use_batch_norm=True
@@ -413,15 +289,14 @@ class ConvNeXtTinyUNetAttention(nn.Module):
         self.bottleneck = ConvNeXtStage(dims[3], depths[3], drop_path_rates=enc_stage_rates[3], dropout=dropout, use_batch_norm=use_batch_norm)
 
 
-        self.bfim3 = BFIM(channels=dims[2])  # skip x3: H/8,  384ch
-        self.bfim2 = BFIM(channels=dims[1])  # skip x2: H/4,  192ch
-        self.bfim1 = BFIM(channels=dims[0])  # skip x1: H/2,   96ch
-        # ====================================================
-        # ATTENTION GATES
-        # ====================================================
-        self.attn3 = AttentionGate(F_g=dims[2], F_l=dims[2], F_int=dims[2]//2)
-        self.attn2 = AttentionGate(F_g=dims[1], F_l=dims[1], F_int=dims[1]//2)
-        self.attn1 = AttentionGate(F_g=dims[0], F_l=dims[0], F_int=dims[0]//2)
+
+        self.bsei3 = BSEI(dims[2])
+        self.bsei2 = BSEI(dims[1])
+        self.bsei1 = BSEI(dims[0])  # H/2 is large, keep pools small
+
+        self.hca1 = HCABlock(dims[0])
+        self.hca2 = HCABlock(dims[1])
+        self.hca3 = HCABlock(dims[2])
 
         # ====================================================
         # Decoder (CHANGED: Upsample + Conv instead of ConvTranspose2d)
@@ -481,9 +356,13 @@ class ConvNeXtTinyUNetAttention(nn.Module):
 
         # Segmentation head
         self.seg_head = nn.Sequential(
-            nn.Dropout2d(dropout * 0.5),
+            nn.Dropout2d( 0.05),
             nn.Conv2d(dims[0]//2, num_classes, kernel_size=1),
         )
+        self.att3 = AttentionGate(dims[2], dims[2], dims[2]//2)
+        self.att2 = AttentionGate(dims[1], dims[1], dims[1]//2)
+        self.att1 = AttentionGate(dims[0], dims[0], dims[0]//2)
+
 
         self._init_weights()
 
@@ -511,27 +390,42 @@ class ConvNeXtTinyUNetAttention(nn.Module):
 
         # ---------------- Decoder with Attention Gates ----------------
         d3 = self.up3(b)                  # H/8
-        x3_bfim = self.bfim3(x3, d3)             # <-- CHANGED (was just x3)
-        x3_attn = self.attn3(g=d3, x=x3_bfim)
-        d3 = torch.cat([d3, x3_attn], dim=1)  
+
+        x3_bsei = self.bsei3(
+            x3,
+            d3
+        )
+
+        d3 = torch.cat([d3, x3_bsei], dim=1)
+
         d3 = self.reduce3(d3)
         d3 = self.dec3(d3)
 
         d2 = self.up2(d3)                 # H/4
-        x2_bfim = self.bfim2(x2, d2)             # <-- CHANGED (was just x2)
-        x2_attn = self.attn2(g=d2, x=x2_bfim)   
-        d2 = torch.cat([d2, x2_attn], dim=1)  
+
+        x2_bsei = self.bsei2(
+            x2,
+            d2
+        )
+
+        d2 = torch.cat([d2, x2_bsei], dim=1)
+
+
         d2 = self.reduce2(d2)
         d2 = self.dec2(d2)
 
         d1 = self.up1(d2)                 # H/2
-        x1_bfim = self.bfim1(x1, d1)             # <-- CHANGED (was just x1)
-        x1_attn = self.attn1(g=d1, x=x1_bfim)
-        d1 = torch.cat([d1, x1_attn], dim=1)  
+        
+        x1_bsei = self.bsei1(
+            x1,
+            d1
+        )
+
+        d1 = torch.cat([d1, x1_bsei], dim=1)
+
         d1 = self.reduce1(d1)
         d1 = self.dec1(d1)
 
-        # Recover full resolution (H/2 -> H)
         d1 = self.final_up(d1)            # H
 
         out = self.seg_head(d1)

@@ -1,0 +1,107 @@
+2026-06-19 18:37:41 - INFO - Logging initialized to ./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/agv/start-0-91.43/KvasirSEG-ConvNeXt_log.txt
+2026-06-19 18:37:49 - INFO - #### Loading checkpoint ####
+2026-06-19 18:37:50 - INFO - Resumed from epoch 1615, best_acc=0.0000
+2026-06-19 18:37:50 - INFO - Resumed from epoch 1615
+2026-06-19 18:37:50 - INFO - Previous best accuracy: 0.8436
+2026-06-19 18:37:50 - INFO - #### Training ####
+2026-06-19 18:37:50 - INFO - initial LR: 0.000010
+2026-06-19 18:37:50 - INFO - Backbone frozen for first 5 epochs
+2026-06-19 18:38:27 - INFO - Epoch 1617/50000: Train Loss: 0.4224, Test Loss: 0.3319, Test Dice: 0.7350, Test IoU: 0.5845
+2026-06-19 18:39:03 - INFO - Epoch 1618/50000: Train Loss: 0.3920, Test Loss: 0.3046, Test Dice: 0.7549, Test IoU: 0.6096
+2026-06-19 18:39:40 - INFO - Epoch 1619/50000: Train Loss: 0.3732, Test Loss: 0.2783, Test Dice: 0.7744, Test IoU: 0.6346
+2026-06-19 18:40:16 - INFO - Epoch 1620/50000: Train Loss: 0.3576, Test Loss: 0.2703, Test Dice: 0.7836, Test IoU: 0.6470
+2026-06-19 18:40:53 - INFO - Epoch 1621/50000: Train Loss: 0.3299, Test Loss: 0.2490, Test Dice: 0.7984, Test IoU: 0.6671
+2026-06-19 18:41:30 - INFO - Epoch 1622/50000: Train Loss: 0.2961, Test Loss: 0.2331, Test Dice: 0.8140, Test IoU: 0.6890
+2026-06-19 18:42:06 - INFO - Epoch 1623/50000: Train Loss: 0.2788, Test Loss: 0.2223, Test Dice: 0.8227, Test IoU: 0.7015
+2026-06-19 18:42:43 - INFO - Epoch 1624/50000: Train Loss: 0.2626, Test Loss: 0.2105, Test Dice: 0.8321, Test IoU: 0.7153
+2026-06-19 18:43:19 - INFO - Epoch 1625/50000: Train Loss: 0.2274, Test Loss: 0.1959, Test Dice: 0.8411, Test IoU: 0.7287
+2026-06-19 18:43:55 - INFO - Epoch 1626/50000: Train Loss: 0.2319, Test Loss: 0.1876, Test Dice: 0.8470, Test IoU: 0.7376
+2026-06-19 18:44:32 - INFO - Epoch 1627/50000: Train Loss: 0.2114, Test Loss: 0.1793, Test Dice: 0.8549, Test IoU: 0.7496
+2026-06-19 18:45:08 - INFO - Epoch 1628/50000: Train Loss: 0.2032, Test Loss: 0.1749, Test Dice: 0.8631, Test IoU: 0.7620
+2026-06-19 18:45:45 - INFO - Epoch 1629/50000: Train Loss: 0.2005, Test Loss: 0.1681, Test Dice: 0.8671, Test IoU: 0.7682
+2026-06-19 18:46:22 - INFO - Epoch 1630/50000: Train Loss: 0.1892, Test Loss: 0.1637, Test Dice: 0.8698, Test IoU: 0.7725
+2026-06-19 18:46:58 - INFO - Epoch 1631/50000: Train Loss: 0.1880, Test Loss: 0.1578, Test Dice: 0.8720, Test IoU: 0.7759
+2026-06-19 18:47:34 - INFO - Epoch 1632/50000: Train Loss: 0.1819, Test Loss: 0.1538, Test Dice: 0.8779, Test IoU: 0.7852
+2026-06-19 18:48:11 - INFO - Epoch 1633/50000: Train Loss: 0.1718, Test Loss: 0.1528, Test Dice: 0.8789, Test IoU: 0.7867
+2026-06-19 18:48:48 - INFO - Epoch 1634/50000: Train Loss: 0.1589, Test Loss: 0.1482, Test Dice: 0.8827, Test IoU: 0.7928
+2026-06-19 18:49:24 - INFO - Epoch 1635/50000: Train Loss: 0.1682, Test Loss: 0.1459, Test Dice: 0.8856, Test IoU: 0.7973
+2026-06-19 18:50:00 - INFO - Epoch 1636/50000: Train Loss: 0.1581, Test Loss: 0.1467, Test Dice: 0.8867, Test IoU: 0.7991
+2026-06-19 18:50:37 - INFO - Epoch 1637/50000: Train Loss: 0.1467, Test Loss: 0.1448, Test Dice: 0.8875, Test IoU: 0.8004
+2026-06-19 18:51:13 - INFO - Epoch 1638/50000: Train Loss: 0.1497, Test Loss: 0.1410, Test Dice: 0.8894, Test IoU: 0.8035
+2026-06-19 18:51:50 - INFO - Epoch 1639/50000: Train Loss: 0.1486, Test Loss: 0.1414, Test Dice: 0.8899, Test IoU: 0.8043
+2026-06-19 18:52:26 - INFO - Epoch 1640/50000: Train Loss: 0.1527, Test Loss: 0.1399, Test Dice: 0.8898, Test IoU: 0.8041
+2026-06-19 18:53:03 - INFO - Epoch 1641/50000: Train Loss: 0.1389, Test Loss: 0.1393, Test Dice: 0.8915, Test IoU: 0.8068
+2026-06-19 18:53:40 - INFO - Epoch 1642/50000: Train Loss: 0.1434, Test Loss: 0.1367, Test Dice: 0.8901, Test IoU: 0.8046
+2026-06-19 18:54:16 - INFO - Epoch 1643/50000: Train Loss: 0.1381, Test Loss: 0.1335, Test Dice: 0.8930, Test IoU: 0.8093
+2026-06-19 18:54:52 - INFO - Epoch 1644/50000: Train Loss: 0.1340, Test Loss: 0.1351, Test Dice: 0.8928, Test IoU: 0.8090
+2026-06-19 18:55:29 - INFO - Epoch 1645/50000: Train Loss: 0.1360, Test Loss: 0.1336, Test Dice: 0.8929, Test IoU: 0.8091
+2026-06-19 18:56:05 - INFO - Epoch 1646/50000: Train Loss: 0.1484, Test Loss: 0.1353, Test Dice: 0.8949, Test IoU: 0.8125
+2026-06-19 18:56:42 - INFO - Epoch 1647/50000: Train Loss: 0.1302, Test Loss: 0.1332, Test Dice: 0.8944, Test IoU: 0.8115
+2026-06-19 18:57:18 - INFO - Epoch 1648/50000: Train Loss: 0.1262, Test Loss: 0.1320, Test Dice: 0.8946, Test IoU: 0.8119
+2026-06-19 18:57:55 - INFO - Epoch 1649/50000: Train Loss: 0.1335, Test Loss: 0.1313, Test Dice: 0.8949, Test IoU: 0.8123
+2026-06-19 18:58:31 - INFO - Epoch 1650/50000: Train Loss: 0.1253, Test Loss: 0.1317, Test Dice: 0.8957, Test IoU: 0.8135
+2026-06-19 18:59:08 - INFO - Epoch 1651/50000: Train Loss: 0.1243, Test Loss: 0.1315, Test Dice: 0.8942, Test IoU: 0.8112
+2026-06-19 18:59:44 - INFO - Epoch 1652/50000: Train Loss: 0.1248, Test Loss: 0.1305, Test Dice: 0.8953, Test IoU: 0.8129
+2026-06-19 19:00:20 - INFO - Epoch 1653/50000: Train Loss: 0.1209, Test Loss: 0.1305, Test Dice: 0.8937, Test IoU: 0.8106
+2026-06-19 19:00:57 - INFO - Epoch 1654/50000: Train Loss: 0.1287, Test Loss: 0.1314, Test Dice: 0.8953, Test IoU: 0.8130
+2026-06-19 19:01:33 - INFO - Epoch 1655/50000: Train Loss: 0.1198, Test Loss: 0.1301, Test Dice: 0.8959, Test IoU: 0.8141
+2026-06-19 19:02:10 - INFO - Epoch 1656/50000: Train Loss: 0.1150, Test Loss: 0.1319, Test Dice: 0.8968, Test IoU: 0.8155
+2026-06-19 19:02:46 - INFO - Epoch 1657/50000: Train Loss: 0.1198, Test Loss: 0.1294, Test Dice: 0.8964, Test IoU: 0.8148
+2026-06-19 19:03:23 - INFO - Epoch 1658/50000: Train Loss: 0.1174, Test Loss: 0.1282, Test Dice: 0.8974, Test IoU: 0.8164
+2026-06-19 19:03:59 - INFO - Epoch 1659/50000: Train Loss: 0.1191, Test Loss: 0.1292, Test Dice: 0.8960, Test IoU: 0.8142
+2026-06-19 19:04:36 - INFO - Epoch 1660/50000: Train Loss: 0.1247, Test Loss: 0.1278, Test Dice: 0.8975, Test IoU: 0.8167
+2026-06-19 19:05:12 - INFO - Epoch 1661/50000: Train Loss: 0.1095, Test Loss: 0.1272, Test Dice: 0.8959, Test IoU: 0.8141
+2026-06-19 19:05:48 - INFO - Epoch 1662/50000: Train Loss: 0.1149, Test Loss: 0.1270, Test Dice: 0.8976, Test IoU: 0.8169
+2026-06-19 19:06:25 - INFO - Epoch 1663/50000: Train Loss: 0.1183, Test Loss: 0.1285, Test Dice: 0.8983, Test IoU: 0.8180
+2026-06-19 19:07:01 - INFO - Epoch 1664/50000: Train Loss: 0.1153, Test Loss: 0.1274, Test Dice: 0.8978, Test IoU: 0.8172
+2026-06-19 19:07:38 - INFO - Epoch 1665/50000: Train Loss: 0.1135, Test Loss: 0.1270, Test Dice: 0.8978, Test IoU: 0.8172
+2026-06-19 19:08:14 - INFO - Epoch 1666/50000: Train Loss: 0.1198, Test Loss: 0.1267, Test Dice: 0.8982, Test IoU: 0.8179
+2026-06-19 19:08:51 - INFO - Epoch 1667/50000: Train Loss: 0.1191, Test Loss: 0.1250, Test Dice: 0.8978, Test IoU: 0.8172
+2026-06-19 19:09:27 - INFO - Epoch 1668/50000: Train Loss: 0.1105, Test Loss: 0.1251, Test Dice: 0.8980, Test IoU: 0.8176
+2026-06-19 19:10:04 - INFO - Epoch 1669/50000: Train Loss: 0.1205, Test Loss: 0.1278, Test Dice: 0.8992, Test IoU: 0.8194
+2026-06-19 19:10:40 - INFO - Epoch 1670/50000: Train Loss: 0.1082, Test Loss: 0.1280, Test Dice: 0.8994, Test IoU: 0.8197
+2026-06-19 19:11:17 - INFO - Epoch 1671/50000: Train Loss: 0.1088, Test Loss: 0.1269, Test Dice: 0.8990, Test IoU: 0.8193
+2026-06-19 19:11:54 - INFO - Epoch 1672/50000: Train Loss: 0.1163, Test Loss: 0.1263, Test Dice: 0.8992, Test IoU: 0.8195
+2026-06-19 19:12:30 - INFO - Epoch 1673/50000: Train Loss: 0.1222, Test Loss: 0.1244, Test Dice: 0.8996, Test IoU: 0.8201
+2026-06-19 19:13:07 - INFO - Epoch 1674/50000: Train Loss: 0.1148, Test Loss: 0.1250, Test Dice: 0.8992, Test IoU: 0.8194
+2026-06-19 19:13:43 - INFO - Epoch 1675/50000: Train Loss: 0.1175, Test Loss: 0.1279, Test Dice: 0.9000, Test IoU: 0.8208
+2026-06-19 19:14:20 - INFO - Epoch 1676/50000: Train Loss: 0.1151, Test Loss: 0.1217, Test Dice: 0.9007, Test IoU: 0.8219
+2026-06-19 19:14:56 - INFO - Epoch 1677/50000: Train Loss: 0.1140, Test Loss: 0.1251, Test Dice: 0.9010, Test IoU: 0.8224
+2026-06-19 19:15:33 - INFO - Epoch 1678/50000: Train Loss: 0.1134, Test Loss: 0.1225, Test Dice: 0.8994, Test IoU: 0.8199
+2026-06-19 19:16:09 - INFO - Epoch 1679/50000: Train Loss: 0.1104, Test Loss: 0.1243, Test Dice: 0.9009, Test IoU: 0.8224
+2026-06-19 19:16:46 - INFO - Epoch 1680/50000: Train Loss: 0.1076, Test Loss: 0.1230, Test Dice: 0.9002, Test IoU: 0.8213
+2026-06-19 19:17:22 - INFO - Epoch 1681/50000: Train Loss: 0.1105, Test Loss: 0.1243, Test Dice: 0.9023, Test IoU: 0.8245
+2026-06-19 19:17:59 - INFO - Epoch 1682/50000: Train Loss: 0.1096, Test Loss: 0.1229, Test Dice: 0.9021, Test IoU: 0.8241
+2026-06-19 19:18:35 - INFO - Epoch 1683/50000: Train Loss: 0.1055, Test Loss: 0.1247, Test Dice: 0.9020, Test IoU: 0.8242
+2026-06-19 19:19:11 - INFO - Epoch 1684/50000: Train Loss: 0.1139, Test Loss: 0.1233, Test Dice: 0.9015, Test IoU: 0.8233
+2026-06-19 19:19:48 - INFO - Epoch 1685/50000: Train Loss: 0.1132, Test Loss: 0.1226, Test Dice: 0.9026, Test IoU: 0.8251
+2026-06-19 19:20:25 - INFO - Epoch 1686/50000: Train Loss: 0.1075, Test Loss: 0.1232, Test Dice: 0.9023, Test IoU: 0.8246
+2026-06-19 19:21:01 - INFO - Epoch 1687/50000: Train Loss: 0.1065, Test Loss: 0.1230, Test Dice: 0.9018, Test IoU: 0.8239
+2026-06-19 19:21:38 - INFO - Epoch 1688/50000: Train Loss: 0.1061, Test Loss: 0.1235, Test Dice: 0.9017, Test IoU: 0.8237
+2026-06-19 19:22:14 - INFO - Epoch 1689/50000: Train Loss: 0.1078, Test Loss: 0.1212, Test Dice: 0.9024, Test IoU: 0.8248
+2026-06-19 19:22:50 - INFO - Epoch 1690/50000: Train Loss: 0.1079, Test Loss: 0.1236, Test Dice: 0.9028, Test IoU: 0.8255
+2026-06-19 19:23:27 - INFO - Epoch 1691/50000: Train Loss: 0.1098, Test Loss: 0.1230, Test Dice: 0.9028, Test IoU: 0.8255
+2026-06-19 19:24:04 - INFO - Epoch 1692/50000: Train Loss: 0.1104, Test Loss: 0.1220, Test Dice: 0.9026, Test IoU: 0.8252
+2026-06-19 19:24:41 - INFO - Epoch 1693/50000: Train Loss: 0.1073, Test Loss: 0.1230, Test Dice: 0.9027, Test IoU: 0.8253
+2026-06-19 19:25:18 - INFO - Epoch 1694/50000: Train Loss: 0.1074, Test Loss: 0.1210, Test Dice: 0.9027, Test IoU: 0.8255
+2026-06-19 19:25:54 - INFO - Epoch 1695/50000: Train Loss: 0.1049, Test Loss: 0.1209, Test Dice: 0.9040, Test IoU: 0.8275
+2026-06-19 19:26:31 - INFO - Epoch 1696/50000: Train Loss: 0.1089, Test Loss: 0.1207, Test Dice: 0.9028, Test IoU: 0.8255
+2026-06-19 19:27:08 - INFO - Epoch 1697/50000: Train Loss: 0.1008, Test Loss: 0.1215, Test Dice: 0.9035, Test IoU: 0.8266
+2026-06-19 19:27:44 - INFO - Epoch 1698/50000: Train Loss: 0.1227, Test Loss: 0.1206, Test Dice: 0.9016, Test IoU: 0.8236
+2026-06-19 19:28:20 - INFO - Epoch 1699/50000: Train Loss: 0.0980, Test Loss: 0.1216, Test Dice: 0.9026, Test IoU: 0.8252
+2026-06-19 19:28:57 - INFO - Epoch 1700/50000: Train Loss: 0.1021, Test Loss: 0.1217, Test Dice: 0.9023, Test IoU: 0.8248
+2026-06-19 19:29:33 - INFO - Epoch 1701/50000: Train Loss: 0.1023, Test Loss: 0.1225, Test Dice: 0.9003, Test IoU: 0.8217
+2026-06-19 19:30:10 - INFO - Epoch 1702/50000: Train Loss: 0.1066, Test Loss: 0.1188, Test Dice: 0.9010, Test IoU: 0.8225
+2026-06-19 19:30:46 - INFO - Epoch 1703/50000: Train Loss: 0.1138, Test Loss: 0.1196, Test Dice: 0.9009, Test IoU: 0.8224
+2026-06-19 19:31:23 - INFO - Epoch 1704/50000: Train Loss: 0.0993, Test Loss: 0.1180, Test Dice: 0.9031, Test IoU: 0.8260
+2026-06-19 19:32:06 - INFO - New best model saved with accuracy: 0.83%
+2026-06-19 19:32:49 - INFO - Epoch 1705/50000: Train Loss: 0.1093, Test Loss: 0.1204, Test Dice: 0.9020, Test IoU: 0.8241
+2026-06-19 19:33:26 - INFO - Epoch 1706/50000: Train Loss: 0.1049, Test Loss: 0.1197, Test Dice: 0.9023, Test IoU: 0.8247
+2026-06-19 19:34:02 - INFO - Epoch 1707/50000: Train Loss: 0.1024, Test Loss: 0.1216, Test Dice: 0.8999, Test IoU: 0.8208
+2026-06-19 19:34:39 - INFO - Epoch 1708/50000: Train Loss: 0.1038, Test Loss: 0.1197, Test Dice: 0.9029, Test IoU: 0.8257
+2026-06-19 19:35:15 - INFO - Epoch 1709/50000: Train Loss: 0.1016, Test Loss: 0.1204, Test Dice: 0.9038, Test IoU: 0.8272
+2026-06-19 19:35:15 - INFO - New best model saved with accuracy: 0.83%
+2026-06-19 19:35:59 - INFO - Epoch 1710/50000: Train Loss: 0.1073, Test Loss: 0.1199, Test Dice: 0.9033, Test IoU: 0.8263
+2026-06-19 19:36:35 - INFO - Epoch 1711/50000: Train Loss: 0.1056, Test Loss: 0.1192, Test Dice: 0.9017, Test IoU: 0.8238
+2026-06-19 19:37:11 - INFO - Epoch 1712/50000: Train Loss: 0.1015, Test Loss: 0.1177, Test Dice: 0.9017, Test IoU: 0.8237
+2026-06-19 19:37:48 - INFO - Epoch 1713/50000: Train Loss: 0.1040, Test Loss: 0.1217, Test Dice: 0.9028, Test IoU: 0.8255

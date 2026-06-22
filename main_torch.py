@@ -15,7 +15,10 @@ from utils_torch import *  # You'll need to adapt utils for PyTorch
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-
+from PIL import Image
+from sklearn.model_selection import train_test_split
+import glob
+import cv2
 
 
 import numpy as np
@@ -24,7 +27,16 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import os 
 
+import os
+import glob
+import cv2
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+
+
 class Dataset:
+
     def __init__(
         self,
         data_name,
@@ -33,178 +45,372 @@ class Dataset:
         ttfs_convert,
         ttfs_noise=0,
         data_path='./dataset/',
-        input_size= (256, 256)
+        input_size=(256, 256)
     ):
+
         self.name = data_name
-        self.flatten=flatten
+        self.flatten = flatten
         self.data_path = data_path
-        self.noise=ttfs_noise
+        self.noise = ttfs_noise
         self.input_size = input_size
-        self.logging_dir=logging_dir
-        # Load original data.
+        self.logging_dir = logging_dir
+
+
+        # disable OpenCV warnings
+        try:
+            cv2.utils.logging.setLogLevel(
+                cv2.utils.logging.LOG_LEVEL_ERROR
+            )
+        except:
+            pass
+
+
         self.get_features_vectors()
-        # In case of SNN, convert input data with TTFS coding.
-        self.ttfss_convert=ttfs_convert
-        if ttfs_convert: self.convert_ttfs()
-        
+
+
+        self.ttfss_convert = ttfs_convert
+
+        if ttfs_convert:
+            self.convert_ttfs()
+
+
+
     def get_features_vectors(self):
+
         """
-        Load image datasets and transform into features. 
+        Load Kvasir-SEG + CVC-ClinicDB
         """
-        if 'MNIST' in self.name:
-            self.input_shape, self.train_sample=(28, 28, 1), 1/64
-            self.q, self.p = 1.0, 0.0
-            self.num_of_classes = 10
-            if self.name=='MNIST':
-                train_data = datasets.MNIST(root='./data', train=True, download=True)
-                test_data = datasets.MNIST(root='./data', train=False, download=True)
-            else:
-                train_data = datasets.FashionMNIST(root='./data', train=True, download=True)
-                test_data = datasets.FashionMNIST(root='./data', train=False, download=True)
-            self.x_train, self.y_train = train_data.data.numpy(), train_data.targets.numpy()
-            self.x_test, self.y_test = test_data.data.numpy(), test_data.targets.numpy()
-            self.x_train, self.x_test = self.x_train/255.0, self.x_test/255.0
-            if self.flatten:
-                self.x_train, self.x_test = self.x_train.reshape((len(self.x_train), -1)), self.x_test.reshape((len(self.x_test), -1))
-            else:
-                self.x_train, self.x_test = self.x_train.reshape(-1, 28, 28, 1), self.x_test.reshape(-1, 28, 28, 1)
+
+        self.num_of_classes = 2
+
+        self.input_shape = (
+            3,
+            self.input_size[0],
+            self.input_size[1]
+        )
+
+
+        images = []
+        masks = []
+
+
+        data_pack = 'CVC-ColonDB'
+        datasets = []
+
+        if "Kvasir" in data_pack:
+            datasets.append(
+                (
+                    os.path.join(self.data_path, "Kvasir-SEG", "images"),
+                    os.path.join(self.data_path, "Kvasir-SEG", "masks")
+                )
+            )
+
+        if "CVC-ClinicDB" in data_pack:
+            datasets.append(
+                (
+                    os.path.join(self.data_path, "CVC-ClinicDB", "images"),
+                    os.path.join(self.data_path, "CVC-ClinicDB", "masks")
+                )
+            )
+        if "CVC-300" in data_pack:
+            datasets.append(
+                (
+                    os.path.join(self.data_path, "CVC-300", "images"),
+                    os.path.join(self.data_path, "CVC-300", "masks")
+                )
+            )
+        if "ETIS-LARIBPOLYPDB" in data_pack:
+            datasets.append(
+                (
+                    os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "images"),
+                    os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "masks")
+                )
+            )
+        if "CVC-ColonDB" in data_pack:
+            datasets.append(
+                (
+                    os.path.join(self.data_path, "CVC-ColonDB", "images"),
+                    os.path.join(self.data_path, "CVC-ColonDB", "masks")
+                )
+            )
+
+            
+
+
+        extensions = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.tif",
+            "*.tiff"
+        ]
 
 
 
+        for image_dir, mask_dir in datasets:
+
+
+            image_files = []
+
+
+            for ext in extensions:
+
+                image_files.extend(
+                    glob.glob(
+                        os.path.join(
+                            image_dir,
+                            ext
+                        )
+                    )
+                )
 
 
 
+            image_files = sorted(image_files)
 
-        elif self.name == "KvasirSEG":
 
-            from PIL import Image
-            from sklearn.model_selection import train_test_split
-            import glob
-
-            self.num_of_classes = 2
-            self.input_shape = (3, 256, 256)
-
-            self.q = 1.0
-            self.p = 0.0
-
-            image_dir = os.path.join(self.data_path, "Kvasir-SEG", "images")
-            mask_dir = os.path.join(self.data_path, "Kvasir-SEG", "masks")
-
-            image_files = sorted(glob.glob(os.path.join(image_dir, "*")))
-
-            images = []
-            masks = []
 
             for img_path in image_files:
 
+
                 filename = os.path.basename(img_path)
-                mask_path = os.path.join(mask_dir, filename)
+
+
+
+                mask_path = os.path.join(
+                    mask_dir,
+                    filename
+                )
+
+
 
                 if not os.path.exists(mask_path):
+
+                    print(
+                        "Mask missing:",
+                        img_path
+                    )
+
                     continue
 
-                img = Image.open(img_path).convert("RGB")
-                mask = Image.open(mask_path).convert("L")
 
-                img = img.resize(self.input_size)
-                mask = mask.resize(self.input_size)
 
-                img = np.array(img, dtype=np.float32) / 255.0
-                img = np.transpose(img, (2, 0, 1))
+                # ======================
+                # Load image
+                # ======================
 
-                mask = np.array(mask, dtype=np.float32)
-                mask = (mask > 127).astype(np.float32)
+                img = cv2.imread(
+                    img_path,
+                    cv2.IMREAD_COLOR
+                )
+
+
+                if img is None:
+
+                    print(
+                        "Bad image:",
+                        img_path
+                    )
+
+                    continue
+
+
+
+                img = cv2.cvtColor(
+                    img,
+                    cv2.COLOR_BGR2RGB
+                )
+
+
+
+                # ======================
+                # Load mask
+                # ======================
+
+                mask = cv2.imread(
+                    mask_path,
+                    cv2.IMREAD_GRAYSCALE
+                )
+
+
+                if mask is None:
+
+                    print(
+                        "Bad mask:",
+                        mask_path
+                    )
+
+                    continue
+
+
+
+
+                # ======================
+                # Resize
+                # ======================
+
+                img = cv2.resize(
+                    img,
+                    self.input_size,
+                    interpolation=cv2.INTER_LINEAR
+                )
+
+
+                # IMPORTANT
+                # nearest for segmentation masks
+
+                mask = cv2.resize(
+                    mask,
+                    self.input_size,
+                    interpolation=cv2.INTER_NEAREST
+                )
+
+
+
+                # ======================
+                # Normalize image
+                # ======================
+
+                img = (
+                    img.astype(np.float32)
+                    /
+                    255.0
+                )
+
+
+
+                # HWC -> CHW
+
+                img = np.transpose(
+                    img,
+                    (2,0,1)
+                )
+
+
+
+                # binary mask
+
+                mask = (
+                    mask > 127
+                ).astype(
+                    np.float32
+                )
+
+
 
                 images.append(img)
+
                 masks.append(mask)
 
-            images = np.array(images, dtype=np.float32)
-            masks = np.array(masks, dtype=np.float32)
-
-            (
-                self.x_train,
-                self.x_test,
-                self.y_train,
-                self.y_test,
-            ) = train_test_split(
-                images,
-                masks,
-                test_size=0.2,
-                random_state=42,
-                shuffle=True,
-            )
 
 
+        # ======================
+        # Convert arrays
+        # ======================
 
 
+        images = np.array(
+            images,
+            dtype=np.float32
+        )
+
+
+        masks = np.array(
+            masks,
+            dtype=np.float32
+        )
 
 
 
-        elif 'CIFAR' in self.name:
-            # CIFAR10 or CIFAR100 dataset.
-            self.input_shape=(3,32, 32)
-            self.q, self.p = 3.0, -3.0
-            if self.name=='CIFAR10':
-                self.num_of_classes = 10
+        print(
+            "Loaded images:",
+            images.shape
+        )
 
-                transform_train = transforms.Compose([
-                    transforms.RandomCrop(32, padding=4),
-                    transforms.RandomHorizontalFlip(),
-                    transforms.RandAugment(num_ops=2, magnitude=9),
-                    transforms.ToTensor(),
-                ])
-                transform_test = transforms.Compose([
-                    transforms.ToTensor(),
-                ])
-
-                train_dataset = datasets.ImageFolder(os.path.join(self.data_path, 'train'), transform=transform_train)
-                test_dataset = datasets.ImageFolder(os.path.join(self.data_path, 'test'), transform=transform_test)
-                
-                # Extract all data from ImageFolder using DataLoader
-                train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=len(train_dataset), shuffle=False)
-                test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=len(test_dataset), shuffle=False)
-                
-                self.x_train, self.y_train = next(iter(train_loader))
-                self.x_test, self.y_test = next(iter(test_loader))
-                
-                # Convert to numpy and change from (N,C,H,W) to (N,H,W,C)
-                self.x_train = self.x_train.numpy()
-                self.x_test = self.x_test.numpy()
-                self.y_train = self.y_train.numpy()
-                self.y_test = self.y_test.numpy()
-                
-                self.mean_test, self.std_test = 0.4914, 0.2023
-                
-            else:
-                # CIFAR100
-                self.num_of_classes = 100
-                train_data = datasets.CIFAR100(root='./data', train=True, download=True)
-                test_data = datasets.CIFAR100(root='./data', train=False, download=True)
-                self.mean_test, self.std_test = 121.936, 68.389
-                self.x_train, self.y_train = train_data.data, np.array(train_data.targets)
-                self.x_test, self.y_test = test_data.data, np.array(test_data.targets)
-            
-            # Scale to [-3, 3] range.
-            self.x_test = (self.x_test - self.mean_test) / (self.std_test + 1e-7)
-            self.x_train = (self.x_train - self.mean_test) / (self.std_test + 1e-7)
-
-            
-        self.x_train, self.x_test = self.x_train.astype('float32'), self.x_test.astype('float32')
-
-        if self.name == "KvasirSEG":
-            self.y_train = self.y_train.astype(np.float32)
-            self.y_test = self.y_test.astype(np.float32)
-        else:
-            self.y_train = self.y_train.astype(np.int64)
-            self.y_test = self.y_test.astype(np.int64)
-
-        print ('Train data:', np.shape(self.x_train), np.shape(self.y_train))
-        print ('Test data:', np.shape(self.x_test), np.shape(self.y_test))
+        print(
+            "Loaded masks:",
+            masks.shape
+        )
 
 
+
+        # ======================
+        # Train/Test split
+        # ======================
+
+
+        (
+            self.x_train,
+            self.x_test,
+            self.y_train,
+            self.y_test
+
+        ) = train_test_split(
+
+            images,
+            masks,
+
+            test_size=0.1,
+
+            random_state=42,
+
+            shuffle=True
+
+        )
+
+
+
+        self.x_train = self.x_train.astype(
+            np.float32
+        )
+
+
+        self.x_test = self.x_test.astype(
+            np.float32
+        )
+
+
+        self.y_train = self.y_train.astype(
+            np.float32
+        )
+
+
+        self.y_test = self.y_test.astype(
+            np.float32
+        )
+
+
+
+        print(
+            "Train:",
+            self.x_train.shape,
+            self.y_train.shape
+        )
+
+
+        print(
+            "Test:",
+            self.x_test.shape,
+            self.y_test.shape
+        )
+
+def mixup_data(images, masks, alpha=0.2):
+    """Mix two training samples together"""
+    if alpha > 0:
+        lam = np.random.beta(alpha, alpha)
+    else:
+        lam = 1.0
+
+    B = images.size(0)
+    idx = torch.randperm(B)
+
+    mixed_images = lam * images + (1 - lam) * images[idx]
+    mixed_masks  = lam * masks  + (1 - lam) * masks[idx]
+
+    return mixed_images, mixed_masks
 
 bce = nn.BCEWithLogitsLoss()
-def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, threshold):
+def train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler, threshold):
     """Training function for segmentation tasks."""
     model.train()
     running_loss = 0.0
@@ -219,26 +425,30 @@ def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, 
         
         if target.dim() == 3:
             target = target.unsqueeze(1)
-    
+        if random.random() < 0.3:
+            lam = np.random.beta(0.2, 0.2)
+            idx = torch.randperm(data.size(0), device=device)
+            data   = lam * data   + (1 - lam) * data[idx]
+            target = lam * target + (1 - lam) * target[idx]
         optimizer.zero_grad()
         
         # ===== ADD NaN DETECTION IN FORWARD PASS =====
-        with torch.autograd.detect_anomaly(False):  # Turn off global anomaly detection
-            output = model(data)
-            
-            # Check forward pass for NaN
-            if not torch.isfinite(output).all():
-                print(f"NaN in output at batch {batch_idx}, skipping...")
-                skipped_batches += 1
-                optimizer.zero_grad(set_to_none=True)
-                continue
+        # with torch.autograd.detect_anomaly(False):  # Turn off global anomaly detection
+        output = model(data)
+        
+        # Check forward pass for NaN
+        if not torch.isfinite(output).all():
+            print(f"NaN in output at batch {batch_idx}, skipping...")
+            skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
+            continue
         
         if output.shape != target.shape:
             output = F.interpolate(output, size=target.shape[2:], 
                                  mode='bilinear', align_corners=False)
         
         # ===== SAFE LOSS COMPUTATION =====
-        loss = criterion(output, target)
+        loss = criterion(output, target) 
         
         # Check for NaN/Inf loss
         if not torch.isfinite(loss):
@@ -284,6 +494,7 @@ def train_epoch_segmentation(model, train_loader, optimizer, criterion, device, 
             continue
         
         optimizer.step()
+        # scheduler.step()
         
         # Calculate Dice coefficient for monitoring
         with torch.no_grad():
@@ -648,21 +859,22 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Horizontal Flip
             # ----------------------------------
-            if random.random() < 0.5:
+            RAN = 0.9
+            if random.random() < RAN:
                 image = torch.flip(image, [-1])
                 mask = torch.flip(mask, [-1])
 
             # ----------------------------------
             # Vertical Flip
             # ----------------------------------
-            if random.random() < 0.5:
+            if random.random() < RAN:
                 image = torch.flip(image, [-2])
                 mask = torch.flip(mask, [-2])
 
             # ----------------------------------
             # Rotation
             # ----------------------------------
-            if random.random() < 0.5:
+            if random.random() < RAN:
 
                 angle = random.uniform(-15, 15)
 
@@ -681,7 +893,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Affine
             # ----------------------------------
-            if random.random() < 0.5:
+            if random.random() < RAN:
 
                 angle = random.uniform(-10, 10)
 
@@ -713,7 +925,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Random Crop + Resize
             # ----------------------------------
-            if random.random() < 0.5:
+            if random.random() < RAN:
 
                 H, W = image.shape[1:]
 
@@ -756,18 +968,18 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Elastic
             # ----------------------------------
-            if random.random() < 0.3:
-                image, mask = self._elastic_transform(
-                    image,
-                    mask,
-                    alpha=150,
-                    sigma=10
-                )
+            # if random.random() < 0.4:
+            #     image, mask = self._elastic_transform(
+            #         image,
+            #         mask,
+            #         alpha=20,
+            #         sigma=8
+            #     )
 
             # ----------------------------------
             # Brightness
             # ----------------------------------
-            if random.random() < 0.5:
+            if random.random() < RAN:
 
                 image = TF.adjust_brightness(
                     image,
@@ -796,7 +1008,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
 
             # ----------------------------------
             # Gaussian Noise
-            # ----------------------------------
+            # # ----------------------------------
             if random.random() < 0.3:
 
                 noise = (
@@ -1068,7 +1280,7 @@ class BoundaryLoss(nn.Module):
     
 
 class CombinedLoss(nn.Module):
-    def __init__(self, dice_w=0.4, bce_w=0.3, boundary_w=0.3):
+    def __init__(self, dice_w=0.4, bce_w=0.3, boundary_w=0.35):
         super().__init__()
 
         self.dice = DiceLoss()
@@ -1168,20 +1380,72 @@ class L1MaskLoss(nn.Module):
         return F.l1_loss(probs, targets.float())
 
 class CombinedSegLoss(nn.Module):
-    def __init__(self, bce_w=0.7, focal_w=0.3, l1_w=0.1, alpha=0.25, gamma=2.0):
+    def __init__(
+        self,
+        dice_w=0.35,
+        bce_w=0.15,
+        focal_w=0.15,
+        smooth=1e-6,
+        boundary_w= 0.35
+    ):
         super().__init__()
+        self.dice_w = dice_w
         self.bce_w = bce_w
+        self.boundary_w = boundary_w
         self.focal_w = focal_w
-        self.l1_w = l1_w
+        self.smooth = smooth
         self.bce = nn.BCEWithLogitsLoss()
-        self.focal = FocalLossWithLogits(alpha=alpha, gamma=gamma)
-        self.l1 = L1MaskLoss()
+        self.focal = FocalLossWithLogits(alpha=0.25, gamma=2.0)
+    def boundary_loss(self, logits, targets):
+        """Extra weight on boundary pixels using Sobel"""
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+        
+        # Sobel kernels
+        kx = torch.tensor([[-1,0,1],[-2,0,2],[-1,0,1]], 
+                        dtype=torch.float32, device=logits.device)
+        kx = kx.view(1,1,3,3)
+        ky = kx.transpose(-1,-2)
+        
+        # Get boundary map from GT
+        if targets.dim() == 3:
+            targets_4d = targets.unsqueeze(1)
+        else:
+            targets_4d = targets
+        
+        gx = F.conv2d(targets_4d, kx, padding=1)
+        gy = F.conv2d(targets_4d, ky, padding=1)
+        boundary = (torch.sqrt(gx**2 + gy**2) > 0.1).float()
+        
+        # Dilate boundary mask slightly
+        boundary = F.max_pool2d(boundary, kernel_size=3, stride=1, padding=1)
+        
+        # Weighted BCE: boundary pixels count 3x
+        weight = 1.0 + 2.0 * boundary
+        bce_fn = nn.BCEWithLogitsLoss(reduction='none')
+        return (bce_fn(logits, targets.float()) * weight).mean()
+    
+    def dice_loss(self, logits, targets):
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+        
+        # Flatten spatial dims
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+        
+        intersection = (probs * targets).sum(dim=1)
+        dice = (2.0 * intersection + self.smooth) / (
+            probs.sum(dim=1) + targets.sum(dim=1) + self.smooth
+        )
+        return 1.0 - dice.mean()
 
     def forward(self, logits, targets):
-        bce = self.bce(logits, targets.float())
+        dice  = self.dice_loss(logits, targets)
+        bce   = self.bce(logits, targets.float())
         focal = self.focal(logits, targets)
-        l1 = self.l1(logits, targets)
-        return self.bce_w * bce + self.focal_w * focal + self.l1_w * l1
+        boundary = self.boundary_loss(logits, targets)
+        return (self.dice_w * dice + self.bce_w * bce + 
+                self.focal_w * focal + self.boundary_w * boundary)
     
 def tta_predict(model, image, device, threshold=0.40):
     """
@@ -1209,6 +1473,120 @@ def tta_predict(model, image, device, threshold=0.40):
         
         return (prob_avg > threshold).float()
 
+# class BoundaryAwareLoss(nn.Module):
+#     """
+#     Combines: Dice + BCE + Boundary term
+#     Boundary term forces attention to edge pixels where you're stuck
+#     """
+#     def __init__(self, alpha=0.4, beta=0.3, gamma=0.3):
+#         super().__init__()
+#         self.alpha = alpha  # Dice weight
+#         self.beta  = beta   # BCE weight
+#         self.gamma = gamma  # Boundary weight
+
+#     def dice_loss(self, pred, target, smooth=1e-6):
+#         pred   = torch.sigmoid(pred)
+#         flat_p = pred.flatten(1)
+#         flat_t = target.flatten(1)
+#         intersection = (flat_p * flat_t).sum(1)
+#         return 1 - (2 * intersection + smooth) / (flat_p.sum(1) + flat_t.sum(1) + smooth)
+
+#     def boundary_loss(self, pred, target):
+#         """Sobel-based boundary extraction, penalizes boundary errors more."""
+#         pred = torch.sigmoid(pred)
+
+#         sobel_x = torch.tensor([[-1,0,1],[-2,0,2],[-1,0,1]],
+#                                  dtype=pred.dtype, device=pred.device).view(1,1,3,3)
+#         sobel_y = sobel_x.transpose(-1,-2)
+
+#         def get_boundary(t):
+#             if t.dim() == 3:
+#                 t = t.unsqueeze(1)
+#             t   = t.float()
+#             ex  = F.conv2d(t, sobel_x, padding=1)
+#             ey  = F.conv2d(t, sobel_y, padding=1)
+#             mag = (ex**2 + ey**2).sqrt()
+#             return (mag > 0.1).float()
+
+#         pred_b   = get_boundary(pred)
+#         target_b = get_boundary(target)
+
+#         # Weighted BCE on boundary regions only
+#         weight = target_b * 3.0 + 1.0   # boundary pixels weighted 4x
+#         loss   = F.binary_cross_entropy(pred_b, target_b,
+#                                          weight=weight, reduction='mean')
+#         return loss
+
+#     def forward(self, pred, target):
+#         if target.dim() == 3:
+#             target = target.unsqueeze(1)
+
+#         d = self.dice_loss(pred, target).mean()
+#         b = F.binary_cross_entropy_with_logits(pred, target.float())
+#         bd = self.boundary_loss(pred, target)
+#         return self.alpha*d + self.beta*b + self.gamma*bd
+    
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+def compute_boundary_weights(mask, kappa=10.0):
+    sobel_x = torch.tensor([[-1,0,1],[-2,0,2],[-1,0,1]],
+                             dtype=torch.float32, device=mask.device).view(1,1,3,3)
+    sobel_y = sobel_x.transpose(2, 3)
+
+    gx = F.conv2d(mask, sobel_x, padding=1)
+    gy = F.conv2d(mask, sobel_y, padding=1)
+    grad = (gx**2 + gy**2).sqrt()
+
+    B = grad.shape[0]
+    g_max = grad.view(B,-1).max(dim=1)[0].view(B,1,1,1).clamp(min=1e-6)
+    alpha = grad / g_max
+
+    return 1.0 + kappa * alpha   # w_ij
+
+
+def weighted_bce(pred, gt, weights, eps=1e-6):
+    pred = pred.sigmoid()
+    loss = -(gt * torch.log(pred + eps) + (1 - gt) * torch.log(1 - pred + eps))
+    return (weights * loss).sum() / (weights.sum() + eps)
+
+
+def weighted_iou(pred, gt, weights, eps=1e-6):
+    pred = pred.sigmoid()
+    inter = (weights * gt * pred).sum(dim=(1,2,3))
+    union = (weights * (gt + pred - gt * pred)).sum(dim=(1,2,3))
+    return (1 - (inter + eps) / (union + eps)).mean()
+
+
+class BoundaryAwareLoss(nn.Module):
+    def __init__(self, kappa=10.0):
+        super().__init__()
+        self.kappa = kappa
+
+    def forward(self, pred, gt):
+        """
+        pred : logits tensor (B,1,H,W)  OR  list of logits for deep supervision
+        gt   : binary mask  (B,1,H,W)
+        """
+        gt = gt.float()
+
+        if isinstance(pred, (list, tuple)):
+            n = len(pred)
+            stage_weights = [2**i for i in range(n)]   # higher-res → bigger weight
+            total_w = sum(stage_weights)
+            total_loss = 0.0
+            for p, w in zip(pred, stage_weights):
+                gt_r = F.interpolate(gt, size=p.shape[2:], mode='nearest')
+                bw   = compute_boundary_weights(gt_r, self.kappa)
+                total_loss += (w / total_w) * (weighted_bce(p, gt_r, bw) +
+                                               weighted_iou(p, gt_r, bw))
+            return total_loss
+
+        bw = compute_boundary_weights(gt, self.kappa)
+        return weighted_bce(pred, gt, bw) + weighted_iou(pred, gt, bw)
+
 # Main execution
 if __name__ == "__main__":
     # Create model
@@ -1228,24 +1606,25 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
+    path_weight = './logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/fft/91.79/start-3/checkpoints_KvasirSEG-ConvNeXt/2136-test0.91.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/start3-85/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/fft/91.79/start-3/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
     # parser.add_argument('--checkpoint_path', type=str, default='', help='Directory for logging')
-    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/start2-85/checkpoints_KvasirSEG-ConvNeXt/1361-test0.85.pth', help='Directory for logging')
+    parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
-    parser.add_argument('--lr', type=float, default=3e-4, help='Learning rate')
+    parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
-    parser.add_argument('--escape_lr', type=float, default=1e-4, help='Learning rate for escape')
-    parser.add_argument('--batch_size', type=int, default=8, help='Batch size')
+    parser.add_argument('--escape_lr', type=float, default=5e-5, help='Learning rate for escape')
+    parser.add_argument('--batch_size', type=int, default=10, help='Batch size')
     parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
     parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
     parser.add_argument('--warmup_epochs', type=int, default=4, help='Epochs. 0 -skip training')
-    parser.add_argument('--testing', type=strtobool, default=False, help='Execute testing.')
+    parser.add_argument('--testing', type=strtobool, default=True, help='Execute testing.')
     parser.add_argument('--tta_check', type=strtobool, default=False, help='Execute testing.')
-    parser.add_argument('--training', type=strtobool, default=True, help='Execute training.')
+    parser.add_argument('--training', type=strtobool, default=False, help='Execute training.')
     parser.add_argument('--load', type=str, default=False, help='Load before training.')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
@@ -1330,8 +1709,8 @@ if __name__ == "__main__":
                         # dims=(64, 128, 256, 512),
                         # depths=(1, 2, 2, 1),  # Very shallow
 
-                        dropout=0.15,  # INCREASE from 0.1 to 0.3
-                        drop_path_rate=0.15,  # INCREASE from 0.2 to 0.3
+                        dropout=0.1,  # INCREASE from 0.1 to 0.3
+                        drop_path_rate=0.1,  # INCREASE from 0.2 to 0.3
 
     #                         dropout=0.05,        # REDUCE from 0.1
     # drop_path_rate=0.1,  # REDUCE from 0.3 (this is very aggressive!)
@@ -1345,12 +1724,7 @@ if __name__ == "__main__":
 
     model = model.to(device)
     # print(model)
-    from torchinfo import summary
-    summary(
-            model,
-            input_size=(1, 3) + args.input_size,  # (batch, channels, H, W)
-            device="cuda"
-        )
+
     
 
     
@@ -1363,10 +1737,18 @@ if __name__ == "__main__":
         #         betas=(0.9, 0.999)
         #     )
 
-        optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-5)
- 
+        # optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-5)
+        
+        
+
+
+
+
+
+
+
         # criterion = nn.BCEWithLogitsLoss()
-        # criterion = DiceBCELoss(weight_bce=0.3, weight_dice=0.7)
+        # criterion = DiceBCELoss(weight_bce=0.1, weight_dice=0.9)
         # criterion = FocalLoss(alpha=0.75, gamma=2.0)
         # criterion = CombinedTverskyFocalLoss(tversky_weight=0.7, focal_weight=0.3)
         # criterion = HybridLoss(boundary_weight=0.3, tversky_weight=0.4, focal_weight=0.3)
@@ -1377,12 +1759,13 @@ if __name__ == "__main__":
         #         boundary_w=0.3
         #     )
 
-#         criterion = FocalTverskyLoss(
-#     alpha=0.3,   # less FN penalty
-#     beta=0.7,    # more FP penalty
-#     gamma=0.75   # moderate focusing
-# )
-        criterion = CombinedSegLoss(bce_w=0.7, focal_w=0.3, l1_w=0.1)
+        # criterion = FocalTverskyLoss(
+        #     alpha=0.3,   # less FN penalty
+        #     beta=0.7,    # more FP penalty
+        #     gamma=0.75   # moderate focusing
+        # )
+        # criterion = BoundaryAwareLoss()
+        criterion = BoundaryAwareLoss(kappa=10.0)
         
         # criterion = StandardDiceBCELoss(dice_weight=0.5, bce_weight=0.5)
     else:
@@ -1412,33 +1795,25 @@ if __name__ == "__main__":
 
     # scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
     #     optimizer,
-    #     T_0=30,      # Restart every 30 epochs
-    #     T_mult=2,    # Double period each restart
-    #     eta_min=1e-5 # Minimum LR
+    #     T_0=20,      # Restart every 30 epochs
+    #     T_mult=1,    # Double period each restart
+    #     eta_min=1e-6 # Minimum LR
     # )
-    # scheduler = ReduceLROnPlateau(
+
+    total_epochs_remaining = 200  # train for 200 more epochs then evaluate
+
+
+
+
+    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
     #     optimizer,
-    #     mode='max',
-    #     factor=0.5,
-    #     patience=2,
-    #     min_lr=1e-6
-    # )
-
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer,
-        T_max=80,
-        eta_min=1e-6
-    )  
+    #     T_max=80,
+    #     eta_min=1e-6
+    # )  
 
 
 
-    warmup_scheduler = GradualWarmupScheduler(
-            optimizer,
-            multiplier=1,
-            total_epoch=5,
-            after_scheduler=scheduler
-        )
-        
+        # C:\Users\jafari.h\Desktop\ai_project\ttfs\logs\ConvNeXt-attention-Gelu-upsample-bfim\input_size-352\depth64-dim3\agv\start-0-91.43\checkpoints_KvasirSEG-ConvNeXt\1708-test0.83.pth
       # Load checkpoint if exists
     # In your checkpoint loading section, modify to:
     if os.path.exists(args.checkpoint_path):
@@ -1458,34 +1833,180 @@ if __name__ == "__main__":
         if not os.path.exists(checkpoint_file):
             logging.error(f"Checkpoint file not found: {checkpoint_file}")
             sys.exit(1)
-        if checkpoint_file:
+       
+      
+
+    
+    for param in model.parameters():
+        param.requires_grad = True
+
+    # for module in [model.bsei3, model.bsei2, model.bsei1]:
+    #     for param in module.parameters():
+    #         param.requires_grad = True
+    # for module in [model.reduce3, model.reduce2, model.reduce1]:
+    #     for param in module.parameters():
+    #         param.requires_grad = True
+    # for module in [model.att1, model.att2, model.att3]:
+    #     for param in module.parameters():
+    #         param.requires_grad = True
+
+   
+
+
+    # for param in model.final_up.parameters():
+    #     param.requires_grad = True
+    # for param in model.seg_head.parameters():
+    #     param.requires_grad = True
+    # for param in model.bottleneck.parameters():
+    #     param.requires_grad = True
+
+    # for param in model.parameters():
+    #     param.requires_grad = True
+
+    # 4. Verify — should show exactly the ASG params only
+    # print("Trainable params:")
+    # for name, p in model.named_parameters():
+    #     if p.requires_grad:
+    #         print(f"  {name}: {p.numel()}")
+
+
+    # Unfreeze everything
+    # for param in model.parameters():
+    #     param.requires_grad = True
+
+    
+# 3. Updated Optimizer
+    # optimizer = torch.optim.AdamW([
+    #     {'params': list(model.stem.parameters()) + 
+    #             list(model.enc1.parameters()) + 
+    #             list(model.enc2.parameters()), 'lr': 3e-6},
+                
+    #     {'params': list(model.enc3.parameters()) + 
+    #             list(model.enc4.parameters()) + 
+    #             list(model.bottleneck.parameters()), 'lr': 1e-5},
+                
+    #     {'params': list(model.up3.parameters()) + list(model.dec3.parameters()) +
+    #             list(model.up2.parameters()) + list(model.dec2.parameters()) +
+    #             list(model.up1.parameters()) + list(model.dec1.parameters()), 'lr': 5e-5},
+                
+    #     {'params': list(model.bsei1.parameters()) + 
+    #             list(model.bsei2.parameters()) + 
+    #             list(model.bsei3.parameters()) +
+    #             list(model.att1.parameters()) +   # <-- ADDED
+    #             list(model.att2.parameters()) +   # <-- ADDED
+    #             list(model.att3.parameters()) +   # <-- ADDED
+    #             list(model.reduce1.parameters()) +
+    #             list(model.reduce2.parameters()) +
+    #             list(model.reduce3.parameters()) +
+    #             list(model.final_up.parameters()) +
+    #             list(model.seg_head.parameters()) 
+       
+    #    ,
+    #       'lr': 1e-4},
+    # ], weight_decay=1e-5)
+    
+
+    optimizer = optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-5)
+#     scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+#     optimizer,
+#     T_0=30,      # restart every 30 epochs
+#     T_mult=2,    # each restart doubles the period
+#     eta_min=1e-7
+# )
+
+    # 5. Optimizer — only ASG params
+    # optimizer = torch.optim.AdamW(
+    #     filter(lambda p: p.requires_grad, model.parameters()),
+    #     lr=3e-4,
+    #     weight_decay=1e-4
+    # )
+
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer,
+        T_max=80,
+        eta_min=1e-6
+    )  
+
+    # scheduler = ReduceLROnPlateau(
+    #     optimizer,
+    #     mode='max',
+    #     factor=0.9,
+    #     patience=3,
+    #     min_lr=1e-6
+    # )
+    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+    #     optimizer,
+    #     T_max=80,
+    #     eta_min=1e-6
+    # )  
+    if checkpoint_file:
             checkpoint = torch.load(checkpoint_file, map_location=device)
             
             # Load model and optimizer states
-            model.load_state_dict(checkpoint['model_state_dict'], strict=False)
-            # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+
+            # remove old fusion weights
+            # keys_to_remove = []
+
+            # state_dict = checkpoint["model_state_dict"]
+            # for k in state_dict.keys():
+
+            #     if "bsei" in k:
+            #         keys_to_remove.append(k)
+
+
+            # for k in keys_to_remove:
+            #     del state_dict[k]
+
+
+            # msg = model.load_state_dict(
+            #     state_dict,
+            #     strict=False
+            # )
+            model.load_state_dict(checkpoint['model_state_dict'])
+            
+
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             
             # DON'T load scheduler state - it was a different scheduler!
             # scheduler.load_state_dict(checkpoint['scheduler_state_dict'])  # REMOVE THIS
-            
+            # with torch.no_grad():
+            #     model.bsei1.alpha.fill_(0.5)
+            #     model.bsei2.alpha.fill_(0.5)
+            #     model.bsei3.alpha.fill_(0.5)
+            #         logging.info(f"Reset {name} to 0.1")
+
+            logging.info(f"Resumed from epoch {checkpoint['epoch']}, best_acc={best_acc:.4f}")
+
+
             start_epoch = checkpoint['epoch'] + 1
             best_acc = checkpoint['best_acc']
             
-            # Mark warmup as finished since we're resuming
-            warmup_scheduler.finished = True
+        
             
             logging.info(f"Resumed from epoch {checkpoint['epoch']}")
             logging.info(f"Previous best accuracy: {best_acc:.4f}")
-            logging.info(f"Starting with fresh scheduler at LR: {optimizer.param_groups[0]['lr']:.6f}")
+     
             # for param_group in optimizer.param_groups:
             #     param_group['lr'] = args.escape_lr
-        logging.info(f"Restored LR: {optimizer.param_groups[0]['lr']}")
-    if not args.checkpoint_path or args.checkpoint_path == '':
-        checkpoint_dir = f"{args.logging_dir}checkpoints_{args.model_name}"
-        os.makedirs(checkpoint_dir, exist_ok=True)
-        args.checkpoint_path = os.path.join(checkpoint_dir, 'latest_checkpoint.pth')
 
 
+#     scheduler = torch.optim.lr_scheduler.OneCycleLR(
+#     optimizer,
+#     max_lr=1e-4,
+#     steps_per_epoch=len(train_loader),
+#     epochs=200,
+#     pct_start=0.1,
+#     anneal_strategy='cos',
+#     div_factor=10,
+#     final_div_factor=100
+# )
+    from torchinfo import summary
+    summary(
+            model,
+            input_size=(1, 3) + args.input_size,  # (batch, channels, H, W)
+            device="cuda"
+        )
+    
     # # Training
     if  args.testing:
         best_threshold, best_dice, best_iou = find_best_threshold(
@@ -1525,11 +2046,11 @@ if __name__ == "__main__":
         # Training loop
         best_dice = 0
 
-        FREEZE_EPOCHS = start_epoch + 4
+        FREEZE_EPOCHS = start_epoch + 200
         if args.training:
-            for name, param in model.named_parameters():
-                if 'bfim'  in name:
-                    param.requires_grad = False
+            # for name, param in model.named_parameters():
+            #     if 'bfim'  in name:
+            #         param.requires_grad = False
             logging.info("Backbone frozen for first 5 epochs")
 
             for epoch in range(start_epoch, args.epochs):
@@ -1538,26 +2059,39 @@ if __name__ == "__main__":
                 #         param.requires_grad = True
                 #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
                 if 'Kvasir' in args.data_name:
-                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,threshold=best_threshold)
+                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler,threshold=best_threshold)
                     test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device, threshold=best_threshold)
-                   
+                    scheduler.step()
 
                     logging.info(f"Epoch {epoch+1}/{args.epochs}: "
                                 f"Train Loss: {train_loss:.4f}, "
                                 f"Test Loss: {test_loss:.4f}, "
                                 f"Test Dice: {test_dice:.4f}, "
                                 f"Test IoU: {test_iou:.4f}")
-                    if args.tta_check:
-                        tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
-                        print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
-                        print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")
+                    
+                    # print(
+                    #     f"bsei1 | alpha: {model.bsei1.alpha.item():.4f} -bsei2 | alpha: {model.bsei2.alpha.item():.4f} - bsei3 | alpha: {model.bsei3.alpha.item():.4f}"
+                        
+                    # )
+
+                    # print(
+                    #     f"bsei2 | beta: {model.bsei2.beta.item():.4f} "
+                    #     f"| SE mean: {model.bsei2.debug_se.mean().item():.4f}"
+                    # )
+
+                    # print(
+                    #     f"bsei3 | beta: {model.bsei3.beta.item():.4f} "
+                    #     f"| SE mean: {model.bsei3.debug_se.mean().item():.4f}"
+                    # )                 # print(f'asg1.alpha: {model.asg1.alpha.item()}- asg2.alpha: {model.asg2.alpha.item()} - asg3.alpha: {model.asg3.alpha.item()}')
+
+                   
                     # Flush immediately for Kvasir
                     for handler in logging.root.handlers:
                         handler.flush()
                     
                     test_acc  = test_iou
 
-                scheduler.step()
+           
    
                 for handler in logging.root.handlers:
                     handler.flush()
@@ -1576,6 +2110,10 @@ if __name__ == "__main__":
                     torch.save(checkpoint_dict, 
                             f"{args.logging_dir}checkpoints_{args.model_name}/{epoch}-test{test_acc:.2f}.pth")
                     logging.info(f"New best model saved with accuracy: {best_acc:.2f}%")
+                    if args.tta_check:
+                        tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
+                        print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
+                        print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")
                     # Flush after saving
                     for handler in logging.root.handlers:
                         handler.flush()

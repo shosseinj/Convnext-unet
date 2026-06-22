@@ -3,7 +3,7 @@
 
 .venv_ttfs
 __pycache__
-
+*.png
 *.pth
 *.rar
 *.zip
