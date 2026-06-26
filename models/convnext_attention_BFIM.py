@@ -186,39 +186,39 @@ class ConvNeXtStage(nn.Module):
     def forward(self, x):
         return self.blocks(x)
 
-class AttentionGate(nn.Module):
-    def __init__(self, F_g, F_l, F_int):
-        super().__init__()
-        self.W_g = nn.Sequential(nn.Conv2d(F_g, F_int, 1, bias=True), nn.BatchNorm2d(F_int))
-        self.W_x = nn.Sequential(nn.Conv2d(F_l, F_int, 1, bias=True), nn.BatchNorm2d(F_int))
-        self.psi = nn.Sequential(nn.Conv2d(F_int, 1, 1, bias=True), nn.BatchNorm2d(1), nn.Sigmoid())
-        self.relu = nn.ReLU(inplace=True)
+# class AttentionGate(nn.Module):
+#     def __init__(self, F_g, F_l, F_int):
+#         super().__init__()
+#         self.W_g = nn.Sequential(nn.Conv2d(F_g, F_int, 1, bias=True), nn.BatchNorm2d(F_int))
+#         self.W_x = nn.Sequential(nn.Conv2d(F_l, F_int, 1, bias=True), nn.BatchNorm2d(F_int))
+#         self.psi = nn.Sequential(nn.Conv2d(F_int, 1, 1, bias=True), nn.BatchNorm2d(1), nn.Sigmoid())
+#         self.relu = nn.ReLU(inplace=True)
 
-    def forward(self, g, x):
-        g1 = self.W_g(g)
-        x1 = self.W_x(x)
-        psi = self.psi(self.relu(g1 + x1))
-        return x * psi
-class HCABlock(nn.Module):
-    """Lightweight add-on to your existing BSEI"""
-    def __init__(self, channels, pool_size=4):
-        super().__init__()
-        # Dual-branch local (Innovation 1 core)
-        self.branch_1x1 = nn.Conv2d(channels, channels, 1, bias=False)
-        self.branch_3x3 = nn.Sequential(
-            nn.Conv2d(channels, channels, 3, padding=1,
-                      groups=channels, bias=False),
-            nn.BatchNorm2d(channels),
-            nn.GELU()
-        )
-        self.norm = nn.BatchNorm2d(channels)
-        self.alpha = nn.Parameter(torch.zeros(1))
+#     def forward(self, g, x):
+#         g1 = self.W_g(g)
+#         x1 = self.W_x(x)
+#         psi = self.psi(self.relu(g1 + x1))
+#         return x * psi
+# class HCABlock(nn.Module):
+#     """Lightweight add-on to your existing BSEI"""
+#     def __init__(self, channels, pool_size=4):
+#         super().__init__()
+#         # Dual-branch local (Innovation 1 core)
+#         self.branch_1x1 = nn.Conv2d(channels, channels, 1, bias=False)
+#         self.branch_3x3 = nn.Sequential(
+#             nn.Conv2d(channels, channels, 3, padding=1,
+#                       groups=channels, bias=False),
+#             nn.BatchNorm2d(channels),
+#             nn.GELU()
+#         )
+#         self.norm = nn.BatchNorm2d(channels)
+#         self.alpha = nn.Parameter(torch.zeros(1))
 
-    def forward(self, x):
-        # Local dual-branch fusion
-        f_loc = self.branch_1x1(x) + self.branch_3x3(x)
-        f_loc = self.norm(f_loc)
-        return x + self.alpha * f_loc
+#     def forward(self, x):
+#         # Local dual-branch fusion
+#         f_loc = self.branch_1x1(x) + self.branch_3x3(x)
+#         f_loc = self.norm(f_loc)
+#         return x + self.alpha * f_loc
     
 
 class ConvNeXtTinyUNetAttention(nn.Module):
@@ -294,9 +294,9 @@ class ConvNeXtTinyUNetAttention(nn.Module):
         self.bsei2 = BSEI(dims[1])
         self.bsei1 = BSEI(dims[0])  # H/2 is large, keep pools small
 
-        self.hca1 = HCABlock(dims[0])
-        self.hca2 = HCABlock(dims[1])
-        self.hca3 = HCABlock(dims[2])
+        # self.hca1 = HCABlock(dims[0])
+        # self.hca2 = HCABlock(dims[1])
+        # self.hca3 = HCABlock(dims[2])
 
         # ====================================================
         # Decoder (CHANGED: Upsample + Conv instead of ConvTranspose2d)
@@ -359,9 +359,9 @@ class ConvNeXtTinyUNetAttention(nn.Module):
             nn.Dropout2d( 0.05),
             nn.Conv2d(dims[0]//2, num_classes, kernel_size=1),
         )
-        self.att3 = AttentionGate(dims[2], dims[2], dims[2]//2)
-        self.att2 = AttentionGate(dims[1], dims[1], dims[1]//2)
-        self.att1 = AttentionGate(dims[0], dims[0], dims[0]//2)
+        # self.att3 = AttentionGate(dims[2], dims[2], dims[2]//2)
+        # self.att2 = AttentionGate(dims[1], dims[1], dims[1]//2)
+        # self.att1 = AttentionGate(dims[0], dims[0], dims[0]//2)
 
 
         self._init_weights()

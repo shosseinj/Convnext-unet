@@ -1,0 +1,7 @@
+2026-06-25 11:51:15 - INFO - Logging initialized to ./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/scratch/start95/KvasirSEG-ConvNeXt_log.txt
+2026-06-25 11:51:25 - INFO - Resumed from epoch 1439, best_acc=0.0000
+2026-06-25 11:51:25 - INFO - Resumed from epoch 1439
+2026-06-25 11:51:25 - INFO - Previous best accuracy: 0.8852
+2026-06-25 11:56:06 - INFO - First EvaluationTest Loss: 0.8328, Test Dice: 0.7674, Test IoU: 0.6554
+2026-06-25 11:56:16 - INFO - #### Training ####
+2026-06-25 11:56:16 - INFO - initial LR: 0.000100

@@ -74,11 +74,12 @@ class Dataset:
             self.convert_ttfs()
 
 
-
     def get_features_vectors(self):
 
         """
-        Load Kvasir-SEG + CVC-ClinicDB
+        Train: 90% of Kvasir-SEG + 90% of CVC-ClinicDB (combined)
+        Val: 10% of Kvasir-SEG (separate) + 10% of CVC-ClinicDB (separate)
+        Test: CVC-300, ETIS-LARIBPOLYPDB, CVC-ColonDB (each separately)
         """
 
         self.num_of_classes = 2
@@ -89,310 +90,521 @@ class Dataset:
             self.input_size[1]
         )
 
-
-        images = []
-        masks = []
-
-
-        data_pack = 'CVC-ColonDB'
-        datasets = []
-
-        if "Kvasir" in data_pack:
-            datasets.append(
-                (
-                    os.path.join(self.data_path, "Kvasir-SEG", "images"),
-                    os.path.join(self.data_path, "Kvasir-SEG", "masks")
-                )
-            )
-
-        if "CVC-ClinicDB" in data_pack:
-            datasets.append(
-                (
-                    os.path.join(self.data_path, "CVC-ClinicDB", "images"),
-                    os.path.join(self.data_path, "CVC-ClinicDB", "masks")
-                )
-            )
-        if "CVC-300" in data_pack:
-            datasets.append(
-                (
-                    os.path.join(self.data_path, "CVC-300", "images"),
-                    os.path.join(self.data_path, "CVC-300", "masks")
-                )
-            )
-        if "ETIS-LARIBPOLYPDB" in data_pack:
-            datasets.append(
-                (
-                    os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "images"),
-                    os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "masks")
-                )
-            )
-        if "CVC-ColonDB" in data_pack:
-            datasets.append(
-                (
-                    os.path.join(self.data_path, "CVC-ColonDB", "images"),
-                    os.path.join(self.data_path, "CVC-ColonDB", "masks")
-                )
-            )
-
+        extensions = ["*.png", "*.jpg", "*.jpeg", "*.tif", "*.tiff"]
+        
+        # ==========================================
+        # 1. Load Kvasir-SEG
+        # ==========================================
+        print("\n" + "="*60)
+        print("Loading Kvasir-SEG...")
+        print("="*60)
+        
+        kvasir_images = []
+        kvasir_masks = []
+        
+        kvasir_image_dir = os.path.join(self.data_path, "Kvasir-SEG", "images")
+        kvasir_mask_dir = os.path.join(self.data_path, "Kvasir-SEG", "masks")
+        
+        image_files = []
+        for ext in extensions:
+            image_files.extend(glob.glob(os.path.join(kvasir_image_dir, ext)))
+        image_files = sorted(image_files)
+        
+        for img_path in image_files:
+            filename = os.path.basename(img_path)
+            mask_path = os.path.join(kvasir_mask_dir, filename)
             
+            if not os.path.exists(mask_path):
+                continue
+            
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            
+            if img is None or mask is None:
+                continue
+            
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+            mask = cv2.resize(mask, self.input_size, interpolation=cv2.INTER_NEAREST)
+            
+            img = (img.astype(np.float32) / 255.0)
+            img = np.transpose(img, (2, 0, 1))
+            mask = (mask > 127).astype(np.float32)
+            
+            kvasir_images.append(img)
+            kvasir_masks.append(mask)
+        
+        print(f"Loaded Kvasir-SEG: {len(kvasir_images)} images")
+        
+        # ==========================================
+        # 2. Load CVC-ClinicDB
+        # ==========================================
+        print("\n" + "="*60)
+        print("Loading CVC-ClinicDB...")
+        print("="*60)
+        
+        clinicdb_images = []
+        clinicdb_masks = []
+        
+        clinicdb_image_dir = os.path.join(self.data_path, "CVC-ClinicDB", "images")
+        clinicdb_mask_dir = os.path.join(self.data_path, "CVC-ClinicDB", "masks")
+        
+        image_files = []
+        for ext in extensions:
+            image_files.extend(glob.glob(os.path.join(clinicdb_image_dir, ext)))
+        image_files = sorted(image_files)
+        
+        for img_path in image_files:
+            filename = os.path.basename(img_path)
+            mask_path = os.path.join(clinicdb_mask_dir, filename)
+            
+            if not os.path.exists(mask_path):
+                continue
+            
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            
+            if img is None or mask is None:
+                continue
+            
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+            mask = cv2.resize(mask, self.input_size, interpolation=cv2.INTER_NEAREST)
+            
+            img = (img.astype(np.float32) / 255.0)
+            img = np.transpose(img, (2, 0, 1))
+            mask = (mask > 127).astype(np.float32)
+            
+            clinicdb_images.append(img)
+            clinicdb_masks.append(mask)
+        
+        print(f"Loaded CVC-ClinicDB: {len(clinicdb_images)} images")
+        
+        # ==========================================
+        # 3. Split datasets
+        # ==========================================
+        from sklearn.model_selection import train_test_split
+        
+        # Kvasir split (90% train, 10% val)
+        kvasir_x_train, kvasir_x_val, kvasir_y_train, kvasir_y_val = train_test_split(
+            np.array(kvasir_images, dtype=np.float32),
+            np.array(kvasir_masks, dtype=np.float32),
+            test_size=0.1,
+            random_state=42,
+            shuffle=True
+        )
+        
+        # ClinicDB split (90% train, 10% val)
+        clinicdb_x_train, clinicdb_x_val, clinicdb_y_train, clinicdb_y_val = train_test_split(
+            np.array(clinicdb_images, dtype=np.float32),
+            np.array(clinicdb_masks, dtype=np.float32),
+            test_size=0.1,
+            random_state=42,
+            shuffle=True
+        )
+        
+        # Combine training data
+        self.x_train = np.concatenate([kvasir_x_train, clinicdb_x_train], axis=0)
+        self.y_train = np.concatenate([kvasir_y_train, clinicdb_y_train], axis=0)
+        
+        # Shuffle combined training data
+        indices = np.random.permutation(len(self.x_train))
+        self.x_train = self.x_train[indices].astype(np.float32)
+        self.y_train = self.y_train[indices].astype(np.float32)
+        
 
+        # eveluate_dataset = 'clinicdb'
+        # eveluate_dataset = 'CVC-300'
+        # eveluate_dataset = 'ETIS-LARIBPOLYPDB'
+        eveluate_dataset = 'CVC-ColonDB'
+        # eveluate_dataset = 'kvasir'
+ 
+        if eveluate_dataset== 'kvasir':
+            self.x_test = kvasir_x_val.astype(np.float32)
+            self.y_test = kvasir_y_val.astype(np.float32)
 
-        extensions = [
-            "*.png",
-            "*.jpg",
-            "*.jpeg",
-            "*.tif",
-            "*.tiff"
-        ]
+        elif eveluate_dataset== 'clinicdb':
+            self.x_test = clinicdb_x_val.astype(np.float32)
+            self.y_test = clinicdb_y_val.astype(np.float32)
 
+        else:
 
-
-        for image_dir, mask_dir in datasets:
-
+            test_images = []
+            test_masks = []
+            
+            test_image_dir = os.path.join(self.data_path, eveluate_dataset, "images")
+            test_mask_dir = os.path.join(self.data_path, eveluate_dataset, "masks")
 
             image_files = []
-
-
             for ext in extensions:
-
-                image_files.extend(
-                    glob.glob(
-                        os.path.join(
-                            image_dir,
-                            ext
-                        )
-                    )
-                )
-
-
-
+                image_files.extend(glob.glob(os.path.join(test_image_dir, ext)))
             image_files = sorted(image_files)
-
-
-
+            
             for img_path in image_files:
-
-
                 filename = os.path.basename(img_path)
-
-
-
-                mask_path = os.path.join(
-                    mask_dir,
-                    filename
-                )
-
-
-
+                mask_path = os.path.join(test_mask_dir, filename)
+                
                 if not os.path.exists(mask_path):
-
-                    print(
-                        "Mask missing:",
-                        img_path
-                    )
-
                     continue
-
-
-
-                # ======================
-                # Load image
-                # ======================
-
-                img = cv2.imread(
-                    img_path,
-                    cv2.IMREAD_COLOR
-                )
-
-
-                if img is None:
-
-                    print(
-                        "Bad image:",
-                        img_path
-                    )
-
+                
+                img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+                mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+                
+                if img is None or mask is None:
                     continue
+                
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+                mask = cv2.resize(mask, self.input_size, interpolation=cv2.INTER_NEAREST)
+                
+                img = (img.astype(np.float32) / 255.0)
+                img = np.transpose(img, (2, 0, 1))
+                mask = (mask > 127).astype(np.float32)
+                
+                test_images.append(img)
+                test_masks.append(mask)
+  
+            self.x_test = np.array(test_images, dtype=np.float32)
+            self.y_test =  np.array(test_masks, dtype=np.float32)
+
+
+                
+                # ==========================================
+                # 4. Load TEST datasets SEPARATELY
+                # ==========================================
+
+
+
+
+
+                # def get_features_vectors(self):
 
+                #     """
+                #     Load Kvasir-SEG + CVC-ClinicDB
+                #     """
 
+                #     self.num_of_classes = 2
 
-                img = cv2.cvtColor(
-                    img,
-                    cv2.COLOR_BGR2RGB
-                )
+                #     self.input_shape = (
+                #         3,
+                #         self.input_size[0],
+                #         self.input_size[1]
+                #     )
 
 
+                #     images = []
+                #     masks = []
 
-                # ======================
-                # Load mask
-                # ======================
 
-                mask = cv2.imread(
-                    mask_path,
-                    cv2.IMREAD_GRAYSCALE
-                )
+                #     data_pack = [ "CVC-300"]
+                #     # data_pack = [ "Kvasir"]
+                #     # data_pack = [ "CVC-ClinicDB"]
+                #     # data_pack = [ "CVC-ColonDB"]
+                #     # data_pack = [ ""]
+                #     # data_pack = [ ""]
+                #     # data_pack = [ "ETIS-LARIBPOLYPDB"]
+                #     # data_pack = [ "CVC-ClinicDB",'Kvasir']
+                #     datasets = []
 
+                #     if "Kvasir" in data_pack:
+                #         datasets.append(
+                #             (
+                #                 os.path.join(self.data_path, "Kvasir-SEG", "images"),
+                #                 os.path.join(self.data_path, "Kvasir-SEG", "masks")
+                #             )
+                #         )
 
-                if mask is None:
+                #     if "CVC-ClinicDB" in data_pack:
+                #         datasets.append(
+                #             (
+                #                 os.path.join(self.data_path, "CVC-ClinicDB", "images"),
+                #                 os.path.join(self.data_path, "CVC-ClinicDB", "masks")
+                #             )
+                #         )
+                #     if "CVC-300" in data_pack:
+                #         datasets.append(
+                #             (
+                #                 os.path.join(self.data_path, "CVC-300", "images"),
+                #                 os.path.join(self.data_path, "CVC-300", "masks")
+                #             )
+                #         )
+                #     if "ETIS-LARIBPOLYPDB" in data_pack:
+                #         datasets.append(
+                #             (
+                #                 os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "images"),
+                #                 os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "masks")
+                #             )
+                #         )
+                #     if "CVC-ColonDB" in data_pack:
+                #         datasets.append(
+                #             (
+                #                 os.path.join(self.data_path, "CVC-ColonDB", "images"),
+                #                 os.path.join(self.data_path, "CVC-ColonDB", "masks")
+                #             )
+                #         )
 
-                    print(
-                        "Bad mask:",
-                        mask_path
-                    )
+                        
 
-                    continue
 
+                #     extensions = [
+                #         "*.png",
+                #         "*.jpg",
+                #         "*.jpeg",
+                #         "*.tif",
+                #         "*.tiff"
+                #     ]
 
 
 
-                # ======================
-                # Resize
-                # ======================
+                #     for image_dir, mask_dir in datasets:
 
-                img = cv2.resize(
-                    img,
-                    self.input_size,
-                    interpolation=cv2.INTER_LINEAR
-                )
 
+                #         image_files = []
 
-                # IMPORTANT
-                # nearest for segmentation masks
 
-                mask = cv2.resize(
-                    mask,
-                    self.input_size,
-                    interpolation=cv2.INTER_NEAREST
-                )
+                #         for ext in extensions:
 
+                #             image_files.extend(
+                #                 glob.glob(
+                #                     os.path.join(
+                #                         image_dir,
+                #                         ext
+                #                     )
+                #                 )
+                #             )
 
 
-                # ======================
-                # Normalize image
-                # ======================
 
-                img = (
-                    img.astype(np.float32)
-                    /
-                    255.0
-                )
+                #         image_files = sorted(image_files)
 
 
 
-                # HWC -> CHW
+                #         for img_path in image_files:
 
-                img = np.transpose(
-                    img,
-                    (2,0,1)
-                )
 
+                #             filename = os.path.basename(img_path)
 
 
-                # binary mask
 
-                mask = (
-                    mask > 127
-                ).astype(
-                    np.float32
-                )
+                #             mask_path = os.path.join(
+                #                 mask_dir,
+                #                 filename
+                #             )
 
 
 
-                images.append(img)
+                #             if not os.path.exists(mask_path):
 
-                masks.append(mask)
+                #                 print(
+                #                     "Mask missing:",
+                #                     img_path
+                #                 )
 
+                #                 continue
 
 
-        # ======================
-        # Convert arrays
-        # ======================
 
+                #             # ======================
+                #             # Load image
+                #             # ======================
 
-        images = np.array(
-            images,
-            dtype=np.float32
-        )
+                #             img = cv2.imread(
+                #                 img_path,
+                #                 cv2.IMREAD_COLOR
+                #             )
 
 
-        masks = np.array(
-            masks,
-            dtype=np.float32
-        )
+                #             if img is None:
 
+                #                 print(
+                #                     "Bad image:",
+                #                     img_path
+                #                 )
 
+                #                 continue
 
-        print(
-            "Loaded images:",
-            images.shape
-        )
 
-        print(
-            "Loaded masks:",
-            masks.shape
-        )
 
+                #             img = cv2.cvtColor(
+                #                 img,
+                #                 cv2.COLOR_BGR2RGB
+                #             )
 
 
-        # ======================
-        # Train/Test split
-        # ======================
 
+                #             # ======================
+                #             # Load mask
+                #             # ======================
 
-        (
-            self.x_train,
-            self.x_test,
-            self.y_train,
-            self.y_test
+                #             mask = cv2.imread(
+                #                 mask_path,
+                #                 cv2.IMREAD_GRAYSCALE
+                #             )
 
-        ) = train_test_split(
 
-            images,
-            masks,
+                #             if mask is None:
 
-            test_size=0.1,
+                #                 print(
+                #                     "Bad mask:",
+                #                     mask_path
+                #                 )
 
-            random_state=42,
+                #                 continue
 
-            shuffle=True
 
-        )
 
 
+                #             # ======================
+                #             # Resize
+                #             # ======================
 
-        self.x_train = self.x_train.astype(
-            np.float32
-        )
+                #             img = cv2.resize(
+                #                 img,
+                #                 self.input_size,
+                #                 interpolation=cv2.INTER_LINEAR
+                #             )
 
 
-        self.x_test = self.x_test.astype(
-            np.float32
-        )
+                #             # IMPORTANT
+                #             # nearest for segmentation masks
 
+                #             mask = cv2.resize(
+                #                 mask,
+                #                 self.input_size,
+                #                 interpolation=cv2.INTER_NEAREST
+                #             )
 
-        self.y_train = self.y_train.astype(
-            np.float32
-        )
 
 
-        self.y_test = self.y_test.astype(
-            np.float32
-        )
+                #             # ======================
+                #             # Normalize image
+                #             # ======================
 
+                #             img = (
+                #                 img.astype(np.float32)
+                #                 /
+                #                 255.0
+                #             )
 
 
-        print(
-            "Train:",
-            self.x_train.shape,
-            self.y_train.shape
-        )
 
+                #             # HWC -> CHW
 
-        print(
-            "Test:",
-            self.x_test.shape,
-            self.y_test.shape
-        )
+                #             img = np.transpose(
+                #                 img,
+                #                 (2,0,1)
+                #             )
+
+
+
+                #             # binary mask
+
+                #             mask = (
+                #                 mask > 127
+                #             ).astype(
+                #                 np.float32
+                #             )
+
+
+
+                #             images.append(img)
+
+                #             masks.append(mask)
+
+
+
+                #     # ======================
+                #     # Convert arrays
+                #     # ======================
+
+
+                #     images = np.array(
+                #         images,
+                #         dtype=np.float32
+                #     )
+
+
+                #     masks = np.array(
+                #         masks,
+                #         dtype=np.float32
+                #     )
+
+
+
+                #     print(
+                #         "Loaded images:",
+                #         images.shape
+                #     )
+
+                #     print(
+                #         "Loaded masks:",
+                #         masks.shape
+                #     )
+
+
+
+                #     # ======================
+                #     # Train/Test split
+                #     # ======================
+
+
+                #     # (
+                #     #     self.x_train,
+                #     #     self.x_test,
+                #     #     self.y_train,
+                #     #     self.y_test
+
+                #     # ) = train_test_split(
+
+                #     #     images,
+                #     #     masks,
+
+                #     #     test_size=0.1,
+
+                #     #     random_state=42,
+
+                #     #     shuffle=True
+
+                #     # )
+
+                #     # self.x_train = self.x_train.astype(
+                #     #     np.float32
+                #     # )
+                #     # self.y_train = self.y_train.astype(
+                #     #     np.float32
+                #     # )
+                #     self.x_test = np.array(images, dtype=np.float32)
+
+                #     self.y_test = np.array(masks, dtype=np.float32)
+
+
+
+
+                #     self.x_test = self.x_test.astype(
+                #         np.float32
+                #     )
+
+
+
+
+                #     self.y_test = self.y_test.astype(
+                #         np.float32
+                #     )
+
+
+
+                #     print(
+                #         "Train:",
+                #         self.x_train.shape,
+                #         self.y_train.shape
+                #     )
+
+
+                #     print(
+                #         "Test:",
+                #         self.x_test.shape,
+                #         self.y_test.shape
+                #     )
 
 def mixup_data(images, masks, alpha=0.2):
     """Mix two training samples together"""
@@ -570,7 +782,7 @@ def evaluate_with_tta(model, test_loader, device, threshold=0.40):
     return dice, iou
 
 
-def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_tta=True):
+def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_tta=False):
     """Testing function with optional TTA"""
     model.eval()
     test_loss = 0
@@ -586,7 +798,14 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
             
             if use_tta:
                 # Use TTA for prediction
-                pred = tta_predict(model, data, device, threshold)
+                prob = tta_predict(
+                    model,
+                    data
+                )
+
+                pred = (
+                    prob > threshold
+                ).float()
                 
                 # For loss calculation, use original forward pass
                 output = model(data)
@@ -613,7 +832,8 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
 def find_best_threshold(model, test_loader, criterion, device):
     model.eval()
 
-    thresholds = np.arange(0.1, 0.91, 0.05)
+    thresholds = np.arange(0.35, 0.73, 0.005)
+    # thresholds = np.arange(0.7, 0.999, 0.005)
 
     best_threshold = 0.5
     best_iou = 0.0
@@ -666,7 +886,7 @@ def find_best_threshold(model, test_loader, criterion, device):
                 f"IoU={avg_iou:.4f}"
             )
 
-            if avg_iou > best_iou:
+            if avg_dice > best_dice:
                 best_iou = avg_iou
                 best_dice = avg_dice
                 best_threshold = threshold
@@ -679,6 +899,163 @@ def find_best_threshold(model, test_loader, criterion, device):
 
     return best_threshold, best_dice, best_iou
 
+
+def evaluate_model(
+    model,
+    loader,
+    criterion,
+    device,
+    use_tta=False
+):
+    """
+    Finds best threshold using Dice and evaluates.
+    """
+
+    model.eval()
+
+    thresholds = np.arange(0.05, 0.96, 0.01)
+
+    best_threshold = 0.5
+    best_dice = 0.0
+
+    # --------------------------------------------------
+    # Find threshold maximizing Dice
+    # --------------------------------------------------
+    with torch.no_grad():
+
+        for threshold in thresholds:
+
+            dice_scores = []
+
+            for data, target in loader:
+
+                data = data.to(device)
+                target = target.to(device)
+
+                if target.dim() == 3:
+                    target = target.unsqueeze(1)
+
+                if use_tta:
+
+                    pred1 = torch.sigmoid(model(data))
+
+                    pred2 = torch.flip(
+                        torch.sigmoid(
+                            model(torch.flip(data, [-1]))
+                        ),
+                        [-1]
+                    )
+
+                    pred3 = torch.flip(
+                        torch.sigmoid(
+                            model(torch.flip(data, [-2]))
+                        ),
+                        [-2]
+                    )
+
+                    prob = (pred1 + pred2 + pred3) / 3
+
+                else:
+
+                    prob = torch.sigmoid(
+                        model(data)
+                    )
+
+                pred = (prob > threshold).float()
+
+                dice_scores.append(
+                    dice_coefficient(
+                        pred,
+                        target
+                    )
+                )
+
+            avg_dice = np.mean(dice_scores)
+
+            if avg_dice > best_dice:
+                best_dice = avg_dice
+                best_threshold = threshold
+
+    # --------------------------------------------------
+    # Final evaluation using best threshold
+    # --------------------------------------------------
+    total_loss = 0.0
+    dice_scores = []
+    iou_scores = []
+
+    with torch.no_grad():
+
+        for data, target in tqdm(loader, desc="Evaluating"):
+
+            data = data.to(device)
+            target = target.to(device)
+
+            if target.dim() == 3:
+                target = target.unsqueeze(1)
+
+            output = model(data)
+
+            if output.shape != target.shape:
+                output = F.interpolate(
+                    output,
+                    size=target.shape[2:],
+                    mode='bilinear',
+                    align_corners=False
+                )
+
+            total_loss += criterion(
+                output,
+                target
+            ).item()
+
+            if use_tta:
+
+                pred1 = torch.sigmoid(model(data))
+
+                pred2 = torch.flip(
+                    torch.sigmoid(
+                        model(torch.flip(data, [-1]))
+                    ),
+                    [-1]
+                )
+
+                pred3 = torch.flip(
+                    torch.sigmoid(
+                        model(torch.flip(data, [-2]))
+                    ),
+                    [-2]
+                )
+
+                prob = (pred1 + pred2 + pred3) / 3
+
+            else:
+
+                prob = torch.sigmoid(output)
+
+            pred = (
+                prob > best_threshold
+            ).float()
+
+            dice_scores.append(
+                dice_coefficient(
+                    pred,
+                    target
+                )
+            )
+
+            iou_scores.append(
+                iou_score(
+                    pred,
+                    target
+                )
+            )
+
+    return {
+        "threshold": best_threshold,
+        "loss": total_loss / len(loader),
+        "dice": np.mean(dice_scores),
+        "iou": np.mean(iou_scores)
+    }
 
 # Training function
 from tqdm import tqdm
@@ -968,13 +1345,13 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Elastic
             # ----------------------------------
-            # if random.random() < 0.4:
-            #     image, mask = self._elastic_transform(
-            #         image,
-            #         mask,
-            #         alpha=20,
-            #         sigma=8
-            #     )
+            if random.random() < 0.4:
+                image, mask = self._elastic_transform(
+                    image,
+                    mask,
+                    alpha=20,
+                    sigma=8
+                )
 
             # ----------------------------------
             # Brightness
@@ -1447,32 +1824,128 @@ class CombinedSegLoss(nn.Module):
         return (self.dice_w * dice + self.bce_w * bce + 
                 self.focal_w * focal + self.boundary_w * boundary)
     
-def tta_predict(model, image, device, threshold=0.40):
-    """
-    Apply Test-Time Augmentation to a single batch
-    """
-    with torch.no_grad():
-        # Original prediction
-        logits = model(image)
-        prob_original = torch.sigmoid(logits)
-        
-        # Horizontal flip
-        flipped_h = torch.flip(image, dims=[-1])
-        logits_h = model(flipped_h)
-        prob_h = torch.sigmoid(logits_h)
-        prob_h = torch.flip(prob_h, dims=[-1])
-        
-        # Vertical flip
-        flipped_v = torch.flip(image, dims=[-2])
-        logits_v = model(flipped_v)
-        prob_v = torch.sigmoid(logits_v)
-        prob_v = torch.flip(prob_v, dims=[-2])
-        
-        # Average all predictions
-        prob_avg = (prob_original + prob_h + prob_v) / 3.0
-        
-        return (prob_avg > threshold).float()
 
+
+import torch
+import torchvision.transforms.functional as TF
+
+
+def tta_predict(model, image):
+    """
+    TTA using:
+        - Original
+        - Horizontal Flip
+        - Vertical Flip
+        - +10 Rotation
+        - -10 Rotation
+
+    Returns averaged probabilities.
+    """
+
+    model.eval()
+
+    with torch.no_grad():
+
+        probs = []
+
+        # -----------------------------------
+        # Original
+        # -----------------------------------
+        pred = torch.sigmoid(
+            model(image)
+        )
+
+        probs.append(pred)
+
+        # -----------------------------------
+        # Horizontal Flip
+        # -----------------------------------
+        img_h = torch.flip(
+            image,
+            dims=[-1]
+        )
+
+        pred_h = torch.sigmoid(
+            model(img_h)
+        )
+
+        pred_h = torch.flip(
+            pred_h,
+            dims=[-1]
+        )
+
+        probs.append(pred_h)
+
+        # -----------------------------------
+        # Vertical Flip
+        # -----------------------------------
+        img_v = torch.flip(
+            image,
+            dims=[-2]
+        )
+
+        pred_v = torch.sigmoid(
+            model(img_v)
+        )
+
+        pred_v = torch.flip(
+            pred_v,
+            dims=[-2]
+        )
+
+        probs.append(pred_v)
+
+        # -----------------------------------
+        # Rotation +10°
+        # -----------------------------------
+        img_r1 = TF.rotate(
+            image,
+            angle=10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        pred_r1 = torch.sigmoid(
+            model(img_r1)
+        )
+
+        pred_r1 = TF.rotate(
+            pred_r1,
+            angle=-10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        probs.append(pred_r1)
+
+        # -----------------------------------
+        # Rotation -10°
+        # -----------------------------------
+        img_r2 = TF.rotate(
+            image,
+            angle=-10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        pred_r2 = torch.sigmoid(
+            model(img_r2)
+        )
+
+        pred_r2 = TF.rotate(
+            pred_r2,
+            angle=10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        probs.append(pred_r2)
+
+        # -----------------------------------
+        # Average probabilities
+        # -----------------------------------
+        prob_avg = torch.stack(
+            probs,
+            dim=0
+        ).mean(dim=0)
+
+        return prob_avg
 # class BoundaryAwareLoss(nn.Module):
 #     """
 #     Combines: Dice + BCE + Boundary term
@@ -1606,25 +2079,25 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
-    path_weight = './logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/fft/91.79/start-3/checkpoints_KvasirSEG-ConvNeXt/2136-test0.91.pth'
+    path_weight = './logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/scratch/start93.661/checkpoints_KvasirSEG-ConvNeXt/1439-test0.89.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/fft/91.79/start-3/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/scratch/start-new/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    # parser.add_argument('--checkpoint_path', type=str, default='', help='Directory for logging')
+    # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
     parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
-    parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
+    parser.add_argument('--lr', type=float, default=5e-4, help='Learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--escape_lr', type=float, default=5e-5, help='Learning rate for escape')
     parser.add_argument('--batch_size', type=int, default=10, help='Batch size')
     parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
     parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
     parser.add_argument('--warmup_epochs', type=int, default=4, help='Epochs. 0 -skip training')
-    parser.add_argument('--testing', type=strtobool, default=True, help='Execute testing.')
+    parser.add_argument('--testing', type=strtobool, default=False, help='Execute testing.')
     parser.add_argument('--tta_check', type=strtobool, default=False, help='Execute testing.')
-    parser.add_argument('--training', type=strtobool, default=False, help='Execute training.')
+    parser.add_argument('--training', type=strtobool, default=True, help='Execute training.')
     parser.add_argument('--load', type=str, default=False, help='Load before training.')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
@@ -1814,25 +2287,25 @@ if __name__ == "__main__":
 
 
         # C:\Users\jafari.h\Desktop\ai_project\ttfs\logs\ConvNeXt-attention-Gelu-upsample-bfim\input_size-352\depth64-dim3\agv\start-0-91.43\checkpoints_KvasirSEG-ConvNeXt\1708-test0.83.pth
-      # Load checkpoint if exists
-    # In your checkpoint loading section, modify to:
-    if os.path.exists(args.checkpoint_path):
-        logging.info("#### Loading checkpoint ####")
+    #   # Load checkpoint if exists
+    # # In your checkpoint loading section, modify to:
+    # if os.path.exists(args.checkpoint_path):
+    #     logging.info("#### Loading checkpoint ####")
         
-        # Handle both directory and file paths
-        if os.path.isdir(args.checkpoint_path):
-            pth_files = [f for f in os.listdir(args.checkpoint_path) if f.endswith('.pth')]
-            if pth_files:
-                checkpoint_file = os.path.join(args.checkpoint_path, pth_files[0])
-            else:
-                logging.warning(f"No .pth file found in {args.checkpoint_path}")
-                checkpoint_file = None
-        else:
-            checkpoint_file = args.checkpoint_path
+    #     # Handle both directory and file paths
+    #     if os.path.isdir(args.checkpoint_path):
+    #         pth_files = [f for f in os.listdir(args.checkpoint_path) if f.endswith('.pth')]
+    #         if pth_files:
+    #             checkpoint_file = os.path.join(args.checkpoint_path, pth_files[0])
+    #         else:
+    #             logging.warning(f"No .pth file found in {args.checkpoint_path}")
+    #             checkpoint_file = None
+    #     else:
+    #         checkpoint_file = args.checkpoint_path
         
-        if not os.path.exists(checkpoint_file):
-            logging.error(f"Checkpoint file not found: {checkpoint_file}")
-            sys.exit(1)
+    #     if not os.path.exists(checkpoint_file):
+    #         logging.error(f"Checkpoint file not found: {checkpoint_file}")
+    #         sys.exit(1)
        
       
 
@@ -1939,8 +2412,8 @@ if __name__ == "__main__":
     #     T_max=80,
     #     eta_min=1e-6
     # )  
-    if checkpoint_file:
-            checkpoint = torch.load(checkpoint_file, map_location=device)
+    if args.checkpoint_path:
+            checkpoint = torch.load(args.checkpoint_path, map_location=device)
             
             # Load model and optimizer states
 
@@ -1965,7 +2438,7 @@ if __name__ == "__main__":
             model.load_state_dict(checkpoint['model_state_dict'])
             
 
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             
             # DON'T load scheduler state - it was a different scheduler!
             # scheduler.load_state_dict(checkpoint['scheduler_state_dict'])  # REMOVE THIS
@@ -1979,7 +2452,8 @@ if __name__ == "__main__":
 
 
             start_epoch = checkpoint['epoch'] + 1
-            best_acc = checkpoint['best_acc']
+            best_acc = 0
+            # best_acc = checkpoint['best_acc']
             
         
             
@@ -2008,6 +2482,7 @@ if __name__ == "__main__":
         )
     
     # # Training
+    best_threshold = 0.45
     if  args.testing:
         best_threshold, best_dice, best_iou = find_best_threshold(
                 model,
@@ -2015,18 +2490,31 @@ if __name__ == "__main__":
                 criterion,
                 device
             )
-        test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device)
+        test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device ,threshold=best_threshold ,use_tta=True)
             
         logging.info(
                         f"First EvaluationTest Loss: {test_loss:.4f}, "
                         f"Test Dice: {test_dice:.4f}, "
                         f"Test IoU: {test_iou:.4f}")
         if args.tta_check:
-            tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=0.40)
+            tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
             print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
             print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")        
-    else:
-        best_threshold = 0.4
+        # result = evaluate_model(
+        #     model,
+        #     test_loader,
+        #     criterion,
+        #     device,
+        #     use_tta=True
+        # )
+
+        # print(
+        #     f"Threshold={result['threshold']:.2f} "
+        #     f"Dice={result['dice']:.4f} "
+        #     f"IoU={result['iou']:.4f}"
+        # )
+    
+    
     if  args.epochs > 0:
         logging.info("#### Training ####")
         total_steps = len(train_loader) * args.epochs
@@ -2104,6 +2592,7 @@ if __name__ == "__main__":
                             'optimizer_state_dict': optimizer.state_dict(),
                             'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
                             'best_acc': best_acc,
+                            'test_dice': test_dice,
                         }
                 
                     best_acc = test_acc
