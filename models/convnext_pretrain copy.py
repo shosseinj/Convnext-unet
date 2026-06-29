@@ -67,8 +67,8 @@ class ConvNeXtEncoder(nn.Module):
         self,
         weights_path=None,
         depth=[3, 3, 9, 3],
-        drop_path_rate=0.0,
-        dropout_rate=0.25
+        drop_path_rate=0.1,
+        dropout=0.1
     ):
         super().__init__()
         
@@ -76,7 +76,7 @@ class ConvNeXtEncoder(nn.Module):
         self.depths = depth
 
         # dropout for feature maps
-        self.dropout = nn.Dropout2d(p=dropout_rate)
+        self.dropout = nn.Dropout2d(p=dropout)
         
         self.downsample_layers = nn.ModuleList()
 
@@ -174,7 +174,7 @@ class ConvNeXtEncoder(nn.Module):
 
 
             # dropout only deeper features
-            if i >= 1:
+            if i >= 2:
                 x = self.dropout(x)
 
 
@@ -251,23 +251,22 @@ class ConvNeXtUNet(nn.Module):
         self.encoder = ConvNeXtEncoder(
             weights_path=weights_path,
             depth=encoder_depth,
-            drop_path_rate=drop_path_rate, 
-            dropout_rate=dropout_rate
+            drop_path_rate=drop_path_rate
         )
         
         dims = [96, 192, 384, 768]
         
         # Bottleneck (LayerNorm + GELU)
-        self.bottleneck = nn.Sequential(
-            nn.Conv2d(dims[3], dims[3], 3, padding=1),
-            LayerNorm(dims[3], eps=1e-6, data_format="channels_first"),
-            nn.GELU(),
-            nn.Dropout2d(dropout_rate),
-            nn.Conv2d(dims[3], dims[3], 3, padding=1),
-            LayerNorm(dims[3], eps=1e-6, data_format="channels_first"),
-            nn.GELU(),
-            nn.Dropout2d(dropout_rate)
-        )
+        # self.bottleneck = nn.Sequential(
+        #     nn.Conv2d(dims[3], dims[3], 3, padding=1),
+        #     LayerNorm(dims[3], eps=1e-6, data_format="channels_first"),
+        #     nn.GELU(),
+        #     nn.Dropout2d(dropout_rate),
+        #     nn.Conv2d(dims[3], dims[3], 3, padding=1),
+        #     LayerNorm(dims[3], eps=1e-6, data_format="channels_first"),
+        #     nn.GELU(),
+        #     nn.Dropout2d(dropout_rate)
+        # )
         
         # Decoder (LayerNorm + GELU)
         self.decoder4 = DecoderBlock(dims[3], dims[2], dropout_rate)
@@ -311,10 +310,10 @@ class ConvNeXtUNet(nn.Module):
         f1, f2, f3, f4 = self.encoder(x)
         
         # Bottleneck
-        b = self.bottleneck(f4)
+        # b = self.bottleneck(f4)
         
         # Decoder with skip connections
-        d4 = self.decoder4(b)
+        d4 = self.decoder4(f4)
         d4 = torch.cat([d4, f3], dim=1)
         d4 = self.bsei4(d4)
         

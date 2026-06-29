@@ -1,0 +1,40 @@
+2026-06-29 15:30:27 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain-scratch/start-85/KvasirSEG-ConvNeXt_log.txt
+2026-06-29 15:30:34 - INFO - Resumed from epoch 2, best_acc=0.0000
+2026-06-29 15:30:34 - INFO - Resumed from epoch 2
+2026-06-29 15:30:34 - INFO - Previous best accuracy: 0.7367
+2026-06-29 15:30:35 - INFO - #### Training ####
+2026-06-29 15:30:35 - INFO - initial LR: 0.000010
+2026-06-29 15:31:00 - INFO - 
+Train Dice      : 0.7410
+Train Loss      : 0.7930
+Encoder Grad    : 10.6870
+Decoder Grad    : 0.7168
+Mean Prob       : 0.1536
+Prob Std        : 0.2988
+Mask Area       : 0.1408
+Encoder LR      : 1.00e-05
+Decoder LR      : 1.00e-04
+2026-06-29 15:31:01 - INFO - Epoch 4/50000: Train Loss: 0.7930, Test Loss: 0.5357, Test Dice: 0.8586, Test IoU: 0.7552
+2026-06-29 15:31:01 - INFO - New best model saved with accuracy: 0.76%
+2026-06-29 15:31:26 - INFO - 
+Train Dice      : 0.7471
+Train Loss      : 0.7716
+Encoder Grad    : 10.9090
+Decoder Grad    : 0.8060
+Mean Prob       : 0.1503
+Prob Std        : 0.3003
+Mask Area       : 0.1398
+Encoder LR      : 1.00e-05
+Decoder LR      : 1.00e-04
+2026-06-29 15:31:26 - INFO - Epoch 5/50000: Train Loss: 0.7716, Test Loss: 0.5186, Test Dice: 0.8460, Test IoU: 0.7375
+2026-06-29 15:31:52 - INFO - 
+Train Dice      : 0.7472
+Train Loss      : 0.7653
+Encoder Grad    : 11.1345
+Decoder Grad    : 0.7927
+Mean Prob       : 0.1505
+Prob Std        : 0.3011
+Mask Area       : 0.1407
+Encoder LR      : 1.00e-05
+Decoder LR      : 1.00e-04
+2026-06-29 15:31:52 - INFO - Epoch 6/50000: Train Loss: 0.7653, Test Loss: 0.5171, Test Dice: 0.8225, Test IoU: 0.7086

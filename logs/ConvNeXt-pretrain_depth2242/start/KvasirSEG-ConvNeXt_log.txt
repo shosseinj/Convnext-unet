@@ -1,1381 +1,195 @@
-2026-06-29 07:32:12 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain_depth2242/start/KvasirSEG-ConvNeXt_log.txt
-2026-06-29 07:32:19 - INFO - Resumed from epoch 2617, best_acc=0.0000
-2026-06-29 07:32:19 - INFO - Resumed from epoch 2617
-2026-06-29 07:32:19 - INFO - Previous best accuracy: 0.8600
-2026-06-29 07:32:19 - INFO - #### Training ####
-2026-06-29 07:32:19 - INFO - initial LR: 0.000010
-2026-06-29 07:33:01 - INFO - 
-Train Dice      : 0.3554
-Train Loss      : 0.7592
-Encoder Grad    : 5.4266
-Decoder Grad    : 0.9889
-Mean Prob       : 0.2338
-Prob Std        : 0.3845
-Mask Area       : 0.2339
+2026-06-29 16:02:31 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain_depth2242/start/KvasirSEG-ConvNeXt_log.txt
+2026-06-29 16:02:37 - INFO - Resumed from epoch 2617, best_acc=0.0000
+2026-06-29 16:02:37 - INFO - Resumed from epoch 2617
+2026-06-29 16:02:37 - INFO - Previous best accuracy: 0.8600
+2026-06-29 16:02:38 - INFO - #### Training ####
+2026-06-29 16:02:38 - INFO - initial LR: 0.000010
+2026-06-29 16:03:14 - INFO - 
+Train Dice      : 0.8396
+Train Loss      : 0.7800
+Encoder Grad    : 5.9995
+Decoder Grad    : 1.8056
+Mean Prob       : 0.1500
+Prob Std        : 0.3340
+Mask Area       : 0.1494
 Encoder LR      : 1.00e-05
-Decoder LR      : 1.00e-04
-2026-06-29 07:33:01 - INFO - Epoch 2619/50000: Train Loss: 0.7592, Test Loss: 0.6570, Test Dice: 0.4907, Test IoU: 0.3270
-2026-06-29 07:33:45 - INFO - 
-Train Dice      : 0.4715
-Train Loss      : 0.6342
-Encoder Grad    : 11.3714
-Decoder Grad    : 1.1081
-Mean Prob       : 0.1757
-Prob Std        : 0.3754
-Mask Area       : 0.1759
+Decoder LR      : 4.00e-04
+2026-06-29 16:03:15 - INFO - Epoch 2619/50000: Train Loss: 0.7800, Test Loss: 0.4622, Test Dice: 0.9130, Test IoU: 0.8406
+2026-06-29 16:03:51 - INFO - 
+Train Dice      : 0.8774
+Train Loss      : 0.5581
+Encoder Grad    : 3.3163
+Decoder Grad    : 1.0523
+Mean Prob       : 0.1545
+Prob Std        : 0.3385
+Mask Area       : 0.1559
+Encoder LR      : 1.00e-05
+Decoder LR      : 4.00e-04
+2026-06-29 16:03:52 - INFO - Epoch 2620/50000: Train Loss: 0.5581, Test Loss: 0.4648, Test Dice: 0.9097, Test IoU: 0.8352
+2026-06-29 16:04:28 - INFO - 
+Train Dice      : 0.8859
+Train Loss      : 0.5428
+Encoder Grad    : 3.7215
+Decoder Grad    : 0.9168
+Mean Prob       : 0.1510
+Prob Std        : 0.3370
+Mask Area       : 0.1521
 Encoder LR      : 1.01e-05
-Decoder LR      : 9.99e-05
-2026-06-29 07:33:46 - INFO - Epoch 2620/50000: Train Loss: 0.6342, Test Loss: 0.5581, Test Dice: 0.5813, Test IoU: 0.4132
-2026-06-29 07:34:02 - INFO - New best model saved with accuracy: 0.41%
-2026-06-29 07:34:48 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:34:48 - INFO - 
-Train Dice      : 0.5167
-Train Loss      : 0.5868
-Encoder Grad    : 12.3763
-Decoder Grad    : 1.0186
-Mean Prob       : 0.1495
-Prob Std        : 0.3538
-Mask Area       : 0.1495
+Decoder LR      : 3.99e-04
+2026-06-29 16:04:28 - INFO - Epoch 2621/50000: Train Loss: 0.5428, Test Loss: 0.4534, Test Dice: 0.9190, Test IoU: 0.8506
+2026-06-29 16:05:04 - INFO - 
+Train Dice      : 0.8921
+Train Loss      : 0.5182
+Encoder Grad    : 3.3700
+Decoder Grad    : 0.8388
+Mean Prob       : 0.1501
+Prob Std        : 0.3389
+Mask Area       : 0.1504
+Encoder LR      : 1.02e-05
+Decoder LR      : 3.99e-04
+2026-06-29 16:05:05 - INFO - Epoch 2622/50000: Train Loss: 0.5182, Test Loss: 0.4347, Test Dice: 0.9274, Test IoU: 0.8651
+2026-06-29 16:05:05 - INFO - New best model saved with accuracy: 0.87%
+2026-06-29 16:05:41 - INFO - 
+Train Dice      : 0.8904
+Train Loss      : 0.5296
+Encoder Grad    : 3.3441
+Decoder Grad    : 0.8801
+Mean Prob       : 0.1542
+Prob Std        : 0.3411
+Mask Area       : 0.1553
 Encoder LR      : 1.03e-05
-Decoder LR      : 9.98e-05
-2026-06-29 07:34:49 - INFO - Epoch 2621/50000: Train Loss: 0.5868, Test Loss: 0.5411, Test Dice: 0.5835, Test IoU: 0.4149
-2026-06-29 07:34:49 - INFO - New best model saved with accuracy: 0.41%
-2026-06-29 07:35:35 - INFO - 
-Train Dice      : 0.5385
-Train Loss      : 0.5478
-Encoder Grad    : 13.4420
-Decoder Grad    : 1.0054
-Mean Prob       : 0.1521
-Prob Std        : 0.3558
+Decoder LR      : 3.98e-04
+2026-06-29 16:05:42 - INFO - Epoch 2623/50000: Train Loss: 0.5296, Test Loss: 0.4587, Test Dice: 0.9127, Test IoU: 0.8401
+2026-06-29 16:06:18 - INFO - 
+Train Dice      : 0.8770
+Train Loss      : 0.5477
+Encoder Grad    : 3.1864
+Decoder Grad    : 0.9056
+Mean Prob       : 0.1540
+Prob Std        : 0.3377
+Mask Area       : 0.1545
+Encoder LR      : 1.05e-05
+Decoder LR      : 3.97e-04
+2026-06-29 16:06:18 - INFO - Epoch 2624/50000: Train Loss: 0.5477, Test Loss: 0.4368, Test Dice: 0.9256, Test IoU: 0.8619
+2026-06-29 16:06:54 - INFO - 
+Train Dice      : 0.9206
+Train Loss      : 0.4532
+Encoder Grad    : 3.5022
+Decoder Grad    : 0.7633
+Mean Prob       : 0.1516
+Prob Std        : 0.3438
 Mask Area       : 0.1522
 Encoder LR      : 1.07e-05
-Decoder LR      : 9.94e-05
-2026-06-29 07:35:36 - INFO - Epoch 2622/50000: Train Loss: 0.5478, Test Loss: 0.4754, Test Dice: 0.6373, Test IoU: 0.4722
-2026-06-29 07:35:36 - INFO - New best model saved with accuracy: 0.47%
-2026-06-29 07:36:19 - INFO - 
-Train Dice      : 0.5420
-Train Loss      : 0.5352
-Encoder Grad    : 16.9681
-Decoder Grad    : 1.0640
-Mean Prob       : 0.1423
-Prob Std        : 0.3463
-Mask Area       : 0.1424
-Encoder LR      : 1.12e-05
-Decoder LR      : 9.90e-05
-2026-06-29 07:36:20 - INFO - Epoch 2623/50000: Train Loss: 0.5352, Test Loss: 0.4045, Test Dice: 0.7022, Test IoU: 0.5462
-2026-06-29 07:36:20 - INFO - New best model saved with accuracy: 0.55%
-2026-06-29 07:37:05 - INFO - 
-Train Dice      : 0.5637
-Train Loss      : 0.5262
-Encoder Grad    : 14.6212
-Decoder Grad    : 0.9445
-Mean Prob       : 0.1409
-Prob Std        : 0.3438
-Mask Area       : 0.1410
-Encoder LR      : 1.19e-05
-Decoder LR      : 9.85e-05
-2026-06-29 07:37:06 - INFO - Epoch 2624/50000: Train Loss: 0.5262, Test Loss: 0.4100, Test Dice: 0.7028, Test IoU: 0.5448
-2026-06-29 07:37:52 - INFO - 
-Train Dice      : 0.5866
-Train Loss      : 0.5094
-Encoder Grad    : 14.0459
-Decoder Grad    : 0.9208
-Mean Prob       : 0.1395
-Prob Std        : 0.3430
-Mask Area       : 0.1396
-Encoder LR      : 1.27e-05
-Decoder LR      : 9.78e-05
-2026-06-29 07:37:52 - INFO - Epoch 2625/50000: Train Loss: 0.5094, Test Loss: 0.3648, Test Dice: 0.7217, Test IoU: 0.5674
-2026-06-29 07:37:53 - INFO - New best model saved with accuracy: 0.57%
-2026-06-29 07:38:38 - INFO - 
-Train Dice      : 0.5757
-Train Loss      : 0.5132
-Encoder Grad    : 17.2888
-Decoder Grad    : 1.0499
-Mean Prob       : 0.1382
-Prob Std        : 0.3364
-Mask Area       : 0.1383
-Encoder LR      : 1.37e-05
-Decoder LR      : 9.71e-05
-2026-06-29 07:38:39 - INFO - Epoch 2626/50000: Train Loss: 0.5132, Test Loss: 0.3750, Test Dice: 0.7163, Test IoU: 0.5607
-2026-06-29 07:39:25 - INFO - 
-Train Dice      : 0.6124
-Train Loss      : 0.4771
-Encoder Grad    : 17.6134
-Decoder Grad    : 0.9931
-Mean Prob       : 0.1251
-Prob Std        : 0.3276
-Mask Area       : 0.1252
-Encoder LR      : 1.48e-05
-Decoder LR      : 9.62e-05
-2026-06-29 07:39:26 - INFO - Epoch 2627/50000: Train Loss: 0.4771, Test Loss: 0.3474, Test Dice: 0.7427, Test IoU: 0.5929
-2026-06-29 07:39:26 - INFO - New best model saved with accuracy: 0.59%
-2026-06-29 07:40:12 - INFO - 
-Train Dice      : 0.6339
-Train Loss      : 0.4517
-Encoder Grad    : 18.0494
-Decoder Grad    : 1.0317
-Mean Prob       : 0.1391
-Prob Std        : 0.3429
-Mask Area       : 0.1392
-Encoder LR      : 1.60e-05
-Decoder LR      : 9.52e-05
-2026-06-29 07:40:13 - INFO - Epoch 2628/50000: Train Loss: 0.4517, Test Loss: 0.3338, Test Dice: 0.7538, Test IoU: 0.6065
-2026-06-29 07:40:13 - INFO - New best model saved with accuracy: 0.61%
-2026-06-29 07:40:58 - INFO - 
-Train Dice      : 0.6324
-Train Loss      : 0.4583
-Encoder Grad    : 16.2552
-Decoder Grad    : 0.8976
-Mean Prob       : 0.1321
-Prob Std        : 0.3354
-Mask Area       : 0.1322
-Encoder LR      : 1.73e-05
-Decoder LR      : 9.41e-05
-2026-06-29 07:40:59 - INFO - Epoch 2629/50000: Train Loss: 0.4583, Test Loss: 0.3616, Test Dice: 0.7438, Test IoU: 0.5942
-2026-06-29 07:41:44 - INFO - 
-Train Dice      : 0.6545
-Train Loss      : 0.4326
-Encoder Grad    : 16.0845
-Decoder Grad    : 0.8645
-Mean Prob       : 0.1306
-Prob Std        : 0.3350
-Mask Area       : 0.1307
-Encoder LR      : 1.88e-05
-Decoder LR      : 9.30e-05
-2026-06-29 07:41:45 - INFO - Epoch 2630/50000: Train Loss: 0.4326, Test Loss: 0.3204, Test Dice: 0.7792, Test IoU: 0.6402
-2026-06-29 07:41:46 - INFO - New best model saved with accuracy: 0.64%
-2026-06-29 07:42:31 - INFO - 
-Train Dice      : 0.6592
-Train Loss      : 0.4293
-Encoder Grad    : 16.5345
-Decoder Grad    : 0.7862
-Mean Prob       : 0.1236
-Prob Std        : 0.3258
-Mask Area       : 0.1237
-Encoder LR      : 2.03e-05
-Decoder LR      : 9.18e-05
-2026-06-29 07:42:32 - INFO - Epoch 2631/50000: Train Loss: 0.4293, Test Loss: 0.3167, Test Dice: 0.7701, Test IoU: 0.6285
-2026-06-29 07:43:16 - INFO - 
-Train Dice      : 0.6542
-Train Loss      : 0.4384
-Encoder Grad    : 15.4617
-Decoder Grad    : 0.7629
-Mean Prob       : 0.1389
-Prob Std        : 0.3436
-Mask Area       : 0.1390
-Encoder LR      : 2.19e-05
-Decoder LR      : 9.04e-05
-2026-06-29 07:43:17 - INFO - Epoch 2632/50000: Train Loss: 0.4384, Test Loss: 0.2722, Test Dice: 0.7863, Test IoU: 0.6510
-2026-06-29 07:43:18 - INFO - New best model saved with accuracy: 0.65%
-2026-06-29 07:44:03 - INFO - 
-Train Dice      : 0.6584
-Train Loss      : 0.4301
-Encoder Grad    : 19.1077
-Decoder Grad    : 0.8348
-Mean Prob       : 0.1318
-Prob Std        : 0.3336
-Mask Area       : 0.1318
-Encoder LR      : 2.37e-05
-Decoder LR      : 8.91e-05
-2026-06-29 07:44:04 - INFO - Epoch 2633/50000: Train Loss: 0.4301, Test Loss: 0.2618, Test Dice: 0.7934, Test IoU: 0.6602
-2026-06-29 07:44:04 - INFO - New best model saved with accuracy: 0.66%
-2026-06-29 07:44:49 - INFO - 
-Train Dice      : 0.6843
-Train Loss      : 0.4043
-Encoder Grad    : 14.5402
-Decoder Grad    : 0.7672
-Mean Prob       : 0.1386
-Prob Std        : 0.3437
-Mask Area       : 0.1387
-Encoder LR      : 2.54e-05
-Decoder LR      : 8.77e-05
-2026-06-29 07:44:50 - INFO - Epoch 2634/50000: Train Loss: 0.4043, Test Loss: 0.3259, Test Dice: 0.7737, Test IoU: 0.6333
-2026-06-29 07:45:34 - INFO - 
-Train Dice      : 0.6646
-Train Loss      : 0.4234
-Encoder Grad    : 14.6038
-Decoder Grad    : 0.6966
-Mean Prob       : 0.1302
-Prob Std        : 0.3340
-Mask Area       : 0.1303
-Encoder LR      : 2.73e-05
-Decoder LR      : 8.62e-05
-2026-06-29 07:45:35 - INFO - Epoch 2635/50000: Train Loss: 0.4234, Test Loss: 0.2859, Test Dice: 0.7937, Test IoU: 0.6589
-2026-06-29 07:46:19 - WARNING - Skipped 3/58 batches.
-2026-06-29 07:46:19 - INFO - 
-Train Dice      : 0.6962
-Train Loss      : 0.3835
-Encoder Grad    : 15.6797
-Decoder Grad    : 0.7518
-Mean Prob       : 0.1330
-Prob Std        : 0.3363
-Mask Area       : 0.1331
-Encoder LR      : 2.92e-05
-Decoder LR      : 8.47e-05
-2026-06-29 07:46:20 - INFO - Epoch 2636/50000: Train Loss: 0.3835, Test Loss: 0.2724, Test Dice: 0.7950, Test IoU: 0.6612
-2026-06-29 07:46:20 - INFO - New best model saved with accuracy: 0.66%
-2026-06-29 07:47:04 - INFO - 
-Train Dice      : 0.6840
-Train Loss      : 0.4031
-Encoder Grad    : 15.8398
-Decoder Grad    : 0.7515
-Mean Prob       : 0.1375
+Decoder LR      : 3.95e-04
+2026-06-29 16:06:55 - INFO - Epoch 2625/50000: Train Loss: 0.4532, Test Loss: 0.4378, Test Dice: 0.9195, Test IoU: 0.8515
+2026-06-29 16:07:30 - INFO - 
+Train Dice      : 0.9166
+Train Loss      : 0.4620
+Encoder Grad    : 3.1586
+Decoder Grad    : 0.6783
+Mean Prob       : 0.1507
 Prob Std        : 0.3423
-Mask Area       : 0.1376
-Encoder LR      : 3.11e-05
-Decoder LR      : 8.31e-05
-2026-06-29 07:47:05 - INFO - Epoch 2637/50000: Train Loss: 0.4031, Test Loss: 0.2456, Test Dice: 0.8051, Test IoU: 0.6752
-2026-06-29 07:47:06 - INFO - New best model saved with accuracy: 0.68%
-2026-06-29 07:47:50 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:47:50 - INFO - 
-Train Dice      : 0.6816
-Train Loss      : 0.4027
-Encoder Grad    : 13.9821
-Decoder Grad    : 0.7017
-Mean Prob       : 0.1350
-Prob Std        : 0.3391
-Mask Area       : 0.1350
-Encoder LR      : 3.30e-05
-Decoder LR      : 8.16e-05
-2026-06-29 07:47:51 - INFO - Epoch 2638/50000: Train Loss: 0.4027, Test Loss: 0.2789, Test Dice: 0.7744, Test IoU: 0.6330
-2026-06-29 07:48:35 - INFO - 
-Train Dice      : 0.7002
-Train Loss      : 0.3810
-Encoder Grad    : 17.0006
-Decoder Grad    : 0.8090
-Mean Prob       : 0.1253
-Prob Std        : 0.3291
-Mask Area       : 0.1253
-Encoder LR      : 3.50e-05
-Decoder LR      : 8.00e-05
-2026-06-29 07:48:36 - INFO - Epoch 2639/50000: Train Loss: 0.3810, Test Loss: 0.3074, Test Dice: 0.7920, Test IoU: 0.6564
-2026-06-29 07:49:21 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:49:21 - INFO - 
-Train Dice      : 0.7083
-Train Loss      : 0.3688
-Encoder Grad    : 12.9376
-Decoder Grad    : 0.6804
-Mean Prob       : 0.1333
-Prob Std        : 0.3366
-Mask Area       : 0.1334
-Encoder LR      : 3.70e-05
-Decoder LR      : 7.84e-05
-2026-06-29 07:49:22 - INFO - Epoch 2640/50000: Train Loss: 0.3688, Test Loss: 0.2420, Test Dice: 0.8209, Test IoU: 0.6983
-2026-06-29 07:49:23 - INFO - New best model saved with accuracy: 0.70%
-2026-06-29 07:50:07 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:50:07 - INFO - 
-Train Dice      : 0.7200
-Train Loss      : 0.3719
-Encoder Grad    : 12.4796
-Decoder Grad    : 0.6482
-Mean Prob       : 0.1282
-Prob Std        : 0.3315
-Mask Area       : 0.1283
-Encoder LR      : 3.89e-05
-Decoder LR      : 7.69e-05
-2026-06-29 07:50:08 - INFO - Epoch 2641/50000: Train Loss: 0.3719, Test Loss: 0.2386, Test Dice: 0.8048, Test IoU: 0.6763
-2026-06-29 07:50:56 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:50:56 - INFO - 
-Train Dice      : 0.7188
-Train Loss      : 0.3710
-Encoder Grad    : 11.9008
-Decoder Grad    : 0.6219
-Mean Prob       : 0.1304
-Prob Std        : 0.3345
-Mask Area       : 0.1305
-Encoder LR      : 4.08e-05
-Decoder LR      : 7.53e-05
-2026-06-29 07:50:57 - INFO - Epoch 2642/50000: Train Loss: 0.3710, Test Loss: 0.2473, Test Dice: 0.8277, Test IoU: 0.7072
-2026-06-29 07:50:57 - INFO - New best model saved with accuracy: 0.71%
-2026-06-29 07:51:42 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:51:42 - INFO - 
-Train Dice      : 0.7361
-Train Loss      : 0.3522
-Encoder Grad    : 15.5533
-Decoder Grad    : 0.7664
-Mean Prob       : 0.1286
-Prob Std        : 0.3326
-Mask Area       : 0.1286
-Encoder LR      : 4.27e-05
-Decoder LR      : 7.38e-05
-2026-06-29 07:51:43 - INFO - Epoch 2643/50000: Train Loss: 0.3522, Test Loss: 0.2212, Test Dice: 0.8041, Test IoU: 0.6762
-2026-06-29 07:52:27 - INFO - 
-Train Dice      : 0.7337
-Train Loss      : 0.3566
-Encoder Grad    : 14.6129
-Decoder Grad    : 0.6978
-Mean Prob       : 0.1214
-Prob Std        : 0.3244
-Mask Area       : 0.1214
-Encoder LR      : 4.46e-05
-Decoder LR      : 7.23e-05
-2026-06-29 07:52:28 - INFO - Epoch 2644/50000: Train Loss: 0.3566, Test Loss: 0.2266, Test Dice: 0.8158, Test IoU: 0.6915
-2026-06-29 07:53:13 - WARNING - Skipped 2/58 batches.
-2026-06-29 07:53:13 - INFO - 
-Train Dice      : 0.7030
-Train Loss      : 0.3755
-Encoder Grad    : 12.2927
-Decoder Grad    : 0.7128
-Mean Prob       : 0.1240
-Prob Std        : 0.3268
-Mask Area       : 0.1240
-Encoder LR      : 4.63e-05
-Decoder LR      : 7.09e-05
-2026-06-29 07:53:14 - INFO - Epoch 2645/50000: Train Loss: 0.3755, Test Loss: 0.2188, Test Dice: 0.8228, Test IoU: 0.7020
-2026-06-29 07:53:58 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:53:58 - INFO - 
-Train Dice      : 0.7386
-Train Loss      : 0.3470
-Encoder Grad    : 12.6249
-Decoder Grad    : 0.7182
-Mean Prob       : 0.1250
-Prob Std        : 0.3280
-Mask Area       : 0.1250
-Encoder LR      : 4.81e-05
-Decoder LR      : 6.96e-05
-2026-06-29 07:53:59 - INFO - Epoch 2646/50000: Train Loss: 0.3470, Test Loss: 0.2298, Test Dice: 0.8358, Test IoU: 0.7194
-2026-06-29 07:53:59 - INFO - New best model saved with accuracy: 0.72%
-2026-06-29 07:54:38 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:54:38 - INFO - 
-Train Dice      : 0.7316
-Train Loss      : 0.3604
-Encoder Grad    : 14.6945
-Decoder Grad    : 0.7349
-Mean Prob       : 0.1245
-Prob Std        : 0.3272
-Mask Area       : 0.1245
-Encoder LR      : 4.97e-05
-Decoder LR      : 6.82e-05
-2026-06-29 07:54:39 - INFO - Epoch 2647/50000: Train Loss: 0.3604, Test Loss: 0.2357, Test Dice: 0.8334, Test IoU: 0.7151
-2026-06-29 07:55:18 - INFO - 
-Train Dice      : 0.7252
-Train Loss      : 0.3442
-Encoder Grad    : 10.0493
-Decoder Grad    : 0.5863
-Mean Prob       : 0.1293
-Prob Std        : 0.3331
-Mask Area       : 0.1294
-Encoder LR      : 5.12e-05
-Decoder LR      : 6.70e-05
-2026-06-29 07:55:19 - INFO - Epoch 2648/50000: Train Loss: 0.3442, Test Loss: 0.2280, Test Dice: 0.8229, Test IoU: 0.7004
-2026-06-29 07:55:58 - INFO - 
-Train Dice      : 0.7415
-Train Loss      : 0.3538
-Encoder Grad    : 11.6476
-Decoder Grad    : 0.6597
-Mean Prob       : 0.1335
-Prob Std        : 0.3379
-Mask Area       : 0.1336
-Encoder LR      : 5.27e-05
-Decoder LR      : 6.59e-05
-2026-06-29 07:55:59 - INFO - Epoch 2649/50000: Train Loss: 0.3538, Test Loss: 0.2220, Test Dice: 0.8154, Test IoU: 0.6908
-2026-06-29 07:56:38 - INFO - 
-Train Dice      : 0.7727
-Train Loss      : 0.3238
-Encoder Grad    : 11.1341
-Decoder Grad    : 0.7302
-Mean Prob       : 0.1331
-Prob Std        : 0.3375
-Mask Area       : 0.1332
-Encoder LR      : 5.40e-05
-Decoder LR      : 6.48e-05
-2026-06-29 07:56:38 - INFO - Epoch 2650/50000: Train Loss: 0.3238, Test Loss: 0.2211, Test Dice: 0.8383, Test IoU: 0.7231
-2026-06-29 07:56:39 - INFO - New best model saved with accuracy: 0.72%
-2026-06-29 07:57:18 - WARNING - Skipped 1/58 batches.
-2026-06-29 07:57:18 - INFO - 
-Train Dice      : 0.7643
-Train Loss      : 0.3201
-Encoder Grad    : 11.3578
-Decoder Grad    : 0.6431
-Mean Prob       : 0.1250
-Prob Std        : 0.3286
-Mask Area       : 0.1250
-Encoder LR      : 5.52e-05
-Decoder LR      : 6.38e-05
-2026-06-29 07:57:18 - INFO - Epoch 2651/50000: Train Loss: 0.3201, Test Loss: 0.2185, Test Dice: 0.8338, Test IoU: 0.7173
-2026-06-29 07:57:58 - INFO - 
-Train Dice      : 0.7642
-Train Loss      : 0.3148
-Encoder Grad    : 9.9618
-Decoder Grad    : 0.5803
-Mean Prob       : 0.1251
-Prob Std        : 0.3282
-Mask Area       : 0.1251
-Encoder LR      : 5.63e-05
-Decoder LR      : 6.29e-05
-2026-06-29 07:57:58 - INFO - Epoch 2652/50000: Train Loss: 0.3148, Test Loss: 0.2086, Test Dice: 0.8386, Test IoU: 0.7236
-2026-06-29 07:57:59 - INFO - New best model saved with accuracy: 0.72%
-2026-06-29 07:58:39 - INFO - 
-Train Dice      : 0.7679
-Train Loss      : 0.3056
-Encoder Grad    : 9.4442
-Decoder Grad    : 0.6078
-Mean Prob       : 0.1267
-Prob Std        : 0.3306
-Mask Area       : 0.1267
-Encoder LR      : 5.73e-05
-Decoder LR      : 6.22e-05
-2026-06-29 07:58:40 - INFO - Epoch 2653/50000: Train Loss: 0.3056, Test Loss: 0.2116, Test Dice: 0.8414, Test IoU: 0.7271
-2026-06-29 07:58:40 - INFO - New best model saved with accuracy: 0.73%
-2026-06-29 07:59:19 - INFO - 
-Train Dice      : 0.7185
-Train Loss      : 0.3583
-Encoder Grad    : 10.9910
-Decoder Grad    : 0.6273
-Mean Prob       : 0.1291
-Prob Std        : 0.3326
-Mask Area       : 0.1291
-Encoder LR      : 5.81e-05
-Decoder LR      : 6.15e-05
-2026-06-29 07:59:20 - INFO - Epoch 2654/50000: Train Loss: 0.3583, Test Loss: 0.2320, Test Dice: 0.8448, Test IoU: 0.7322
-2026-06-29 07:59:20 - INFO - New best model saved with accuracy: 0.73%
-2026-06-29 08:00:00 - INFO - 
-Train Dice      : 0.7513
-Train Loss      : 0.3288
-Encoder Grad    : 8.8905
-Decoder Grad    : 0.6501
-Mean Prob       : 0.1302
-Prob Std        : 0.3337
-Mask Area       : 0.1302
-Encoder LR      : 5.88e-05
-Decoder LR      : 6.10e-05
-2026-06-29 08:00:01 - INFO - Epoch 2655/50000: Train Loss: 0.3288, Test Loss: 0.2000, Test Dice: 0.8274, Test IoU: 0.7071
-2026-06-29 08:00:40 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:00:40 - INFO - 
-Train Dice      : 0.7636
-Train Loss      : 0.3222
-Encoder Grad    : 11.2878
-Decoder Grad    : 0.7266
-Mean Prob       : 0.1342
-Prob Std        : 0.3388
-Mask Area       : 0.1343
-Encoder LR      : 5.93e-05
-Decoder LR      : 6.06e-05
-2026-06-29 08:00:41 - INFO - Epoch 2656/50000: Train Loss: 0.3222, Test Loss: 0.1980, Test Dice: 0.7991, Test IoU: 0.6689
-2026-06-29 08:01:21 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:01:21 - INFO - 
-Train Dice      : 0.7731
-Train Loss      : 0.3023
-Encoder Grad    : 8.0838
-Decoder Grad    : 0.5560
-Mean Prob       : 0.1279
-Prob Std        : 0.3319
-Mask Area       : 0.1280
-Encoder LR      : 5.97e-05
-Decoder LR      : 6.02e-05
-2026-06-29 08:01:22 - INFO - Epoch 2657/50000: Train Loss: 0.3023, Test Loss: 0.2021, Test Dice: 0.8398, Test IoU: 0.7254
-2026-06-29 08:02:01 - INFO - 
-Train Dice      : 0.7549
-Train Loss      : 0.3180
-Encoder Grad    : 8.9295
-Decoder Grad    : 0.6404
-Mean Prob       : 0.1288
-Prob Std        : 0.3318
-Mask Area       : 0.1289
-Encoder LR      : 5.99e-05
-Decoder LR      : 6.01e-05
-2026-06-29 08:02:02 - INFO - Epoch 2658/50000: Train Loss: 0.3180, Test Loss: 0.1906, Test Dice: 0.8473, Test IoU: 0.7371
-2026-06-29 08:02:02 - INFO - New best model saved with accuracy: 0.74%
-2026-06-29 08:02:40 - INFO - 
-Train Dice      : 0.7694
-Train Loss      : 0.3155
-Encoder Grad    : 7.8329
-Decoder Grad    : 0.5501
-Mean Prob       : 0.1263
-Prob Std        : 0.3302
-Mask Area       : 0.1263
-Encoder LR      : 6.00e-05
-Decoder LR      : 6.00e-05
-2026-06-29 08:02:41 - INFO - Epoch 2659/50000: Train Loss: 0.3155, Test Loss: 0.2118, Test Dice: 0.8458, Test IoU: 0.7353
-2026-06-29 08:03:19 - INFO - 
-Train Dice      : 0.7587
-Train Loss      : 0.3216
-Encoder Grad    : 8.3945
-Decoder Grad    : 0.5535
-Mean Prob       : 0.1288
-Prob Std        : 0.3332
-Mask Area       : 0.1289
-Encoder LR      : 5.99e-05
-Decoder LR      : 6.01e-05
-2026-06-29 08:03:20 - INFO - Epoch 2660/50000: Train Loss: 0.3216, Test Loss: 0.1832, Test Dice: 0.8573, Test IoU: 0.7516
-2026-06-29 08:03:21 - INFO - New best model saved with accuracy: 0.75%
-2026-06-29 08:03:59 - INFO - 
-Train Dice      : 0.7743
-Train Loss      : 0.3031
-Encoder Grad    : 6.5890
-Decoder Grad    : 0.5017
-Mean Prob       : 0.1338
-Prob Std        : 0.3386
-Mask Area       : 0.1339
-Encoder LR      : 5.97e-05
-Decoder LR      : 6.02e-05
-2026-06-29 08:04:00 - INFO - Epoch 2661/50000: Train Loss: 0.3031, Test Loss: 0.2056, Test Dice: 0.8212, Test IoU: 0.6990
-2026-06-29 08:04:38 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:04:38 - INFO - 
-Train Dice      : 0.7905
-Train Loss      : 0.2766
-Encoder Grad    : 8.3677
-Decoder Grad    : 0.6044
-Mean Prob       : 0.1267
-Prob Std        : 0.3303
-Mask Area       : 0.1267
-Encoder LR      : 5.93e-05
-Decoder LR      : 6.06e-05
-2026-06-29 08:04:39 - INFO - Epoch 2662/50000: Train Loss: 0.2766, Test Loss: 0.1712, Test Dice: 0.8465, Test IoU: 0.7363
-2026-06-29 08:05:17 - INFO - 
-Train Dice      : 0.7766
-Train Loss      : 0.3005
-Encoder Grad    : 7.4924
-Decoder Grad    : 0.5561
-Mean Prob       : 0.1265
-Prob Std        : 0.3304
-Mask Area       : 0.1266
-Encoder LR      : 5.88e-05
-Decoder LR      : 6.10e-05
-2026-06-29 08:05:18 - INFO - Epoch 2663/50000: Train Loss: 0.3005, Test Loss: 0.1812, Test Dice: 0.8598, Test IoU: 0.7562
-2026-06-29 08:05:19 - INFO - New best model saved with accuracy: 0.76%
-2026-06-29 08:05:57 - INFO - 
-Train Dice      : 0.7737
-Train Loss      : 0.3094
-Encoder Grad    : 7.9240
-Decoder Grad    : 0.5422
-Mean Prob       : 0.1281
-Prob Std        : 0.3324
-Mask Area       : 0.1282
-Encoder LR      : 5.81e-05
-Decoder LR      : 6.15e-05
-2026-06-29 08:05:57 - INFO - Epoch 2664/50000: Train Loss: 0.3094, Test Loss: 0.1762, Test Dice: 0.8606, Test IoU: 0.7573
-2026-06-29 08:05:58 - INFO - New best model saved with accuracy: 0.76%
-2026-06-29 08:06:36 - INFO - 
-Train Dice      : 0.8045
-Train Loss      : 0.2706
-Encoder Grad    : 6.1067
-Decoder Grad    : 0.4434
-Mean Prob       : 0.1349
-Prob Std        : 0.3394
-Mask Area       : 0.1350
-Encoder LR      : 5.73e-05
-Decoder LR      : 6.22e-05
-2026-06-29 08:06:37 - INFO - Epoch 2665/50000: Train Loss: 0.2706, Test Loss: 0.2073, Test Dice: 0.8467, Test IoU: 0.7360
-2026-06-29 08:07:15 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:07:15 - INFO - 
-Train Dice      : 0.8012
-Train Loss      : 0.2682
-Encoder Grad    : 6.1018
-Decoder Grad    : 0.4484
-Mean Prob       : 0.1311
-Prob Std        : 0.3356
-Mask Area       : 0.1312
-Encoder LR      : 5.63e-05
-Decoder LR      : 6.29e-05
-2026-06-29 08:07:16 - INFO - Epoch 2666/50000: Train Loss: 0.2682, Test Loss: 0.1701, Test Dice: 0.8603, Test IoU: 0.7566
-2026-06-29 08:07:54 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:07:54 - INFO - 
-Train Dice      : 0.8032
-Train Loss      : 0.2753
-Encoder Grad    : 6.6840
-Decoder Grad    : 0.5694
-Mean Prob       : 0.1308
-Prob Std        : 0.3352
-Mask Area       : 0.1309
-Encoder LR      : 5.52e-05
-Decoder LR      : 6.38e-05
-2026-06-29 08:07:54 - INFO - Epoch 2667/50000: Train Loss: 0.2753, Test Loss: 0.1735, Test Dice: 0.8658, Test IoU: 0.7647
-2026-06-29 08:07:55 - INFO - New best model saved with accuracy: 0.76%
-2026-06-29 08:08:33 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:08:33 - INFO - 
-Train Dice      : 0.8115
-Train Loss      : 0.2765
-Encoder Grad    : 6.9113
-Decoder Grad    : 0.5343
-Mean Prob       : 0.1350
-Prob Std        : 0.3400
-Mask Area       : 0.1351
-Encoder LR      : 5.40e-05
-Decoder LR      : 6.48e-05
-2026-06-29 08:08:34 - INFO - Epoch 2668/50000: Train Loss: 0.2765, Test Loss: 0.1680, Test Dice: 0.8497, Test IoU: 0.7410
-2026-06-29 08:09:12 - INFO - 
-Train Dice      : 0.7978
-Train Loss      : 0.2852
-Encoder Grad    : 5.9219
-Decoder Grad    : 0.4617
-Mean Prob       : 0.1309
-Prob Std        : 0.3346
-Mask Area       : 0.1309
-Encoder LR      : 5.27e-05
-Decoder LR      : 6.59e-05
-2026-06-29 08:09:13 - INFO - Epoch 2669/50000: Train Loss: 0.2852, Test Loss: 0.1852, Test Dice: 0.8677, Test IoU: 0.7681
-2026-06-29 08:09:13 - INFO - New best model saved with accuracy: 0.77%
-2026-06-29 08:09:52 - INFO - 
-Train Dice      : 0.8144
-Train Loss      : 0.2630
-Encoder Grad    : 7.2572
-Decoder Grad    : 0.5199
-Mean Prob       : 0.1359
-Prob Std        : 0.3406
-Mask Area       : 0.1360
-Encoder LR      : 5.12e-05
-Decoder LR      : 6.70e-05
-2026-06-29 08:09:52 - INFO - Epoch 2670/50000: Train Loss: 0.2630, Test Loss: 0.1828, Test Dice: 0.8477, Test IoU: 0.7392
-2026-06-29 08:10:31 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:10:31 - INFO - 
-Train Dice      : 0.8201
-Train Loss      : 0.2615
-Encoder Grad    : 7.0399
-Decoder Grad    : 0.5589
-Mean Prob       : 0.1341
-Prob Std        : 0.3383
-Mask Area       : 0.1341
-Encoder LR      : 4.97e-05
-Decoder LR      : 6.82e-05
-2026-06-29 08:10:31 - INFO - Epoch 2671/50000: Train Loss: 0.2615, Test Loss: 0.1733, Test Dice: 0.8636, Test IoU: 0.7614
-2026-06-29 08:11:10 - INFO - 
-Train Dice      : 0.8029
-Train Loss      : 0.2663
-Encoder Grad    : 7.5116
-Decoder Grad    : 0.5728
-Mean Prob       : 0.1262
-Prob Std        : 0.3300
-Mask Area       : 0.1262
-Encoder LR      : 4.81e-05
-Decoder LR      : 6.96e-05
-2026-06-29 08:11:10 - INFO - Epoch 2672/50000: Train Loss: 0.2663, Test Loss: 0.1777, Test Dice: 0.8601, Test IoU: 0.7560
-2026-06-29 08:11:49 - INFO - 
-Train Dice      : 0.8024
-Train Loss      : 0.2781
-Encoder Grad    : 10.0013
-Decoder Grad    : 0.5743
-Mean Prob       : 0.1368
-Prob Std        : 0.3412
-Mask Area       : 0.1368
-Encoder LR      : 4.63e-05
-Decoder LR      : 7.09e-05
-2026-06-29 08:11:50 - INFO - Epoch 2673/50000: Train Loss: 0.2781, Test Loss: 0.1886, Test Dice: 0.8722, Test IoU: 0.7760
-2026-06-29 08:11:50 - INFO - New best model saved with accuracy: 0.78%
-2026-06-29 08:12:29 - INFO - 
-Train Dice      : 0.8070
-Train Loss      : 0.2749
-Encoder Grad    : 6.3638
-Decoder Grad    : 0.4767
-Mean Prob       : 0.1360
-Prob Std        : 0.3410
-Mask Area       : 0.1360
-Encoder LR      : 4.46e-05
-Decoder LR      : 7.23e-05
-2026-06-29 08:12:29 - INFO - Epoch 2674/50000: Train Loss: 0.2749, Test Loss: 0.1623, Test Dice: 0.8886, Test IoU: 0.8010
-2026-06-29 08:12:30 - INFO - New best model saved with accuracy: 0.80%
-2026-06-29 08:13:12 - INFO - 
-Train Dice      : 0.8009
-Train Loss      : 0.2779
-Encoder Grad    : 6.6663
-Decoder Grad    : 0.4959
-Mean Prob       : 0.1303
-Prob Std        : 0.3349
-Mask Area       : 0.1304
-Encoder LR      : 4.27e-05
-Decoder LR      : 7.38e-05
-2026-06-29 08:13:12 - INFO - Epoch 2675/50000: Train Loss: 0.2779, Test Loss: 0.1644, Test Dice: 0.8636, Test IoU: 0.7616
-2026-06-29 08:13:55 - INFO - 
-Train Dice      : 0.8072
-Train Loss      : 0.2691
-Encoder Grad    : 5.7748
-Decoder Grad    : 0.4285
-Mean Prob       : 0.1359
-Prob Std        : 0.3406
-Mask Area       : 0.1360
-Encoder LR      : 4.08e-05
-Decoder LR      : 7.53e-05
-2026-06-29 08:13:55 - INFO - Epoch 2676/50000: Train Loss: 0.2691, Test Loss: 0.1611, Test Dice: 0.8737, Test IoU: 0.7775
-2026-06-29 08:14:37 - INFO - 
-Train Dice      : 0.7966
-Train Loss      : 0.2900
-Encoder Grad    : 5.3919
-Decoder Grad    : 0.4565
-Mean Prob       : 0.1388
-Prob Std        : 0.3429
-Mask Area       : 0.1389
-Encoder LR      : 3.89e-05
-Decoder LR      : 7.69e-05
-2026-06-29 08:14:38 - INFO - Epoch 2677/50000: Train Loss: 0.2900, Test Loss: 0.1625, Test Dice: 0.8647, Test IoU: 0.7637
-2026-06-29 08:15:20 - INFO - 
-Train Dice      : 0.8256
-Train Loss      : 0.2497
-Encoder Grad    : 5.6218
-Decoder Grad    : 0.4615
-Mean Prob       : 0.1335
-Prob Std        : 0.3380
-Mask Area       : 0.1336
-Encoder LR      : 3.70e-05
-Decoder LR      : 7.84e-05
-2026-06-29 08:15:21 - INFO - Epoch 2678/50000: Train Loss: 0.2497, Test Loss: 0.1537, Test Dice: 0.8789, Test IoU: 0.7859
-2026-06-29 08:16:03 - INFO - 
-Train Dice      : 0.8052
-Train Loss      : 0.2803
-Encoder Grad    : 6.0920
-Decoder Grad    : 0.4891
-Mean Prob       : 0.1371
-Prob Std        : 0.3417
-Mask Area       : 0.1371
-Encoder LR      : 3.50e-05
-Decoder LR      : 8.00e-05
-2026-06-29 08:16:04 - INFO - Epoch 2679/50000: Train Loss: 0.2803, Test Loss: 0.1645, Test Dice: 0.8675, Test IoU: 0.7677
-2026-06-29 08:16:46 - INFO - 
-Train Dice      : 0.8156
-Train Loss      : 0.2591
-Encoder Grad    : 5.8526
-Decoder Grad    : 0.4435
-Mean Prob       : 0.1406
-Prob Std        : 0.3451
-Mask Area       : 0.1406
-Encoder LR      : 3.30e-05
-Decoder LR      : 8.16e-05
-2026-06-29 08:16:47 - INFO - Epoch 2680/50000: Train Loss: 0.2591, Test Loss: 0.1662, Test Dice: 0.8702, Test IoU: 0.7721
-2026-06-29 08:17:28 - INFO - 
-Train Dice      : 0.8250
-Train Loss      : 0.2492
-Encoder Grad    : 5.9720
-Decoder Grad    : 0.4308
-Mean Prob       : 0.1317
-Prob Std        : 0.3361
-Mask Area       : 0.1317
-Encoder LR      : 3.11e-05
-Decoder LR      : 8.31e-05
-2026-06-29 08:17:29 - INFO - Epoch 2681/50000: Train Loss: 0.2492, Test Loss: 0.1617, Test Dice: 0.8813, Test IoU: 0.7902
-2026-06-29 08:18:11 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:18:11 - INFO - 
-Train Dice      : 0.8191
-Train Loss      : 0.2544
-Encoder Grad    : 5.9479
-Decoder Grad    : 0.4747
-Mean Prob       : 0.1308
-Prob Std        : 0.3348
-Mask Area       : 0.1308
-Encoder LR      : 2.92e-05
-Decoder LR      : 8.47e-05
-2026-06-29 08:18:12 - INFO - Epoch 2682/50000: Train Loss: 0.2544, Test Loss: 0.1552, Test Dice: 0.8806, Test IoU: 0.7886
-2026-06-29 08:18:54 - INFO - 
-Train Dice      : 0.8370
-Train Loss      : 0.2341
-Encoder Grad    : 7.3422
-Decoder Grad    : 0.5237
-Mean Prob       : 0.1337
-Prob Std        : 0.3387
-Mask Area       : 0.1337
-Encoder LR      : 2.73e-05
-Decoder LR      : 8.62e-05
-2026-06-29 08:18:55 - INFO - Epoch 2683/50000: Train Loss: 0.2341, Test Loss: 0.1581, Test Dice: 0.8788, Test IoU: 0.7855
-2026-06-29 08:19:39 - INFO - 
-Train Dice      : 0.8151
-Train Loss      : 0.2607
-Encoder Grad    : 5.6814
-Decoder Grad    : 0.4863
-Mean Prob       : 0.1338
-Prob Std        : 0.3384
-Mask Area       : 0.1338
-Encoder LR      : 2.54e-05
-Decoder LR      : 8.77e-05
-2026-06-29 08:19:40 - INFO - Epoch 2684/50000: Train Loss: 0.2607, Test Loss: 0.1607, Test Dice: 0.8811, Test IoU: 0.7886
-2026-06-29 08:20:25 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:20:25 - INFO - 
-Train Dice      : 0.8183
-Train Loss      : 0.2610
-Encoder Grad    : 7.3253
-Decoder Grad    : 0.4688
-Mean Prob       : 0.1350
-Prob Std        : 0.3399
-Mask Area       : 0.1351
-Encoder LR      : 2.37e-05
-Decoder LR      : 8.91e-05
-2026-06-29 08:20:26 - INFO - Epoch 2685/50000: Train Loss: 0.2610, Test Loss: 0.1580, Test Dice: 0.8781, Test IoU: 0.7839
-2026-06-29 08:21:12 - INFO - 
-Train Dice      : 0.8239
-Train Loss      : 0.2502
-Encoder Grad    : 5.7227
-Decoder Grad    : 0.4073
-Mean Prob       : 0.1347
-Prob Std        : 0.3397
-Mask Area       : 0.1348
-Encoder LR      : 2.19e-05
-Decoder LR      : 9.04e-05
-2026-06-29 08:21:13 - INFO - Epoch 2686/50000: Train Loss: 0.2502, Test Loss: 0.1559, Test Dice: 0.8749, Test IoU: 0.7789
-2026-06-29 08:21:58 - INFO - 
-Train Dice      : 0.8176
-Train Loss      : 0.2572
-Encoder Grad    : 5.8762
-Decoder Grad    : 0.4179
-Mean Prob       : 0.1367
-Prob Std        : 0.3405
-Mask Area       : 0.1367
-Encoder LR      : 2.03e-05
-Decoder LR      : 9.18e-05
-2026-06-29 08:21:59 - INFO - Epoch 2687/50000: Train Loss: 0.2572, Test Loss: 0.1539, Test Dice: 0.8741, Test IoU: 0.7781
-2026-06-29 08:22:45 - INFO - 
-Train Dice      : 0.8420
-Train Loss      : 0.2282
-Encoder Grad    : 5.5562
-Decoder Grad    : 0.4057
-Mean Prob       : 0.1330
-Prob Std        : 0.3378
-Mask Area       : 0.1331
-Encoder LR      : 1.88e-05
-Decoder LR      : 9.30e-05
-2026-06-29 08:22:46 - INFO - Epoch 2688/50000: Train Loss: 0.2282, Test Loss: 0.1628, Test Dice: 0.8696, Test IoU: 0.7708
-2026-06-29 08:23:32 - INFO - 
-Train Dice      : 0.8234
-Train Loss      : 0.2455
-Encoder Grad    : 4.9990
-Decoder Grad    : 0.4308
-Mean Prob       : 0.1367
-Prob Std        : 0.3410
-Mask Area       : 0.1368
-Encoder LR      : 1.73e-05
-Decoder LR      : 9.41e-05
-2026-06-29 08:23:33 - INFO - Epoch 2689/50000: Train Loss: 0.2455, Test Loss: 0.1526, Test Dice: 0.8816, Test IoU: 0.7899
-2026-06-29 08:24:18 - INFO - 
-Train Dice      : 0.8428
-Train Loss      : 0.2322
-Encoder Grad    : 7.0951
-Decoder Grad    : 0.5056
-Mean Prob       : 0.1320
-Prob Std        : 0.3363
-Mask Area       : 0.1320
-Encoder LR      : 1.60e-05
-Decoder LR      : 9.52e-05
-2026-06-29 08:24:19 - INFO - Epoch 2690/50000: Train Loss: 0.2322, Test Loss: 0.1589, Test Dice: 0.8813, Test IoU: 0.7895
-2026-06-29 08:25:04 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:25:04 - INFO - 
-Train Dice      : 0.8481
-Train Loss      : 0.2328
-Encoder Grad    : 5.9154
-Decoder Grad    : 0.4254
-Mean Prob       : 0.1360
-Prob Std        : 0.3407
-Mask Area       : 0.1360
-Encoder LR      : 1.48e-05
-Decoder LR      : 9.62e-05
-2026-06-29 08:25:05 - INFO - Epoch 2691/50000: Train Loss: 0.2328, Test Loss: 0.1624, Test Dice: 0.8675, Test IoU: 0.7678
-2026-06-29 08:25:51 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:25:51 - INFO - 
-Train Dice      : 0.8369
-Train Loss      : 0.2294
-Encoder Grad    : 7.1405
-Decoder Grad    : 0.4905
-Mean Prob       : 0.1281
-Prob Std        : 0.3324
-Mask Area       : 0.1282
-Encoder LR      : 1.37e-05
-Decoder LR      : 9.71e-05
-2026-06-29 08:25:52 - INFO - Epoch 2692/50000: Train Loss: 0.2294, Test Loss: 0.1519, Test Dice: 0.8883, Test IoU: 0.8008
-2026-06-29 08:26:38 - INFO - 
-Train Dice      : 0.8436
-Train Loss      : 0.2343
-Encoder Grad    : 5.5438
-Decoder Grad    : 0.4197
-Mean Prob       : 0.1353
-Prob Std        : 0.3397
-Mask Area       : 0.1354
-Encoder LR      : 1.27e-05
-Decoder LR      : 9.78e-05
-2026-06-29 08:26:39 - INFO - Epoch 2693/50000: Train Loss: 0.2343, Test Loss: 0.1495, Test Dice: 0.8807, Test IoU: 0.7889
-2026-06-29 08:27:24 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:27:24 - INFO - 
-Train Dice      : 0.8426
-Train Loss      : 0.2232
-Encoder Grad    : 5.6289
-Decoder Grad    : 0.4041
-Mean Prob       : 0.1364
-Prob Std        : 0.3416
-Mask Area       : 0.1364
-Encoder LR      : 1.19e-05
-Decoder LR      : 9.85e-05
-2026-06-29 08:27:25 - INFO - Epoch 2694/50000: Train Loss: 0.2232, Test Loss: 0.1543, Test Dice: 0.8891, Test IoU: 0.8026
-2026-06-29 08:27:26 - INFO - New best model saved with accuracy: 0.80%
-2026-06-29 08:28:11 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:28:11 - INFO - 
-Train Dice      : 0.8397
-Train Loss      : 0.2410
-Encoder Grad    : 5.8830
-Decoder Grad    : 0.4395
-Mean Prob       : 0.1355
-Prob Std        : 0.3400
-Mask Area       : 0.1356
-Encoder LR      : 1.12e-05
-Decoder LR      : 9.90e-05
-2026-06-29 08:28:12 - INFO - Epoch 2695/50000: Train Loss: 0.2410, Test Loss: 0.1636, Test Dice: 0.8899, Test IoU: 0.8037
-2026-06-29 08:28:13 - INFO - New best model saved with accuracy: 0.80%
-2026-06-29 08:28:57 - INFO - 
-Train Dice      : 0.8157
-Train Loss      : 0.2547
-Encoder Grad    : 5.2524
-Decoder Grad    : 0.4212
-Mean Prob       : 0.1364
-Prob Std        : 0.3412
-Mask Area       : 0.1364
-Encoder LR      : 1.07e-05
-Decoder LR      : 9.94e-05
-2026-06-29 08:28:58 - INFO - Epoch 2696/50000: Train Loss: 0.2547, Test Loss: 0.1672, Test Dice: 0.8722, Test IoU: 0.7751
-2026-06-29 08:29:38 - INFO - 
-Train Dice      : 0.8365
-Train Loss      : 0.2392
-Encoder Grad    : 5.7037
-Decoder Grad    : 0.3868
-Mean Prob       : 0.1320
-Prob Std        : 0.3363
-Mask Area       : 0.1320
-Encoder LR      : 1.03e-05
-Decoder LR      : 9.98e-05
-2026-06-29 08:29:39 - INFO - Epoch 2697/50000: Train Loss: 0.2392, Test Loss: 0.1597, Test Dice: 0.8908, Test IoU: 0.8049
-2026-06-29 08:29:39 - INFO - New best model saved with accuracy: 0.80%
-2026-06-29 08:30:18 - INFO - 
-Train Dice      : 0.8297
-Train Loss      : 0.2490
-Encoder Grad    : 6.6717
-Decoder Grad    : 0.4360
-Mean Prob       : 0.1355
-Prob Std        : 0.3404
-Mask Area       : 0.1355
-Encoder LR      : 1.01e-05
-Decoder LR      : 9.99e-05
-2026-06-29 08:30:19 - INFO - Epoch 2698/50000: Train Loss: 0.2490, Test Loss: 0.1513, Test Dice: 0.8877, Test IoU: 0.8000
-2026-06-29 08:30:59 - WARNING - Skipped 3/58 batches.
-2026-06-29 08:30:59 - INFO - 
-Train Dice      : 0.8439
-Train Loss      : 0.2276
-Encoder Grad    : 5.5288
-Decoder Grad    : 0.4117
-Mean Prob       : 0.1368
-Prob Std        : 0.3419
-Mask Area       : 0.1368
-Encoder LR      : 1.00e-05
-Decoder LR      : 1.00e-04
-2026-06-29 08:31:00 - INFO - Epoch 2699/50000: Train Loss: 0.2276, Test Loss: 0.1559, Test Dice: 0.8869, Test IoU: 0.7988
-2026-06-29 08:31:44 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:31:44 - INFO - 
-Train Dice      : 0.8354
-Train Loss      : 0.2463
-Encoder Grad    : 6.1018
-Decoder Grad    : 0.4209
-Mean Prob       : 0.1375
-Prob Std        : 0.3420
-Mask Area       : 0.1375
-Encoder LR      : 1.01e-05
-Decoder LR      : 9.99e-05
-2026-06-29 08:31:45 - INFO - Epoch 2700/50000: Train Loss: 0.2463, Test Loss: 0.1522, Test Dice: 0.8858, Test IoU: 0.7968
-2026-06-29 08:32:34 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:32:34 - INFO - 
-Train Dice      : 0.8431
-Train Loss      : 0.2370
-Encoder Grad    : 5.4016
-Decoder Grad    : 0.3763
-Mean Prob       : 0.1363
-Prob Std        : 0.3413
-Mask Area       : 0.1363
-Encoder LR      : 1.03e-05
-Decoder LR      : 9.98e-05
-2026-06-29 08:32:35 - INFO - Epoch 2701/50000: Train Loss: 0.2370, Test Loss: 0.1567, Test Dice: 0.8927, Test IoU: 0.8086
-2026-06-29 08:32:35 - INFO - New best model saved with accuracy: 0.81%
-2026-06-29 08:33:23 - INFO - 
-Train Dice      : 0.8460
-Train Loss      : 0.2299
-Encoder Grad    : 6.2014
-Decoder Grad    : 0.4381
-Mean Prob       : 0.1376
-Prob Std        : 0.3422
-Mask Area       : 0.1377
-Encoder LR      : 1.07e-05
-Decoder LR      : 9.94e-05
-2026-06-29 08:33:24 - INFO - Epoch 2702/50000: Train Loss: 0.2299, Test Loss: 0.1556, Test Dice: 0.8939, Test IoU: 0.8104
-2026-06-29 08:33:24 - INFO - New best model saved with accuracy: 0.81%
-2026-06-29 08:34:11 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:34:11 - INFO - 
-Train Dice      : 0.8492
-Train Loss      : 0.2228
-Encoder Grad    : 5.5153
-Decoder Grad    : 0.3901
-Mean Prob       : 0.1375
-Prob Std        : 0.3425
-Mask Area       : 0.1375
-Encoder LR      : 1.12e-05
-Decoder LR      : 9.90e-05
-2026-06-29 08:34:12 - INFO - Epoch 2703/50000: Train Loss: 0.2228, Test Loss: 0.1488, Test Dice: 0.8845, Test IoU: 0.7952
-2026-06-29 08:34:54 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:34:54 - INFO - 
-Train Dice      : 0.8332
-Train Loss      : 0.2447
-Encoder Grad    : 6.1404
-Decoder Grad    : 0.4060
-Mean Prob       : 0.1390
-Prob Std        : 0.3434
-Mask Area       : 0.1390
-Encoder LR      : 1.19e-05
-Decoder LR      : 9.85e-05
-2026-06-29 08:34:55 - INFO - Epoch 2704/50000: Train Loss: 0.2447, Test Loss: 0.1616, Test Dice: 0.8910, Test IoU: 0.8059
-2026-06-29 08:35:37 - INFO - 
-Train Dice      : 0.8362
-Train Loss      : 0.2460
-Encoder Grad    : 5.4933
-Decoder Grad    : 0.4025
-Mean Prob       : 0.1370
-Prob Std        : 0.3417
-Mask Area       : 0.1370
-Encoder LR      : 1.27e-05
-Decoder LR      : 9.78e-05
-2026-06-29 08:35:38 - INFO - Epoch 2705/50000: Train Loss: 0.2460, Test Loss: 0.1500, Test Dice: 0.8932, Test IoU: 0.8094
-2026-06-29 08:36:20 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:36:20 - INFO - 
-Train Dice      : 0.8441
-Train Loss      : 0.2229
-Encoder Grad    : 4.4901
-Decoder Grad    : 0.3665
-Mean Prob       : 0.1357
-Prob Std        : 0.3404
-Mask Area       : 0.1357
-Encoder LR      : 1.37e-05
-Decoder LR      : 9.71e-05
-2026-06-29 08:36:21 - INFO - Epoch 2706/50000: Train Loss: 0.2229, Test Loss: 0.1538, Test Dice: 0.8879, Test IoU: 0.8004
-2026-06-29 08:37:04 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:37:04 - INFO - 
-Train Dice      : 0.8584
-Train Loss      : 0.2140
-Encoder Grad    : 6.7428
-Decoder Grad    : 0.4339
-Mean Prob       : 0.1398
-Prob Std        : 0.3444
-Mask Area       : 0.1398
-Encoder LR      : 1.48e-05
-Decoder LR      : 9.62e-05
-2026-06-29 08:37:04 - INFO - Epoch 2707/50000: Train Loss: 0.2140, Test Loss: 0.1502, Test Dice: 0.8861, Test IoU: 0.7973
-2026-06-29 08:37:47 - INFO - 
-Train Dice      : 0.8457
-Train Loss      : 0.2326
-Encoder Grad    : 6.9878
-Decoder Grad    : 0.4614
-Mean Prob       : 0.1360
-Prob Std        : 0.3408
-Mask Area       : 0.1361
-Encoder LR      : 1.60e-05
-Decoder LR      : 9.52e-05
-2026-06-29 08:37:48 - INFO - Epoch 2708/50000: Train Loss: 0.2326, Test Loss: 0.1559, Test Dice: 0.8822, Test IoU: 0.7907
-2026-06-29 08:38:30 - INFO - 
-Train Dice      : 0.8462
-Train Loss      : 0.2243
-Encoder Grad    : 6.2014
-Decoder Grad    : 0.4402
-Mean Prob       : 0.1360
-Prob Std        : 0.3402
-Mask Area       : 0.1361
-Encoder LR      : 1.73e-05
-Decoder LR      : 9.41e-05
-2026-06-29 08:38:31 - INFO - Epoch 2709/50000: Train Loss: 0.2243, Test Loss: 0.1536, Test Dice: 0.8888, Test IoU: 0.8018
-2026-06-29 08:39:14 - INFO - 
-Train Dice      : 0.8244
-Train Loss      : 0.2580
-Encoder Grad    : 5.5424
-Decoder Grad    : 0.3897
-Mean Prob       : 0.1391
-Prob Std        : 0.3432
-Mask Area       : 0.1392
-Encoder LR      : 1.88e-05
-Decoder LR      : 9.30e-05
-2026-06-29 08:39:14 - INFO - Epoch 2710/50000: Train Loss: 0.2580, Test Loss: 0.1512, Test Dice: 0.8944, Test IoU: 0.8110
-2026-06-29 08:39:15 - INFO - New best model saved with accuracy: 0.81%
-2026-06-29 08:39:57 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:39:57 - INFO - 
-Train Dice      : 0.8324
-Train Loss      : 0.2471
-Encoder Grad    : 6.3573
-Decoder Grad    : 0.4547
-Mean Prob       : 0.1353
-Prob Std        : 0.3399
-Mask Area       : 0.1354
-Encoder LR      : 2.03e-05
-Decoder LR      : 9.18e-05
-2026-06-29 08:39:58 - INFO - Epoch 2711/50000: Train Loss: 0.2471, Test Loss: 0.1533, Test Dice: 0.8874, Test IoU: 0.7994
-2026-06-29 08:40:40 - INFO - 
-Train Dice      : 0.8329
-Train Loss      : 0.2388
-Encoder Grad    : 7.6646
-Decoder Grad    : 0.5269
-Mean Prob       : 0.1409
-Prob Std        : 0.3456
-Mask Area       : 0.1410
-Encoder LR      : 2.19e-05
-Decoder LR      : 9.04e-05
-2026-06-29 08:40:41 - INFO - Epoch 2712/50000: Train Loss: 0.2388, Test Loss: 0.1551, Test Dice: 0.8885, Test IoU: 0.8016
-2026-06-29 08:41:23 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:41:23 - INFO - 
-Train Dice      : 0.8323
-Train Loss      : 0.2436
-Encoder Grad    : 7.4205
-Decoder Grad    : 0.5007
-Mean Prob       : 0.1371
-Prob Std        : 0.3420
-Mask Area       : 0.1372
-Encoder LR      : 2.37e-05
-Decoder LR      : 8.91e-05
-2026-06-29 08:41:24 - INFO - Epoch 2713/50000: Train Loss: 0.2436, Test Loss: 0.1552, Test Dice: 0.8930, Test IoU: 0.8087
-2026-06-29 08:42:07 - INFO - 
-Train Dice      : 0.8328
-Train Loss      : 0.2456
-Encoder Grad    : 6.8364
-Decoder Grad    : 0.4665
-Mean Prob       : 0.1376
-Prob Std        : 0.3426
-Mask Area       : 0.1376
-Encoder LR      : 2.54e-05
-Decoder LR      : 8.77e-05
-2026-06-29 08:42:08 - INFO - Epoch 2714/50000: Train Loss: 0.2456, Test Loss: 0.1496, Test Dice: 0.8929, Test IoU: 0.8089
-2026-06-29 08:42:50 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:42:50 - INFO - 
-Train Dice      : 0.8519
-Train Loss      : 0.2197
-Encoder Grad    : 5.1516
-Decoder Grad    : 0.3897
-Mean Prob       : 0.1359
-Prob Std        : 0.3407
-Mask Area       : 0.1359
-Encoder LR      : 2.73e-05
-Decoder LR      : 8.62e-05
-2026-06-29 08:42:51 - INFO - Epoch 2715/50000: Train Loss: 0.2197, Test Loss: 0.1539, Test Dice: 0.8870, Test IoU: 0.7994
-2026-06-29 08:43:33 - WARNING - Skipped 2/58 batches.
-2026-06-29 08:43:33 - INFO - 
-Train Dice      : 0.8631
-Train Loss      : 0.2026
-Encoder Grad    : 6.9360
-Decoder Grad    : 0.4374
-Mean Prob       : 0.1352
-Prob Std        : 0.3399
-Mask Area       : 0.1352
-Encoder LR      : 2.92e-05
-Decoder LR      : 8.47e-05
-2026-06-29 08:43:34 - INFO - Epoch 2716/50000: Train Loss: 0.2026, Test Loss: 0.1552, Test Dice: 0.8907, Test IoU: 0.8051
-2026-06-29 08:44:16 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:44:16 - INFO - 
-Train Dice      : 0.8349
-Train Loss      : 0.2308
-Encoder Grad    : 6.0373
-Decoder Grad    : 0.4368
-Mean Prob       : 0.1372
-Prob Std        : 0.3422
-Mask Area       : 0.1372
-Encoder LR      : 3.11e-05
-Decoder LR      : 8.31e-05
-2026-06-29 08:44:17 - INFO - Epoch 2717/50000: Train Loss: 0.2308, Test Loss: 0.1528, Test Dice: 0.8871, Test IoU: 0.7990
-2026-06-29 08:44:59 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:44:59 - INFO - 
-Train Dice      : 0.8393
-Train Loss      : 0.2194
-Encoder Grad    : 5.9731
-Decoder Grad    : 0.4612
-Mean Prob       : 0.1314
-Prob Std        : 0.3357
-Mask Area       : 0.1315
-Encoder LR      : 3.30e-05
-Decoder LR      : 8.16e-05
-2026-06-29 08:45:00 - INFO - Epoch 2718/50000: Train Loss: 0.2194, Test Loss: 0.1561, Test Dice: 0.8725, Test IoU: 0.7753
-2026-06-29 08:45:43 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:45:43 - INFO - 
-Train Dice      : 0.8302
-Train Loss      : 0.2410
-Encoder Grad    : 5.9389
-Decoder Grad    : 0.4456
-Mean Prob       : 0.1351
+Mask Area       : 0.1512
+Encoder LR      : 1.09e-05
+Decoder LR      : 3.94e-04
+2026-06-29 16:07:31 - INFO - Epoch 2626/50000: Train Loss: 0.4620, Test Loss: 0.4379, Test Dice: 0.9186, Test IoU: 0.8501
+2026-06-29 16:08:07 - INFO - 
+Train Dice      : 0.8912
+Train Loss      : 0.5192
+Encoder Grad    : 2.8756
+Decoder Grad    : 0.7162
+Mean Prob       : 0.1521
 Prob Std        : 0.3396
-Mask Area       : 0.1351
-Encoder LR      : 3.50e-05
-Decoder LR      : 8.00e-05
-2026-06-29 08:45:44 - INFO - Epoch 2719/50000: Train Loss: 0.2410, Test Loss: 0.1547, Test Dice: 0.8738, Test IoU: 0.7775
-2026-06-29 08:46:26 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:46:26 - INFO - 
-Train Dice      : 0.8595
-Train Loss      : 0.2095
-Encoder Grad    : 6.4812
-Decoder Grad    : 0.4657
-Mean Prob       : 0.1328
-Prob Std        : 0.3375
-Mask Area       : 0.1328
-Encoder LR      : 3.70e-05
-Decoder LR      : 7.84e-05
-2026-06-29 08:46:27 - INFO - Epoch 2720/50000: Train Loss: 0.2095, Test Loss: 0.1614, Test Dice: 0.8923, Test IoU: 0.8082
-2026-06-29 08:47:10 - WARNING - Skipped 3/58 batches.
-2026-06-29 08:47:10 - INFO - 
-Train Dice      : 0.8349
-Train Loss      : 0.2494
-Encoder Grad    : 5.2290
-Decoder Grad    : 0.3418
-Mean Prob       : 0.1374
-Prob Std        : 0.3418
-Mask Area       : 0.1374
-Encoder LR      : 3.89e-05
-Decoder LR      : 7.69e-05
-2026-06-29 08:47:11 - INFO - Epoch 2721/50000: Train Loss: 0.2494, Test Loss: 0.1625, Test Dice: 0.8891, Test IoU: 0.8022
-2026-06-29 08:47:53 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:47:53 - INFO - 
-Train Dice      : 0.8675
-Train Loss      : 0.1959
-Encoder Grad    : 5.9663
-Decoder Grad    : 0.4613
-Mean Prob       : 0.1358
-Prob Std        : 0.3407
-Mask Area       : 0.1358
-Encoder LR      : 4.08e-05
-Decoder LR      : 7.53e-05
-2026-06-29 08:47:54 - INFO - Epoch 2722/50000: Train Loss: 0.1959, Test Loss: 0.1564, Test Dice: 0.8885, Test IoU: 0.8012
-2026-06-29 08:48:36 - INFO - 
-Train Dice      : 0.8471
-Train Loss      : 0.2319
-Encoder Grad    : 5.1484
-Decoder Grad    : 0.3488
-Mean Prob       : 0.1410
-Prob Std        : 0.3451
-Mask Area       : 0.1411
-Encoder LR      : 4.27e-05
-Decoder LR      : 7.38e-05
-2026-06-29 08:48:37 - INFO - Epoch 2723/50000: Train Loss: 0.2319, Test Loss: 0.1584, Test Dice: 0.8887, Test IoU: 0.8017
-2026-06-29 08:49:20 - INFO - 
-Train Dice      : 0.8343
-Train Loss      : 0.2401
-Encoder Grad    : 6.4673
-Decoder Grad    : 0.4634
-Mean Prob       : 0.1334
-Prob Std        : 0.3379
-Mask Area       : 0.1334
-Encoder LR      : 4.46e-05
-Decoder LR      : 7.23e-05
-2026-06-29 08:49:21 - INFO - Epoch 2724/50000: Train Loss: 0.2401, Test Loss: 0.1554, Test Dice: 0.8811, Test IoU: 0.7892
-2026-06-29 08:50:03 - INFO - 
-Train Dice      : 0.8332
-Train Loss      : 0.2404
-Encoder Grad    : 6.1976
-Decoder Grad    : 0.4341
-Mean Prob       : 0.1316
-Prob Std        : 0.3361
-Mask Area       : 0.1317
-Encoder LR      : 4.63e-05
-Decoder LR      : 7.09e-05
-2026-06-29 08:50:04 - INFO - Epoch 2725/50000: Train Loss: 0.2404, Test Loss: 0.1596, Test Dice: 0.8730, Test IoU: 0.7769
-2026-06-29 08:50:46 - INFO - 
-Train Dice      : 0.8236
-Train Loss      : 0.2431
-Encoder Grad    : 5.8852
-Decoder Grad    : 0.4188
-Mean Prob       : 0.1355
-Prob Std        : 0.3400
-Mask Area       : 0.1355
-Encoder LR      : 4.81e-05
-Decoder LR      : 6.96e-05
-2026-06-29 08:50:47 - INFO - Epoch 2726/50000: Train Loss: 0.2431, Test Loss: 0.1542, Test Dice: 0.8863, Test IoU: 0.7974
-2026-06-29 08:51:30 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:51:30 - INFO - 
-Train Dice      : 0.8305
-Train Loss      : 0.2488
-Encoder Grad    : 5.1647
-Decoder Grad    : 0.3851
-Mean Prob       : 0.1359
-Prob Std        : 0.3408
-Mask Area       : 0.1359
-Encoder LR      : 4.97e-05
-Decoder LR      : 6.82e-05
-2026-06-29 08:51:31 - INFO - Epoch 2727/50000: Train Loss: 0.2488, Test Loss: 0.1595, Test Dice: 0.9014, Test IoU: 0.8220
-2026-06-29 08:51:31 - INFO - New best model saved with accuracy: 0.82%
-2026-06-29 08:52:15 - INFO - 
-Train Dice      : 0.8410
-Train Loss      : 0.2310
-Encoder Grad    : 8.1370
-Decoder Grad    : 0.6869
-Mean Prob       : 0.1341
+Mask Area       : 0.1526
+Encoder LR      : 1.12e-05
+Decoder LR      : 3.92e-04
+2026-06-29 16:08:07 - INFO - Epoch 2627/50000: Train Loss: 0.5192, Test Loss: 0.4293, Test Dice: 0.9242, Test IoU: 0.8596
+2026-06-29 16:08:44 - INFO - 
+Train Dice      : 0.9096
+Train Loss      : 0.4854
+Encoder Grad    : 3.1172
+Decoder Grad    : 0.6761
+Mean Prob       : 0.1519
+Prob Std        : 0.3412
+Mask Area       : 0.1526
+Encoder LR      : 1.15e-05
+Decoder LR      : 3.89e-04
+2026-06-29 16:08:45 - INFO - Epoch 2628/50000: Train Loss: 0.4854, Test Loss: 0.4386, Test Dice: 0.9132, Test IoU: 0.8410
+2026-06-29 16:09:21 - INFO - 
+Train Dice      : 0.9010
+Train Loss      : 0.4871
+Encoder Grad    : 3.2503
+Decoder Grad    : 0.6812
+Mean Prob       : 0.1530
+Prob Std        : 0.3403
+Mask Area       : 0.1544
+Encoder LR      : 1.19e-05
+Decoder LR      : 3.87e-04
+2026-06-29 16:09:22 - INFO - Epoch 2629/50000: Train Loss: 0.4871, Test Loss: 0.4519, Test Dice: 0.9117, Test IoU: 0.8388
+2026-06-29 16:09:58 - INFO - 
+Train Dice      : 0.9046
+Train Loss      : 0.4906
+Encoder Grad    : 2.6530
+Decoder Grad    : 0.5919
+Mean Prob       : 0.1522
+Prob Std        : 0.3401
+Mask Area       : 0.1520
+Encoder LR      : 1.23e-05
+Decoder LR      : 3.84e-04
+2026-06-29 16:09:59 - INFO - Epoch 2630/50000: Train Loss: 0.4906, Test Loss: 0.4216, Test Dice: 0.9258, Test IoU: 0.8623
+2026-06-29 16:10:35 - INFO - 
+Train Dice      : 0.8999
+Train Loss      : 0.4962
+Encoder Grad    : 3.3617
+Decoder Grad    : 0.6475
+Mean Prob       : 0.1514
+Prob Std        : 0.3397
+Mask Area       : 0.1528
+Encoder LR      : 1.27e-05
+Decoder LR      : 3.81e-04
+2026-06-29 16:10:36 - INFO - Epoch 2631/50000: Train Loss: 0.4962, Test Loss: 0.4253, Test Dice: 0.9279, Test IoU: 0.8662
+2026-06-29 16:10:36 - INFO - New best model saved with accuracy: 0.87%
+2026-06-29 16:11:12 - INFO - 
+Train Dice      : 0.9165
+Train Loss      : 0.4559
+Encoder Grad    : 3.3815
+Decoder Grad    : 0.6527
+Mean Prob       : 0.1529
+Prob Std        : 0.3428
+Mask Area       : 0.1540
+Encoder LR      : 1.32e-05
+Decoder LR      : 3.78e-04
+2026-06-29 16:11:13 - INFO - Epoch 2632/50000: Train Loss: 0.4559, Test Loss: 0.4190, Test Dice: 0.9254, Test IoU: 0.8619
+2026-06-29 16:11:49 - INFO - 
+Train Dice      : 0.9115
+Train Loss      : 0.4662
+Encoder Grad    : 2.9295
+Decoder Grad    : 0.6314
+Mean Prob       : 0.1517
+Prob Std        : 0.3411
+Mask Area       : 0.1528
+Encoder LR      : 1.37e-05
+Decoder LR      : 3.75e-04
+2026-06-29 16:11:50 - INFO - Epoch 2633/50000: Train Loss: 0.4662, Test Loss: 0.4512, Test Dice: 0.9185, Test IoU: 0.8504
+2026-06-29 16:12:26 - INFO - 
+Train Dice      : 0.8967
+Train Loss      : 0.5041
+Encoder Grad    : 3.1644
+Decoder Grad    : 0.6624
+Mean Prob       : 0.1530
 Prob Std        : 0.3393
-Mask Area       : 0.1341
-Encoder LR      : 5.12e-05
-Decoder LR      : 6.70e-05
-2026-06-29 08:52:16 - INFO - Epoch 2728/50000: Train Loss: 0.2310, Test Loss: 0.1475, Test Dice: 0.8943, Test IoU: 0.8106
-2026-06-29 08:53:00 - INFO - 
-Train Dice      : 0.8226
-Train Loss      : 0.2554
-Encoder Grad    : 5.9554
-Decoder Grad    : 0.4129
-Mean Prob       : 0.1408
-Prob Std        : 0.3456
-Mask Area       : 0.1408
-Encoder LR      : 5.27e-05
-Decoder LR      : 6.59e-05
-2026-06-29 08:53:01 - INFO - Epoch 2729/50000: Train Loss: 0.2554, Test Loss: 0.1519, Test Dice: 0.8884, Test IoU: 0.8011
-2026-06-29 08:53:45 - INFO - 
-Train Dice      : 0.8433
-Train Loss      : 0.2302
-Encoder Grad    : 6.7130
-Decoder Grad    : 0.4865
-Mean Prob       : 0.1404
-Prob Std        : 0.3457
-Mask Area       : 0.1404
-Encoder LR      : 5.40e-05
-Decoder LR      : 6.48e-05
-2026-06-29 08:53:45 - INFO - Epoch 2730/50000: Train Loss: 0.2302, Test Loss: 0.1490, Test Dice: 0.8821, Test IoU: 0.7903
-2026-06-29 08:54:31 - INFO - 
-Train Dice      : 0.8169
-Train Loss      : 0.2596
-Encoder Grad    : 5.5982
-Decoder Grad    : 0.4607
-Mean Prob       : 0.1335
-Prob Std        : 0.3382
-Mask Area       : 0.1336
-Encoder LR      : 5.52e-05
-Decoder LR      : 6.38e-05
-2026-06-29 08:54:32 - INFO - Epoch 2731/50000: Train Loss: 0.2596, Test Loss: 0.1500, Test Dice: 0.8968, Test IoU: 0.8158
-2026-06-29 08:55:18 - INFO - 
-Train Dice      : 0.8414
-Train Loss      : 0.2337
-Encoder Grad    : 5.2864
-Decoder Grad    : 0.4249
-Mean Prob       : 0.1333
-Prob Std        : 0.3375
-Mask Area       : 0.1333
-Encoder LR      : 5.63e-05
-Decoder LR      : 6.29e-05
-2026-06-29 08:55:19 - INFO - Epoch 2732/50000: Train Loss: 0.2337, Test Loss: 0.1549, Test Dice: 0.8930, Test IoU: 0.8096
-2026-06-29 08:56:03 - INFO - 
-Train Dice      : 0.8342
-Train Loss      : 0.2433
-Encoder Grad    : 6.0129
-Decoder Grad    : 0.4472
-Mean Prob       : 0.1354
-Prob Std        : 0.3400
-Mask Area       : 0.1354
-Encoder LR      : 5.73e-05
-Decoder LR      : 6.22e-05
-2026-06-29 08:56:03 - INFO - Epoch 2733/50000: Train Loss: 0.2433, Test Loss: 0.1565, Test Dice: 0.8820, Test IoU: 0.7907
-2026-06-29 08:56:46 - WARNING - Skipped 1/58 batches.
-2026-06-29 08:56:46 - INFO - 
-Train Dice      : 0.8274
-Train Loss      : 0.2500
-Encoder Grad    : 6.1171
-Decoder Grad    : 0.4695
-Mean Prob       : 0.1405
-Prob Std        : 0.3457
-Mask Area       : 0.1405
-Encoder LR      : 5.81e-05
-Decoder LR      : 6.15e-05
-2026-06-29 08:56:47 - INFO - Epoch 2734/50000: Train Loss: 0.2500, Test Loss: 0.1490, Test Dice: 0.8985, Test IoU: 0.8181
-2026-06-29 08:57:30 - INFO - 
-Train Dice      : 0.8161
-Train Loss      : 0.2535
-Encoder Grad    : 5.1315
-Decoder Grad    : 0.4266
-Mean Prob       : 0.1324
-Prob Std        : 0.3368
-Mask Area       : 0.1325
-Encoder LR      : 5.88e-05
-Decoder LR      : 6.10e-05
-2026-06-29 08:57:31 - INFO - Epoch 2735/50000: Train Loss: 0.2535, Test Loss: 0.1487, Test Dice: 0.8922, Test IoU: 0.8072
-2026-06-29 08:58:14 - INFO - 
-Train Dice      : 0.8375
-Train Loss      : 0.2412
-Encoder Grad    : 5.4140
-Decoder Grad    : 0.4520
-Mean Prob       : 0.1344
-Prob Std        : 0.3391
-Mask Area       : 0.1345
-Encoder LR      : 5.93e-05
-Decoder LR      : 6.06e-05
-2026-06-29 08:58:15 - INFO - Epoch 2736/50000: Train Loss: 0.2412, Test Loss: 0.1672, Test Dice: 0.8966, Test IoU: 0.8151
+Mask Area       : 0.1537
+Encoder LR      : 1.42e-05
+Decoder LR      : 3.71e-04
+2026-06-29 16:12:26 - INFO - Epoch 2634/50000: Train Loss: 0.5041, Test Loss: 0.4209, Test Dice: 0.9241, Test IoU: 0.8596
+2026-06-29 16:13:03 - INFO - 
+Train Dice      : 0.8905
+Train Loss      : 0.5042
+Encoder Grad    : 3.0850
+Decoder Grad    : 0.6262
+Mean Prob       : 0.1522
+Prob Std        : 0.3396
+Mask Area       : 0.1535
+Encoder LR      : 1.48e-05
+Decoder LR      : 3.68e-04
+2026-06-29 16:13:04 - INFO - Epoch 2635/50000: Train Loss: 0.5042, Test Loss: 0.4295, Test Dice: 0.9247, Test IoU: 0.8608

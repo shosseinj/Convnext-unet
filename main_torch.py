@@ -1889,13 +1889,13 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
-    path_weight = './logs/ConvNeXt-pretrain/start-93.88/checkpoints_KvasirSEG-ConvNeXt/2617-test0.87.pth'
+    path_weight = './logs/ConvNeXt-pretrain_depth3393/start/checkpoints_KvasirSEG-ConvNeXt/2636-test0.87.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth2242/start/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth3393/start/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
-    # parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
+    # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
+    parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
     parser.add_argument('--lr', type=float, default=5e-4, help='Learning rate')
@@ -1999,11 +1999,12 @@ if __name__ == "__main__":
             # )
             model = ConvNeXtUNet(
         # weights_path="./convnext_tiny_22k_1k_384.pth",
-                drop_path_rate=0.4,
-                dropout_rate=0.4,
-                encoder_depth= [2,2,4,2]
+                drop_path_rate=0.00,
+                dropout_rate=0.0,
+                
+                encoder_depth= [3,3,9,3]
             )
-            model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
+            # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
             print('loaded Relu version of ConvNeXt-Tiny')
     
@@ -2068,7 +2069,7 @@ if __name__ == "__main__":
             },
             {
                 "params": other_params,
-                "lr": 4e-4,
+                "lr": 1e-4,
             },
         ],
         weight_decay=1e-4,
@@ -2077,14 +2078,14 @@ if __name__ == "__main__":
 
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
-        T_max=80,
-        eta_min= 0.00006  
+        T_max=170,
+        eta_min= 0.000006  
     )  
 
 
-    for name, param in model.named_parameters():
-        if 'encoder'  in name:
-            param.requires_grad = False
+    # for name, param in model.named_parameters():
+    #     if 'encoder'  in name:
+    #         param.requires_grad = False
 
 
 #     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -2120,7 +2121,7 @@ if __name__ == "__main__":
     # scheduler = get_triangular_scheduler(optimizer, min_lr=lr, max_lr=0.0001, epochs_to_peak=80, total_epochs=160)
         
     if args.checkpoint_path:
-            checkpoint = torch.load(args.checkpoint_path, map_location=device)
+            checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
             
             # Load model and optimizer states
 
@@ -2143,7 +2144,7 @@ if __name__ == "__main__":
             #     strict=False
             # )
             model.load_state_dict(checkpoint['model_state_dict'], strict=False)
-            model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
+            # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
             # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             

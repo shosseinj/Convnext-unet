@@ -15,7 +15,10 @@ from utils_torch import *  # You'll need to adapt utils for PyTorch
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-
+from PIL import Image
+from sklearn.model_selection import train_test_split
+import glob
+import cv2
 
 
 import numpy as np
@@ -24,7 +27,16 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import os 
 
+import os
+import glob
+import cv2
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+
+
 class Dataset:
+
     def __init__(
         self,
         data_name,
@@ -33,888 +45,499 @@ class Dataset:
         ttfs_convert,
         ttfs_noise=0,
         data_path='./dataset/',
+        input_size=(256, 256)
     ):
+
         self.name = data_name
-        self.flatten=flatten
+        self.flatten = flatten
         self.data_path = data_path
-        self.noise=ttfs_noise
-        self.logging_dir=logging_dir
-        # Load original data.
+        self.noise = ttfs_noise
+        self.input_size = input_size
+        self.logging_dir = logging_dir
+
+
+        # disable OpenCV warnings
+        try:
+            cv2.utils.logging.setLogLevel(
+                cv2.utils.logging.LOG_LEVEL_ERROR
+            )
+        except:
+            pass
+
+
         self.get_features_vectors()
-        # In case of SNN, convert input data with TTFS coding.
-        self.ttfss_convert=ttfs_convert
-        if ttfs_convert: self.convert_ttfs()
-        
+
+
+        self.ttfss_convert = ttfs_convert
+
+        if ttfs_convert:
+            self.convert_ttfs()
+
+
     def get_features_vectors(self):
+
         """
-        Load image datasets and transform into features. 
+        Train: 90% of Kvasir-SEG + 90% of CVC-ClinicDB (combined)
+        Val: 10% of Kvasir-SEG (separate) + 10% of CVC-ClinicDB (separate)
+        Test: CVC-300, ETIS-LARIBPOLYPDB, CVC-ColonDB (each separately)
         """
-        if 'MNIST' in self.name:
-            self.input_shape, self.train_sample=(28, 28, 1), 1/64
-            self.q, self.p = 1.0, 0.0
-            self.num_of_classes = 10
-            if self.name=='MNIST':
-                train_data = datasets.MNIST(root='./data', train=True, download=True)
-                test_data = datasets.MNIST(root='./data', train=False, download=True)
-            else:
-                train_data = datasets.FashionMNIST(root='./data', train=True, download=True)
-                test_data = datasets.FashionMNIST(root='./data', train=False, download=True)
-            self.x_train, self.y_train = train_data.data.numpy(), train_data.targets.numpy()
-            self.x_test, self.y_test = test_data.data.numpy(), test_data.targets.numpy()
-            self.x_train, self.x_test = self.x_train/255.0, self.x_test/255.0
-            if self.flatten:
-                self.x_train, self.x_test = self.x_train.reshape((len(self.x_train), -1)), self.x_test.reshape((len(self.x_test), -1))
-            else:
-                self.x_train, self.x_test = self.x_train.reshape(-1, 28, 28, 1), self.x_test.reshape(-1, 28, 28, 1)
+
+        self.num_of_classes = 2
+
+        self.input_shape = (
+            3,
+            self.input_size[0],
+            self.input_size[1]
+        )
+
+        extensions = ["*.png", "*.jpg", "*.jpeg", "*.tif", "*.tiff"]
+        
+        # ==========================================
+        # 1. Load Kvasir-SEG
+        # ==========================================
+        print("\n" + "="*60)
+        print("Loading Kvasir-SEG...")
+        print("="*60)
+        
+        kvasir_images = []
+        kvasir_masks = []
+        
+        kvasir_image_dir = os.path.join(self.data_path, "Kvasir-SEG", "images")
+        kvasir_mask_dir = os.path.join(self.data_path, "Kvasir-SEG", "masks")
+        
+        image_files = []
+        for ext in extensions:
+            image_files.extend(glob.glob(os.path.join(kvasir_image_dir, ext)))
+        image_files = sorted(image_files)
+        
+        for img_path in image_files:
+            filename = os.path.basename(img_path)
+            mask_path = os.path.join(kvasir_mask_dir, filename)
+            
+            if not os.path.exists(mask_path):
+                continue
+            
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            
+            if img is None or mask is None:
+                continue
+            
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+            mask = cv2.resize(mask, self.input_size, interpolation=cv2.INTER_NEAREST)
+            
+            img = (img.astype(np.float32) / 255.0)
+            img = np.transpose(img, (2, 0, 1))
+            mask = (mask > 127).astype(np.float32)
+            
+            kvasir_images.append(img)
+            kvasir_masks.append(mask)
+        
+        print(f"Loaded Kvasir-SEG: {len(kvasir_images)} images")
+        
+        # ==========================================
+        # 2. Load CVC-ClinicDB
+        # ==========================================
+        print("\n" + "="*60)
+        print("Loading CVC-ClinicDB...")
+        print("="*60)
+        
+        clinicdb_images = []
+        clinicdb_masks = []
+        
+        clinicdb_image_dir = os.path.join(self.data_path, "CVC-ClinicDB", "images")
+        clinicdb_mask_dir = os.path.join(self.data_path, "CVC-ClinicDB", "masks")
+        
+        image_files = []
+        for ext in extensions:
+            image_files.extend(glob.glob(os.path.join(clinicdb_image_dir, ext)))
+        image_files = sorted(image_files)
+        
+        for img_path in image_files:
+            filename = os.path.basename(img_path)
+            mask_path = os.path.join(clinicdb_mask_dir, filename)
+            
+            if not os.path.exists(mask_path):
+                continue
+            
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            
+            if img is None or mask is None:
+                continue
+            
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+            mask = cv2.resize(mask, self.input_size, interpolation=cv2.INTER_NEAREST)
+            
+            img = (img.astype(np.float32) / 255.0)
+            img = np.transpose(img, (2, 0, 1))
+            mask = (mask > 127).astype(np.float32)
+            
+            clinicdb_images.append(img)
+            clinicdb_masks.append(mask)
+        
+        print(f"Loaded CVC-ClinicDB: {len(clinicdb_images)} images")
+        
+        # ==========================================
+        # 3. Split datasets
+        # ==========================================
+        from sklearn.model_selection import train_test_split
+        
+        # Kvasir split (90% train, 10% val)
+        kvasir_x_train, kvasir_x_val, kvasir_y_train, kvasir_y_val = train_test_split(
+            np.array(kvasir_images, dtype=np.float32),
+            np.array(kvasir_masks, dtype=np.float32),
+            test_size=0.1,
+            random_state=42,
+            shuffle=True
+        )
+        
+        # ClinicDB split (90% train, 10% val)
+        clinicdb_x_train, clinicdb_x_val, clinicdb_y_train, clinicdb_y_val = train_test_split(
+            np.array(clinicdb_images, dtype=np.float32),
+            np.array(clinicdb_masks, dtype=np.float32),
+            test_size=0.1,
+            random_state=42,
+            shuffle=True
+        )
+        
+        # Combine training data
+        self.x_train = np.concatenate([kvasir_x_train, clinicdb_x_train], axis=0)
+        self.y_train = np.concatenate([kvasir_y_train, clinicdb_y_train], axis=0)
+        
+        # Shuffle combined training data
+        indices = np.random.permutation(len(self.x_train))
+        self.x_train = self.x_train[indices].astype(np.float32)
+        self.y_train = self.y_train[indices].astype(np.float32)
+        
+
+        # eveluate_dataset = 'clinicdb'
+        eveluate_dataset = 'CVC-300'
+        # eveluate_dataset = 'CVC-ColonDB'
+        # eveluate_dataset = 'ETIS-LARIBPOLYPDB'
+        # eveluate_dataset = 'both'
+        # eveluate_dataset = 'kvasir'
+        if eveluate_dataset == 'both':
+            self.x_test = np.concatenate(
+                [
+                    kvasir_x_val,
+                    clinicdb_x_val
+                ],
+                axis=0
+            )
+
+            self.y_test = np.concatenate(
+                [
+                    kvasir_y_val,
+                    clinicdb_y_val
+                ],
+                axis=0
+            )
 
 
 
+            # Shuffle test
+            idx = np.random.permutation(len(self.x_test))
+
+            self.x_test = self.x_test[idx].astype(np.float32)
+            self.y_test = self.y_test[idx].astype(np.float32)
 
 
+        elif eveluate_dataset== 'kvasir':
+            self.x_test = kvasir_x_val.astype(np.float32)
+            self.y_test = kvasir_y_val.astype(np.float32)
 
+        elif eveluate_dataset== 'clinicdb':
+            self.x_test = clinicdb_x_val.astype(np.float32)
+            self.y_test = clinicdb_y_val.astype(np.float32)
 
-        elif self.name == "KvasirSEG":
+        else:
 
-            from PIL import Image
-            from sklearn.model_selection import train_test_split
-            import glob
+            test_images = []
+            test_masks = []
+            
+            test_image_dir = os.path.join(self.data_path, eveluate_dataset, "images")
+            test_mask_dir = os.path.join(self.data_path, eveluate_dataset, "masks")
 
-            self.num_of_classes = 2
-            self.input_shape = (3, 256, 256)
-
-            self.q = 1.0
-            self.p = 0.0
-
-            image_dir = os.path.join(self.data_path, "Kvasir-SEG", "images")
-            mask_dir = os.path.join(self.data_path, "Kvasir-SEG", "masks")
-
-            image_files = sorted(glob.glob(os.path.join(image_dir, "*")))
-
-            images = []
-            masks = []
-
+            image_files = []
+            for ext in extensions:
+                image_files.extend(glob.glob(os.path.join(test_image_dir, ext)))
+            image_files = sorted(image_files)
+            
             for img_path in image_files:
-
                 filename = os.path.basename(img_path)
-                mask_path = os.path.join(mask_dir, filename)
-
+                mask_path = os.path.join(test_mask_dir, filename)
+                
                 if not os.path.exists(mask_path):
                     continue
-
-                img = Image.open(img_path).convert("RGB")
-                mask = Image.open(mask_path).convert("L")
-
-                img = img.resize((256, 256))
-                mask = mask.resize((256, 256))
-
-                img = np.array(img, dtype=np.float32) / 255.0
+                
+                img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+                mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+                
+                if img is None or mask is None:
+                    continue
+                
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = cv2.resize(img, self.input_size, interpolation=cv2.INTER_LINEAR)
+                mask = cv2.resize(mask, self.input_size, interpolation=cv2.INTER_NEAREST)
+                
+                img = (img.astype(np.float32) / 255.0)
                 img = np.transpose(img, (2, 0, 1))
-
-                mask = np.array(mask, dtype=np.float32)
                 mask = (mask > 127).astype(np.float32)
-
-                images.append(img)
-                masks.append(mask)
-
-            images = np.array(images, dtype=np.float32)
-            masks = np.array(masks, dtype=np.float32)
-
-            (
-                self.x_train,
-                self.x_test,
-                self.y_train,
-                self.y_test,
-            ) = train_test_split(
-                images,
-                masks,
-                test_size=0.2,
-                random_state=42,
-                shuffle=True,
-            )
-
-
-
-
-
-
-
-        elif 'CIFAR' in self.name:
-            # CIFAR10 or CIFAR100 dataset.
-            self.input_shape=(3,32, 32)
-            self.q, self.p = 3.0, -3.0
-            if self.name=='CIFAR10':
-                self.num_of_classes = 10
-
-                transform_train = transforms.Compose([
-                    transforms.RandomCrop(32, padding=4),
-                    transforms.RandomHorizontalFlip(),
-                    transforms.RandAugment(num_ops=2, magnitude=9),
-                    transforms.ToTensor(),
-                ])
-                transform_test = transforms.Compose([
-                    transforms.ToTensor(),
-                ])
-
-                train_dataset = datasets.ImageFolder(os.path.join(self.data_path, 'train'), transform=transform_train)
-                test_dataset = datasets.ImageFolder(os.path.join(self.data_path, 'test'), transform=transform_test)
                 
-                # Extract all data from ImageFolder using DataLoader
-                train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=len(train_dataset), shuffle=False)
-                test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=len(test_dataset), shuffle=False)
+                test_images.append(img)
+                test_masks.append(mask)
+  
+            self.x_test = np.array(test_images, dtype=np.float32)
+            self.y_test =  np.array(test_masks, dtype=np.float32)
+
+
                 
-                self.x_train, self.y_train = next(iter(train_loader))
-                self.x_test, self.y_test = next(iter(test_loader))
-                
-                # Convert to numpy and change from (N,C,H,W) to (N,H,W,C)
-                self.x_train = self.x_train.numpy()
-                self.x_test = self.x_test.numpy()
-                self.y_train = self.y_train.numpy()
-                self.y_test = self.y_test.numpy()
-                
-                self.mean_test, self.std_test = 0.4914, 0.2023
-                
-            else:
-                # CIFAR100
-                self.num_of_classes = 100
-                train_data = datasets.CIFAR100(root='./data', train=True, download=True)
-                test_data = datasets.CIFAR100(root='./data', train=False, download=True)
-                self.mean_test, self.std_test = 121.936, 68.389
-                self.x_train, self.y_train = train_data.data, np.array(train_data.targets)
-                self.x_test, self.y_test = test_data.data, np.array(test_data.targets)
-            
-            # Scale to [-3, 3] range.
-            self.x_test = (self.x_test - self.mean_test) / (self.std_test + 1e-7)
-            self.x_train = (self.x_train - self.mean_test) / (self.std_test + 1e-7)
-
-            
-        self.x_train, self.x_test = self.x_train.astype('float32'), self.x_test.astype('float32')
-
-        if self.name == "KvasirSEG":
-            self.y_train = self.y_train.astype(np.float32)
-            self.y_test = self.y_test.astype(np.float32)
-        else:
-            self.y_train = self.y_train.astype(np.int64)
-            self.y_test = self.y_test.astype(np.int64)
-
-        print ('Train data:', np.shape(self.x_train), np.shape(self.y_train))
-        print ('Test data:', np.shape(self.x_test), np.shape(self.y_test))
-
-    def convert_ttfs(self):
-        """
-        Convert input values into time-to-first-spike spiking times.
-        """
-        self.x_test, self.x_train = (self.x_test - self.p)/(self.q-self.p), (self.x_train - self.p)/(self.q-self.p)
-        self.x_train, self.x_test=1 - np.array(self.x_train), 1 - np.array(self.x_test)
-        self.x_test=np.maximum(0, self.x_test + np.random.randn(*self.x_test.shape).astype('float32') * self.noise)
-
-
-
-
-
-
-# Model definitions
-class SpikingDense(nn.Module):
-    def __init__(self, in_features, units, name, X_n=1, outputLayer=False, 
-                 robustness_params={}, kernel_regularizer=None, kernel_initializer=None):
-        super(SpikingDense, self).__init__()
-        self.units = units
-        self.B_n = (1 + 0.5) * X_n
-        self.outputLayer = outputLayer
-        self.robustness_params = robustness_params
         
-        # Register buffers for non-trainable parameters
-        self.register_buffer('t_min_prev', torch.tensor(0.0, dtype=torch.float32))
-        self.register_buffer('t_min', torch.tensor(0.0, dtype=torch.float32))
-        self.register_buffer('t_max', torch.tensor(1.0, dtype=torch.float32))
-        self.register_buffer('alpha', torch.ones(units, dtype=torch.float32))
-        
-        # Weight and bias
-        self.kernel = nn.Parameter(torch.empty(in_features, units, dtype=torch.float32))
-        self.D_i = nn.Parameter(torch.zeros(units, dtype=torch.float32))
-        
-        # Initialize weights
-        if kernel_initializer == 'glorot_uniform':
-            nn.init.xavier_uniform_(self.kernel)
-        elif kernel_initializer == 'he_uniform':
-            nn.init.kaiming_uniform_(self.kernel)
-        else:
-            nn.init.xavier_uniform_(self.kernel)
-        
-        self.name = name
-    
-    def set_params(self, t_min_prev, t_min):
-        """Set timing parameters for the layer."""
-        self.t_min_prev.fill_(t_min_prev)
-        self.t_min.fill_(t_min)
-        t_max = t_min + self.B_n
-        self.t_max.fill_(t_max)
-        return t_min, t_max
-    
-    def forward(self, tj):
-        """Forward pass with spiking computation."""
-        output = call_spiking(
-            tj, self.kernel, self.D_i, 
-            self.t_min_prev, self.t_min, self.t_max, 
-            self.robustness_params
-        )
-        
-        if self.outputLayer:
-            W_mult_x = torch.matmul(self.t_min - tj, self.kernel)
-            self.alpha.data = self.D_i / (self.t_min - self.t_min_prev)
-            output = self.alpha * (self.t_min - self.t_min_prev) + W_mult_x
-        
-        return output
+def grad_norm_except_encoder(model):
+    params = [
+        p for name, p in model.named_parameters()
+        if "encoder" not in name and p.grad is not None
+    ]
 
-
-class SpikingConv2D(nn.Module):
-    def __init__(self, in_channels, filters, name, X_n=1, padding='same', 
-                 kernel_size=(3,3), robustness_params={},
-                 kernel_regularizer=None, kernel_initializer=None):
-        super(SpikingConv2D, self).__init__()
-        self.filters = filters
-        self.kernel_size = kernel_size
-        self.padding = padding
-        self.B_n = (1 + 0.5) * X_n
-        self.robustness_params = robustness_params
-        
-        # Register buffers
-        self.register_buffer('t_min_prev', torch.tensor(0.0, dtype=torch.float32))
-        self.register_buffer('t_min', torch.tensor(0.0, dtype=torch.float32))
-        self.register_buffer('t_max', torch.tensor(1.0, dtype=torch.float32))
-        self.register_buffer('alpha', torch.ones(filters, dtype=torch.float32))
-        self.register_buffer('BN', torch.tensor([0]))
-        self.register_buffer('BN_before_ReLU', torch.tensor([0]))
-        
-        # Convolution weights (PyTorch format: out_channels, in_channels, H, W)
-        self.kernel = nn.Parameter(
-            torch.empty(filters, in_channels, kernel_size[0], kernel_size[1], dtype=torch.float32)
-        )
-        self.D_i = nn.Parameter(torch.zeros(9, filters, dtype=torch.float32))
-        
-        # Initialize weights
-        if kernel_initializer == 'glorot_uniform':
-            nn.init.xavier_uniform_(self.kernel)
-        elif kernel_initializer == 'he_uniform':
-            nn.init.kaiming_uniform_(self.kernel)
-        else:
-            nn.init.xavier_uniform_(self.kernel)
-        
-        self.name = name
-    
-    def set_params(self, t_min_prev, t_min):
-        """Set timing parameters for the layer."""
-        self.t_min_prev.fill_(t_min_prev)
-        self.t_min.fill_(t_min)
-        t_max = t_min + self.B_n
-        self.t_max.fill_(t_max)
-        return t_min, t_max
-    
-    def forward(self, tj):
-        """Forward pass with spiking computation."""
-        batch_size = tj.shape[0]
-        image_same_size = tj.shape[1]
-        image_valid_size = image_same_size - self.kernel_size[0] + 1
-        
-        # Pad input
-        padding_size = int(self.padding == 'same') * (self.kernel_size[0] // 2)
-        if padding_size > 0:
-            tj = F.pad(tj, (padding_size, padding_size, padding_size, padding_size), 
-                      value=self.t_min.item())
-        
-        # Extract patches using unfold
-        tj_patches = F.unfold(
-            tj.permute(0, 3, 1, 2),  # (B, C, H, W)
-            kernel_size=self.kernel_size,
-            padding=0,
-            stride=1
-        )  # (B, C*K*K, L)
-        
-        # Reshape for computation
-        tj_patches = tj_patches.permute(0, 2, 1)  # (B, L, C*K*K)
-        W_flat = self.kernel.reshape(-1, self.filters)  # (C*K*K, F)
-        
-        if self.padding == 'valid' or self.BN != 1 or self.BN_before_ReLU == 1:
-            tj_reshaped = tj_patches.reshape(-1, W_flat.shape[0])
-            ti = call_spiking(
-                tj_reshaped, W_flat, self.D_i[0],
-                self.t_min_prev, self.t_min, self.t_max,
-                self.robustness_params
-            )
-            if self.padding == 'valid':
-                ti = ti.reshape(batch_size, image_valid_size, image_valid_size, self.filters)
-            else:
-                ti = ti.reshape(batch_size, image_same_size, image_same_size, self.filters)
-        else:
-            # Handle 9 different partitions (simplified version)
-            # This is a complex case; you may need to adapt this based on your specific needs
-            ti = call_spiking(
-                tj_patches.reshape(-1, W_flat.shape[0]),
-                W_flat, self.D_i[0],
-                self.t_min_prev, self.t_min, self.t_max,
-                self.robustness_params
-            )
-            ti = ti.reshape(batch_size, image_same_size, image_same_size, self.filters)
-        
-        return ti
-
-
-class ModelTmax(nn.Module):
-    """Custom model that tracks minimum spike times."""
-    def __init__(self, *args, **kwargs):
-        super(ModelTmax, self).__init__(*args, **kwargs)
-        self.spiking_layers = []
-    
-    def forward(self, x):
-        min_ti = []
-        for layer in self.spiking_layers:
-            x = layer(x)
-            min_ti.append(torch.min(x))
-        return x, min_ti
-
-
-def call_spiking(tj, W, D_i, t_min_prev, t_min, t_max, robustness_params):
-    """
-    Calculates spiking times from which ReLU functionality can be recovered.
-    PyTorch version.
-    """
-    # Quantize time if specified
-    if robustness_params.get('time_bits', 0) != 0:
-        # Simple quantization (you may need to implement proper fake quantization)
-        scale = (t_min - t_min_prev) / (2**robustness_params['time_bits'] - 1)
-        tj = t_min_prev + torch.round((tj - t_min_prev) / scale) * scale
-    
-    # Quantize weights if specified
-    if robustness_params.get('weight_bits', 0) != 0:
-        scale = (robustness_params['w_max'] - robustness_params['w_min']) / (2**robustness_params['weight_bits'] - 1)
-        W = robustness_params['w_min'] + torch.round((W - robustness_params['w_min']) / scale) * scale
-    
-    # Calculate spiking threshold
-    threshold = t_max - t_min - D_i
-    
-    # Calculate output spiking time
-    ti = torch.matmul(tj - t_min, W) + threshold + t_min
-    
-    # Ensure valid spiking time
-    ti = torch.where(ti < t_max, ti, t_max)
-    
-    # Add noise
-    if robustness_params.get('noise', 0.0) > 0:
-        ti = ti + torch.randn_like(ti) * robustness_params['noise']
-    
-    return ti
-
-def create_unet_segmentation(input_channels, base_filters=64, BN=True, dropout=0.4, 
-                             kernel_regularizer=None, kernel_initializer='glorot_uniform'):
-    """
-    Create a U-Net architecture for binary segmentation.
-    
-    Args:
-        input_channels: Number of input channels (3 for RGB)
-        base_filters: Base number of filters (doubled at each encoder level)
-        BN: Whether to use Batch Normalization
-        dropout: Dropout rate
-        kernel_regularizer: Not used in PyTorch version
-        kernel_initializer: Weight initialization method
-    """
-    
-    class DoubleConv(nn.Module):
-        """Double convolution block (Conv -> BN? -> ReLU -> Conv -> BN? -> ReLU)"""
-        def __init__(self, in_channels, out_channels, mid_channels=None):
-            super().__init__()
-            if not mid_channels:
-                mid_channels = out_channels
-            layers = [
-                nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1, bias=not BN),
-            ]
-            if BN:
-                layers.append(nn.BatchNorm2d(mid_channels))
-            layers.append(nn.ReLU(inplace=True))
-            layers.append(nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1, bias=not BN))
-            if BN:
-                layers.append(nn.BatchNorm2d(out_channels))
-            layers.append(nn.ReLU(inplace=True))
-            self.double_conv = nn.Sequential(*layers)
-            
-            # Initialize weights
-            for m in self.double_conv.modules():
-                if isinstance(m, nn.Conv2d):
-                    if kernel_initializer == 'he_uniform':
-                        nn.init.kaiming_uniform_(m.weight)
-                    else:
-                        nn.init.xavier_uniform_(m.weight)
-                    if m.bias is not None:
-                        nn.init.constant_(m.bias, 0)
-        
-        def forward(self, x):
-            return self.double_conv(x)
-    
-    class UNet(nn.Module):
-        def __init__(self):
-            super().__init__()
-            
-            # Encoder (downsampling path)
-            self.enc1 = DoubleConv(input_channels, base_filters)
-            self.enc2 = DoubleConv(base_filters, base_filters * 2)
-            self.enc3 = DoubleConv(base_filters * 2, base_filters * 4)
-            self.enc4 = DoubleConv(base_filters * 4, base_filters * 8)
-            
-            # Bottleneck
-            self.bottleneck = DoubleConv(base_filters * 8, base_filters * 16)
-            
-            # Decoder (upsampling path)
-            self.up4 = nn.ConvTranspose2d(base_filters * 16, base_filters * 8, kernel_size=2, stride=2)
-            self.dec4 = DoubleConv(base_filters * 16, base_filters * 8)
-            
-            self.up3 = nn.ConvTranspose2d(base_filters * 8, base_filters * 4, kernel_size=2, stride=2)
-            self.dec3 = DoubleConv(base_filters * 8, base_filters * 4)
-            
-            self.up2 = nn.ConvTranspose2d(base_filters * 4, base_filters * 2, kernel_size=2, stride=2)
-            self.dec2 = DoubleConv(base_filters * 4, base_filters * 2)
-            
-            self.up1 = nn.ConvTranspose2d(base_filters * 2, base_filters, kernel_size=2, stride=2)
-            self.dec1 = DoubleConv(base_filters * 2, base_filters)
-            
-            # Dropout
-            self.dropout = nn.Dropout2d(dropout) if dropout > 0 else nn.Identity()
-            
-            # Output layer
-            self.out_conv = nn.Conv2d(base_filters, 1, kernel_size=1)
-            
-            # Max pooling
-            self.pool = nn.MaxPool2d(2)
-            
-            # Initialize decoder convolutions
-            for m in [self.up4, self.up3, self.up2, self.up1]:
-                if kernel_initializer == 'he_uniform':
-                    nn.init.kaiming_uniform_(m.weight)
-                else:
-                    nn.init.xavier_uniform_(m.weight)
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            
-            if kernel_initializer == 'he_uniform':
-                nn.init.kaiming_uniform_(self.out_conv.weight)
-            else:
-                nn.init.xavier_uniform_(self.out_conv.weight)
-            if self.out_conv.bias is not None:
-                nn.init.constant_(self.out_conv.bias, 0)
-        
-        def forward(self, x):
-            # Encoder
-            enc1 = self.enc1(x)
-            enc2 = self.enc2(self.pool(enc1))
-            enc3 = self.enc3(self.pool(enc2))
-            enc4 = self.enc4(self.pool(enc3))
-            
-            # Bottleneck with dropout
-            bottleneck = self.bottleneck(self.pool(enc4))
-            bottleneck = self.dropout(bottleneck)
-            
-            # Decoder with skip connections
-            dec4 = self.up4(bottleneck)
-            dec4 = torch.cat([dec4, enc4], dim=1)
-            dec4 = self.dec4(dec4)
-            dec4 = self.dropout(dec4)
-            
-            dec3 = self.up3(dec4)
-            dec3 = torch.cat([dec3, enc3], dim=1)
-            dec3 = self.dec3(dec3)
-            dec3 = self.dropout(dec3)
-            
-            dec2 = self.up2(dec3)
-            dec2 = torch.cat([dec2, enc2], dim=1)
-            dec2 = self.dec2(dec2)
-            
-            dec1 = self.up1(dec2)
-            dec1 = torch.cat([dec1, enc1], dim=1)
-            dec1 = self.dec1(dec1)
-            
-            # Output
-            output = self.out_conv(dec1)
-            
-            return output
-    
-    return UNet()
-
-
-def create_vgg_segmentation(layers2D, kernel_size, layers1D, data, BN, dropout=0, 
-                          kernel_regularizer=None, kernel_initializer='glorot_uniform'):
-    """
-    Modified to use U-Net architecture instead of simple encoder-decoder.
-    Now ignores layers2D, kernel_size, layers1D parameters and creates a U-Net.
-    """
-    return create_unet_segmentation(
-        input_channels=data.input_shape[0] if isinstance(data.input_shape, (list, tuple)) else 3,
-        base_filters=64,
-        BN=BN,
-        dropout=dropout,
-        kernel_initializer=kernel_initializer
+    total_norm = torch.norm(
+        torch.stack([p.grad.norm(2) for p in params]),
+        2
     )
 
+    return total_norm.item()
+
+def mixup_data(images, masks, alpha=0.2):
+    """Mix two training samples together"""
+    if alpha > 0:
+        lam = np.random.beta(alpha, alpha)
+    else:
+        lam = 1.0
+
+    B = images.size(0)
+    idx = torch.randperm(B)
+
+    mixed_images = lam * images + (1 - lam) * images[idx]
+    mixed_masks  = lam * masks  + (1 - lam) * masks[idx]
+
+    return mixed_images, mixed_masks
+
+bce = nn.BCEWithLogitsLoss()
 
 
-def create_convnext_segmentation(layers2D, kernel_size, layers1D, data, BN, dropout=0, 
-                          kernel_regularizer=None, kernel_initializer='glorot_uniform'):
-    """
-    Modified to use U-Net architecture instead of simple encoder-decoder.
-    Now ignores layers2D, kernel_size, layers1D parameters and creates a U-Net.
-    """
+def train_epoch_segmentation(
+    model,
+    train_loader,
+    optimizer,
+    criterion,
+    device,
+    scheduler,
+    threshold
+):
+    import random
+    import numpy as np
+    import logging
+    from tqdm import tqdm
+    import torch
+    import torch.nn.functional as F
 
-
-    input_channels=data.input_shape[0] if isinstance(data.input_shape, (list, tuple)) else 3
-    base_filters=64
-    BN=BN
-    dropout=dropout
-    kernel_initializer=kernel_initializer
-    
-
-    class DoubleConv(nn.Module):
-        """Double convolution block (Conv -> BN? -> ReLU -> Conv -> BN? -> ReLU)"""
-        def __init__(self, in_channels, out_channels, mid_channels=None):
-            super().__init__()
-            if not mid_channels:
-                mid_channels = out_channels
-            layers = [
-                nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1, bias=not BN),
-            ]
-            if BN:
-                layers.append(nn.BatchNorm2d(mid_channels))
-            layers.append(nn.ReLU(inplace=True))
-            layers.append(nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1, bias=not BN))
-            if BN:
-                layers.append(nn.BatchNorm2d(out_channels))
-            layers.append(nn.ReLU(inplace=True))
-            self.double_conv = nn.Sequential(*layers)
-            
-            # Initialize weights
-            for m in self.double_conv.modules():
-                if isinstance(m, nn.Conv2d):
-                    if kernel_initializer == 'he_uniform':
-                        nn.init.kaiming_uniform_(m.weight)
-                    else:
-                        nn.init.xavier_uniform_(m.weight)
-                    if m.bias is not None:
-                        nn.init.constant_(m.bias, 0)
-        
-        def forward(self, x):
-            return self.double_conv(x)
-    
-    class UNet(nn.Module):
-        def __init__(self):
-            super().__init__()
-            
-            # Encoder (downsampling path)
-            self.enc1 = DoubleConv(input_channels, base_filters)
-            self.enc2 = DoubleConv(base_filters, base_filters * 2)
-            self.enc3 = DoubleConv(base_filters * 2, base_filters * 4)
-            self.enc4 = DoubleConv(base_filters * 4, base_filters * 8)
-            
-            # Bottleneck
-            self.bottleneck = DoubleConv(base_filters * 8, base_filters * 16)
-            
-            # Decoder (upsampling path)
-            self.up4 = nn.ConvTranspose2d(base_filters * 16, base_filters * 8, kernel_size=2, stride=2)
-            self.dec4 = DoubleConv(base_filters * 16, base_filters * 8)
-            
-            self.up3 = nn.ConvTranspose2d(base_filters * 8, base_filters * 4, kernel_size=2, stride=2)
-            self.dec3 = DoubleConv(base_filters * 8, base_filters * 4)
-            
-            self.up2 = nn.ConvTranspose2d(base_filters * 4, base_filters * 2, kernel_size=2, stride=2)
-            self.dec2 = DoubleConv(base_filters * 4, base_filters * 2)
-            
-            self.up1 = nn.ConvTranspose2d(base_filters * 2, base_filters, kernel_size=2, stride=2)
-            self.dec1 = DoubleConv(base_filters * 2, base_filters)
-            
-            # Dropout
-            self.dropout = nn.Dropout2d(dropout) if dropout > 0 else nn.Identity()
-            
-            # Output layer
-            self.out_conv = nn.Conv2d(base_filters, 1, kernel_size=1)
-            
-            # Max pooling
-            self.pool = nn.MaxPool2d(2)
-            
-            # Initialize decoder convolutions
-            for m in [self.up4, self.up3, self.up2, self.up1]:
-                if kernel_initializer == 'he_uniform':
-                    nn.init.kaiming_uniform_(m.weight)
-                else:
-                    nn.init.xavier_uniform_(m.weight)
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            
-            if kernel_initializer == 'he_uniform':
-                nn.init.kaiming_uniform_(self.out_conv.weight)
-            else:
-                nn.init.xavier_uniform_(self.out_conv.weight)
-            if self.out_conv.bias is not None:
-                nn.init.constant_(self.out_conv.bias, 0)
-        
-        def forward(self, x):
-            # Encoder
-            enc1 = self.enc1(x)
-            enc2 = self.enc2(self.pool(enc1))
-            enc3 = self.enc3(self.pool(enc2))
-            enc4 = self.enc4(self.pool(enc3))
-            
-            # Bottleneck with dropout
-            bottleneck = self.bottleneck(self.pool(enc4))
-            bottleneck = self.dropout(bottleneck)
-            
-            # Decoder with skip connections
-            dec4 = self.up4(bottleneck)
-            dec4 = torch.cat([dec4, enc4], dim=1)
-            dec4 = self.dec4(dec4)
-            dec4 = self.dropout(dec4)
-            
-            dec3 = self.up3(dec4)
-            dec3 = torch.cat([dec3, enc3], dim=1)
-            dec3 = self.dec3(dec3)
-            dec3 = self.dropout(dec3)
-            
-            dec2 = self.up2(dec3)
-            dec2 = torch.cat([dec2, enc2], dim=1)
-            dec2 = self.dec2(dec2)
-            
-            dec1 = self.up1(dec2)
-            dec1 = torch.cat([dec1, enc1], dim=1)
-            dec1 = self.dec1(dec1)
-            
-            # Output
-            output = self.out_conv(dec1)
-            
-            return output
-    
-    return UNet()
-
-
-
-
-def create_vgg_model_ReLU(layers2D, kernel_size, layers1D, data, BN, dropout=0, 
-                          kernel_regularizer=None, kernel_initializer='glorot_uniform'):
-    """Create VGG-like ReLU network in PyTorch."""
-    layers = []
-    in_channels = data.input_shape[0]  # Assuming channels last format
-    
-    i_conv = 0
-    for f in layers2D:
-        if f != 'pool':
-            i_conv += 1
-            layers.append(nn.Conv2d(in_channels, f, kernel_size, padding='same'))
-            if kernel_initializer == 'he_uniform':
-                nn.init.kaiming_uniform_(layers[-1].weight)
-            else:
-                nn.init.xavier_uniform_(layers[-1].weight)
-            
-            layers.append(nn.ReLU())
-            
-            if BN:
-                layers.append(nn.BatchNorm2d(f, dtype=torch.float32))
-            
-            if dropout > 0:
-                layers.append(nn.Dropout2d(dropout))
-            
-            in_channels = f
-        else:
-            layers.append(nn.MaxPool2d(2))
-    
-    layers.append(nn.Flatten())
-    
-    # Calculate flattened size
-    with torch.no_grad():
-        dummy_input = torch.randn(1, *data.input_shape)
-        dummy_output = nn.Sequential(*layers)(dummy_input)
-        flattened_size = dummy_output.shape[1]
-    
-    in_features = flattened_size
-    for d in layers1D:
-        layers.append(nn.Linear(in_features, d, dtype=torch.float32))
-        if kernel_initializer == 'he_uniform':
-            nn.init.kaiming_uniform_(layers[-1].weight)
-        else:
-            nn.init.xavier_uniform_(layers[-1].weight)
-        
-        layers.append(nn.ReLU())
-        
-        if BN:
-            layers.append(nn.BatchNorm1d(d, dtype=torch.float32))
-        
-        if dropout > 0:
-            layers.append(nn.Dropout(dropout))
-        
-        in_features = d
-    
-    layers.append(nn.Linear(in_features, data.num_of_classes, dtype=torch.float32))
-    
-    return nn.Sequential(*layers)
-
-
-def create_vgg_model_SNN(layers2D, kernel_size, layers1D, data, X_n=1000,
-                         robustness_params={}, kernel_regularizer=None, kernel_initializer='glorot_uniform'):
-    """Create VGG-like SNN in PyTorch."""
-    model = ModelTmax()
-    
-    in_channels = data.input_shape[0]
-    image_size = data.input_shape[0]
-    j = 0
-    
-    # First conv layer
-    layer = SpikingConv2D(
-        in_channels, layers2D[0], 'conv2d_1',
-        X_n[0] if isinstance(X_n, list) else X_n,
-        kernel_regularizer=kernel_regularizer,
-        kernel_initializer=kernel_initializer,
-        padding='same', kernel_size=kernel_size,
-        robustness_params=robustness_params
-    )
-    model.spiking_layers.append(layer)
-    in_channels = layers2D[0]
-    
-    # Remaining conv layers
-    for f in layers2D[1:]:
-        if f != 'pool':
-            j += 1
-            layer = SpikingConv2D(
-                in_channels, f, f'conv2d_{1+j}',
-                X_n[j] if isinstance(X_n, list) else X_n,
-                kernel_regularizer=kernel_regularizer,
-                kernel_initializer=kernel_initializer,
-                padding='same', kernel_size=kernel_size,
-                robustness_params=robustness_params
-            )
-            model.spiking_layers.append(layer)
-            in_channels = f
-        else:
-            # Pooling layer (need to implement MaxMinPool2D for PyTorch)
-            model.spiking_layers.append(MaxMinPool2D())
-            image_size //= 2
-    
-    # Flatten
-    model.spiking_layers.append(nn.Flatten())
-    
-    # Dense layers
-    i_dense = 1
-    input_features = (image_size ** 2) * layers2D[-2]
-    
-    for k, d in enumerate(layers1D):
-        layer = SpikingDense(
-            input_features, d, f'dense_{i_dense}',
-            X_n[j] if isinstance(X_n, list) else X_n,
-            robustness_params=robustness_params
-        )
-        model.spiking_layers.append(layer)
-        input_features = d
-        j += 1
-        i_dense += 1
-    
-    # Output layer
-    output_layer = SpikingDense(
-        input_features, 1, f'dense_{i_dense}',
-        outputLayer=True, robustness_params=robustness_params
-    )
-    # output_layer = SpikingDense(
-    #     input_features, data.num_of_classes, f'dense_{i_dense}',
-    #     outputLayer=True, robustness_params=robustness_params
-    # )
-    model.spiking_layers.append(output_layer)
-    
-    return model
-
-
-def create_fc_model_ReLU(layers=2, N_hid=340, N_in=784, N_out=10):
-    """Create 2-layer fully-connected ReLU network in PyTorch."""
-    model_layers = []
-    in_features = N_in
-    
-    for i in range(layers - 1):
-        out_features = N_hid[i] if isinstance(N_hid, list) else N_hid
-        model_layers.append(nn.Linear(in_features, out_features, dtype=torch.float32))
-        model_layers.append(nn.ReLU())
-        in_features = out_features
-    
-    model_layers.append(nn.Linear(in_features, N_out, dtype=torch.float32))
-    
-    return nn.Sequential(*model_layers)
-
-
-def create_fc_model_SNN(layers, X_n=1000, robustness_params={}, N_hid=340, N_in=784, N_out=10):
-    """Create 2-layer fully-connected SNN in PyTorch."""
-    model = ModelTmax()
-    in_features = N_in
-    
-    for i in range(layers - 1):
-        out_features = N_hid[i] if isinstance(N_hid, list) else N_hid
-        layer = SpikingDense(
-            in_features, out_features, f'dense_{i+1}',
-            X_n[i] if isinstance(X_n, list) else X_n,
-            robustness_params=robustness_params
-        )
-        model.spiking_layers.append(layer)
-        in_features = out_features
-    
-    # Output layer
-    output_layer = SpikingDense(
-        in_features, N_out, 'dense_output',
-        outputLayer=True, robustness_params=robustness_params
-    )
-    model.spiking_layers.append(output_layer)
-    
-    return model
-
-
-
-def train_epoch_segmentation(model, train_loader, optimizer, criterion, device):
-    """Training function for segmentation tasks."""
     model.train()
+
     running_loss = 0.0
-    
-    pbar = tqdm(train_loader, desc='Training')
+    running_dice = 0.0
+
+    skipped_batches = 0
+
+    # ----------------------------
+    # Diagnostics
+    # ----------------------------
+    enc_grad_sum = 0.0
+    dec_grad_sum = 0.0
+    prob_mean_sum = 0.0
+    prob_std_sum = 0.0
+    mask_area_sum = 0.0
+
+    valid_batches = 0
+
+    def grad_norm(module):
+        total = 0.0
+        for p in module.parameters():
+            if p.grad is not None:
+                total += p.grad.detach().norm(2).item() ** 2
+        return total ** 0.5
+
+    pbar = tqdm(train_loader, desc="Training")
+
     for batch_idx, (data, target) in enumerate(pbar):
-        data, target = data.to(device), target.to(device)
-        
-        # For segmentation, target shape should be (B, 1, H, W) or (B, H, W)
+
+        data = data.to(device)
+        target = target.to(device)
+
+        data = torch.clamp(data, 0.0, 1.0)
+
         if target.dim() == 3:
-            target = target.unsqueeze(1)  # Add channel dimension
-        
+            target = target.unsqueeze(1)
+
+        # MixUp
+        # if random.random() < 0.4:
+        #     lam = np.random.beta(0.2, 0.2)
+        #     idx = torch.randperm(data.size(0), device=device)
+
+        #     data = lam * data + (1 - lam) * data[idx]
+        #     target = lam * target + (1 - lam) * target[idx]
+
         optimizer.zero_grad()
+
+        # ----------------------------
+        # Forward
+        # ----------------------------
         output = model(data)
-        
-        # Ensure output and target have same shape
+
+        if not torch.isfinite(output).all():
+            skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
+            continue
+
         if output.shape != target.shape:
-            output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
-        
+            output = F.interpolate(
+                output,
+                size=target.shape[2:],
+                mode="bilinear",
+                align_corners=False,
+            )
+
         loss = criterion(output, target)
-        loss.backward()
-        
-        # Calculate gradient norm
-        total_norm = 0.0
+
+        if not torch.isfinite(loss):
+            skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
+            continue
+
+        # ----------------------------
+        # Backward
+        # ----------------------------
+        try:
+            loss.backward()
+        except RuntimeError:
+            skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
+            continue
+
+        # NaN gradient detection
+        bad_grad = False
         for p in model.parameters():
             if p.grad is not None:
-                param_norm = p.grad.data.norm(2)
-                total_norm += param_norm.item() ** 2
-        total_norm = total_norm ** 0.5
-        
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                if not torch.isfinite(p.grad).all():
+                    bad_grad = True
+                    break
+
+        if bad_grad:
+            skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
+            continue
+
+        # ----------------------------
+        # Diagnostics BEFORE clipping
+        # ----------------------------
+
+        enc_grad = grad_norm(model.encoder)
+        dec_grad = grad_norm_except_encoder(model)
+
+        grad_norm_total = torch.nn.utils.clip_grad_norm_(
+            model.parameters(),
+            max_norm=300
+        )
+
         optimizer.step()
-        
-        # Calculate Dice coefficient for monitoring
+
+        # scheduler.step()
+
         with torch.no_grad():
-            pred = (torch.sigmoid(output) > 0.5).float()
-            dice = dice_coefficient(pred, target)  # Now returns Python float
-        
+
+            prob = torch.sigmoid(output)
+
+            pred = (prob > threshold).float()
+
+            dice = dice_coefficient(pred, target)
+
+            prob_mean = prob.mean().item()
+            prob_std = prob.std().item()
+            mask_area = pred.mean().item()
+
+        # ----------------------------
+        # Accumulate
+        # ----------------------------
+
         running_loss += loss.item()
-        
-        pbar.set_postfix({
-            'Loss': f'{loss.item():.4f}',
-            'Dice': f'{dice:.4f}',  # dice is already a float
-            'Grad': f'{total_norm:.2f}',
-            'LR': f'{optimizer.param_groups[0]["lr"]:.6f}'
-        })
-    
-    return running_loss / len(train_loader)
+        running_dice += dice
 
+        enc_grad_sum += enc_grad
+        dec_grad_sum += dec_grad
 
+        prob_mean_sum += prob_mean
+        prob_std_sum += prob_std
+        mask_area_sum += mask_area
 
+        valid_batches += 1
+
+        # Current learning rates
+
+        enc_lr = optimizer.param_groups[0]["lr"]
+
+        dec_lr = (
+            optimizer.param_groups[1]["lr"]
+            if len(optimizer.param_groups) > 1
+            else enc_lr
+        )
+
+        pbar.set_postfix(
+
+            Loss=f"{loss.item():.4f}",
+
+            Dice=f"{dice:.4f}",
+
+            EncGrad=f"{enc_grad:.2f}",
+
+            DecGrad=f"{dec_grad:.2f}",
+
+            Prob=f"{prob_mean:.3f}",
+
+            Area=f"{mask_area:.3f}",
+
+            EncLR=f"{enc_lr:.2e}",
+
+            DecLR=f"{dec_lr:.2e}",
+
+            Skip=skipped_batches,
+        )
+
+    if skipped_batches > 0:
+        logging.warning(
+            f"Skipped {skipped_batches}/{len(train_loader)} batches."
+        )
+
+    # ----------------------------
+    # Epoch summary
+    # ----------------------------
+
+    if valid_batches > 0:
+
+        logging.info(
+            "\n"
+            f"Train Dice      : {running_dice / valid_batches:.4f}\n"
+            f"Train Loss      : {running_loss / valid_batches:.4f}\n"
+            f"Encoder Grad    : {enc_grad_sum / valid_batches:.4f}\n"
+            f"Decoder Grad    : {dec_grad_sum / valid_batches:.4f}\n"
+            f"Mean Prob       : {prob_mean_sum / valid_batches:.4f}\n"
+            f"Prob Std        : {prob_std_sum / valid_batches:.4f}\n"
+            f"Mask Area       : {mask_area_sum / valid_batches:.4f}\n"
+            f"Encoder LR      : {optimizer.param_groups[0]['lr']:.2e}\n"
+            f"Decoder LR      : {optimizer.param_groups[1]['lr']:.2e}"
+        )
+
+    return running_loss / max(valid_batches, 1)
 
 def dice_coefficient(pred, target, smooth=1e-6):
     """Calculate Dice coefficient."""
@@ -935,61 +558,319 @@ def iou_score(pred, target, smooth=1e-6):
     return iou.item()  # Return as Python float
 
 
-def test_segmentation(model, test_loader, criterion, device):
-    """Testing function for segmentation tasks."""
+def evaluate_with_tta(model, test_loader, device, threshold=0.40):
+    model.eval()
+    all_preds = []
+    all_targets = []
+    
+    with torch.no_grad():
+        for data, target in tqdm(test_loader, desc='TTA'):
+            data = data.to(device)
+            
+            # Original
+            pred1 = torch.sigmoid(model(data))
+            
+            # Horizontal flip
+            pred2 = torch.flip(torch.sigmoid(model(torch.flip(data, [-1]))), [-1])
+            
+            # Vertical flip  
+            pred3 = torch.flip(torch.sigmoid(model(torch.flip(data, [-2]))), [-2])
+            
+            # Average
+            pred = (pred1 + pred2 + pred3) / 3
+            
+            all_preds.append((pred > threshold).float().cpu())
+            all_targets.append(target.cpu())
+    
+    # Calculate metrics
+    all_preds = torch.cat(all_preds)
+    all_targets = torch.cat(all_targets)
+    
+    dice = dice_coefficient(all_preds, all_targets)
+    iou = iou_score(all_preds, all_targets)
+    
+    return dice, iou
+
+
+def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_tta=False):
+    """Testing function with optional TTA"""
     model.eval()
     test_loss = 0
     dice_scores = []
     iou_scores = []
     
     with torch.no_grad():
-        for data, target in test_loader:
+        for data, target in tqdm(test_loader, desc='Testing'):
             data, target = data.to(device), target.to(device)
             
             if target.dim() == 3:
                 target = target.unsqueeze(1)
             
-            output = model(data)
+            if use_tta:
+                # Use TTA for prediction
+                prob = tta_predict(
+                    model,
+                    data
+                )
+
+                pred = (
+                    prob > threshold
+                ).float()
+                
+                # For loss calculation, use original forward pass
+                output = model(data)
+                if output.shape != target.shape:
+                    output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
+                test_loss += criterion(output, target).item()
+            else:
+                # Regular prediction
+                output = model(data)
+                if output.shape != target.shape:
+                    output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
+                test_loss += criterion(output, target).item()
+                pred = (torch.sigmoid(output) > threshold).float()
             
-            if output.shape != target.shape:
-                output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
-            
-            test_loss += criterion(output, target).item()
-            
-            # Calculate metrics
-            pred = (torch.sigmoid(output) > 0.5).float()
-            dice = dice_coefficient(pred, target)  # Returns Python float
-            iou = iou_score(pred, target)  # Returns Python float
-            
-            # Now these are regular Python floats, no .cpu() needed
-            dice_scores.append(dice)
-            iou_scores.append(iou)
+            dice_scores.append(dice_coefficient(pred, target))
+            iou_scores.append(iou_score(pred, target))
     
     avg_loss = test_loss / len(test_loader)
-    avg_dice = np.mean(dice_scores)  # np.mean works on list of floats
+    avg_dice = np.mean(dice_scores)
     avg_iou = np.mean(iou_scores)
     
     return avg_loss, avg_dice, avg_iou
 
+def find_best_threshold(model, test_loader, criterion, device):
+    model.eval()
+
+    thresholds = np.arange(0.4, 0.95, 0.05)
+    # thresholds = np.arange(0.7, 0.999, 0.005)
+
+    best_threshold = 0.5
+    best_iou = 0.0
+    best_dice = 0.0
+
+    with torch.no_grad():
+
+        for threshold in thresholds:
+
+            dice_scores = []
+            iou_scores = []
+            test_loss = 0.0
+
+            for data, target in test_loader:
+
+                data = data.to(device)
+                target = target.to(device)
+
+                if target.dim() == 3:
+                    target = target.unsqueeze(1)
+
+                output = model(data)
+
+                if output.shape != target.shape:
+                    output = F.interpolate(
+                        output,
+                        size=target.shape[2:],
+                        mode='bilinear',
+                        align_corners=False
+                    )
+
+                test_loss += criterion(output, target).item()
+
+                pred = (torch.sigmoid(output) > threshold).float()
+
+                dice_scores.append(
+                    dice_coefficient(pred, target)
+                )
+
+                iou_scores.append(
+                    iou_score(pred, target)
+                )
+
+            avg_dice = np.mean(dice_scores)
+            avg_iou = np.mean(iou_scores)
+
+            print(
+                f"Threshold={threshold:.2f} "
+                f"Dice={avg_dice:.4f} "
+                f"IoU={avg_iou:.4f}"
+            )
+
+            if avg_dice > best_dice:
+                best_iou = avg_iou
+                best_dice = avg_dice
+                best_threshold = threshold
+
+    print("\n========================")
+    print(f"Best Threshold : {best_threshold:.2f}")
+    print(f"Best Dice      : {best_dice:.4f}")
+    print(f"Best IoU       : {best_iou:.4f}")
+    print("========================\n")
+
+    return best_threshold, best_dice, best_iou
 
 
+def evaluate_model(
+    model,
+    loader,
+    criterion,
+    device,
+    use_tta=False
+):
+    """
+    Finds best threshold using Dice and evaluates.
+    """
+
+    model.eval()
+
+    thresholds = np.arange(0.05, 0.96, 0.01)
+
+    best_threshold = 0.5
+    best_dice = 0.0
+
+    # --------------------------------------------------
+    # Find threshold maximizing Dice
+    # --------------------------------------------------
+    with torch.no_grad():
+
+        for threshold in thresholds:
+
+            dice_scores = []
+
+            for data, target in loader:
+
+                data = data.to(device)
+                target = target.to(device)
+
+                if target.dim() == 3:
+                    target = target.unsqueeze(1)
+
+                if use_tta:
+
+                    pred1 = torch.sigmoid(model(data))
+
+                    pred2 = torch.flip(
+                        torch.sigmoid(
+                            model(torch.flip(data, [-1]))
+                        ),
+                        [-1]
+                    )
+
+                    pred3 = torch.flip(
+                        torch.sigmoid(
+                            model(torch.flip(data, [-2]))
+                        ),
+                        [-2]
+                    )
+
+                    prob = (pred1 + pred2 + pred3) / 3
+
+                else:
+
+                    prob = torch.sigmoid(
+                        model(data)
+                    )
+
+                pred = (prob > threshold).float()
+
+                dice_scores.append(
+                    dice_coefficient(
+                        pred,
+                        target
+                    )
+                )
+
+            avg_dice = np.mean(dice_scores)
+
+            if avg_dice > best_dice:
+                best_dice = avg_dice
+                best_threshold = threshold
+
+    # --------------------------------------------------
+    # Final evaluation using best threshold
+    # --------------------------------------------------
+    total_loss = 0.0
+    dice_scores = []
+    iou_scores = []
+
+    with torch.no_grad():
+
+        for data, target in tqdm(loader, desc="Evaluating"):
+
+            data = data.to(device)
+            target = target.to(device)
+
+            if target.dim() == 3:
+                target = target.unsqueeze(1)
+
+            output = model(data)
+
+            if output.shape != target.shape:
+                output = F.interpolate(
+                    output,
+                    size=target.shape[2:],
+                    mode='bilinear',
+                    align_corners=False
+                )
+
+            total_loss += criterion(
+                output,
+                target
+            ).item()
+
+            if use_tta:
+
+                pred1 = torch.sigmoid(model(data))
+
+                pred2 = torch.flip(
+                    torch.sigmoid(
+                        model(torch.flip(data, [-1]))
+                    ),
+                    [-1]
+                )
+
+                pred3 = torch.flip(
+                    torch.sigmoid(
+                        model(torch.flip(data, [-2]))
+                    ),
+                    [-2]
+                )
+
+                prob = (pred1 + pred2 + pred3) / 3
+
+            else:
+
+                prob = torch.sigmoid(output)
+
+            pred = (
+                prob > best_threshold
+            ).float()
+
+            dice_scores.append(
+                dice_coefficient(
+                    pred,
+                    target
+                )
+            )
+
+            iou_scores.append(
+                iou_score(
+                    pred,
+                    target
+                )
+            )
+
+    return {
+        "threshold": best_threshold,
+        "loss": total_loss / len(loader),
+        "dice": np.mean(dice_scores),
+        "iou": np.mean(iou_scores)
+    }
 
 # Training function
 from tqdm import tqdm
 
-# def mixup_data(x, y, alpha=1.0):
-#     if alpha > 0:
-#         lam = np.random.beta(alpha, alpha)
-#     else:
-#         lam = 1
-#     batch_size = x.size()[0]
-#     index = torch.randperm(batch_size).to(x.device)
-#     mixed_x = lam * x + (1 - lam) * x[index, :]
-#     y_a, y_b = y, y[index]
-#     return mixed_x, y_a, y_b, lam
 
-# def mixup_criterion(criterion, pred, y_a, y_b, lam):
-#     return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
 
 
 
@@ -1014,91 +895,981 @@ def mixup_criterion(criterion, pred, y_a, y_b, lam):
 import math
 
 
+class DiceBCELoss(nn.Module):
+    def __init__(self, weight_bce=0.5, weight_dice=0.5, smooth=1e-6):
+        super().__init__()
+        self.weight_bce = weight_bce
+        self.weight_dice = weight_dice
+        self.smooth = smooth
+        
+    def forward(self, pred, target):
+        # BCE with label smoothing
+        target_smooth = target * 0.9 + 0.05  # Label smoothing
+        bce = F.binary_cross_entropy_with_logits(pred, target_smooth)
+        
+        # Dice loss
+        pred_sigmoid = torch.sigmoid(pred)
+        intersection = (pred_sigmoid * target).sum()
+        dice = 1 - (2. * intersection + self.smooth) / (pred_sigmoid.sum() + target.sum() + self.smooth)
+        
+        return self.weight_bce * bce + self.weight_dice * dice
 
-def train_epoch(model, train_loader, optimizer, criterion, device):
-    model.train()
-    running_loss = 0.0
-    correct = 0
-    total = 0
-    
-    pbar = tqdm(train_loader, desc='Training')
-    for batch_idx, (data, target) in enumerate(pbar):
-        data, target = data.to(device), target.to(device)
-        
-        # MixUp is generally not used for segmentation tasks.  We keep it
-        # commented out for reference but use plain BCE loss.
-        # data, targets_a, targets_b, lam = mixup_data(data, target, alpha=0.2)
-        
-        optimizer.zero_grad()
-        
-        if isinstance(model, ModelTmax):
-            output, min_ti = model(data)
-        # Use standard loss for segmentation
-        loss = criterion(output, target)
+
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+import torch
+import numpy as np
+
+import torch
+import torchvision.transforms as T
+import torchvision.transforms.functional as TF
+import numpy as np
+import random
+
+
+import random
+import numpy as np
+import torch
+import torch.nn.functional as F
+import torchvision.transforms.functional as TF
+
+
+class KvasirSEGDataset(torch.utils.data.Dataset):
+    def __init__(self, images, masks, is_train=True, target_size=352):
+        self.images = images
+        self.masks = masks
+        self.is_train = is_train
+        self.target_size = target_size
+
+    def __len__(self):
+        return len(self.images)
+
+    def _gaussian_blur_manual(self, tensor, kernel_size=9, sigma=4):
+        kernel_size = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
+
+        x = torch.arange(kernel_size).float() - (kernel_size - 1) / 2
+        gauss_1d = torch.exp(-x**2 / (2 * sigma**2))
+        gauss_1d = gauss_1d / gauss_1d.sum()
+
+        kernel_2d = gauss_1d.unsqueeze(0) * gauss_1d.unsqueeze(1)
+        kernel = kernel_2d.unsqueeze(0).unsqueeze(0)
+
+        padding = kernel_size // 2
+
+        return F.conv2d(
+            tensor,
+            kernel.to(tensor.device),
+            padding=padding
+        )
+
+    def _elastic_transform(self, image, mask,
+                           alpha=150,
+                           sigma=10):
+
+        shape = image.shape[1:]
+
+        dx = torch.randn(*shape) * sigma
+        dy = torch.randn(*shape) * sigma
+
+        dx = self._gaussian_blur_manual(
+            dx.unsqueeze(0).unsqueeze(0),
+            kernel_size=9,
+            sigma=4
+        )[0, 0]
+
+        dy = self._gaussian_blur_manual(
+            dy.unsqueeze(0).unsqueeze(0),
+            kernel_size=9,
+            sigma=4
+        )[0, 0]
+
+        grid_y, grid_x = torch.meshgrid(
+            torch.arange(shape[0]),
+            torch.arange(shape[1]),
+            indexing="ij"
+        )
+
+        grid_x = grid_x.float() + dx * alpha
+        grid_y = grid_y.float() + dy * alpha
+
+        grid_x = 2.0 * grid_x / (shape[1] - 1) - 1.0
+        grid_y = 2.0 * grid_y / (shape[0] - 1) - 1.0
+
+        grid = torch.stack(
+            [grid_x, grid_y],
+            dim=-1
+        ).unsqueeze(0)
+
+        image = F.grid_sample(
+            image.unsqueeze(0),
+            grid,
+            mode='bilinear',
+            padding_mode='border',
+            align_corners=False
+        )[0]
+
+        mask = F.grid_sample(
+            mask.unsqueeze(0).float(),
+            grid,
+            mode='nearest',
+            padding_mode='border',
+            align_corners=False
+        )[0]
+
+        return image, mask
+
+    def __getitem__(self, idx):
+
+        image = self.images[idx]
+        mask = self.masks[idx]
+
+        if isinstance(image, np.ndarray):
+            image = torch.from_numpy(image).float()
+
+        if isinstance(mask, np.ndarray):
+            mask = torch.from_numpy(mask).float()
+
+        if image.dim() == 2:
+            image = image.unsqueeze(0)
+
+        if mask.dim() == 2:
+            mask = mask.unsqueeze(0)
+
+        if image.max() > 1:
+            image = image / 255.0
+
+        if self.is_train:
+
+            # ----------------------------------
+            # Horizontal Flip
+            # ----------------------------------
+            RAN = 0.6
+            if random.random() < RAN:
+                image = torch.flip(image, [-1])
+                mask = torch.flip(mask, [-1])
+
+            # ----------------------------------
+            # Vertical Flip
+            # ----------------------------------
+            if random.random() < RAN:
+                image = torch.flip(image, [-2])
+                mask = torch.flip(mask, [-2])
+
+            # ----------------------------------
+            # Rotation
+            # ----------------------------------
+            if random.random() < RAN:
+
+                angle = random.uniform(-15, 15)
+
+                image = TF.rotate(
+                    image,
+                    angle,
+                    interpolation=TF.InterpolationMode.BILINEAR
+                )
+
+                mask = TF.rotate(
+                    mask,
+                    angle,
+                    interpolation=TF.InterpolationMode.NEAREST
+                )
+
+            # ----------------------------------
+            # Affine
+            # ----------------------------------
+            if random.random() < 0.8:
+
+                angle = random.uniform(-10, 10)
+
+                translate = (
+                    int(random.uniform(-0.1, 0.1) * image.shape[2]),
+                    int(random.uniform(-0.1, 0.1) * image.shape[1])
+                )
+
+                scale = random.uniform(0.8, 1.2)
+
+                image = TF.affine(
+                    image,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=0,
+                    interpolation=TF.InterpolationMode.BILINEAR
+                )
+
+                mask = TF.affine(
+                    mask,
+                    angle=angle,
+                    translate=translate,
+                    scale=scale,
+                    shear=0,
+                    interpolation=TF.InterpolationMode.NEAREST
+                )
+
+            # ----------------------------------
+            # Random Crop + Resize
+            # ----------------------------------
+            if random.random() < RAN:
+
+                H, W = image.shape[1:]
+
+                crop_ratio = random.uniform(0.85,1.0)
+
+                crop_h = int(H * crop_ratio)
+                crop_w = int(W * crop_ratio)
+
+                top = random.randint(0, H - crop_h)
+                left = random.randint(0, W - crop_w)
+
+                image = TF.crop(
+                    image,
+                    top,
+                    left,
+                    crop_h,
+                    crop_w
+                )
+
+                mask = TF.crop(
+                    mask,
+                    top,
+                    left,
+                    crop_h,
+                    crop_w
+                )
+
+                image = TF.resize(
+                    image,
+                    [H, W],
+                    interpolation=TF.InterpolationMode.BILINEAR
+                )
+
+                mask = TF.resize(
+                    mask,
+                    [H, W],
+                    interpolation=TF.InterpolationMode.NEAREST
+                )
+
+            # ----------------------------------
+            # Elastic
+            # ----------------------------------
+            if random.random() < 0.01:
+                image, mask = self._elastic_transform(
+                    image,
+                    mask,
+                    alpha=20,
+                    sigma=8
+                )
+
+            # ----------------------------------
+            # Brightness
+            # ----------------------------------
+            if random.random() < 0.1:
+
+                image = TF.adjust_brightness(
+                    image,
+                    random.uniform(0.8, 1.2)
+                )
+
+                image = TF.adjust_contrast(
+                    image,
+                    random.uniform(0.8, 1.2)
+                )
+
+                image = TF.adjust_saturation(
+                    image,
+                    random.uniform(0.8, 1.2)
+                )
+
+            # ----------------------------------
+            # Gaussian Blur
+            # ----------------------------------
+            if random.random() < 0.2:
+
+                image = TF.gaussian_blur(
+                    image,
+                    kernel_size=5
+                )
+
+            # ----------------------------------
+            # Gaussian Noise
+            # ----------------------------------
+            if random.random() < 0.2:
+
+                noise = (
+                    torch.randn_like(image) * 0.03
+                )
+
+                image = image + noise
+
+            # ----------------------------------
+            # Cutout
+            # ----------------------------------
+            if random.random() < 0.2:
+
+                H, W = image.shape[1:]
+
+                size = random.randint(
+                    int(0.05 * H),
+                    int(0.1 * H)
+                )
+
+                y = random.randint(
+                    0,
+                    H - size
+                )
+
+                x = random.randint(
+                    0,
+                    W - size
+                )
+
+                image[:, y:y+size, x:x+size] = 0
+
+        image = torch.clamp(image, 0, 1)
+
+        mask = (mask > 0.5).float()
+
+        return image, mask
+   
+class GradualWarmupScheduler:
+    def __init__(self, optimizer, multiplier, total_epoch, after_scheduler=None):
+        self.optimizer = optimizer
+        self.multiplier = multiplier
+        self.total_epoch = total_epoch
+        self.after_scheduler = after_scheduler
+        self.finished = False
+        self.base_lrs = [group['lr'] for group in optimizer.param_groups]
+
+    def __len__(self):
+        """Return the number of samples in the dataset."""
+        return len(self.images)
+    def step(self, epoch):
+        if epoch < self.total_epoch:
+            progress = epoch / self.total_epoch
+            for param_group, base_lr in zip(self.optimizer.param_groups, self.base_lrs):
+                param_group['lr'] = base_lr * ((1 - progress) / self.multiplier + progress)
         else:
-            output = model(data)
-            loss = mixup_criterion(criterion, output, targets_a, targets_b, lam)
-        
-        loss.backward()
-        
-        # Calculate gradient norm before clipping
-        total_norm = 0.0
-        for p in model.parameters():
-            if p.grad is not None:
-                param_norm = p.grad.data.norm(2)
-                total_norm += param_norm.item() ** 2
-        total_norm = total_norm ** 0.5
-        
-        # Gradient clipping was set to 1.0 which was limiting updates.
-        # We increase the threshold to 5.0 to allow larger steps.
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
-        optimizer.step()
-        
-        # scheduler.step()
-        
-        # Get current learning rate
-        current_lr = optimizer.param_groups[0]['lr']
-        
-        running_loss += loss.item()
-        _, predicted = output.max(1)
-        total += target.size(0)
-        correct += (lam * predicted.eq(targets_a).sum().item() + 
-                   (1 - lam) * predicted.eq(targets_b).sum().item())
-        
-        pbar.set_postfix({
-            'Loss': f'{loss.item():.4f}',
-            'Acc': f'{100.*correct/total:.2f}%',
-            'Grad': f'{total_norm:.2f}',
-            'LR': f'{current_lr:.6f}'
-        })
+            if not self.finished:
+                self.finished = True
+            if self.after_scheduler:
+                self.after_scheduler.step(epoch - self.total_epoch)
+
+
+class FocalLoss(nn.Module):
+    def __init__(self, alpha=0.75, gamma=2.0):
+        super().__init__()
+        self.alpha = alpha
+        self.gamma = gamma
     
-    return running_loss / len(train_loader), 100. * correct / total
+    def forward(self, pred, target):
+        # pred: logits, target: binary [0,1]
+        bce = F.binary_cross_entropy_with_logits(pred, target, reduction='none')
+        pt = torch.exp(-bce)
+        focal_loss = self.alpha * (1-pt)**self.gamma * bce
+        return focal_loss.mean()
 
 
-def test(model, test_loader, criterion, device):
+class TverskyLoss(nn.Module):
+    """Tversky loss for imbalanced segmentation."""
+    def __init__(self, alpha=0.3, beta=0.7, smooth=1e-6):
+        super().__init__()
+        self.alpha = alpha  # Weight for False Positives
+        self.beta = beta    # Weight for False Negatives (focus on polyps)
+        self.smooth = smooth
+
+    def forward(self, pred, target):
+        pred = torch.sigmoid(pred)
+        pred = pred.view(-1)
+        target = target.view(-1)
+        
+        tp = (pred * target).sum()
+        fp = ((1-target) * pred).sum()
+        fn = (target * (1-pred)).sum()
+        
+        tversky = (tp + self.smooth) / (tp + self.alpha*fp + self.beta*fn + self.smooth)
+        return 1 - tversky
+
+class CombinedTverskyFocalLoss(nn.Module):
+    """Combined Tversky and Focal loss for best performance."""
+    def __init__(self, tversky_weight=0.5, focal_weight=0.5):
+        super().__init__()
+        self.tversky = TverskyLoss(alpha=0.3, beta=0.7)
+        self.focal = FocalLoss(alpha=0.75, gamma=2.0)
+        self.tversky_weight = tversky_weight
+        self.focal_weight = focal_weight
+
+    def forward(self, pred, target):
+        return (self.tversky_weight * self.tversky(pred, target) + 
+                self.focal_weight * self.focal(pred, target))
+    
+class BoundaryLoss(nn.Module):
+    """Boundary-aware loss to improve segmentation edges"""
+    def __init__(self, theta0=3, theta=5):
+        super().__init__()
+        self.theta0 = theta0
+        self.theta = theta
+        
+    def forward(self, pred, target):
+        pred_sigmoid = torch.sigmoid(pred)
+        
+        # Target boundary detection
+        target_boundary = F.max_pool2d(
+            1 - target, kernel_size=self.theta0, stride=1, padding=self.theta0//2
+        ) - (1 - target)
+        
+        # Distance-weighted cross entropy for boundaries
+        dist_map = F.max_pool2d(
+            target_boundary, kernel_size=self.theta, stride=1, padding=self.theta//2
+        )
+        dist_map = dist_map / (dist_map.max() + 1e-8)
+        
+        bce = F.binary_cross_entropy_with_logits(pred, target, reduction='none')
+        weighted_bce = (bce * (1 + dist_map)).mean()
+        
+        return weighted_bce
+
+class HybridLoss(nn.Module):
+    """Combined loss for best segmentation performance"""
+    def __init__(self, boundary_weight=0.3, tversky_weight=0.4, focal_weight=0.3):
+        super().__init__()
+        self.boundary = BoundaryLoss()
+        self.tversky = TverskyLoss(alpha=0.3, beta=0.7)
+        self.focal = FocalLoss(alpha=0.75, gamma=2.0)
+        self.boundary_weight = boundary_weight
+        self.tversky_weight = tversky_weight
+        self.focal_weight = focal_weight
+        
+    def forward(self, pred, target):
+        # Add label smoothing to prevent overfitting
+        target_smooth = target * 0.9 + 0.05
+        
+        boundary_loss = self.boundary(pred, target_smooth)
+        tversky_loss = self.tversky(pred, target_smooth)
+        focal_loss = self.focal(pred, target_smooth)
+        
+        return (self.boundary_weight * boundary_loss + 
+                self.tversky_weight * tversky_loss + 
+                self.focal_weight * focal_loss)
+    
+
+
+def mixup_segmentation(data, target, alpha=0.2):
+        """Mixup for segmentation"""
+        batch_size = data.size(0)
+        index = torch.randperm(batch_size).to(data.device)
+        
+        lam = np.random.beta(alpha, alpha)
+        lam = max(lam, 1 - lam)  # Ensure lam >= 0.5
+        
+        mixed_data = lam * data + (1 - lam) * data[index]
+        mixed_target = lam * target + (1 - lam) * target[index]
+        
+        return mixed_data, mixed_target
+
+class SimpleCombinedLoss(nn.Module):
+    """Dice + BCE with label smoothing"""
+    def __init__(self, dice_weight=0.5, bce_weight=0.5, label_smoothing=0.1):
+        super().__init__()
+        self.dice_weight = dice_weight
+        self.bce_weight = bce_weight
+        self.label_smoothing = label_smoothing
+        
+    def forward(self, pred, target):
+        # Apply label smoothing
+        target_smooth = target * (1 - self.label_smoothing) + 0.5 * self.label_smoothing
+        
+        # Dice loss
+        pred_sigmoid = torch.sigmoid(pred)
+        intersection = (pred_sigmoid * target_smooth).sum()
+        dice = 1 - (2. * intersection + 1e-6) / (pred_sigmoid.sum() + target_smooth.sum() + 1e-6)
+        
+        # BCE loss
+        bce = F.binary_cross_entropy_with_logits(pred, target_smooth)
+        
+        return self.dice_weight * dice + self.bce_weight * bce
+    
+
+
+# Replace SimpleCombinedLoss with this:
+class StandardDiceBCELoss(nn.Module):
+    """Dice + BCE WITHOUT label smoothing"""
+    def __init__(self, dice_weight=0.5, bce_weight=0.5, smooth=1e-6):
+        super().__init__()
+        self.dice_weight = dice_weight
+        self.bce_weight = bce_weight
+        self.smooth = smooth
+        
+    def forward(self, pred, target):
+        # NO label smoothing! Use hard 0 and 1 targets.
+        bce = F.binary_cross_entropy_with_logits(pred, target)
+        
+        pred_sigmoid = torch.sigmoid(pred)
+        intersection = (pred_sigmoid * target).sum()
+        dice = 1 - (2. * intersection + self.smooth) / (pred_sigmoid.sum() + target.sum() + self.smooth)
+        
+        return self.dice_weight * dice + self.bce_weight * bce
+
+class DiceLoss(nn.Module):
+    def __init__(self, smooth=1e-6):
+        super().__init__()
+        self.smooth = smooth
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+
+        intersection = (probs * targets).sum(dim=1)
+        dice = (2. * intersection + self.smooth) / (
+            probs.sum(dim=1) + targets.sum(dim=1) + self.smooth
+        )
+
+        return 1 - dice.mean()
+
+bce_loss_fn = nn.BCEWithLogitsLoss()
+
+
+
+
+
+
+class BoundaryLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        sobel_x = torch.tensor([[1, 0, -1],
+                                [2, 0, -2],
+                                [1, 0, -1]], dtype=torch.float32)
+
+        sobel_y = sobel_x.t()
+
+        self.register_buffer("sobel_x", sobel_x.view(1, 1, 3, 3))
+        self.register_buffer("sobel_y", sobel_y.view(1, 1, 3, 3))
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+
+        # 🔥 FORCE SAME DEVICE (IMPORTANT FIX)
+        sobel_x = self.sobel_x.to(probs.device)
+        sobel_y = self.sobel_y.to(probs.device)
+
+        pred_edge = F.conv2d(probs, sobel_x, padding=1) + \
+                    F.conv2d(probs, sobel_y, padding=1)
+
+        target_edge = F.conv2d(targets, sobel_x, padding=1) + \
+                      F.conv2d(targets, sobel_y, padding=1)
+
+        return F.l1_loss(pred_edge, target_edge)
+    
+
+class CombinedLoss(nn.Module):
+    def __init__(self, dice_w=0.4, bce_w=0.3, boundary_w=0.35):
+        super().__init__()
+
+        self.dice = DiceLoss()
+        self.bce = nn.BCEWithLogitsLoss()
+        self.boundary = BoundaryLoss()
+
+        self.dice_w = dice_w
+        self.bce_w = bce_w
+        self.boundary_w = boundary_w
+
+    def forward(self, logits, targets):
+        dice_loss = self.dice(logits, targets)
+        bce_loss = self.bce(logits, targets)
+        boundary_loss = self.boundary(logits, targets)
+
+        total = (
+            self.dice_w * dice_loss +
+            self.bce_w * bce_loss +
+            self.boundary_w * boundary_loss
+        )
+
+        return total
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class FocalTverskyLoss(nn.Module):
+    def __init__(self, alpha=0.3, beta=0.7, gamma=0.75, smooth=1e-6):
+        super().__init__()
+        self.alpha = alpha   # FN weight
+        self.beta = beta     # FP weight
+        self.gamma = gamma   # focusing
+        self.smooth = smooth
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+
+        tp = (probs * targets).sum(dim=1)
+        fp = (probs * (1 - targets)).sum(dim=1)
+        fn = ((1 - probs) * targets).sum(dim=1)
+
+        tversky = (tp + self.smooth) / (
+            tp + self.alpha * fn + self.beta * fp + self.smooth
+        )
+
+        loss = (1 - tversky) ** self.gamma
+        return loss.mean()
+
+
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class FocalLossWithLogits(nn.Module):
+    def __init__(self, alpha=0.25, gamma=2.0, reduction="mean"):
+        super().__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+        self.reduction = reduction
+
+    def forward(self, logits, targets):
+        targets = targets.float()
+        bce = F.binary_cross_entropy_with_logits(logits, targets, reduction="none")
+        pt = torch.exp(-bce)
+        focal = self.alpha * (1 - pt) ** self.gamma * bce
+        if self.reduction == "mean":
+            return focal.mean()
+        if self.reduction == "sum":
+            return focal.sum()
+        return focal
+
+class DiceLossWithLogits(nn.Module):
+    def __init__(self, smooth=1.0):
+        super().__init__()
+        self.smooth = smooth
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+        intersection = (probs * targets).sum(dim=1)
+        dice = (2 * intersection + self.smooth) / (probs.sum(dim=1) + targets.sum(dim=1) + self.smooth)
+        return 1 - dice.mean()
+
+class L1MaskLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+        return F.l1_loss(probs, targets.float())
+
+class CombinedSegLoss(nn.Module):
+    def __init__(
+        self,
+        dice_w=0.35,
+        bce_w=0.15,
+        focal_w=0.15,
+        smooth=1e-6,
+        boundary_w= 0.35
+    ):
+        super().__init__()
+        self.dice_w = dice_w
+        self.bce_w = bce_w
+        self.boundary_w = boundary_w
+        self.focal_w = focal_w
+        self.smooth = smooth
+        self.bce = nn.BCEWithLogitsLoss()
+        self.focal = FocalLossWithLogits(alpha=0.25, gamma=2.0)
+    def boundary_loss(self, logits, targets):
+        """Extra weight on boundary pixels using Sobel"""
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+        
+        # Sobel kernels
+        kx = torch.tensor([[-1,0,1],[-2,0,2],[-1,0,1]], 
+                        dtype=torch.float32, device=logits.device)
+        kx = kx.view(1,1,3,3)
+        ky = kx.transpose(-1,-2)
+        
+        # Get boundary map from GT
+        if targets.dim() == 3:
+            targets_4d = targets.unsqueeze(1)
+        else:
+            targets_4d = targets
+        
+        gx = F.conv2d(targets_4d, kx, padding=1)
+        gy = F.conv2d(targets_4d, ky, padding=1)
+        boundary = (torch.sqrt(gx**2 + gy**2) > 0.1).float()
+        
+        # Dilate boundary mask slightly
+        boundary = F.max_pool2d(boundary, kernel_size=3, stride=1, padding=1)
+        
+        # Weighted BCE: boundary pixels count 3x
+        weight = 1.0 + 2.0 * boundary
+        bce_fn = nn.BCEWithLogitsLoss(reduction='none')
+        return (bce_fn(logits, targets.float()) * weight).mean()
+    
+    def dice_loss(self, logits, targets):
+        probs = torch.sigmoid(logits)
+        targets = targets.float()
+        
+        # Flatten spatial dims
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+        
+        intersection = (probs * targets).sum(dim=1)
+        dice = (2.0 * intersection + self.smooth) / (
+            probs.sum(dim=1) + targets.sum(dim=1) + self.smooth
+        )
+        return 1.0 - dice.mean()
+
+    def forward(self, logits, targets):
+        dice  = self.dice_loss(logits, targets)
+        bce   = self.bce(logits, targets.float())
+        focal = self.focal(logits, targets)
+        boundary = self.boundary_loss(logits, targets)
+        return (self.dice_w * dice + self.bce_w * bce + 
+                self.focal_w * focal + self.boundary_w * boundary)
+    
+
+
+import torch
+import torchvision.transforms.functional as TF
+
+
+def tta_predict(model, image):
+    """
+    TTA using:
+        - Original
+        - Horizontal Flip
+        - Vertical Flip
+        - +10 Rotation
+        - -10 Rotation
+
+    Returns averaged probabilities.
+    """
+
     model.eval()
-    test_loss = 0
-    correct = 0
-    total = 0
-    
+
     with torch.no_grad():
-        for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
-            
-            if isinstance(model, ModelTmax):
-                output, _ = model(data)
-            else:
-                output = model(data)
-            
-            test_loss += criterion(output, target).item()
-            _, predicted = output.max(1)
-            total += target.size(0)
-            correct += predicted.eq(target).sum().item()
+
+        probs = []
+
+        # -----------------------------------
+        # Original
+        # -----------------------------------
+        pred = torch.sigmoid(
+            model(image)
+        )
+
+        probs.append(pred)
+
+        # -----------------------------------
+        # Horizontal Flip
+        # -----------------------------------
+        img_h = torch.flip(
+            image,
+            dims=[-1]
+        )
+
+        pred_h = torch.sigmoid(
+            model(img_h)
+        )
+
+        pred_h = torch.flip(
+            pred_h,
+            dims=[-1]
+        )
+
+        probs.append(pred_h)
+
+        # -----------------------------------
+        # Vertical Flip
+        # -----------------------------------
+        img_v = torch.flip(
+            image,
+            dims=[-2]
+        )
+
+        pred_v = torch.sigmoid(
+            model(img_v)
+        )
+
+        pred_v = torch.flip(
+            pred_v,
+            dims=[-2]
+        )
+
+        probs.append(pred_v)
+
+        # -----------------------------------
+        # Rotation +10°
+        # -----------------------------------
+        img_r1 = TF.rotate(
+            image,
+            angle=10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        pred_r1 = torch.sigmoid(
+            model(img_r1)
+        )
+
+        pred_r1 = TF.rotate(
+            pred_r1,
+            angle=-10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        probs.append(pred_r1)
+
+        # -----------------------------------
+        # Rotation -10°
+        # -----------------------------------
+        img_r2 = TF.rotate(
+            image,
+            angle=-10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        pred_r2 = torch.sigmoid(
+            model(img_r2)
+        )
+
+        pred_r2 = TF.rotate(
+            pred_r2,
+            angle=10,
+            interpolation=TF.InterpolationMode.BILINEAR
+        )
+
+        probs.append(pred_r2)
+
+        # -----------------------------------
+        # Average probabilities
+        # -----------------------------------
+        prob_avg = torch.stack(
+            probs,
+            dim=0
+        ).mean(dim=0)
+
+        return prob_avg
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+def compute_boundary_weights(mask, kappa=10.0):
+    sobel_x = torch.tensor([[-1,0,1],[-2,0,2],[-1,0,1]],
+                             dtype=torch.float32, device=mask.device).view(1,1,3,3)
+    sobel_y = sobel_x.transpose(2, 3)
+
+    gx = F.conv2d(mask, sobel_x, padding=1)
+    gy = F.conv2d(mask, sobel_y, padding=1)
+    grad = (gx**2 + gy**2).sqrt()
+
+    B = grad.shape[0]
+    g_max = grad.view(B,-1).max(dim=1)[0].view(B,1,1,1).clamp(min=1e-6)
+    alpha = grad / g_max
+
+    return 1.0 + kappa * alpha   # w_ij
+
+
+def weighted_bce(pred, gt, weights, eps=1e-6):
+    pred = pred.sigmoid()
+    loss = -(gt * torch.log(pred + eps) + (1 - gt) * torch.log(1 - pred + eps))
+    return (weights * loss).sum() / (weights.sum() + eps)
+
+
+def weighted_iou(pred, gt, weights, eps=1e-6):
+    pred = pred.sigmoid()
+    inter = (weights * gt * pred).sum(dim=(1,2,3))
+    union = (weights * (gt + pred - gt * pred)).sum(dim=(1,2,3))
+    return (1 - (inter + eps) / (union + eps)).mean()
+
+
+class BoundaryAwareLoss(nn.Module):
+    def __init__(self, kappa=10.0):
+        super().__init__()
+        self.kappa = kappa
+
+    def forward(self, pred, gt):
+        """
+        pred : logits tensor (B,1,H,W)  OR  list of logits for deep supervision
+        gt   : binary mask  (B,1,H,W)
+        """
+        gt = gt.float()
+
+        if isinstance(pred, (list, tuple)):
+            n = len(pred)
+            stage_weights = [2**i for i in range(n)]   # higher-res → bigger weight
+            total_w = sum(stage_weights)
+            total_loss = 0.0
+            for p, w in zip(pred, stage_weights):
+                gt_r = F.interpolate(gt, size=p.shape[2:], mode='nearest')
+                bw   = compute_boundary_weights(gt_r, self.kappa)
+                total_loss += (w / total_w) * (weighted_bce(p, gt_r, bw) +
+                                               weighted_iou(p, gt_r, bw))
+            return total_loss
+
+        bw = compute_boundary_weights(gt, self.kappa)
+        return weighted_bce(pred, gt, bw) + weighted_iou(pred, gt, bw)
+
+import torch
+import torch.nn as nn
+
+class SoftDiceLoss(nn.Module):
+    def __init__(self, smooth=1.0):
+        super().__init__()
+        self.smooth = smooth
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+
+        intersection = (probs * targets).sum(dim=1)
+
+        dice = (
+            2.0 * intersection + self.smooth
+        ) / (
+            probs.sum(dim=1) +
+            targets.sum(dim=1) +
+            self.smooth
+        )
+
+        return 1.0 - dice.mean()
     
-    return test_loss / len(test_loader), 100. * correct / total
 
+class BoundaryDiceLoss(nn.Module):
+    def __init__(
+        self,
+        kappa=10,
+        boundary_weight=0.6,
+        dice_weight=0.4,
+    ):
+        super().__init__()
 
+        self.boundary = BoundaryAwareLoss(kappa=kappa)
+        self.dice = SoftDiceLoss()
 
+        self.boundary_weight = boundary_weight
+        self.dice_weight = dice_weight
+
+    def forward(self, logits, masks):
+
+        loss_boundary = self.boundary(logits, masks)
+        loss_dice = self.dice(logits, masks)
+
+        loss = (
+            self.boundary_weight * loss_boundary +
+            self.dice_weight * loss_dice
+        )
+
+        return loss   
 # Main execution
 if __name__ == "__main__":
     # Create model
@@ -1118,20 +1889,27 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
+    # path_weight = './logs/ConvNeXt-pretrain-scratch/start/checkpoints_KvasirSEG-ConvNeXt/2-test0.74.pth'
+    path_weight = './logs/ConvNeXt-pretrain/start-92.88/checkpoints_KvasirSEG-ConvNeXt/1370-test0.88.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt/start1/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain/hope/', help='Directory for logging')
+    # parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth2242/start-86.59/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    # parser.add_argument('--checkpoint_path', type=str, default='', help='Directory for logging')
-    parser.add_argument('--checkpoint_path', type=str, default='./logs/start10/checkpoints_KvasirSEG-ConvNeXt/69_test0.49.pth', help='Directory for logging')
-    parser.add_argument('--model_type', type=str, default='ReLU', help='(SNN|ReLU)')
+    # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
+    parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
+    parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
-    parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
+    parser.add_argument('--lr', type=float, default=5e-4, help='Learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
-    parser.add_argument('--batch_size', type=int, default=40, help='Batch size')
-    parser.add_argument('--epochs', type=int, default=1000, help='Epochs. 0 -skip training')
+    parser.add_argument('--escape_lr', type=float, default=5e-5, help='Learning rate for escape')
+    parser.add_argument('--batch_size', type=int, default=25, help='Batch size')
+    parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
+    parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
     parser.add_argument('--warmup_epochs', type=int, default=4, help='Epochs. 0 -skip training')
     parser.add_argument('--testing', type=strtobool, default=False, help='Execute testing.')
+    parser.add_argument('--tta_check', type=strtobool, default=False, help='Execute testing.')
+    parser.add_argument('--training', type=strtobool, default=True, help='Execute training.')
     parser.add_argument('--load', type=str, default=False, help='Load before training.')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
@@ -1165,66 +1943,25 @@ if __name__ == "__main__":
         flatten='FC' in args.model_name,
         ttfs_convert='SNN' in args.model_type,
         ttfs_noise=args.noise,
-        data_path= args.data_path
-    )
-    if not args.testing :
-    # Create data loaders
-        train_loader = DataLoader(
-            list(zip(data.x_train, data.y_train)),
-            batch_size=args.batch_size,
-            shuffle=True
-        )
-    test_loader = DataLoader(
-        list(zip(data.x_test, data.y_test)),
-        batch_size=args.batch_size,
-        shuffle=False
+        data_path= args.data_path,
+        input_size= args.input_size
     )
 
+    train_dataset = KvasirSEGDataset(data.x_train, data.y_train, is_train=True, target_size=args.input_size[0])  # Pass target size to dataset
+    test_dataset = KvasirSEGDataset(data.x_test, data.y_test, is_train=False, target_size=args.input_size[0])  # Pass target size to dataset
 
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
+    best_acc = 0.0
+
+    start_epoch = 0
 
     from models.convnext_unet import *
 
-    if 'FC2' in args.model_name:
-        if 'SNN' in args.model_type:
-            model = create_fc_model_SNN(layers=2, robustness_params=robustness_params)
-        elif 'ReLU' in args.model_type:
-            model = create_fc_model_ReLU(layers=2)
-    elif 'VGG' in args.model_name:
-        if 'MNIST' in args.data_name:
-            layers2D = [64, 64, 128, 128, 'pool', 256, 256, 256, 'pool', 
-                       512, 512, 512, 'pool', 512, 512, 512, 'pool']
-            layers1D = [512, 512]
-        elif 'Kvasir' in args.data_name:
-            layers2D = [
-                64, 64, 'pool',
-                128, 128, 'pool',
-                256, 256, 256, 'pool',
-                512, 512, 512, 'pool',
-                512, 512, 512
-            ]
-
-            layers1D = [512, 512]
-
-        else:
-            layers2D = [64, 64, 'pool', 128, 128, 'pool', 256, 256, 256, 'pool',
-                       512, 512, 512, 'pool', 512, 512, 512, 'pool']
-            layers1D = [512]
-        
-        kernel_size = (3, 3)
-        BN = 'BN' in args.model_name
-        
-        if 'SNN' in args.model_type:
-            model = create_vgg_model_SNN(layers2D, kernel_size, layers1D, data, 
-                                        robustness_params=robustness_params)
-        elif 'ReLU' in args.model_type:
-            if 'Kvasir' in args.data_name:
-                model = create_vgg_segmentation(layers2D, kernel_size, layers1D, data, BN=BN, dropout= 0.4)
-            else:
-                model = create_vgg_model_ReLU(layers2D, kernel_size, layers1D, data, BN=BN, dropout= 0.4)
-    
 
 
-    elif 'ConvNeXt' in args.model_name:
+
+    if 'ConvNeXt' in args.model_name:
         if 'Kvasir' in args.data_name:
             layers2D = [
                 64, 64, 'pool',
@@ -1243,168 +1980,355 @@ if __name__ == "__main__":
         
         kernel_size = (3, 3)
         BN = 'BN' in args.model_name
+
+        if 'Gelu' in args.model_type:
+            # from models.convnext_attention_BFIM_imagenet import *
+            # model = ConvNeXtTinyUNetAttention(
+            #             dims=(96, 192, 384, 768),
+            #             depths=(2, 2, 4, 2),
+              
+            #             dropout=0.3,  # INCREASE from 0.1 to 0.3
+            #             drop_path_rate=0.3,  # INCREASE from 0.2 to 0.3
+            #         )
+            from models.convnext_pretrain import *
+            # model = ConvNeXtTinyUNetAttention(
+            #     in_channels=3,
+            #     num_classes=1,
+            #     encoder_pretrained=True,
+            #     decoder_dims=(96, 192, 384, 768),
+            #     bottleneck_dim=768,
+            #     drop_path_rate=0.1
+            # )
+            model = ConvNeXtUNet(
+                # weights_path="./convnext_tiny_22k_1k_384.pth",
+                drop_path_rate=0.1,
+                dropout_rate=0.1,
+                encoder_depth= [2,2,4,2]
+            )
+            # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
+            if args.checkpoint_path:
+                checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
+                
+                # Load model and optimizer states
+
+                # remove old fusion weights
+                # keys_to_remove = []
+
+                # state_dict = checkpoint["model_state_dict"]
+                # for k in state_dict.keys():
+
+                #     if "bsei" in k:
+                #         keys_to_remove.append(k)
+
+
+                # for k in keys_to_remove:
+                #     del state_dict[k]
+
+
+                # msg = model.load_state_dict(
+                #     state_dict,
+                #     strict=False
+                # )
+                model.load_state_dict(checkpoint['model_state_dict'], strict=False)
+                # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
+
+                # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+                
+
+                logging.info(f"Resumed from epoch {checkpoint['epoch']}, best_acc={best_acc:.4f}")
+
+
+                start_epoch = checkpoint['epoch'] + 1
+                # best_acc = 0
+                best_acc = checkpoint['best_acc']
+                
+            
+                
+                logging.info(f"Resumed from epoch {checkpoint['epoch']}")
+                logging.info(f"Previous best accuracy: {best_acc:.4f}")
         
-        if 'SNN' in args.model_type:
-            model = create_vgg_model_SNN(layers2D, kernel_size, layers1D, data, 
-                                        robustness_params=robustness_params)
-        elif 'ReLU' in args.model_type:
-            model = ConvNeXtTinyUNet(
-                        in_chans=3,
-                        num_classes=1,
-                        dims=(96, 192, 384, 768),
-                        depths=(3, 3, 9, 3)
-                    )
-            print('loaded Relu version of ConvNeXt-Tiny')
-    
+                # for param_group in optimizer.param_groups:
+                #     param_group['lr'] = args.escape_lr
+
+                print('loaded Relu version of ConvNeXt-Tiny')
+        
 
 
 
     model = model.to(device)
     # print(model)
-    from torchinfo import summary
-    summary(
-            model,
-            input_size=(1, 3, 256, 256),  # (batch, channels, H, W)
-            device="cuda"
-        )
-    
-    # Optimizer and loss
-    if 'VGG' in args.model_name and not BN and 'ReLU' in args.model_type:
-        optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-    else:
-        optimizer = optim.Adam(model.parameters(), lr=args.lr)
+
+    # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth") 
+
     
 
     if 'Kvasir' in args.data_name:
-        criterion = nn.BCEWithLogitsLoss()
+
+        criterion = BoundaryAwareLoss(kappa=10)
+        # criterion = BoundaryDiceLoss(
+        #         kappa=10,
+        #         boundary_weight=0.3,
+        #         dice_weight=0.7
+        #     )
+        # criterion = CombinedSegLoss()
+        # criterion = FocalTverskyLoss()
+        # jafari
     else:
         criterion = nn.CrossEntropyLoss()
 
-    start_epoch = 0
-      # Load checkpoint if exists
-    if os.path.exists(args.checkpoint_path):
-        logging.info("#### Loading checkpoint ####")
-        checkpoint = torch.load(args.checkpoint_path)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        start_epoch = checkpoint['epoch'] + 1
-        best_acc = checkpoint['best_acc']
-        
-        # Get the saved learning rate from optimizer
-        saved_lr = optimizer.param_groups[0]['lr']
-        logging.info(f"Saved LR from checkpoint: {saved_lr:.6f} - started with {args.lr:.6f}")
-        
-        # Use the saved LR as the new base LR for remaining training
-        # Reset optimizer to use this as starting point
-        for param_group in optimizer.param_groups:
-            param_group['lr'] = args.lr
-        estimated_step = start_epoch * len(train_loader)
-        last_step = estimated_step
-        logging.info(f"Resumed from epoch {checkpoint['epoch']}, "
-                    f"estimated step: {estimated_step}, "
-                    f"will warmup from {saved_lr:.6f}")
-        
-        # Calculate approximate step based on epoch progress
-     
-    if not args.checkpoint_path or args.checkpoint_path == '':
-        checkpoint_dir = f"{args.logging_dir}checkpoints_{args.model_name}"
-        os.makedirs(checkpoint_dir, exist_ok=True)
-        args.checkpoint_path = os.path.join(checkpoint_dir, 'latest_checkpoint.pth')
 
 
-    # Training
-    if not args.testing and args.epochs > 0:
+    # scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+    #         optimizer, T_0=50, T_mult=1, eta_min=1e-5
+    #     )
+    from torch.optim.lr_scheduler import CyclicLR
+ 
+
+    total_epochs_remaining = 200  # train for 200 more epochs then evaluate
+
+
+
+
+   
+      
+
+    
+    for param in model.parameters():
+        param.requires_grad = True
+
+ 
+    lr = 0.0001   
+    # optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
+    other_params = []
+    for name, param in model.named_parameters():
+        if 'encoder' not in name:  # or 'ConvNeXtEncoder' depending on your model
+            other_params.append(param)
+ 
+
+    optimizer = torch.optim.AdamW(
+        [
+            {
+                "params": model.encoder.parameters(),
+                "lr": 1e-5,
+            },
+            {
+                "params": other_params,
+                "lr": 1e-4,
+            },
+        ],
+        weight_decay=1e-4,
+        betas=(0.9, 0.999),
+    )
+
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer,
+        T_max=200,
+        eta_min= 1e-6 
+    )  
+
+    
+    # for name, param in model.named_parameters():
+    #     if 'encoder'  in name:
+    #         param.requires_grad = False
+
+    # for param in model.encoder.stages[3].parameters():
+    #     param.requires_grad = True
+
+
+    # # also unfreeze last downsample
+    # for param in model.encoder.downsample_layers[3].parameters():
+    #     param.requires_grad = True
+
+    
+    # for param in model.encoder.stages[2].parameters():
+    #     param.requires_grad = True
+
+
+    # # also unfreeze last downsample
+    # for param in model.encoder.downsample_layers[2].parameters():
+    #     param.requires_grad = True
+
+#     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+#     optimizer,
+#     mode='max',          # because we're monitoring Dice (higher = better)
+#     factor=0.75,          # halve the LR when plateauing
+#     patience=4,         # wait 50 epochs before reducing
+#     min_lr=1e-7,         # don't let it go too small
+#     verbose=True
+# )
+    from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
+
+
+
+    from torch.optim.lr_scheduler import LambdaLR
+
+    def get_triangular_scheduler(optimizer, min_lr, max_lr, epochs_to_peak, total_epochs):
+        def lr_lambda(epoch):
+            cycle_length = total_epochs
+            epoch_in_cycle = epoch % cycle_length
+            
+            if epoch_in_cycle <= epochs_to_peak:
+                # Ascending phase
+                return 1.0 + (max_lr/min_lr - 1.0) * (epoch_in_cycle / epochs_to_peak)
+            else:
+                # Descending phase
+                progress = (epoch_in_cycle - epochs_to_peak) / (total_epochs - epochs_to_peak)
+                return max_lr/min_lr - (max_lr/min_lr - 1.0) * progress
+        
+        return LambdaLR(optimizer, lr_lambda)
+
+
+    # scheduler = get_triangular_scheduler(optimizer, min_lr=lr, max_lr=0.0001, epochs_to_peak=80, total_epochs=160)
+        
+
+    from torchinfo import summary
+    summary(
+            model,
+            input_size=(1, 3) + args.input_size,  # (batch, channels, H, W)
+            device="cuda"
+        )
+    
+    # # Training
+    best_threshold = 0.45
+    if  args.testing:
+        best_threshold, best_dice, best_iou = find_best_threshold(
+                model,
+                test_loader,
+                criterion,
+                device
+            )
+        test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device ,threshold=best_threshold ,use_tta=True)
+            
+        logging.info(
+                        f"First EvaluationTest Loss: {test_loss:.4f}, "
+                        f"Test Dice: {test_dice:.4f}, "
+                        f"Test IoU: {test_iou:.4f}")
+        if args.tta_check:
+            tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
+            print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
+            print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")        
+        # result = evaluate_model(
+        #     model,
+        #     test_loader,
+        #     criterion,
+        #     device,
+        #     use_tta=True
+        # )
+
+        # print(
+        #     f"Threshold={result['threshold']:.2f} "
+        #     f"Dice={result['dice']:.4f} "
+        #     f"IoU={result['iou']:.4f}"
+        # )
+    
+    
+    if  args.epochs > 0:
         logging.info("#### Training ####")
         total_steps = len(train_loader) * args.epochs
         warmup_steps = len(train_loader) * args.warmup_epochs
-        
-        best_acc = 0.0
-        
+            
         last_step = -1
- 
-        
         
         saved_lr = args.lr  # Default to args.lr if not resuming
         
         os.makedirs(f"{args.logging_dir}checkpoints_{args.model_name}", exist_ok=True)
         
-      
-        # Create scheduler with ADJUSTED warmup and base LR
-        scheduler =  ReduceLROnPlateau(
-                optimizer, 
-                mode='min', 
-                factor=0.95, 
-                patience=3, 
-                verbose=True
-            )      
+
         # Log the actual starting LR
         current_lr = optimizer.param_groups[0]['lr']
         logging.info( f"initial LR: {current_lr:.6f}")
             
         # Training loop
         best_dice = 0
-        for epoch in range(start_epoch, args.epochs):
-            
-            
+
+        if args.training:
 
 
-            # In the main training section, replace the training/testing calls for KvasirSEG:
 
-            if 'Kvasir' in args.data_name:
-                # Use segmentation-specific training/testing
-                train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device)
-                test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device)
+            for epoch in range(start_epoch, args.epochs):
+                # if epoch == FREEZE_EPOCHS:
+                #     
+                #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
+                if 'Kvasir' in args.data_name:
+                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler,threshold=best_threshold)
+                    test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device, threshold=best_threshold)
+                    scheduler.step()
+
+                    logging.info(f"Epoch {epoch+1}/{args.epochs}: "
+                                f"Train Loss: {train_loss:.4f}, "
+                                f"Test Loss: {test_loss:.4f}, "
+                                f"Test Dice: {test_dice:.4f}, "
+                                f"Test IoU: {test_iou:.4f}")
+                    
+
+                    # Flush immediately for Kvasir
+                    for handler in logging.root.handlers:
+                        handler.flush()
+                    
+                    test_acc  = test_iou
+
+           
+   
+                for handler in logging.root.handlers:
+                    handler.flush()
+
+                # Save best model
+                if test_acc > best_acc:
+                    checkpoint_dict = {
+                            'epoch': epoch,
+                            'model_state_dict': model.state_dict(),
+                            'optimizer_state_dict': optimizer.state_dict(),
+                            'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
+                            'best_acc': best_acc,
+                            'test_dice': test_dice,
+                        }
                 
-                logging.info(f"Epoch {epoch+1}/{args.epochs}: "
-                            f"Train Loss: {train_loss:.4f}, "
-                            f"Test Loss: {test_loss:.4f}, "
-                            f"Test Dice: {test_dice:.4f}, "
-                            f"Test IoU: {test_iou:.4f}")
-                test_acc  = test_iou
-            else:
-                # Use classification-specific training/testing (existing code)
-                train_loss, train_acc = train_epoch(model, train_loader, optimizer, criterion, device)
-                test_loss, test_acc = test(model, test_loader, criterion, device)
-
-
-
-
-            scheduler.step(test_loss)  # Step scheduler based on validation loss
-            logging.info(f"Epoch {epoch+1}/{args.epochs}: "
-                        f"Train Loss: {train_loss:.4f}, "
-                        f"Test Loss: {test_loss:.4f}")
-            
-            # Save checkpoint with full scheduler state
-            checkpoint_dict = {
-                'epoch': epoch,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
-                'best_acc': best_acc,
-          
-         
-            }
-            
-
-            # Save best model
-            if test_acc > best_acc:
-                best_acc = test_acc
-                torch.save(checkpoint_dict, 
-                          f"{args.logging_dir}checkpoints_{args.model_name}/{epoch}_test{test_acc:.2f}.pth")
-                logging.info(f"New best model saved with accuracy: {best_acc:.2f}%")
-
-    # Final testing
-    if args.testing :
-        logging.info("#### Final test set accuracy testing ####")
-        test_loss, test_acc = test(model, test_loader, criterion, device)
-        fused_model = fuse_bn_torch(model.to(device), p=0.0, q=1.0, BN=True, BN_before_ReLU=False)
-        test_loss, test_acc_fused = test(fused_model, test_loader, criterion, device)
-
-        logging.info(f"Final testing accuracy is {test_acc:.2f}%.   fused testing accuracy is {test_acc_fused:.2f}%")
-    
+                    best_acc = test_acc
+                    torch.save(checkpoint_dict, 
+                            f"{args.logging_dir}checkpoints_{args.model_name}/{epoch}-test{test_acc:.2f}.pth")
+                    logging.info(f"New best model saved with accuracy: {best_acc:.2f}%")
+                    if args.tta_check:
+                        tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
+                        print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
+                        print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")
+                    # Flush after saving
+                    for handler in logging.root.handlers:
+                        handler.flush()
     # Save model
     if args.save and 'ReLU' in args.model_type:
         logging.info("#### Saving ReLU model ####")
         torch.save(model.state_dict(), f"{args.logging_dir}/{args.model_name}_weights.pth")
     
     print(f'### Total elapsed time [s]: {time.time() - start_time:.2f}')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

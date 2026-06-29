@@ -1,0 +1,1 @@
+2026-06-29 17:10:15 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain_depth3393/start/KvasirSEG-ConvNeXt_log.txt
