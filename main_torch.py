@@ -215,11 +215,37 @@ class Dataset:
 
         # eveluate_dataset = 'clinicdb'
         # eveluate_dataset = 'CVC-300'
+        # eveluate_dataset = 'CVC-ColonDB'
         # eveluate_dataset = 'ETIS-LARIBPOLYPDB'
-        eveluate_dataset = 'CVC-ColonDB'
+        eveluate_dataset = 'both'
         # eveluate_dataset = 'kvasir'
- 
-        if eveluate_dataset== 'kvasir':
+        if eveluate_dataset == 'both':
+            self.x_test = np.concatenate(
+                [
+                    kvasir_x_val,
+                    clinicdb_x_val
+                ],
+                axis=0
+            )
+
+            self.y_test = np.concatenate(
+                [
+                    kvasir_y_val,
+                    clinicdb_y_val
+                ],
+                axis=0
+            )
+
+
+
+            # Shuffle test
+            idx = np.random.permutation(len(self.x_test))
+
+            self.x_test = self.x_test[idx].astype(np.float32)
+            self.y_test = self.y_test[idx].astype(np.float32)
+
+
+        elif eveluate_dataset== 'kvasir':
             self.x_test = kvasir_x_val.astype(np.float32)
             self.y_test = kvasir_y_val.astype(np.float32)
 
@@ -269,342 +295,19 @@ class Dataset:
 
 
                 
-                # ==========================================
-                # 4. Load TEST datasets SEPARATELY
-                # ==========================================
-
-
-
-
-
-                # def get_features_vectors(self):
-
-                #     """
-                #     Load Kvasir-SEG + CVC-ClinicDB
-                #     """
-
-                #     self.num_of_classes = 2
-
-                #     self.input_shape = (
-                #         3,
-                #         self.input_size[0],
-                #         self.input_size[1]
-                #     )
-
-
-                #     images = []
-                #     masks = []
-
-
-                #     data_pack = [ "CVC-300"]
-                #     # data_pack = [ "Kvasir"]
-                #     # data_pack = [ "CVC-ClinicDB"]
-                #     # data_pack = [ "CVC-ColonDB"]
-                #     # data_pack = [ ""]
-                #     # data_pack = [ ""]
-                #     # data_pack = [ "ETIS-LARIBPOLYPDB"]
-                #     # data_pack = [ "CVC-ClinicDB",'Kvasir']
-                #     datasets = []
-
-                #     if "Kvasir" in data_pack:
-                #         datasets.append(
-                #             (
-                #                 os.path.join(self.data_path, "Kvasir-SEG", "images"),
-                #                 os.path.join(self.data_path, "Kvasir-SEG", "masks")
-                #             )
-                #         )
-
-                #     if "CVC-ClinicDB" in data_pack:
-                #         datasets.append(
-                #             (
-                #                 os.path.join(self.data_path, "CVC-ClinicDB", "images"),
-                #                 os.path.join(self.data_path, "CVC-ClinicDB", "masks")
-                #             )
-                #         )
-                #     if "CVC-300" in data_pack:
-                #         datasets.append(
-                #             (
-                #                 os.path.join(self.data_path, "CVC-300", "images"),
-                #                 os.path.join(self.data_path, "CVC-300", "masks")
-                #             )
-                #         )
-                #     if "ETIS-LARIBPOLYPDB" in data_pack:
-                #         datasets.append(
-                #             (
-                #                 os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "images"),
-                #                 os.path.join(self.data_path, "ETIS-LARIBPOLYPDB", "masks")
-                #             )
-                #         )
-                #     if "CVC-ColonDB" in data_pack:
-                #         datasets.append(
-                #             (
-                #                 os.path.join(self.data_path, "CVC-ColonDB", "images"),
-                #                 os.path.join(self.data_path, "CVC-ColonDB", "masks")
-                #             )
-                #         )
-
-                        
-
-
-                #     extensions = [
-                #         "*.png",
-                #         "*.jpg",
-                #         "*.jpeg",
-                #         "*.tif",
-                #         "*.tiff"
-                #     ]
-
-
-
-                #     for image_dir, mask_dir in datasets:
-
-
-                #         image_files = []
-
-
-                #         for ext in extensions:
-
-                #             image_files.extend(
-                #                 glob.glob(
-                #                     os.path.join(
-                #                         image_dir,
-                #                         ext
-                #                     )
-                #                 )
-                #             )
-
-
-
-                #         image_files = sorted(image_files)
-
-
-
-                #         for img_path in image_files:
-
-
-                #             filename = os.path.basename(img_path)
-
-
-
-                #             mask_path = os.path.join(
-                #                 mask_dir,
-                #                 filename
-                #             )
-
-
-
-                #             if not os.path.exists(mask_path):
-
-                #                 print(
-                #                     "Mask missing:",
-                #                     img_path
-                #                 )
-
-                #                 continue
-
-
-
-                #             # ======================
-                #             # Load image
-                #             # ======================
-
-                #             img = cv2.imread(
-                #                 img_path,
-                #                 cv2.IMREAD_COLOR
-                #             )
-
-
-                #             if img is None:
-
-                #                 print(
-                #                     "Bad image:",
-                #                     img_path
-                #                 )
-
-                #                 continue
-
-
-
-                #             img = cv2.cvtColor(
-                #                 img,
-                #                 cv2.COLOR_BGR2RGB
-                #             )
-
-
-
-                #             # ======================
-                #             # Load mask
-                #             # ======================
-
-                #             mask = cv2.imread(
-                #                 mask_path,
-                #                 cv2.IMREAD_GRAYSCALE
-                #             )
-
-
-                #             if mask is None:
-
-                #                 print(
-                #                     "Bad mask:",
-                #                     mask_path
-                #                 )
-
-                #                 continue
-
-
-
-
-                #             # ======================
-                #             # Resize
-                #             # ======================
-
-                #             img = cv2.resize(
-                #                 img,
-                #                 self.input_size,
-                #                 interpolation=cv2.INTER_LINEAR
-                #             )
-
-
-                #             # IMPORTANT
-                #             # nearest for segmentation masks
-
-                #             mask = cv2.resize(
-                #                 mask,
-                #                 self.input_size,
-                #                 interpolation=cv2.INTER_NEAREST
-                #             )
-
-
-
-                #             # ======================
-                #             # Normalize image
-                #             # ======================
-
-                #             img = (
-                #                 img.astype(np.float32)
-                #                 /
-                #                 255.0
-                #             )
-
-
-
-                #             # HWC -> CHW
-
-                #             img = np.transpose(
-                #                 img,
-                #                 (2,0,1)
-                #             )
-
-
-
-                #             # binary mask
-
-                #             mask = (
-                #                 mask > 127
-                #             ).astype(
-                #                 np.float32
-                #             )
-
-
-
-                #             images.append(img)
-
-                #             masks.append(mask)
-
-
-
-                #     # ======================
-                #     # Convert arrays
-                #     # ======================
-
-
-                #     images = np.array(
-                #         images,
-                #         dtype=np.float32
-                #     )
-
-
-                #     masks = np.array(
-                #         masks,
-                #         dtype=np.float32
-                #     )
-
-
-
-                #     print(
-                #         "Loaded images:",
-                #         images.shape
-                #     )
-
-                #     print(
-                #         "Loaded masks:",
-                #         masks.shape
-                #     )
-
-
-
-                #     # ======================
-                #     # Train/Test split
-                #     # ======================
-
-
-                #     # (
-                #     #     self.x_train,
-                #     #     self.x_test,
-                #     #     self.y_train,
-                #     #     self.y_test
-
-                #     # ) = train_test_split(
-
-                #     #     images,
-                #     #     masks,
-
-                #     #     test_size=0.1,
-
-                #     #     random_state=42,
-
-                #     #     shuffle=True
-
-                #     # )
-
-                #     # self.x_train = self.x_train.astype(
-                #     #     np.float32
-                #     # )
-                #     # self.y_train = self.y_train.astype(
-                #     #     np.float32
-                #     # )
-                #     self.x_test = np.array(images, dtype=np.float32)
-
-                #     self.y_test = np.array(masks, dtype=np.float32)
-
-
-
-
-                #     self.x_test = self.x_test.astype(
-                #         np.float32
-                #     )
-
-
-
-
-                #     self.y_test = self.y_test.astype(
-                #         np.float32
-                #     )
-
-
-
-                #     print(
-                #         "Train:",
-                #         self.x_train.shape,
-                #         self.y_train.shape
-                #     )
-
-
-                #     print(
-                #         "Test:",
-                #         self.x_test.shape,
-                #         self.y_test.shape
-                #     )
+        
+def grad_norm_except_encoder(model):
+    params = [
+        p for name, p in model.named_parameters()
+        if "encoder" not in name and p.grad is not None
+    ]
+
+    total_norm = torch.norm(
+        torch.stack([p.grad.norm(2) for p in params]),
+        2
+    )
+
+    return total_norm.item()
 
 def mixup_data(images, masks, alpha=0.2):
     """Mix two training samples together"""
@@ -622,112 +325,219 @@ def mixup_data(images, masks, alpha=0.2):
     return mixed_images, mixed_masks
 
 bce = nn.BCEWithLogitsLoss()
-def train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler, threshold):
-    """Training function for segmentation tasks."""
+
+
+def train_epoch_segmentation(
+    model,
+    train_loader,
+    optimizer,
+    criterion,
+    device,
+    scheduler,
+    threshold
+):
+    import random
+    import numpy as np
+    import logging
+    from tqdm import tqdm
+    import torch
+    import torch.nn.functional as F
+
     model.train()
+
     running_loss = 0.0
+    running_dice = 0.0
+
     skipped_batches = 0
-    
-    pbar = tqdm(train_loader, desc='Training')
+
+    # ----------------------------
+    # Diagnostics
+    # ----------------------------
+    enc_grad_sum = 0.0
+    dec_grad_sum = 0.0
+    prob_mean_sum = 0.0
+    prob_std_sum = 0.0
+    mask_area_sum = 0.0
+
+    valid_batches = 0
+
+    def grad_norm(module):
+        total = 0.0
+        for p in module.parameters():
+            if p.grad is not None:
+                total += p.grad.detach().norm(2).item() ** 2
+        return total ** 0.5
+
+    pbar = tqdm(train_loader, desc="Training")
+
     for batch_idx, (data, target) in enumerate(pbar):
-        data, target = data.to(device), target.to(device)
-        
-        # Normalize input
+
+        data = data.to(device)
+        target = target.to(device)
+
         data = torch.clamp(data, 0.0, 1.0)
-        
+
         if target.dim() == 3:
             target = target.unsqueeze(1)
-        if random.random() < 0.3:
+
+        # MixUp
+        if random.random() < 0.4:
             lam = np.random.beta(0.2, 0.2)
             idx = torch.randperm(data.size(0), device=device)
-            data   = lam * data   + (1 - lam) * data[idx]
+
+            data = lam * data + (1 - lam) * data[idx]
             target = lam * target + (1 - lam) * target[idx]
+
         optimizer.zero_grad()
-        
-        # ===== ADD NaN DETECTION IN FORWARD PASS =====
-        # with torch.autograd.detect_anomaly(False):  # Turn off global anomaly detection
+
+        # ----------------------------
+        # Forward
+        # ----------------------------
         output = model(data)
-        
-        # Check forward pass for NaN
+
         if not torch.isfinite(output).all():
-            print(f"NaN in output at batch {batch_idx}, skipping...")
             skipped_batches += 1
             optimizer.zero_grad(set_to_none=True)
             continue
-        
+
         if output.shape != target.shape:
-            output = F.interpolate(output, size=target.shape[2:], 
-                                 mode='bilinear', align_corners=False)
-        
-        # ===== SAFE LOSS COMPUTATION =====
-        loss = criterion(output, target) 
-        
-        # Check for NaN/Inf loss
+            output = F.interpolate(
+                output,
+                size=target.shape[2:],
+                mode="bilinear",
+                align_corners=False,
+            )
+
+        loss = criterion(output, target)
+
         if not torch.isfinite(loss):
-            logging.warning(f"Batch {batch_idx}: Loss is {loss.item()}. Skipping batch.")
             skipped_batches += 1
             optimizer.zero_grad(set_to_none=True)
             continue
-        
-        # ===== SAFE BACKWARD PASS =====
+
+        # ----------------------------
+        # Backward
+        # ----------------------------
         try:
             loss.backward()
-        except RuntimeError as e:
-            print(f"Error in backward pass at batch {batch_idx}: {e}")
-            skipped_batches += 1
-            optimizer.zero_grad(set_to_none=True)
-            continue
-        
-        # ===== CHECK GRADIENTS =====
-        has_nan = False
-        for name, param in model.named_parameters():
-            if param.grad is not None:
-                if not torch.isfinite(param.grad).all():
-                    print(f"Bad gradient in {name} at batch {batch_idx}")
-                    has_nan = True
-                    break
-        
-        if has_nan:
-            optimizer.zero_grad(set_to_none=True)
-            skipped_batches += 1
-            continue
-        
-        # ===== GRADIENT CLIPPING =====
-        try:
-            grad_norm = torch.nn.utils.clip_grad_norm_(
-                model.parameters(),
-                1.0,
-                error_if_nonfinite=True
-            )
         except RuntimeError:
-            print(f"Gradient clipping failed at batch {batch_idx}")
-            optimizer.zero_grad(set_to_none=True)
             skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
             continue
-        
-        optimizer.step()
-        # scheduler.step()
-        
-        # Calculate Dice coefficient for monitoring
-        with torch.no_grad():
-            pred = (torch.sigmoid(output) > threshold).float()
-            dice = dice_coefficient(pred, target)
-        
-        running_loss += loss.item()
-        
-        pbar.set_postfix({
-            'Loss': f'{loss.item():.4f}',
-            'Dice': f'{dice:.4f}',
-            'GradNorm': f'{grad_norm:.4f}',
-            'LR': f'{optimizer.param_groups[0]["lr"]:.6f}',
-            'Skip': f'{skipped_batches}'
-        })
-    
-    if skipped_batches > 0:
-        logging.warning(f"Skipped {skipped_batches}/{len(train_loader)} batches due to NaN/Inf loss")
-    
-    return running_loss / max(1, len(train_loader) - skipped_batches)
 
+        # NaN gradient detection
+        bad_grad = False
+        for p in model.parameters():
+            if p.grad is not None:
+                if not torch.isfinite(p.grad).all():
+                    bad_grad = True
+                    break
+
+        if bad_grad:
+            skipped_batches += 1
+            optimizer.zero_grad(set_to_none=True)
+            continue
+
+        # ----------------------------
+        # Diagnostics BEFORE clipping
+        # ----------------------------
+
+        enc_grad = grad_norm(model.encoder)
+        dec_grad = grad_norm_except_encoder(model)
+
+        grad_norm_total = torch.nn.utils.clip_grad_norm_(
+            model.parameters(),
+            max_norm=1.5
+        )
+
+        optimizer.step()
+
+        # scheduler.step()
+
+        with torch.no_grad():
+
+            prob = torch.sigmoid(output)
+
+            pred = (prob > threshold).float()
+
+            dice = dice_coefficient(pred, target)
+
+            prob_mean = prob.mean().item()
+            prob_std = prob.std().item()
+            mask_area = pred.mean().item()
+
+        # ----------------------------
+        # Accumulate
+        # ----------------------------
+
+        running_loss += loss.item()
+        running_dice += dice
+
+        enc_grad_sum += enc_grad
+        dec_grad_sum += dec_grad
+
+        prob_mean_sum += prob_mean
+        prob_std_sum += prob_std
+        mask_area_sum += mask_area
+
+        valid_batches += 1
+
+        # Current learning rates
+
+        enc_lr = optimizer.param_groups[0]["lr"]
+
+        dec_lr = (
+            optimizer.param_groups[1]["lr"]
+            if len(optimizer.param_groups) > 1
+            else enc_lr
+        )
+
+        pbar.set_postfix(
+
+            Loss=f"{loss.item():.4f}",
+
+            Dice=f"{dice:.4f}",
+
+            EncGrad=f"{enc_grad:.2f}",
+
+            DecGrad=f"{dec_grad:.2f}",
+
+            Prob=f"{prob_mean:.3f}",
+
+            Area=f"{mask_area:.3f}",
+
+            EncLR=f"{enc_lr:.2e}",
+
+            DecLR=f"{dec_lr:.2e}",
+
+            Skip=skipped_batches,
+        )
+
+    if skipped_batches > 0:
+        logging.warning(
+            f"Skipped {skipped_batches}/{len(train_loader)} batches."
+        )
+
+    # ----------------------------
+    # Epoch summary
+    # ----------------------------
+
+    if valid_batches > 0:
+
+        logging.info(
+            "\n"
+            f"Train Dice      : {running_dice / valid_batches:.4f}\n"
+            f"Train Loss      : {running_loss / valid_batches:.4f}\n"
+            f"Encoder Grad    : {enc_grad_sum / valid_batches:.4f}\n"
+            f"Decoder Grad    : {dec_grad_sum / valid_batches:.4f}\n"
+            f"Mean Prob       : {prob_mean_sum / valid_batches:.4f}\n"
+            f"Prob Std        : {prob_std_sum / valid_batches:.4f}\n"
+            f"Mask Area       : {mask_area_sum / valid_batches:.4f}\n"
+            f"Encoder LR      : {optimizer.param_groups[0]['lr']:.2e}\n"
+            f"Decoder LR      : {optimizer.param_groups[1]['lr']:.2e}"
+        )
+
+    return running_loss / max(valid_batches, 1)
 
 def dice_coefficient(pred, target, smooth=1e-6):
     """Calculate Dice coefficient."""
@@ -832,7 +642,7 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
 def find_best_threshold(model, test_loader, criterion, device):
     model.eval()
 
-    thresholds = np.arange(0.35, 0.73, 0.005)
+    thresholds = np.arange(0.4, 0.95, 0.05)
     # thresholds = np.arange(0.7, 0.999, 0.005)
 
     best_threshold = 0.5
@@ -1236,7 +1046,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Horizontal Flip
             # ----------------------------------
-            RAN = 0.9
+            RAN = 0.6
             if random.random() < RAN:
                 image = torch.flip(image, [-1])
                 mask = torch.flip(mask, [-1])
@@ -1270,7 +1080,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Affine
             # ----------------------------------
-            if random.random() < RAN:
+            if random.random() < 0.8:
 
                 angle = random.uniform(-10, 10)
 
@@ -1345,7 +1155,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Elastic
             # ----------------------------------
-            if random.random() < 0.4:
+            if random.random() < 0.01:
                 image, mask = self._elastic_transform(
                     image,
                     mask,
@@ -1356,7 +1166,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Brightness
             # ----------------------------------
-            if random.random() < RAN:
+            if random.random() < 0.9:
 
                 image = TF.adjust_brightness(
                     image,
@@ -1376,7 +1186,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Gaussian Blur
             # ----------------------------------
-            if random.random() < 0.2:
+            if random.random() < 0.8:
 
                 image = TF.gaussian_blur(
                     image,
@@ -1385,8 +1195,8 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
 
             # ----------------------------------
             # Gaussian Noise
-            # # ----------------------------------
-            if random.random() < 0.3:
+            # ----------------------------------
+            if random.random() < 0.8:
 
                 noise = (
                     torch.randn_like(image) * 0.03
@@ -1397,7 +1207,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Cutout
             # ----------------------------------
-            if random.random() < 0.3:
+            if random.random() < 0.9:
 
                 H, W = image.shape[1:]
 
@@ -1946,59 +1756,6 @@ def tta_predict(model, image):
         ).mean(dim=0)
 
         return prob_avg
-# class BoundaryAwareLoss(nn.Module):
-#     """
-#     Combines: Dice + BCE + Boundary term
-#     Boundary term forces attention to edge pixels where you're stuck
-#     """
-#     def __init__(self, alpha=0.4, beta=0.3, gamma=0.3):
-#         super().__init__()
-#         self.alpha = alpha  # Dice weight
-#         self.beta  = beta   # BCE weight
-#         self.gamma = gamma  # Boundary weight
-
-#     def dice_loss(self, pred, target, smooth=1e-6):
-#         pred   = torch.sigmoid(pred)
-#         flat_p = pred.flatten(1)
-#         flat_t = target.flatten(1)
-#         intersection = (flat_p * flat_t).sum(1)
-#         return 1 - (2 * intersection + smooth) / (flat_p.sum(1) + flat_t.sum(1) + smooth)
-
-#     def boundary_loss(self, pred, target):
-#         """Sobel-based boundary extraction, penalizes boundary errors more."""
-#         pred = torch.sigmoid(pred)
-
-#         sobel_x = torch.tensor([[-1,0,1],[-2,0,2],[-1,0,1]],
-#                                  dtype=pred.dtype, device=pred.device).view(1,1,3,3)
-#         sobel_y = sobel_x.transpose(-1,-2)
-
-#         def get_boundary(t):
-#             if t.dim() == 3:
-#                 t = t.unsqueeze(1)
-#             t   = t.float()
-#             ex  = F.conv2d(t, sobel_x, padding=1)
-#             ey  = F.conv2d(t, sobel_y, padding=1)
-#             mag = (ex**2 + ey**2).sqrt()
-#             return (mag > 0.1).float()
-
-#         pred_b   = get_boundary(pred)
-#         target_b = get_boundary(target)
-
-#         # Weighted BCE on boundary regions only
-#         weight = target_b * 3.0 + 1.0   # boundary pixels weighted 4x
-#         loss   = F.binary_cross_entropy(pred_b, target_b,
-#                                          weight=weight, reduction='mean')
-#         return loss
-
-#     def forward(self, pred, target):
-#         if target.dim() == 3:
-#             target = target.unsqueeze(1)
-
-#         d = self.dice_loss(pred, target).mean()
-#         b = F.binary_cross_entropy_with_logits(pred, target.float())
-#         bd = self.boundary_loss(pred, target)
-#         return self.alpha*d + self.beta*b + self.gamma*bd
-    
 
 import torch
 import torch.nn as nn
@@ -2060,6 +1817,59 @@ class BoundaryAwareLoss(nn.Module):
         bw = compute_boundary_weights(gt, self.kappa)
         return weighted_bce(pred, gt, bw) + weighted_iou(pred, gt, bw)
 
+import torch
+import torch.nn as nn
+
+class SoftDiceLoss(nn.Module):
+    def __init__(self, smooth=1.0):
+        super().__init__()
+        self.smooth = smooth
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+
+        probs = probs.view(probs.size(0), -1)
+        targets = targets.view(targets.size(0), -1)
+
+        intersection = (probs * targets).sum(dim=1)
+
+        dice = (
+            2.0 * intersection + self.smooth
+        ) / (
+            probs.sum(dim=1) +
+            targets.sum(dim=1) +
+            self.smooth
+        )
+
+        return 1.0 - dice.mean()
+    
+
+class BoundaryDiceLoss(nn.Module):
+    def __init__(
+        self,
+        kappa=10,
+        boundary_weight=0.6,
+        dice_weight=0.4,
+    ):
+        super().__init__()
+
+        self.boundary = BoundaryAwareLoss(kappa=kappa)
+        self.dice = SoftDiceLoss()
+
+        self.boundary_weight = boundary_weight
+        self.dice_weight = dice_weight
+
+    def forward(self, logits, masks):
+
+        loss_boundary = self.boundary(logits, masks)
+        loss_dice = self.dice(logits, masks)
+
+        loss = (
+            self.boundary_weight * loss_boundary +
+            self.dice_weight * loss_dice
+        )
+
+        return loss   
 # Main execution
 if __name__ == "__main__":
     # Create model
@@ -2079,19 +1889,19 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
-    path_weight = './logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/scratch/start93.661/checkpoints_KvasirSEG-ConvNeXt/1439-test0.89.pth'
+    path_weight = './logs/ConvNeXt-pretrain/start-93.88/checkpoints_KvasirSEG-ConvNeXt/2617-test0.87.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-attention-Gelu-upsample-bfim/input_size-352/depth64-dim3/scratch/start-new/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth2242/start/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
-    parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
+    parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
+    # parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
     parser.add_argument('--lr', type=float, default=5e-4, help='Learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--escape_lr', type=float, default=5e-5, help='Learning rate for escape')
-    parser.add_argument('--batch_size', type=int, default=10, help='Batch size')
+    parser.add_argument('--batch_size', type=int, default=25, help='Batch size')
     parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
     parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
     parser.add_argument('--warmup_epochs', type=int, default=4, help='Epochs. 0 -skip training')
@@ -2170,26 +1980,31 @@ if __name__ == "__main__":
         BN = 'BN' in args.model_name
 
         if 'Gelu' in args.model_type:
-            from models.convnext_attention_BFIM import *
-            model = ConvNeXtTinyUNetAttention(
-                        # in_chans=3,
-                        # num_classes=1,
-                        dims=(96, 192, 384, 768),
-                        # dims=(64, 128, 256, 512),
-                        # depths=(3, 3, 9, 3),
-                        depths=(2, 2, 4, 2),
-                        # dims=(32, 64, 128, 256),  # Even smaller
-                        # dims=(64, 128, 256, 512),
-                        # depths=(1, 2, 2, 1),  # Very shallow
+            # from models.convnext_attention_BFIM import *
+            # model = ConvNeXtTinyUNetAttention(
+            #             dims=(96, 192, 384, 768),
+            #             depths=(2, 2, 4, 2),
+              
+            #             dropout=0.1,  # INCREASE from 0.1 to 0.3
+            #             drop_path_rate=0.1,  # INCREASE from 0.2 to 0.3
+            #         )
+            from models.convnext_pretrain import *
+            # model = ConvNeXtTinyUNetAttention(
+            #     in_channels=3,
+            #     num_classes=1,
+            #     encoder_pretrained=True,
+            #     decoder_dims=(96, 192, 384, 768),
+            #     bottleneck_dim=768,
+            #     drop_path_rate=0.1
+            # )
+            model = ConvNeXtUNet(
+        # weights_path="./convnext_tiny_22k_1k_384.pth",
+                drop_path_rate=0.4,
+                dropout_rate=0.4,
+                encoder_depth= [2,2,4,2]
+            )
+            model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
-                        dropout=0.1,  # INCREASE from 0.1 to 0.3
-                        drop_path_rate=0.1,  # INCREASE from 0.2 to 0.3
-
-    #                         dropout=0.05,        # REDUCE from 0.1
-    # drop_path_rate=0.1,  # REDUCE from 0.3 (this is very aggressive!)
-
-                        # use_batch_norm=True
-                    )
             print('loaded Relu version of ConvNeXt-Tiny')
     
 
@@ -2203,44 +2018,16 @@ if __name__ == "__main__":
     
 
     if 'Kvasir' in args.data_name:
-        # optimizer = optim.AdamW(
-        #         model.parameters(), 
-        #         lr=args.lr, 
-        #         weight_decay=0.001,  # Stronger regularization
-        #         betas=(0.9, 0.999)
+
+        criterion = BoundaryAwareLoss(kappa=10)
+        # criterion = BoundaryDiceLoss(
+        #         kappa=10,
+        #         boundary_weight=0.3,
+        #         dice_weight=0.7
         #     )
-
-        # optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-5)
-        
-        
-
-
-
-
-
-
-
-        # criterion = nn.BCEWithLogitsLoss()
-        # criterion = DiceBCELoss(weight_bce=0.1, weight_dice=0.9)
-        # criterion = FocalLoss(alpha=0.75, gamma=2.0)
-        # criterion = CombinedTverskyFocalLoss(tversky_weight=0.7, focal_weight=0.3)
-        # criterion = HybridLoss(boundary_weight=0.3, tversky_weight=0.4, focal_weight=0.3)
-        # criterion = SimpleCombinedLoss(dice_weight=0.5, bce_weight=0.5, label_smoothing=0.1)
-        # criterion = CombinedLoss(
-        #         dice_w=0.4,
-        #         bce_w=0.3,
-        #         boundary_w=0.3
-        #     )
-
-        # criterion = FocalTverskyLoss(
-        #     alpha=0.3,   # less FN penalty
-        #     beta=0.7,    # more FP penalty
-        #     gamma=0.75   # moderate focusing
-        # )
-        # criterion = BoundaryAwareLoss()
-        criterion = BoundaryAwareLoss(kappa=10.0)
-        
-        # criterion = StandardDiceBCELoss(dice_weight=0.5, bce_weight=0.5)
+        # criterion = CombinedSegLoss()
+        # criterion = FocalTverskyLoss()
+        # jafari
     else:
         criterion = nn.CrossEntropyLoss()
 
@@ -2250,168 +2037,88 @@ if __name__ == "__main__":
     #         optimizer, T_0=50, T_mult=1, eta_min=1e-5
     #     )
     from torch.optim.lr_scheduler import CyclicLR
-    # scheduler = CyclicLR(
-    #     optimizer,
-    #     base_lr=1e-5,      # Minimum LR (where you're stuck now)
-    #     max_lr=5e-4,       # Maximum LR (to escape local minima)
-    #     step_size_up=20,   # Increase LR over 20 epochs
-    #     step_size_down=20, # Decrease LR over 20 epochs
-    #     mode='triangular2', # Each cycle half the amplitude
-    #     cycle_momentum=False
-    # )
-#     scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-#     optimizer,
-#     T_0=15,  # Restart every 15 epochs
-#     T_mult=2,  # Double period each restart
-#     eta_min=1e-6
-# )
-
-    # scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-    #     optimizer,
-    #     T_0=20,      # Restart every 30 epochs
-    #     T_mult=1,    # Double period each restart
-    #     eta_min=1e-6 # Minimum LR
-    # )
+ 
 
     total_epochs_remaining = 200  # train for 200 more epochs then evaluate
 
 
 
 
-    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-    #     optimizer,
-    #     T_max=80,
-    #     eta_min=1e-6
-    # )  
-
-
-
-        # C:\Users\jafari.h\Desktop\ai_project\ttfs\logs\ConvNeXt-attention-Gelu-upsample-bfim\input_size-352\depth64-dim3\agv\start-0-91.43\checkpoints_KvasirSEG-ConvNeXt\1708-test0.83.pth
-    #   # Load checkpoint if exists
-    # # In your checkpoint loading section, modify to:
-    # if os.path.exists(args.checkpoint_path):
-    #     logging.info("#### Loading checkpoint ####")
-        
-    #     # Handle both directory and file paths
-    #     if os.path.isdir(args.checkpoint_path):
-    #         pth_files = [f for f in os.listdir(args.checkpoint_path) if f.endswith('.pth')]
-    #         if pth_files:
-    #             checkpoint_file = os.path.join(args.checkpoint_path, pth_files[0])
-    #         else:
-    #             logging.warning(f"No .pth file found in {args.checkpoint_path}")
-    #             checkpoint_file = None
-    #     else:
-    #         checkpoint_file = args.checkpoint_path
-        
-    #     if not os.path.exists(checkpoint_file):
-    #         logging.error(f"Checkpoint file not found: {checkpoint_file}")
-    #         sys.exit(1)
-       
+   
       
 
     
     for param in model.parameters():
         param.requires_grad = True
 
-    # for module in [model.bsei3, model.bsei2, model.bsei1]:
-    #     for param in module.parameters():
-    #         param.requires_grad = True
-    # for module in [model.reduce3, model.reduce2, model.reduce1]:
-    #     for param in module.parameters():
-    #         param.requires_grad = True
-    # for module in [model.att1, model.att2, model.att3]:
-    #     for param in module.parameters():
-    #         param.requires_grad = True
-
-   
+ 
+    lr = 0.0001   
+    # optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
+    other_params = []
+    for name, param in model.named_parameters():
+        if 'encoder' not in name:  # or 'ConvNeXtEncoder' depending on your model
+            other_params.append(param)
 
 
-    # for param in model.final_up.parameters():
-    #     param.requires_grad = True
-    # for param in model.seg_head.parameters():
-    #     param.requires_grad = True
-    # for param in model.bottleneck.parameters():
-    #     param.requires_grad = True
-
-    # for param in model.parameters():
-    #     param.requires_grad = True
-
-    # 4. Verify — should show exactly the ASG params only
-    # print("Trainable params:")
-    # for name, p in model.named_parameters():
-    #     if p.requires_grad:
-    #         print(f"  {name}: {p.numel()}")
-
-
-    # Unfreeze everything
-    # for param in model.parameters():
-    #     param.requires_grad = True
-
-    
-# 3. Updated Optimizer
-    # optimizer = torch.optim.AdamW([
-    #     {'params': list(model.stem.parameters()) + 
-    #             list(model.enc1.parameters()) + 
-    #             list(model.enc2.parameters()), 'lr': 3e-6},
-                
-    #     {'params': list(model.enc3.parameters()) + 
-    #             list(model.enc4.parameters()) + 
-    #             list(model.bottleneck.parameters()), 'lr': 1e-5},
-                
-    #     {'params': list(model.up3.parameters()) + list(model.dec3.parameters()) +
-    #             list(model.up2.parameters()) + list(model.dec2.parameters()) +
-    #             list(model.up1.parameters()) + list(model.dec1.parameters()), 'lr': 5e-5},
-                
-    #     {'params': list(model.bsei1.parameters()) + 
-    #             list(model.bsei2.parameters()) + 
-    #             list(model.bsei3.parameters()) +
-    #             list(model.att1.parameters()) +   # <-- ADDED
-    #             list(model.att2.parameters()) +   # <-- ADDED
-    #             list(model.att3.parameters()) +   # <-- ADDED
-    #             list(model.reduce1.parameters()) +
-    #             list(model.reduce2.parameters()) +
-    #             list(model.reduce3.parameters()) +
-    #             list(model.final_up.parameters()) +
-    #             list(model.seg_head.parameters()) 
-       
-    #    ,
-    #       'lr': 1e-4},
-    # ], weight_decay=1e-5)
-    
-
-    optimizer = optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-5)
-#     scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-#     optimizer,
-#     T_0=30,      # restart every 30 epochs
-#     T_mult=2,    # each restart doubles the period
-#     eta_min=1e-7
-# )
-
-    # 5. Optimizer — only ASG params
-    # optimizer = torch.optim.AdamW(
-    #     filter(lambda p: p.requires_grad, model.parameters()),
-    #     lr=3e-4,
-    #     weight_decay=1e-4
-    # )
+    optimizer = torch.optim.AdamW(
+        [
+            {
+                "params": model.encoder.parameters(),
+                "lr": 1e-5,
+            },
+            {
+                "params": other_params,
+                "lr": 4e-4,
+            },
+        ],
+        weight_decay=1e-4,
+        betas=(0.9, 0.999),
+    )
 
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
         T_max=80,
-        eta_min=1e-6
+        eta_min= 0.00006  
     )  
 
-    # scheduler = ReduceLROnPlateau(
-    #     optimizer,
-    #     mode='max',
-    #     factor=0.9,
-    #     patience=3,
-    #     min_lr=1e-6
-    # )
-    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-    #     optimizer,
-    #     T_max=80,
-    #     eta_min=1e-6
-    # )  
+
+    for name, param in model.named_parameters():
+        if 'encoder'  in name:
+            param.requires_grad = False
+
+
+#     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+#     optimizer,
+#     mode='max',          # because we're monitoring Dice (higher = better)
+#     factor=0.75,          # halve the LR when plateauing
+#     patience=4,         # wait 50 epochs before reducing
+#     min_lr=1e-7,         # don't let it go too small
+#     verbose=True
+# )
+    from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
+
+
+
+    from torch.optim.lr_scheduler import LambdaLR
+
+    def get_triangular_scheduler(optimizer, min_lr, max_lr, epochs_to_peak, total_epochs):
+        def lr_lambda(epoch):
+            cycle_length = total_epochs
+            epoch_in_cycle = epoch % cycle_length
+            
+            if epoch_in_cycle <= epochs_to_peak:
+                # Ascending phase
+                return 1.0 + (max_lr/min_lr - 1.0) * (epoch_in_cycle / epochs_to_peak)
+            else:
+                # Descending phase
+                progress = (epoch_in_cycle - epochs_to_peak) / (total_epochs - epochs_to_peak)
+                return max_lr/min_lr - (max_lr/min_lr - 1.0) * progress
+        
+        return LambdaLR(optimizer, lr_lambda)
+
+
+    # scheduler = get_triangular_scheduler(optimizer, min_lr=lr, max_lr=0.0001, epochs_to_peak=80, total_epochs=160)
+        
     if args.checkpoint_path:
             checkpoint = torch.load(args.checkpoint_path, map_location=device)
             
@@ -2435,8 +2142,8 @@ if __name__ == "__main__":
             #     state_dict,
             #     strict=False
             # )
-            model.load_state_dict(checkpoint['model_state_dict'])
-            
+            model.load_state_dict(checkpoint['model_state_dict'], strict=False)
+            model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
             # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             
@@ -2452,8 +2159,8 @@ if __name__ == "__main__":
 
 
             start_epoch = checkpoint['epoch'] + 1
-            best_acc = 0
-            # best_acc = checkpoint['best_acc']
+            # best_acc = 0
+            best_acc = checkpoint['best_acc']
             
         
             
@@ -2463,17 +2170,6 @@ if __name__ == "__main__":
             # for param_group in optimizer.param_groups:
             #     param_group['lr'] = args.escape_lr
 
-
-#     scheduler = torch.optim.lr_scheduler.OneCycleLR(
-#     optimizer,
-#     max_lr=1e-4,
-#     steps_per_epoch=len(train_loader),
-#     epochs=200,
-#     pct_start=0.1,
-#     anneal_strategy='cos',
-#     div_factor=10,
-#     final_div_factor=100
-# )
     from torchinfo import summary
     summary(
             model,
@@ -2536,15 +2232,12 @@ if __name__ == "__main__":
 
         FREEZE_EPOCHS = start_epoch + 200
         if args.training:
-            # for name, param in model.named_parameters():
-            #     if 'bfim'  in name:
-            #         param.requires_grad = False
-            logging.info("Backbone frozen for first 5 epochs")
+
+
 
             for epoch in range(start_epoch, args.epochs):
                 # if epoch == FREEZE_EPOCHS:
-                #     for name, param in model.named_parameters():
-                #         param.requires_grad = True
+                #     
                 #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
                 if 'Kvasir' in args.data_name:
                     train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler,threshold=best_threshold)
@@ -2557,22 +2250,7 @@ if __name__ == "__main__":
                                 f"Test Dice: {test_dice:.4f}, "
                                 f"Test IoU: {test_iou:.4f}")
                     
-                    # print(
-                    #     f"bsei1 | alpha: {model.bsei1.alpha.item():.4f} -bsei2 | alpha: {model.bsei2.alpha.item():.4f} - bsei3 | alpha: {model.bsei3.alpha.item():.4f}"
-                        
-                    # )
 
-                    # print(
-                    #     f"bsei2 | beta: {model.bsei2.beta.item():.4f} "
-                    #     f"| SE mean: {model.bsei2.debug_se.mean().item():.4f}"
-                    # )
-
-                    # print(
-                    #     f"bsei3 | beta: {model.bsei3.beta.item():.4f} "
-                    #     f"| SE mean: {model.bsei3.debug_se.mean().item():.4f}"
-                    # )                 # print(f'asg1.alpha: {model.asg1.alpha.item()}- asg2.alpha: {model.asg2.alpha.item()} - asg3.alpha: {model.asg3.alpha.item()}')
-
-                   
                     # Flush immediately for Kvasir
                     for handler in logging.root.handlers:
                         handler.flush()
@@ -2612,6 +2290,15 @@ if __name__ == "__main__":
         torch.save(model.state_dict(), f"{args.logging_dir}/{args.model_name}_weights.pth")
     
     print(f'### Total elapsed time [s]: {time.time() - start_time:.2f}')
+
+
+
+
+
+
+
+
+
 
 
 

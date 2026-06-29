@@ -1,0 +1,7 @@
+2026-06-29 07:08:23 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain/start-93.88/KvasirSEG-ConvNeXt_log.txt
+2026-06-29 07:08:33 - INFO - Resumed from epoch 2617, best_acc=0.0000
+2026-06-29 07:08:33 - INFO - Resumed from epoch 2617
+2026-06-29 07:08:33 - INFO - Previous best accuracy: 0.8600
+2026-06-29 07:08:49 - INFO - First EvaluationTest Loss: 0.3132, Test Dice: 0.8405, Test IoU: 0.7350
+2026-06-29 07:08:52 - INFO - #### Training ####
+2026-06-29 07:08:52 - INFO - initial LR: 0.000001
