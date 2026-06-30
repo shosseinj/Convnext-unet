@@ -217,8 +217,8 @@ class Dataset:
         # eveluate_dataset = 'CVC-300'
         # eveluate_dataset = 'CVC-ColonDB'
         # eveluate_dataset = 'ETIS-LARIBPOLYPDB'
-        eveluate_dataset = 'both'
-        # eveluate_dataset = 'kvasir'
+        # eveluate_dataset = 'both'
+        eveluate_dataset = 'kvasir'
         if eveluate_dataset == 'both':
             self.x_test = np.concatenate(
                 [
@@ -642,7 +642,8 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
 def find_best_threshold(model, test_loader, criterion, device):
     model.eval()
 
-    thresholds = np.arange(0.4, 0.95, 0.05)
+    thresholds = np.arange(0.4, 0.99, 0.05)
+    # hossein
     # thresholds = np.arange(0.7, 0.999, 0.005)
 
     best_threshold = 0.5
@@ -1046,7 +1047,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Horizontal Flip
             # ----------------------------------
-            RAN = 0.6
+            RAN = 0.9
             if random.random() < RAN:
                 image = torch.flip(image, [-1])
                 mask = torch.flip(mask, [-1])
@@ -1080,34 +1081,34 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Affine
             # ----------------------------------
-            if random.random() < 0.8:
+            # if random.random() < 0.8:
 
-                angle = random.uniform(-10, 10)
+            #     angle = random.uniform(-10, 10)
 
-                translate = (
-                    int(random.uniform(-0.1, 0.1) * image.shape[2]),
-                    int(random.uniform(-0.1, 0.1) * image.shape[1])
-                )
+            #     translate = (
+            #         int(random.uniform(-0.1, 0.1) * image.shape[2]),
+            #         int(random.uniform(-0.1, 0.1) * image.shape[1])
+            #     )
 
-                scale = random.uniform(0.8, 1.2)
+            #     scale = random.uniform(0.8, 1.2)
 
-                image = TF.affine(
-                    image,
-                    angle=angle,
-                    translate=translate,
-                    scale=scale,
-                    shear=0,
-                    interpolation=TF.InterpolationMode.BILINEAR
-                )
+            #     image = TF.affine(
+            #         image,
+            #         angle=angle,
+            #         translate=translate,
+            #         scale=scale,
+            #         shear=0,
+            #         interpolation=TF.InterpolationMode.BILINEAR
+            #     )
 
-                mask = TF.affine(
-                    mask,
-                    angle=angle,
-                    translate=translate,
-                    scale=scale,
-                    shear=0,
-                    interpolation=TF.InterpolationMode.NEAREST
-                )
+            #     mask = TF.affine(
+            #         mask,
+            #         angle=angle,
+            #         translate=translate,
+            #         scale=scale,
+            #         shear=0,
+            #         interpolation=TF.InterpolationMode.NEAREST
+            #     )
 
             # ----------------------------------
             # Random Crop + Resize
@@ -1155,78 +1156,78 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Elastic
             # ----------------------------------
-            if random.random() < 0.01:
-                image, mask = self._elastic_transform(
-                    image,
-                    mask,
-                    alpha=20,
-                    sigma=8
-                )
+            # if random.random() < 0.01:
+            #     image, mask = self._elastic_transform(
+            #         image,
+            #         mask,
+            #         alpha=20,
+            #         sigma=8
+            #     )
 
             # ----------------------------------
             # Brightness
             # ----------------------------------
-            if random.random() < 0.9:
+            # if random.random() < 0.9:
 
-                image = TF.adjust_brightness(
-                    image,
-                    random.uniform(0.8, 1.2)
-                )
+            #     image = TF.adjust_brightness(
+            #         image,
+            #         random.uniform(0.8, 1.2)
+            #     )
 
-                image = TF.adjust_contrast(
-                    image,
-                    random.uniform(0.8, 1.2)
-                )
+            #     image = TF.adjust_contrast(
+            #         image,
+            #         random.uniform(0.8, 1.2)
+            #     )
 
-                image = TF.adjust_saturation(
-                    image,
-                    random.uniform(0.8, 1.2)
-                )
+            #     image = TF.adjust_saturation(
+            #         image,
+            #         random.uniform(0.8, 1.2)
+            #     )
 
             # ----------------------------------
             # Gaussian Blur
             # ----------------------------------
-            if random.random() < 0.8:
+            # if random.random() < 0.8:
 
-                image = TF.gaussian_blur(
-                    image,
-                    kernel_size=5
-                )
+            #     image = TF.gaussian_blur(
+            #         image,
+            #         kernel_size=5
+            #     )
 
-            # ----------------------------------
-            # Gaussian Noise
-            # ----------------------------------
-            if random.random() < 0.8:
+            # # ----------------------------------
+            # # Gaussian Noise
+            # # ----------------------------------
+            # if random.random() < 0.8:
 
-                noise = (
-                    torch.randn_like(image) * 0.03
-                )
+            #     noise = (
+            #         torch.randn_like(image) * 0.03
+            #     )
 
-                image = image + noise
+            #     image = image + noise
 
-            # ----------------------------------
-            # Cutout
-            # ----------------------------------
-            if random.random() < 0.9:
+            # # ----------------------------------
+            # # Cutout
+            # # ----------------------------------
+            # if random.random() < 0.9:
 
-                H, W = image.shape[1:]
+            #     H, W = image.shape[1:]
 
-                size = random.randint(
-                    int(0.05 * H),
-                    int(0.15 * H)
-                )
+            #     size = random.randint(
+            #         int(0.05 * H),
+            #         int(0.15 * H)
+            #     )
 
-                y = random.randint(
-                    0,
-                    H - size
-                )
+            #     y = random.randint(
+            #         0,
+            #         H - size
+            #     )
 
-                x = random.randint(
-                    0,
-                    W - size
-                )
+            #     x = random.randint(
+            #         0,
+            #         W - size
+            #     )
 
-                image[:, y:y+size, x:x+size] = 0
+            #     image[:, y:y+size, x:x+size] = 0
 
         image = torch.clamp(image, 0, 1)
 
@@ -1889,10 +1890,10 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
-    path_weight = './logs/ConvNeXt-pretrain_depth3393/start/checkpoints_KvasirSEG-ConvNeXt/2636-test0.87.pth'
+    path_weight = './logs/ConvNeXt-pretrain_depth3393/start/checkpoints_KvasirSEG-ConvNeXt/2765-test0.88.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth3393/start/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth3393/start-wo_aug/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
     # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
     parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
