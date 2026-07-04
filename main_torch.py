@@ -217,8 +217,8 @@ class Dataset:
         # eveluate_dataset = 'CVC-300'
         # eveluate_dataset = 'CVC-ColonDB'
         # eveluate_dataset = 'ETIS-LARIBPOLYPDB'
-        # eveluate_dataset = 'both'
-        eveluate_dataset = 'kvasir'
+        eveluate_dataset = 'both'
+        # eveluate_dataset = 'kvasir'
         if eveluate_dataset == 'both':
             self.x_test = np.concatenate(
                 [
@@ -1893,7 +1893,7 @@ if __name__ == "__main__":
     path_weight = './logs/ConvNeXt-pretrain_depth3393/start/checkpoints_KvasirSEG-ConvNeXt/2765-test0.88.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth3393/start-wo_aug/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth3393/start-detail/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
     # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
     parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
@@ -2017,11 +2017,39 @@ if __name__ == "__main__":
 
     
 
-    
+    class DiceBCEBoundaryLoss(nn.Module):
+        def __init__(self, dice_w=0.55, bce_w=0.25, boundary_w=0.20):
+            super().__init__()
+            self.dice_w = dice_w
+            self.bce_w = bce_w
+            self.boundary_w = boundary_w
+            self.bce = nn.BCEWithLogitsLoss()
+            self.boundary = BoundaryAwareLoss(kappa=5)
 
+        def dice_loss(self, logits, targets, smooth=1.0):
+            probs = torch.sigmoid(logits)
+            probs = probs.view(probs.size(0), -1)
+            targets = targets.view(targets.size(0), -1)
+            inter = (probs * targets).sum(dim=1)
+            dice = (2 * inter + smooth) / (
+                probs.sum(dim=1) + targets.sum(dim=1) + smooth
+            )
+            return 1 - dice.mean()
+
+        def forward(self, logits, targets):
+            return (
+                self.dice_w * self.dice_loss(logits, targets) +
+                self.bce_w * self.bce(logits, targets.float()) +
+                self.boundary_w * self.boundary(logits, targets)
+            )
     if 'Kvasir' in args.data_name:
 
-        criterion = BoundaryAwareLoss(kappa=10)
+        # criterion = BoundaryAwareLoss(kappa=10)
+        criterion = DiceBCEBoundaryLoss(
+    dice_w=0.55,
+    bce_w=0.25,
+    boundary_w=0.20
+)
         # criterion = BoundaryDiceLoss(
         #         kappa=10,
         #         boundary_weight=0.3,

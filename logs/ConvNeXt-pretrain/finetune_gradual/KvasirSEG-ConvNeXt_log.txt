@@ -1,0 +1,1028 @@
+2026-06-30 15:07:19 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain/finetune_gradual/KvasirSEG-ConvNeXt_log.txt
+2026-06-30 15:07:26 - INFO - Fine-tuning strategy: gradual (active=frozen), loss=dice_bce, augment=moderate
+2026-06-30 15:07:26 - INFO - Parameters: 49.31M total, 21.50M trainable
+2026-06-30 15:07:26 - INFO - Initial LRs: encoder_stage1=6.87e-07, encoder_stage2=1.06e-06, encoder_stage3=1.63e-06, encoder_stage4=2.50e-06, decoder=7.50e-05
+2026-06-30 15:07:26 - INFO - #### Training ####
+2026-06-30 15:07:26 - INFO - initial decoder LR: 0.000075
+2026-06-30 15:07:26 - INFO - Epoch 1: active encoder strategy=frozen, trainable params=21.50M
+2026-06-30 15:07:56 - INFO - 
+Train Dice      : 0.3886
+Train Loss      : 0.5942
+Encoder Grad    : 0.0000
+Decoder Grad    : 18.6729
+Mean Prob       : 0.2262
+Prob Std        : 0.2482
+Mask Area       : 0.1965
+Encoder LR      : 2.50e-06
+Decoder LR      : 7.50e-05
+2026-06-30 15:07:56 - INFO - Epoch 1/200: Train Loss: 0.5942, Test Loss: 0.2694, Test Dice: 0.7486, Test IoU: 0.6003, EncLR: 5.00e-06, DecLR: 1.50e-04
+2026-06-30 15:07:57 - INFO - New best model saved with dice: 0.7486
+2026-06-30 15:08:25 - INFO - 
+Train Dice      : 0.6267
+Train Loss      : 0.4410
+Encoder Grad    : 0.0000
+Decoder Grad    : 16.9250
+Mean Prob       : 0.2089
+Prob Std        : 0.3079
+Mask Area       : 0.1924
+Encoder LR      : 5.00e-06
+Decoder LR      : 1.50e-04
+2026-06-30 15:08:25 - INFO - Epoch 2/200: Train Loss: 0.4410, Test Loss: 0.2661, Test Dice: 0.7544, Test IoU: 0.6080, EncLR: 7.50e-06, DecLR: 2.25e-04
+2026-06-30 15:08:25 - INFO - New best model saved with dice: 0.7544
+2026-06-30 15:08:52 - INFO - 
+Train Dice      : 0.7335
+Train Loss      : 0.3080
+Encoder Grad    : 0.0000
+Decoder Grad    : 8.4329
+Mean Prob       : 0.1601
+Prob Std        : 0.3186
+Mask Area       : 0.1501
+Encoder LR      : 7.50e-06
+Decoder LR      : 2.25e-04
+2026-06-30 15:08:53 - INFO - Epoch 3/200: Train Loss: 0.3080, Test Loss: 0.2556, Test Dice: 0.7699, Test IoU: 0.6289, EncLR: 1.00e-05, DecLR: 3.00e-04
+2026-06-30 15:08:53 - INFO - New best model saved with dice: 0.7699
+2026-06-30 15:09:20 - INFO - 
+Train Dice      : 0.7678
+Train Loss      : 0.2663
+Encoder Grad    : 0.0000
+Decoder Grad    : 5.5637
+Mean Prob       : 0.1540
+Prob Std        : 0.3103
+Mask Area       : 0.1369
+Encoder LR      : 1.00e-05
+Decoder LR      : 3.00e-04
+2026-06-30 15:09:20 - INFO - Epoch 4/200: Train Loss: 0.2663, Test Loss: 0.1927, Test Dice: 0.8254, Test IoU: 0.7052, EncLR: 1.00e-05, DecLR: 3.00e-04
+2026-06-30 15:09:21 - INFO - New best model saved with dice: 0.8254
+2026-06-30 15:09:47 - INFO - 
+Train Dice      : 0.7795
+Train Loss      : 0.2422
+Encoder Grad    : 0.0000
+Decoder Grad    : 4.9322
+Mean Prob       : 0.1450
+Prob Std        : 0.3210
+Mask Area       : 0.1405
+Encoder LR      : 1.00e-05
+Decoder LR      : 3.00e-04
+2026-06-30 15:09:48 - INFO - Epoch 5/200: Train Loss: 0.2422, Test Loss: 0.2029, Test Dice: 0.8234, Test IoU: 0.7023, EncLR: 1.00e-05, DecLR: 3.00e-04
+2026-06-30 15:10:15 - INFO - 
+Train Dice      : 0.8092
+Train Loss      : 0.2086
+Encoder Grad    : 0.0000
+Decoder Grad    : 3.1706
+Mean Prob       : 0.1508
+Prob Std        : 0.3281
+Mask Area       : 0.1461
+Encoder LR      : 1.00e-05
+Decoder LR      : 3.00e-04
+2026-06-30 15:10:15 - INFO - Epoch 6/200: Train Loss: 0.2086, Test Loss: 0.1725, Test Dice: 0.8388, Test IoU: 0.7248, EncLR: 1.00e-05, DecLR: 3.00e-04
+2026-06-30 15:10:15 - INFO - New best model saved with dice: 0.8388
+2026-06-30 15:10:43 - INFO - 
+Train Dice      : 0.8327
+Train Loss      : 0.1788
+Encoder Grad    : 0.0000
+Decoder Grad    : 2.2160
+Mean Prob       : 0.1441
+Prob Std        : 0.3257
+Mask Area       : 0.1389
+Encoder LR      : 1.00e-05
+Decoder LR      : 3.00e-04
+2026-06-30 15:10:43 - INFO - Epoch 7/200: Train Loss: 0.1788, Test Loss: 0.1786, Test Dice: 0.8397, Test IoU: 0.7267, EncLR: 9.99e-06, DecLR: 3.00e-04
+2026-06-30 15:10:44 - INFO - New best model saved with dice: 0.8397
+2026-06-30 15:11:11 - INFO - 
+Train Dice      : 0.8201
+Train Loss      : 0.1967
+Encoder Grad    : 0.0000
+Decoder Grad    : 3.0202
+Mean Prob       : 0.1446
+Prob Std        : 0.3249
+Mask Area       : 0.1390
+Encoder LR      : 9.99e-06
+Decoder LR      : 3.00e-04
+2026-06-30 15:11:11 - INFO - Epoch 8/200: Train Loss: 0.1967, Test Loss: 0.1842, Test Dice: 0.8359, Test IoU: 0.7212, EncLR: 9.99e-06, DecLR: 3.00e-04
+2026-06-30 15:11:11 - INFO - Epoch 9: active encoder strategy=stage4, trainable params=36.97M
+2026-06-30 15:11:40 - INFO - 
+Train Dice      : 0.8394
+Train Loss      : 0.1750
+Encoder Grad    : 0.7602
+Decoder Grad    : 2.1572
+Mean Prob       : 0.1426
+Prob Std        : 0.3271
+Mask Area       : 0.1389
+Encoder LR      : 9.99e-06
+Decoder LR      : 3.00e-04
+2026-06-30 15:11:41 - INFO - Epoch 9/200: Train Loss: 0.1750, Test Loss: 0.1594, Test Dice: 0.8619, Test IoU: 0.7595, EncLR: 9.98e-06, DecLR: 3.00e-04
+2026-06-30 15:11:41 - INFO - New best model saved with dice: 0.8619
+2026-06-30 15:12:10 - INFO - 
+Train Dice      : 0.8495
+Train Loss      : 0.1670
+Encoder Grad    : 0.8100
+Decoder Grad    : 2.3639
+Mean Prob       : 0.1453
+Prob Std        : 0.3303
+Mask Area       : 0.1418
+Encoder LR      : 9.98e-06
+Decoder LR      : 3.00e-04
+2026-06-30 15:12:10 - INFO - Epoch 10/200: Train Loss: 0.1670, Test Loss: 0.1539, Test Dice: 0.8576, Test IoU: 0.7540, EncLR: 9.98e-06, DecLR: 2.99e-04
+2026-06-30 15:12:40 - INFO - 
+Train Dice      : 0.8524
+Train Loss      : 0.1603
+Encoder Grad    : 0.7778
+Decoder Grad    : 2.1963
+Mean Prob       : 0.1468
+Prob Std        : 0.3326
+Mask Area       : 0.1434
+Encoder LR      : 9.98e-06
+Decoder LR      : 2.99e-04
+2026-06-30 15:12:40 - INFO - Epoch 11/200: Train Loss: 0.1603, Test Loss: 0.1500, Test Dice: 0.8624, Test IoU: 0.7610, EncLR: 9.97e-06, DecLR: 2.99e-04
+2026-06-30 15:12:41 - INFO - New best model saved with dice: 0.8624
+2026-06-30 15:13:09 - INFO - 
+Train Dice      : 0.8580
+Train Loss      : 0.1577
+Encoder Grad    : 0.8998
+Decoder Grad    : 2.2112
+Mean Prob       : 0.1455
+Prob Std        : 0.3335
+Mask Area       : 0.1434
+Encoder LR      : 9.97e-06
+Decoder LR      : 2.99e-04
+2026-06-30 15:13:10 - INFO - Epoch 12/200: Train Loss: 0.1577, Test Loss: 0.1859, Test Dice: 0.8312, Test IoU: 0.7143, EncLR: 9.96e-06, DecLR: 2.99e-04
+2026-06-30 15:13:39 - INFO - 
+Train Dice      : 0.8712
+Train Loss      : 0.1395
+Encoder Grad    : 0.7750
+Decoder Grad    : 1.5455
+Mean Prob       : 0.1438
+Prob Std        : 0.3315
+Mask Area       : 0.1410
+Encoder LR      : 9.96e-06
+Decoder LR      : 2.99e-04
+2026-06-30 15:13:40 - INFO - Epoch 13/200: Train Loss: 0.1395, Test Loss: 0.1599, Test Dice: 0.8569, Test IoU: 0.7523, EncLR: 9.95e-06, DecLR: 2.99e-04
+2026-06-30 15:14:09 - INFO - 
+Train Dice      : 0.8748
+Train Loss      : 0.1400
+Encoder Grad    : 0.8149
+Decoder Grad    : 1.9012
+Mean Prob       : 0.1438
+Prob Std        : 0.3343
+Mask Area       : 0.1419
+Encoder LR      : 9.95e-06
+Decoder LR      : 2.99e-04
+2026-06-30 15:14:09 - INFO - Epoch 14/200: Train Loss: 0.1400, Test Loss: 0.1865, Test Dice: 0.8450, Test IoU: 0.7350, EncLR: 9.94e-06, DecLR: 2.98e-04
+2026-06-30 15:14:37 - INFO - 
+Train Dice      : 0.8830
+Train Loss      : 0.1289
+Encoder Grad    : 0.8839
+Decoder Grad    : 1.6073
+Mean Prob       : 0.1470
+Prob Std        : 0.3366
+Mask Area       : 0.1447
+Encoder LR      : 9.94e-06
+Decoder LR      : 2.98e-04
+2026-06-30 15:14:38 - INFO - Epoch 15/200: Train Loss: 0.1289, Test Loss: 0.1430, Test Dice: 0.8687, Test IoU: 0.7696, EncLR: 9.93e-06, DecLR: 2.98e-04
+2026-06-30 15:14:38 - INFO - New best model saved with dice: 0.8687
+2026-06-30 15:15:06 - INFO - 
+Train Dice      : 0.8733
+Train Loss      : 0.1395
+Encoder Grad    : 0.8470
+Decoder Grad    : 1.7207
+Mean Prob       : 0.1501
+Prob Std        : 0.3368
+Mask Area       : 0.1472
+Encoder LR      : 9.93e-06
+Decoder LR      : 2.98e-04
+2026-06-30 15:15:07 - INFO - Epoch 16/200: Train Loss: 0.1395, Test Loss: 0.1603, Test Dice: 0.8557, Test IoU: 0.7504, EncLR: 9.91e-06, DecLR: 2.97e-04
+2026-06-30 15:15:35 - INFO - 
+Train Dice      : 0.8809
+Train Loss      : 0.1274
+Encoder Grad    : 0.7687
+Decoder Grad    : 1.5631
+Mean Prob       : 0.1443
+Prob Std        : 0.3340
+Mask Area       : 0.1416
+Encoder LR      : 9.91e-06
+Decoder LR      : 2.97e-04
+2026-06-30 15:15:35 - INFO - Epoch 17/200: Train Loss: 0.1274, Test Loss: 0.1558, Test Dice: 0.8678, Test IoU: 0.7690, EncLR: 9.90e-06, DecLR: 2.97e-04
+2026-06-30 15:16:04 - INFO - 
+Train Dice      : 0.8805
+Train Loss      : 0.1315
+Encoder Grad    : 0.8982
+Decoder Grad    : 1.6471
+Mean Prob       : 0.1432
+Prob Std        : 0.3337
+Mask Area       : 0.1420
+Encoder LR      : 9.90e-06
+Decoder LR      : 2.97e-04
+2026-06-30 15:16:05 - INFO - Epoch 18/200: Train Loss: 0.1315, Test Loss: 0.1406, Test Dice: 0.8744, Test IoU: 0.7785, EncLR: 9.88e-06, DecLR: 2.96e-04
+2026-06-30 15:16:05 - INFO - New best model saved with dice: 0.8744
+2026-06-30 15:16:33 - INFO - 
+Train Dice      : 0.8867
+Train Loss      : 0.1228
+Encoder Grad    : 0.8592
+Decoder Grad    : 1.6100
+Mean Prob       : 0.1453
+Prob Std        : 0.3353
+Mask Area       : 0.1432
+Encoder LR      : 9.88e-06
+Decoder LR      : 2.96e-04
+2026-06-30 15:16:34 - INFO - Epoch 19/200: Train Loss: 0.1228, Test Loss: 0.1511, Test Dice: 0.8637, Test IoU: 0.7625, EncLR: 9.86e-06, DecLR: 2.96e-04
+2026-06-30 15:17:02 - INFO - 
+Train Dice      : 0.8965
+Train Loss      : 0.1122
+Encoder Grad    : 0.6211
+Decoder Grad    : 1.2336
+Mean Prob       : 0.1455
+Prob Std        : 0.3372
+Mask Area       : 0.1435
+Encoder LR      : 9.86e-06
+Decoder LR      : 2.96e-04
+2026-06-30 15:17:03 - INFO - Epoch 20/200: Train Loss: 0.1122, Test Loss: 0.1320, Test Dice: 0.8877, Test IoU: 0.7991, EncLR: 9.84e-06, DecLR: 2.95e-04
+2026-06-30 15:17:03 - INFO - New best model saved with dice: 0.8877
+2026-06-30 15:17:03 - INFO - Epoch 21: active encoder strategy=stage34, trainable params=48.08M
+2026-06-30 15:17:34 - INFO - 
+Train Dice      : 0.9060
+Train Loss      : 0.1020
+Encoder Grad    : 1.5202
+Decoder Grad    : 1.1102
+Mean Prob       : 0.1426
+Prob Std        : 0.3362
+Mask Area       : 0.1412
+Encoder LR      : 9.84e-06
+Decoder LR      : 2.95e-04
+2026-06-30 15:17:35 - INFO - Epoch 21/200: Train Loss: 0.1020, Test Loss: 0.1480, Test Dice: 0.8685, Test IoU: 0.7691, EncLR: 9.82e-06, DecLR: 2.95e-04
+2026-06-30 15:18:06 - INFO - 
+Train Dice      : 0.9112
+Train Loss      : 0.0952
+Encoder Grad    : 1.4274
+Decoder Grad    : 0.9320
+Mean Prob       : 0.1451
+Prob Std        : 0.3387
+Mask Area       : 0.1436
+Encoder LR      : 9.82e-06
+Decoder LR      : 2.95e-04
+2026-06-30 15:18:07 - INFO - Epoch 22/200: Train Loss: 0.0952, Test Loss: 0.1393, Test Dice: 0.8786, Test IoU: 0.7846, EncLR: 9.80e-06, DecLR: 2.94e-04
+2026-06-30 15:18:37 - INFO - 
+Train Dice      : 0.9144
+Train Loss      : 0.0927
+Encoder Grad    : 1.2097
+Decoder Grad    : 0.8515
+Mean Prob       : 0.1446
+Prob Std        : 0.3396
+Mask Area       : 0.1433
+Encoder LR      : 9.80e-06
+Decoder LR      : 2.94e-04
+2026-06-30 15:18:38 - INFO - Epoch 23/200: Train Loss: 0.0927, Test Loss: 0.1516, Test Dice: 0.8613, Test IoU: 0.7585, EncLR: 9.78e-06, DecLR: 2.93e-04
+2026-06-30 15:19:10 - INFO - 
+Train Dice      : 0.9146
+Train Loss      : 0.0928
+Encoder Grad    : 1.5267
+Decoder Grad    : 0.9108
+Mean Prob       : 0.1464
+Prob Std        : 0.3405
+Mask Area       : 0.1450
+Encoder LR      : 9.78e-06
+Decoder LR      : 2.93e-04
+2026-06-30 15:19:10 - INFO - Epoch 24/200: Train Loss: 0.0928, Test Loss: 0.1380, Test Dice: 0.8768, Test IoU: 0.7837, EncLR: 9.76e-06, DecLR: 2.93e-04
+2026-06-30 15:19:41 - INFO - 
+Train Dice      : 0.9141
+Train Loss      : 0.0940
+Encoder Grad    : 1.2978
+Decoder Grad    : 0.9004
+Mean Prob       : 0.1448
+Prob Std        : 0.3397
+Mask Area       : 0.1433
+Encoder LR      : 9.76e-06
+Decoder LR      : 2.93e-04
+2026-06-30 15:19:42 - INFO - Epoch 25/200: Train Loss: 0.0940, Test Loss: 0.1522, Test Dice: 0.8757, Test IoU: 0.7806, EncLR: 9.73e-06, DecLR: 2.92e-04
+2026-06-30 15:20:13 - INFO - 
+Train Dice      : 0.9233
+Train Loss      : 0.0828
+Encoder Grad    : 1.5252
+Decoder Grad    : 0.8095
+Mean Prob       : 0.1444
+Prob Std        : 0.3399
+Mask Area       : 0.1433
+Encoder LR      : 9.73e-06
+Decoder LR      : 2.92e-04
+2026-06-30 15:20:13 - INFO - Epoch 26/200: Train Loss: 0.0828, Test Loss: 0.1307, Test Dice: 0.8843, Test IoU: 0.7945, EncLR: 9.71e-06, DecLR: 2.91e-04
+2026-06-30 15:20:44 - INFO - 
+Train Dice      : 0.9289
+Train Loss      : 0.0769
+Encoder Grad    : 1.1293
+Decoder Grad    : 0.6516
+Mean Prob       : 0.1452
+Prob Std        : 0.3411
+Mask Area       : 0.1437
+Encoder LR      : 9.71e-06
+Decoder LR      : 2.91e-04
+2026-06-30 15:20:44 - INFO - Epoch 27/200: Train Loss: 0.0769, Test Loss: 0.1277, Test Dice: 0.8885, Test IoU: 0.8006, EncLR: 9.68e-06, DecLR: 2.90e-04
+2026-06-30 15:20:45 - INFO - New best model saved with dice: 0.8885
+2026-06-30 15:21:16 - INFO - 
+Train Dice      : 0.9224
+Train Loss      : 0.0835
+Encoder Grad    : 1.3034
+Decoder Grad    : 0.8069
+Mean Prob       : 0.1461
+Prob Std        : 0.3416
+Mask Area       : 0.1450
+Encoder LR      : 9.68e-06
+Decoder LR      : 2.90e-04
+2026-06-30 15:21:16 - INFO - Epoch 28/200: Train Loss: 0.0835, Test Loss: 0.1290, Test Dice: 0.8916, Test IoU: 0.8061, EncLR: 9.65e-06, DecLR: 2.90e-04
+2026-06-30 15:21:17 - INFO - New best model saved with dice: 0.8916
+2026-06-30 15:21:48 - INFO - 
+Train Dice      : 0.9253
+Train Loss      : 0.0801
+Encoder Grad    : 1.3966
+Decoder Grad    : 0.8960
+Mean Prob       : 0.1465
+Prob Std        : 0.3423
+Mask Area       : 0.1457
+Encoder LR      : 9.65e-06
+Decoder LR      : 2.90e-04
+2026-06-30 15:21:48 - INFO - Epoch 29/200: Train Loss: 0.0801, Test Loss: 0.1209, Test Dice: 0.8941, Test IoU: 0.8095, EncLR: 9.62e-06, DecLR: 2.89e-04
+2026-06-30 15:21:49 - INFO - New best model saved with dice: 0.8941
+2026-06-30 15:22:19 - INFO - 
+Train Dice      : 0.9292
+Train Loss      : 0.0767
+Encoder Grad    : 1.2438
+Decoder Grad    : 0.7837
+Mean Prob       : 0.1462
+Prob Std        : 0.3423
+Mask Area       : 0.1451
+Encoder LR      : 9.62e-06
+Decoder LR      : 2.89e-04
+2026-06-30 15:22:19 - INFO - Epoch 30/200: Train Loss: 0.0767, Test Loss: 0.1267, Test Dice: 0.8871, Test IoU: 0.7997, EncLR: 9.59e-06, DecLR: 2.88e-04
+2026-06-30 15:22:51 - INFO - 
+Train Dice      : 0.9265
+Train Loss      : 0.0792
+Encoder Grad    : 1.4207
+Decoder Grad    : 0.8330
+Mean Prob       : 0.1468
+Prob Std        : 0.3423
+Mask Area       : 0.1460
+Encoder LR      : 9.59e-06
+Decoder LR      : 2.88e-04
+2026-06-30 15:22:51 - INFO - Epoch 31/200: Train Loss: 0.0792, Test Loss: 0.1247, Test Dice: 0.8905, Test IoU: 0.8047, EncLR: 9.56e-06, DecLR: 2.87e-04
+2026-06-30 15:23:22 - INFO - 
+Train Dice      : 0.9256
+Train Loss      : 0.0792
+Encoder Grad    : 1.2325
+Decoder Grad    : 0.6432
+Mean Prob       : 0.1443
+Prob Std        : 0.3396
+Mask Area       : 0.1427
+Encoder LR      : 9.56e-06
+Decoder LR      : 2.87e-04
+2026-06-30 15:23:23 - INFO - Epoch 32/200: Train Loss: 0.0792, Test Loss: 0.1391, Test Dice: 0.8904, Test IoU: 0.8039, EncLR: 9.53e-06, DecLR: 2.86e-04
+2026-06-30 15:23:23 - INFO - Epoch 33: active encoder strategy=full, trainable params=49.31M
+2026-06-30 15:23:56 - INFO - 
+Train Dice      : 0.9343
+Train Loss      : 0.0708
+Encoder Grad    : 3.1559
+Decoder Grad    : 0.5602
+Mean Prob       : 0.1458
+Prob Std        : 0.3429
+Mask Area       : 0.1452
+Encoder LR      : 9.53e-06
+Decoder LR      : 2.86e-04
+2026-06-30 15:23:57 - INFO - Epoch 33/200: Train Loss: 0.0708, Test Loss: 0.1219, Test Dice: 0.8949, Test IoU: 0.8113, EncLR: 9.50e-06, DecLR: 2.85e-04
+2026-06-30 15:23:57 - INFO - New best model saved with dice: 0.8949
+2026-06-30 15:24:33 - INFO - 
+Train Dice      : 0.9375
+Train Loss      : 0.0668
+Encoder Grad    : 3.1844
+Decoder Grad    : 0.5599
+Mean Prob       : 0.1453
+Prob Std        : 0.3425
+Mask Area       : 0.1441
+Encoder LR      : 9.50e-06
+Decoder LR      : 2.85e-04
+2026-06-30 15:24:33 - INFO - Epoch 34/200: Train Loss: 0.0668, Test Loss: 0.1307, Test Dice: 0.8897, Test IoU: 0.8028, EncLR: 9.46e-06, DecLR: 2.84e-04
+2026-06-30 15:25:09 - INFO - 
+Train Dice      : 0.9390
+Train Loss      : 0.0644
+Encoder Grad    : 3.0614
+Decoder Grad    : 0.4953
+Mean Prob       : 0.1457
+Prob Std        : 0.3433
+Mask Area       : 0.1452
+Encoder LR      : 9.46e-06
+Decoder LR      : 2.84e-04
+2026-06-30 15:25:09 - INFO - Epoch 35/200: Train Loss: 0.0644, Test Loss: 0.1325, Test Dice: 0.8891, Test IoU: 0.8016, EncLR: 9.43e-06, DecLR: 2.83e-04
+2026-06-30 15:25:44 - INFO - 
+Train Dice      : 0.9418
+Train Loss      : 0.0617
+Encoder Grad    : 2.6765
+Decoder Grad    : 0.4894
+Mean Prob       : 0.1450
+Prob Std        : 0.3422
+Mask Area       : 0.1440
+Encoder LR      : 9.43e-06
+Decoder LR      : 2.83e-04
+2026-06-30 15:25:44 - INFO - Epoch 36/200: Train Loss: 0.0617, Test Loss: 0.1288, Test Dice: 0.8878, Test IoU: 0.8003, EncLR: 9.39e-06, DecLR: 2.82e-04
+2026-06-30 15:26:19 - INFO - 
+Train Dice      : 0.9386
+Train Loss      : 0.0652
+Encoder Grad    : 4.0011
+Decoder Grad    : 0.5683
+Mean Prob       : 0.1464
+Prob Std        : 0.3436
+Mask Area       : 0.1456
+Encoder LR      : 9.39e-06
+Decoder LR      : 2.82e-04
+2026-06-30 15:26:20 - INFO - Epoch 37/200: Train Loss: 0.0652, Test Loss: 0.1285, Test Dice: 0.8930, Test IoU: 0.8086, EncLR: 9.35e-06, DecLR: 2.81e-04
+2026-06-30 15:26:55 - INFO - 
+Train Dice      : 0.9425
+Train Loss      : 0.0614
+Encoder Grad    : 2.5158
+Decoder Grad    : 0.4868
+Mean Prob       : 0.1476
+Prob Std        : 0.3460
+Mask Area       : 0.1470
+Encoder LR      : 9.35e-06
+Decoder LR      : 2.81e-04
+2026-06-30 15:26:55 - INFO - Epoch 38/200: Train Loss: 0.0614, Test Loss: 0.1241, Test Dice: 0.8912, Test IoU: 0.8059, EncLR: 9.31e-06, DecLR: 2.79e-04
+2026-06-30 15:27:30 - INFO - 
+Train Dice      : 0.9407
+Train Loss      : 0.0628
+Encoder Grad    : 3.7939
+Decoder Grad    : 0.5473
+Mean Prob       : 0.1453
+Prob Std        : 0.3424
+Mask Area       : 0.1444
+Encoder LR      : 9.31e-06
+Decoder LR      : 2.79e-04
+2026-06-30 15:27:31 - INFO - Epoch 39/200: Train Loss: 0.0628, Test Loss: 0.1203, Test Dice: 0.9010, Test IoU: 0.8210, EncLR: 9.27e-06, DecLR: 2.78e-04
+2026-06-30 15:27:31 - INFO - New best model saved with dice: 0.9010
+2026-06-30 15:28:06 - INFO - 
+Train Dice      : 0.9423
+Train Loss      : 0.0616
+Encoder Grad    : 3.7171
+Decoder Grad    : 0.6381
+Mean Prob       : 0.1460
+Prob Std        : 0.3436
+Mask Area       : 0.1452
+Encoder LR      : 9.27e-06
+Decoder LR      : 2.78e-04
+2026-06-30 15:28:06 - INFO - Epoch 40/200: Train Loss: 0.0616, Test Loss: 0.1375, Test Dice: 0.8861, Test IoU: 0.7974, EncLR: 9.23e-06, DecLR: 2.77e-04
+2026-06-30 15:28:43 - INFO - 
+Train Dice      : 0.9425
+Train Loss      : 0.0617
+Encoder Grad    : 3.4820
+Decoder Grad    : 0.6490
+Mean Prob       : 0.1473
+Prob Std        : 0.3451
+Mask Area       : 0.1468
+Encoder LR      : 9.23e-06
+Decoder LR      : 2.77e-04
+2026-06-30 15:28:43 - INFO - Epoch 41/200: Train Loss: 0.0617, Test Loss: 0.1226, Test Dice: 0.8986, Test IoU: 0.8181, EncLR: 9.19e-06, DecLR: 2.76e-04
+2026-06-30 15:29:17 - INFO - 
+Train Dice      : 0.9439
+Train Loss      : 0.0602
+Encoder Grad    : 3.1491
+Decoder Grad    : 0.4938
+Mean Prob       : 0.1459
+Prob Std        : 0.3441
+Mask Area       : 0.1449
+Encoder LR      : 9.19e-06
+Decoder LR      : 2.76e-04
+2026-06-30 15:29:18 - INFO - Epoch 42/200: Train Loss: 0.0602, Test Loss: 0.1340, Test Dice: 0.8900, Test IoU: 0.8036, EncLR: 9.15e-06, DecLR: 2.74e-04
+2026-06-30 15:29:53 - INFO - 
+Train Dice      : 0.9420
+Train Loss      : 0.0628
+Encoder Grad    : 3.4919
+Decoder Grad    : 0.6564
+Mean Prob       : 0.1469
+Prob Std        : 0.3450
+Mask Area       : 0.1458
+Encoder LR      : 9.15e-06
+Decoder LR      : 2.74e-04
+2026-06-30 15:29:53 - INFO - Epoch 43/200: Train Loss: 0.0628, Test Loss: 0.1375, Test Dice: 0.8868, Test IoU: 0.7998, EncLR: 9.10e-06, DecLR: 2.73e-04
+2026-06-30 15:30:29 - INFO - 
+Train Dice      : 0.9384
+Train Loss      : 0.0662
+Encoder Grad    : 3.5248
+Decoder Grad    : 0.6973
+Mean Prob       : 0.1452
+Prob Std        : 0.3427
+Mask Area       : 0.1444
+Encoder LR      : 9.10e-06
+Decoder LR      : 2.73e-04
+2026-06-30 15:30:29 - INFO - Epoch 44/200: Train Loss: 0.0662, Test Loss: 0.1409, Test Dice: 0.8813, Test IoU: 0.7906, EncLR: 9.06e-06, DecLR: 2.72e-04
+2026-06-30 15:31:04 - INFO - 
+Train Dice      : 0.9449
+Train Loss      : 0.0584
+Encoder Grad    : 2.9956
+Decoder Grad    : 0.4907
+Mean Prob       : 0.1459
+Prob Std        : 0.3440
+Mask Area       : 0.1450
+Encoder LR      : 9.06e-06
+Decoder LR      : 2.72e-04
+2026-06-30 15:31:04 - INFO - Epoch 45/200: Train Loss: 0.0584, Test Loss: 0.1392, Test Dice: 0.8800, Test IoU: 0.7878, EncLR: 9.01e-06, DecLR: 2.70e-04
+2026-06-30 15:31:39 - INFO - 
+Train Dice      : 0.9493
+Train Loss      : 0.0538
+Encoder Grad    : 3.1279
+Decoder Grad    : 0.3785
+Mean Prob       : 0.1451
+Prob Std        : 0.3433
+Mask Area       : 0.1447
+Encoder LR      : 9.01e-06
+Decoder LR      : 2.70e-04
+2026-06-30 15:31:40 - INFO - Epoch 46/200: Train Loss: 0.0538, Test Loss: 0.1363, Test Dice: 0.8851, Test IoU: 0.7956, EncLR: 8.96e-06, DecLR: 2.69e-04
+2026-06-30 15:32:14 - INFO - 
+Train Dice      : 0.9462
+Train Loss      : 0.0566
+Encoder Grad    : 3.1342
+Decoder Grad    : 0.5333
+Mean Prob       : 0.1456
+Prob Std        : 0.3437
+Mask Area       : 0.1450
+Encoder LR      : 8.96e-06
+Decoder LR      : 2.69e-04
+2026-06-30 15:32:14 - INFO - Epoch 47/200: Train Loss: 0.0566, Test Loss: 0.1432, Test Dice: 0.8882, Test IoU: 0.8010, EncLR: 8.92e-06, DecLR: 2.67e-04
+2026-06-30 15:32:50 - INFO - 
+Train Dice      : 0.9479
+Train Loss      : 0.0554
+Encoder Grad    : 2.7263
+Decoder Grad    : 0.4245
+Mean Prob       : 0.1459
+Prob Std        : 0.3441
+Mask Area       : 0.1451
+Encoder LR      : 8.92e-06
+Decoder LR      : 2.67e-04
+2026-06-30 15:32:50 - INFO - Epoch 48/200: Train Loss: 0.0554, Test Loss: 0.1233, Test Dice: 0.8994, Test IoU: 0.8186, EncLR: 8.87e-06, DecLR: 2.66e-04
+2026-06-30 15:33:25 - INFO - 
+Train Dice      : 0.9480
+Train Loss      : 0.0546
+Encoder Grad    : 3.1901
+Decoder Grad    : 0.4947
+Mean Prob       : 0.1472
+Prob Std        : 0.3457
+Mask Area       : 0.1464
+Encoder LR      : 8.87e-06
+Decoder LR      : 2.66e-04
+2026-06-30 15:33:25 - INFO - Epoch 49/200: Train Loss: 0.0546, Test Loss: 0.1371, Test Dice: 0.8901, Test IoU: 0.8035, EncLR: 8.82e-06, DecLR: 2.65e-04
+2026-06-30 15:34:01 - INFO - 
+Train Dice      : 0.9461
+Train Loss      : 0.0562
+Encoder Grad    : 4.1177
+Decoder Grad    : 0.5008
+Mean Prob       : 0.1453
+Prob Std        : 0.3430
+Mask Area       : 0.1448
+Encoder LR      : 8.82e-06
+Decoder LR      : 2.65e-04
+2026-06-30 15:34:01 - INFO - Epoch 50/200: Train Loss: 0.0562, Test Loss: 0.1285, Test Dice: 0.8952, Test IoU: 0.8124, EncLR: 8.77e-06, DecLR: 2.63e-04
+2026-06-30 15:34:35 - INFO - 
+Train Dice      : 0.9488
+Train Loss      : 0.0542
+Encoder Grad    : 2.8759
+Decoder Grad    : 0.4761
+Mean Prob       : 0.1452
+Prob Std        : 0.3444
+Mask Area       : 0.1446
+Encoder LR      : 8.77e-06
+Decoder LR      : 2.63e-04
+2026-06-30 15:34:36 - INFO - Epoch 51/200: Train Loss: 0.0542, Test Loss: 0.1424, Test Dice: 0.8944, Test IoU: 0.8109, EncLR: 8.71e-06, DecLR: 2.61e-04
+2026-06-30 15:35:10 - INFO - 
+Train Dice      : 0.9468
+Train Loss      : 0.0562
+Encoder Grad    : 2.9838
+Decoder Grad    : 0.5244
+Mean Prob       : 0.1459
+Prob Std        : 0.3445
+Mask Area       : 0.1454
+Encoder LR      : 8.71e-06
+Decoder LR      : 2.61e-04
+2026-06-30 15:35:10 - INFO - Epoch 52/200: Train Loss: 0.0562, Test Loss: 0.1362, Test Dice: 0.8900, Test IoU: 0.8039, EncLR: 8.66e-06, DecLR: 2.60e-04
+2026-06-30 15:35:43 - INFO - 
+Train Dice      : 0.9493
+Train Loss      : 0.0535
+Encoder Grad    : 2.4257
+Decoder Grad    : 0.4852
+Mean Prob       : 0.1465
+Prob Std        : 0.3452
+Mask Area       : 0.1460
+Encoder LR      : 8.66e-06
+Decoder LR      : 2.60e-04
+2026-06-30 15:35:44 - INFO - Epoch 53/200: Train Loss: 0.0535, Test Loss: 0.1343, Test Dice: 0.8875, Test IoU: 0.7998, EncLR: 8.61e-06, DecLR: 2.58e-04
+2026-06-30 15:36:18 - INFO - 
+Train Dice      : 0.9459
+Train Loss      : 0.0567
+Encoder Grad    : 2.9720
+Decoder Grad    : 0.5219
+Mean Prob       : 0.1454
+Prob Std        : 0.3443
+Mask Area       : 0.1446
+Encoder LR      : 8.61e-06
+Decoder LR      : 2.58e-04
+2026-06-30 15:36:18 - INFO - Epoch 54/200: Train Loss: 0.0567, Test Loss: 0.1431, Test Dice: 0.8877, Test IoU: 0.8003, EncLR: 8.55e-06, DecLR: 2.57e-04
+2026-06-30 15:36:51 - INFO - 
+Train Dice      : 0.9492
+Train Loss      : 0.0535
+Encoder Grad    : 2.2284
+Decoder Grad    : 0.4180
+Mean Prob       : 0.1446
+Prob Std        : 0.3432
+Mask Area       : 0.1439
+Encoder LR      : 8.55e-06
+Decoder LR      : 2.57e-04
+2026-06-30 15:36:52 - INFO - Epoch 55/200: Train Loss: 0.0535, Test Loss: 0.1451, Test Dice: 0.8895, Test IoU: 0.8033, EncLR: 8.50e-06, DecLR: 2.55e-04
+2026-06-30 15:37:25 - INFO - 
+Train Dice      : 0.9489
+Train Loss      : 0.0542
+Encoder Grad    : 2.2457
+Decoder Grad    : 0.4643
+Mean Prob       : 0.1458
+Prob Std        : 0.3443
+Mask Area       : 0.1449
+Encoder LR      : 8.50e-06
+Decoder LR      : 2.55e-04
+2026-06-30 15:37:25 - INFO - Epoch 56/200: Train Loss: 0.0542, Test Loss: 0.1487, Test Dice: 0.8795, Test IoU: 0.7860, EncLR: 8.44e-06, DecLR: 2.53e-04
+2026-06-30 15:37:59 - INFO - 
+Train Dice      : 0.9532
+Train Loss      : 0.0486
+Encoder Grad    : 2.5898
+Decoder Grad    : 0.3669
+Mean Prob       : 0.1455
+Prob Std        : 0.3440
+Mask Area       : 0.1447
+Encoder LR      : 8.44e-06
+Decoder LR      : 2.53e-04
+2026-06-30 15:38:00 - INFO - Epoch 57/200: Train Loss: 0.0486, Test Loss: 0.1352, Test Dice: 0.8965, Test IoU: 0.8134, EncLR: 8.39e-06, DecLR: 2.52e-04
+2026-06-30 15:38:33 - INFO - 
+Train Dice      : 0.9531
+Train Loss      : 0.0493
+Encoder Grad    : 2.1018
+Decoder Grad    : 0.3171
+Mean Prob       : 0.1453
+Prob Std        : 0.3442
+Mask Area       : 0.1445
+Encoder LR      : 8.39e-06
+Decoder LR      : 2.52e-04
+2026-06-30 15:38:33 - INFO - Epoch 58/200: Train Loss: 0.0493, Test Loss: 0.1277, Test Dice: 0.8952, Test IoU: 0.8117, EncLR: 8.33e-06, DecLR: 2.50e-04
+2026-06-30 15:39:07 - INFO - 
+Train Dice      : 0.9542
+Train Loss      : 0.0480
+Encoder Grad    : 2.7946
+Decoder Grad    : 0.4457
+Mean Prob       : 0.1472
+Prob Std        : 0.3462
+Mask Area       : 0.1468
+Encoder LR      : 8.33e-06
+Decoder LR      : 2.50e-04
+2026-06-30 15:39:07 - INFO - Epoch 59/200: Train Loss: 0.0480, Test Loss: 0.1313, Test Dice: 0.8963, Test IoU: 0.8131, EncLR: 8.27e-06, DecLR: 2.48e-04
+2026-06-30 15:39:40 - INFO - 
+Train Dice      : 0.9486
+Train Loss      : 0.0543
+Encoder Grad    : 2.5161
+Decoder Grad    : 0.4349
+Mean Prob       : 0.1459
+Prob Std        : 0.3447
+Mask Area       : 0.1452
+Encoder LR      : 8.27e-06
+Decoder LR      : 2.48e-04
+2026-06-30 15:39:40 - INFO - Epoch 60/200: Train Loss: 0.0543, Test Loss: 0.1268, Test Dice: 0.8934, Test IoU: 0.8088, EncLR: 8.21e-06, DecLR: 2.46e-04
+2026-06-30 15:40:15 - INFO - 
+Train Dice      : 0.9464
+Train Loss      : 0.0566
+Encoder Grad    : 2.9864
+Decoder Grad    : 0.4360
+Mean Prob       : 0.1448
+Prob Std        : 0.3431
+Mask Area       : 0.1437
+Encoder LR      : 8.21e-06
+Decoder LR      : 2.46e-04
+2026-06-30 15:40:15 - INFO - Epoch 61/200: Train Loss: 0.0566, Test Loss: 0.1306, Test Dice: 0.8941, Test IoU: 0.8101, EncLR: 8.15e-06, DecLR: 2.45e-04
+2026-06-30 15:40:49 - INFO - 
+Train Dice      : 0.9477
+Train Loss      : 0.0548
+Encoder Grad    : 2.5714
+Decoder Grad    : 0.4288
+Mean Prob       : 0.1457
+Prob Std        : 0.3445
+Mask Area       : 0.1448
+Encoder LR      : 8.15e-06
+Decoder LR      : 2.45e-04
+2026-06-30 15:40:50 - INFO - Epoch 62/200: Train Loss: 0.0548, Test Loss: 0.1416, Test Dice: 0.8897, Test IoU: 0.8024, EncLR: 8.09e-06, DecLR: 2.43e-04
+2026-06-30 15:41:22 - INFO - 
+Train Dice      : 0.9532
+Train Loss      : 0.0494
+Encoder Grad    : 2.5708
+Decoder Grad    : 0.3987
+Mean Prob       : 0.1450
+Prob Std        : 0.3437
+Mask Area       : 0.1445
+Encoder LR      : 8.09e-06
+Decoder LR      : 2.43e-04
+2026-06-30 15:41:23 - INFO - Epoch 63/200: Train Loss: 0.0494, Test Loss: 0.1401, Test Dice: 0.8970, Test IoU: 0.8149, EncLR: 8.03e-06, DecLR: 2.41e-04
+2026-06-30 15:41:55 - INFO - 
+Train Dice      : 0.9537
+Train Loss      : 0.0485
+Encoder Grad    : 2.5249
+Decoder Grad    : 0.3772
+Mean Prob       : 0.1456
+Prob Std        : 0.3455
+Mask Area       : 0.1452
+Encoder LR      : 8.03e-06
+Decoder LR      : 2.41e-04
+2026-06-30 15:41:56 - INFO - Epoch 64/200: Train Loss: 0.0485, Test Loss: 0.1333, Test Dice: 0.8955, Test IoU: 0.8125, EncLR: 7.97e-06, DecLR: 2.39e-04
+2026-06-30 15:42:29 - INFO - 
+Train Dice      : 0.9552
+Train Loss      : 0.0466
+Encoder Grad    : 2.4273
+Decoder Grad    : 0.3486
+Mean Prob       : 0.1453
+Prob Std        : 0.3446
+Mask Area       : 0.1449
+Encoder LR      : 7.97e-06
+Decoder LR      : 2.39e-04
+2026-06-30 15:42:29 - INFO - Epoch 65/200: Train Loss: 0.0466, Test Loss: 0.1356, Test Dice: 0.8975, Test IoU: 0.8154, EncLR: 7.90e-06, DecLR: 2.37e-04
+2026-06-30 15:43:01 - INFO - 
+Train Dice      : 0.9555
+Train Loss      : 0.0466
+Encoder Grad    : 2.8452
+Decoder Grad    : 0.3648
+Mean Prob       : 0.1491
+Prob Std        : 0.3482
+Mask Area       : 0.1487
+Encoder LR      : 7.90e-06
+Decoder LR      : 2.37e-04
+2026-06-30 15:43:02 - INFO - Epoch 66/200: Train Loss: 0.0466, Test Loss: 0.1286, Test Dice: 0.8963, Test IoU: 0.8136, EncLR: 7.84e-06, DecLR: 2.35e-04
+2026-06-30 15:43:35 - INFO - 
+Train Dice      : 0.9593
+Train Loss      : 0.0428
+Encoder Grad    : 2.6117
+Decoder Grad    : 0.3268
+Mean Prob       : 0.1468
+Prob Std        : 0.3468
+Mask Area       : 0.1464
+Encoder LR      : 7.84e-06
+Decoder LR      : 2.35e-04
+2026-06-30 15:43:36 - INFO - Epoch 67/200: Train Loss: 0.0428, Test Loss: 0.1265, Test Dice: 0.8999, Test IoU: 0.8193, EncLR: 7.78e-06, DecLR: 2.33e-04
+2026-06-30 15:44:09 - INFO - 
+Train Dice      : 0.9571
+Train Loss      : 0.0447
+Encoder Grad    : 2.2781
+Decoder Grad    : 0.3076
+Mean Prob       : 0.1465
+Prob Std        : 0.3455
+Mask Area       : 0.1461
+Encoder LR      : 7.78e-06
+Decoder LR      : 2.33e-04
+2026-06-30 15:44:10 - INFO - Epoch 68/200: Train Loss: 0.0447, Test Loss: 0.1355, Test Dice: 0.8922, Test IoU: 0.8070, EncLR: 7.71e-06, DecLR: 2.31e-04
+2026-06-30 15:44:44 - INFO - 
+Train Dice      : 0.9568
+Train Loss      : 0.0454
+Encoder Grad    : 1.8717
+Decoder Grad    : 0.3505
+Mean Prob       : 0.1456
+Prob Std        : 0.3453
+Mask Area       : 0.1452
+Encoder LR      : 7.71e-06
+Decoder LR      : 2.31e-04
+2026-06-30 15:44:44 - INFO - Epoch 69/200: Train Loss: 0.0454, Test Loss: 0.1331, Test Dice: 0.8970, Test IoU: 0.8146, EncLR: 7.65e-06, DecLR: 2.29e-04
+2026-06-30 15:45:19 - INFO - 
+Train Dice      : 0.9572
+Train Loss      : 0.0447
+Encoder Grad    : 3.3405
+Decoder Grad    : 0.3910
+Mean Prob       : 0.1482
+Prob Std        : 0.3471
+Mask Area       : 0.1477
+Encoder LR      : 7.65e-06
+Decoder LR      : 2.29e-04
+2026-06-30 15:45:20 - INFO - Epoch 70/200: Train Loss: 0.0447, Test Loss: 0.1298, Test Dice: 0.8963, Test IoU: 0.8138, EncLR: 7.58e-06, DecLR: 2.27e-04
+2026-06-30 15:45:53 - INFO - 
+Train Dice      : 0.9509
+Train Loss      : 0.0513
+Encoder Grad    : 2.3681
+Decoder Grad    : 0.3863
+Mean Prob       : 0.1470
+Prob Std        : 0.3459
+Mask Area       : 0.1462
+Encoder LR      : 7.58e-06
+Decoder LR      : 2.27e-04
+2026-06-30 15:45:54 - INFO - Epoch 71/200: Train Loss: 0.0513, Test Loss: 0.1476, Test Dice: 0.8951, Test IoU: 0.8117, EncLR: 7.51e-06, DecLR: 2.25e-04
+2026-06-30 15:46:28 - INFO - 
+Train Dice      : 0.9600
+Train Loss      : 0.0418
+Encoder Grad    : 1.8621
+Decoder Grad    : 0.3155
+Mean Prob       : 0.1453
+Prob Std        : 0.3446
+Mask Area       : 0.1450
+Encoder LR      : 7.51e-06
+Decoder LR      : 2.25e-04
+2026-06-30 15:46:28 - INFO - Epoch 72/200: Train Loss: 0.0418, Test Loss: 0.1429, Test Dice: 0.8954, Test IoU: 0.8119, EncLR: 7.45e-06, DecLR: 2.23e-04
+2026-06-30 15:47:02 - INFO - 
+Train Dice      : 0.9603
+Train Loss      : 0.0413
+Encoder Grad    : 1.5679
+Decoder Grad    : 0.2560
+Mean Prob       : 0.1461
+Prob Std        : 0.3461
+Mask Area       : 0.1456
+Encoder LR      : 7.45e-06
+Decoder LR      : 2.23e-04
+2026-06-30 15:47:02 - INFO - Epoch 73/200: Train Loss: 0.0413, Test Loss: 0.1379, Test Dice: 0.8942, Test IoU: 0.8103, EncLR: 7.38e-06, DecLR: 2.21e-04
+2026-06-30 15:47:36 - INFO - 
+Train Dice      : 0.9613
+Train Loss      : 0.0412
+Encoder Grad    : 1.8261
+Decoder Grad    : 0.3039
+Mean Prob       : 0.1469
+Prob Std        : 0.3463
+Mask Area       : 0.1465
+Encoder LR      : 7.38e-06
+Decoder LR      : 2.21e-04
+2026-06-30 15:47:36 - INFO - Epoch 74/200: Train Loss: 0.0412, Test Loss: 0.1374, Test Dice: 0.8959, Test IoU: 0.8126, EncLR: 7.31e-06, DecLR: 2.19e-04
+2026-06-30 15:48:10 - INFO - 
+Train Dice      : 0.9573
+Train Loss      : 0.0451
+Encoder Grad    : 2.6755
+Decoder Grad    : 0.3544
+Mean Prob       : 0.1479
+Prob Std        : 0.3468
+Mask Area       : 0.1472
+Encoder LR      : 7.31e-06
+Decoder LR      : 2.19e-04
+2026-06-30 15:48:11 - INFO - Epoch 75/200: Train Loss: 0.0451, Test Loss: 0.1346, Test Dice: 0.8953, Test IoU: 0.8116, EncLR: 7.24e-06, DecLR: 2.17e-04
+2026-06-30 15:48:45 - INFO - 
+Train Dice      : 0.9558
+Train Loss      : 0.0466
+Encoder Grad    : 2.3383
+Decoder Grad    : 0.3980
+Mean Prob       : 0.1455
+Prob Std        : 0.3452
+Mask Area       : 0.1450
+Encoder LR      : 7.24e-06
+Decoder LR      : 2.17e-04
+2026-06-30 15:48:45 - INFO - Epoch 76/200: Train Loss: 0.0466, Test Loss: 0.1497, Test Dice: 0.8861, Test IoU: 0.7973, EncLR: 7.17e-06, DecLR: 2.15e-04
+2026-06-30 15:49:18 - INFO - 
+Train Dice      : 0.9578
+Train Loss      : 0.0447
+Encoder Grad    : 3.0213
+Decoder Grad    : 0.4001
+Mean Prob       : 0.1458
+Prob Std        : 0.3452
+Mask Area       : 0.1455
+Encoder LR      : 7.17e-06
+Decoder LR      : 2.15e-04
+2026-06-30 15:49:19 - INFO - Epoch 77/200: Train Loss: 0.0447, Test Loss: 0.1378, Test Dice: 0.8926, Test IoU: 0.8074, EncLR: 7.10e-06, DecLR: 2.13e-04
+2026-06-30 15:49:52 - INFO - 
+Train Dice      : 0.9595
+Train Loss      : 0.0421
+Encoder Grad    : 1.5545
+Decoder Grad    : 0.2804
+Mean Prob       : 0.1462
+Prob Std        : 0.3462
+Mask Area       : 0.1456
+Encoder LR      : 7.10e-06
+Decoder LR      : 2.13e-04
+2026-06-30 15:49:53 - INFO - Epoch 78/200: Train Loss: 0.0421, Test Loss: 0.1387, Test Dice: 0.8930, Test IoU: 0.8086, EncLR: 7.03e-06, DecLR: 2.11e-04
+2026-06-30 15:50:26 - INFO - 
+Train Dice      : 0.9622
+Train Loss      : 0.0394
+Encoder Grad    : 2.2351
+Decoder Grad    : 0.2760
+Mean Prob       : 0.1456
+Prob Std        : 0.3459
+Mask Area       : 0.1451
+Encoder LR      : 7.03e-06
+Decoder LR      : 2.11e-04
+2026-06-30 15:50:27 - INFO - Epoch 79/200: Train Loss: 0.0394, Test Loss: 0.1500, Test Dice: 0.8912, Test IoU: 0.8057, EncLR: 6.96e-06, DecLR: 2.09e-04
+2026-06-30 15:51:01 - INFO - 
+Train Dice      : 0.9595
+Train Loss      : 0.0420
+Encoder Grad    : 1.8518
+Decoder Grad    : 0.3111
+Mean Prob       : 0.1480
+Prob Std        : 0.3477
+Mask Area       : 0.1476
+Encoder LR      : 6.96e-06
+Decoder LR      : 2.09e-04
+2026-06-30 15:51:01 - INFO - Epoch 80/200: Train Loss: 0.0420, Test Loss: 0.1433, Test Dice: 0.8920, Test IoU: 0.8064, EncLR: 6.89e-06, DecLR: 2.07e-04
+2026-06-30 15:51:36 - INFO - 
+Train Dice      : 0.9619
+Train Loss      : 0.0395
+Encoder Grad    : 1.9159
+Decoder Grad    : 0.2538
+Mean Prob       : 0.1458
+Prob Std        : 0.3459
+Mask Area       : 0.1454
+Encoder LR      : 6.89e-06
+Decoder LR      : 2.07e-04
+2026-06-30 15:51:36 - INFO - Epoch 81/200: Train Loss: 0.0395, Test Loss: 0.1391, Test Dice: 0.8961, Test IoU: 0.8129, EncLR: 6.82e-06, DecLR: 2.05e-04
+2026-06-30 15:52:10 - INFO - 
+Train Dice      : 0.9574
+Train Loss      : 0.0449
+Encoder Grad    : 1.7364
+Decoder Grad    : 0.3244
+Mean Prob       : 0.1465
+Prob Std        : 0.3455
+Mask Area       : 0.1460
+Encoder LR      : 6.82e-06
+Decoder LR      : 2.05e-04
+2026-06-30 15:52:10 - INFO - Epoch 82/200: Train Loss: 0.0449, Test Loss: 0.1272, Test Dice: 0.9004, Test IoU: 0.8201, EncLR: 6.75e-06, DecLR: 2.02e-04
+2026-06-30 15:52:43 - INFO - 
+Train Dice      : 0.9597
+Train Loss      : 0.0421
+Encoder Grad    : 2.4943
+Decoder Grad    : 0.4005
+Mean Prob       : 0.1481
+Prob Std        : 0.3480
+Mask Area       : 0.1478
+Encoder LR      : 6.75e-06
+Decoder LR      : 2.02e-04
+2026-06-30 15:52:44 - INFO - Epoch 83/200: Train Loss: 0.0421, Test Loss: 0.1322, Test Dice: 0.9025, Test IoU: 0.8234, EncLR: 6.67e-06, DecLR: 2.00e-04
+2026-06-30 15:52:44 - INFO - New best model saved with dice: 0.9025
+2026-06-30 15:53:17 - INFO - 
+Train Dice      : 0.9612
+Train Loss      : 0.0401
+Encoder Grad    : 1.4803
+Decoder Grad    : 0.2682
+Mean Prob       : 0.1474
+Prob Std        : 0.3474
+Mask Area       : 0.1470
+Encoder LR      : 6.67e-06
+Decoder LR      : 2.00e-04
+2026-06-30 15:53:18 - INFO - Epoch 84/200: Train Loss: 0.0401, Test Loss: 0.1398, Test Dice: 0.8966, Test IoU: 0.8139, EncLR: 6.60e-06, DecLR: 1.98e-04
+2026-06-30 15:53:51 - INFO - 
+Train Dice      : 0.9582
+Train Loss      : 0.0434
+Encoder Grad    : 2.0249
+Decoder Grad    : 0.3181
+Mean Prob       : 0.1475
+Prob Std        : 0.3472
+Mask Area       : 0.1469
+Encoder LR      : 6.60e-06
+Decoder LR      : 1.98e-04
+2026-06-30 15:53:51 - INFO - Epoch 85/200: Train Loss: 0.0434, Test Loss: 0.1379, Test Dice: 0.8991, Test IoU: 0.8177, EncLR: 6.53e-06, DecLR: 1.96e-04
+2026-06-30 15:54:25 - INFO - 
+Train Dice      : 0.9596
+Train Loss      : 0.0418
+Encoder Grad    : 1.7049
+Decoder Grad    : 0.2774
+Mean Prob       : 0.1461
+Prob Std        : 0.3454
+Mask Area       : 0.1456
+Encoder LR      : 6.53e-06
+Decoder LR      : 1.96e-04
+2026-06-30 15:54:26 - INFO - Epoch 86/200: Train Loss: 0.0418, Test Loss: 0.1419, Test Dice: 0.8952, Test IoU: 0.8115, EncLR: 6.45e-06, DecLR: 1.94e-04
+2026-06-30 15:54:59 - INFO - 
+Train Dice      : 0.9623
+Train Loss      : 0.0393
+Encoder Grad    : 1.7853
+Decoder Grad    : 0.2533
+Mean Prob       : 0.1461
+Prob Std        : 0.3463
+Mask Area       : 0.1457
+Encoder LR      : 6.45e-06
+Decoder LR      : 1.94e-04
+2026-06-30 15:55:00 - INFO - Epoch 87/200: Train Loss: 0.0393, Test Loss: 0.1395, Test Dice: 0.8940, Test IoU: 0.8098, EncLR: 6.38e-06, DecLR: 1.91e-04
+2026-06-30 15:55:33 - INFO - 
+Train Dice      : 0.9602
+Train Loss      : 0.0413
+Encoder Grad    : 1.8595
+Decoder Grad    : 0.2853
+Mean Prob       : 0.1451
+Prob Std        : 0.3442
+Mask Area       : 0.1445
+Encoder LR      : 6.38e-06
+Decoder LR      : 1.91e-04
+2026-06-30 15:55:34 - INFO - Epoch 88/200: Train Loss: 0.0413, Test Loss: 0.1468, Test Dice: 0.8978, Test IoU: 0.8155, EncLR: 6.31e-06, DecLR: 1.89e-04
+2026-06-30 15:56:07 - INFO - 
+Train Dice      : 0.9603
+Train Loss      : 0.0406
+Encoder Grad    : 2.0911
+Decoder Grad    : 0.3190
+Mean Prob       : 0.1462
+Prob Std        : 0.3462
+Mask Area       : 0.1461
+Encoder LR      : 6.31e-06
+Decoder LR      : 1.89e-04
+2026-06-30 15:56:08 - INFO - Epoch 89/200: Train Loss: 0.0406, Test Loss: 0.1307, Test Dice: 0.9022, Test IoU: 0.8227, EncLR: 6.23e-06, DecLR: 1.87e-04
+2026-06-30 15:56:41 - INFO - 
+Train Dice      : 0.9598
+Train Loss      : 0.0418
+Encoder Grad    : 2.3484
+Decoder Grad    : 0.3094
+Mean Prob       : 0.1462
+Prob Std        : 0.3461
+Mask Area       : 0.1456
+Encoder LR      : 6.23e-06
+Decoder LR      : 1.87e-04
+2026-06-30 15:56:42 - INFO - Epoch 90/200: Train Loss: 0.0418, Test Loss: 0.1681, Test Dice: 0.8812, Test IoU: 0.7897, EncLR: 6.16e-06, DecLR: 1.85e-04
+2026-06-30 15:57:16 - INFO - 
+Train Dice      : 0.9579
+Train Loss      : 0.0437
+Encoder Grad    : 2.1751
+Decoder Grad    : 0.3702
+Mean Prob       : 0.1467
+Prob Std        : 0.3468
+Mask Area       : 0.1463
+Encoder LR      : 6.16e-06
+Decoder LR      : 1.85e-04
+2026-06-30 15:57:16 - INFO - Epoch 91/200: Train Loss: 0.0437, Test Loss: 0.1437, Test Dice: 0.8958, Test IoU: 0.8121, EncLR: 6.08e-06, DecLR: 1.82e-04

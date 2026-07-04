@@ -242,7 +242,21 @@ class DecoderBlock(nn.Module):
 # ============================================================================
 # CONVNEXT U-NET (Unified: LayerNorm + GELU everywhere)
 # ============================================================================
+class DetailBranch(nn.Module):
+    def __init__(self, out_ch=64):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Conv2d(3, 32, 3, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(32),
+            nn.GELU(),
+            nn.Conv2d(32, out_ch, 3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(out_ch),
+            nn.GELU(),
+        )
 
+    def forward(self, x):
+        return self.net(x)
+    
 class ConvNeXtUNet(nn.Module):
     def __init__(self, weights_path=None, num_classes=1, encoder_depth=[3, 3, 9, 3], drop_path_rate=0.1, dropout_rate=0.1):
         super(ConvNeXtUNet, self).__init__()
@@ -290,6 +304,17 @@ class ConvNeXtUNet(nn.Module):
             nn.Dropout2d(dropout_rate * 0.5),
             nn.Conv2d(dims[0], num_classes, 1)
         )
+        self.detail = DetailBranch(out_ch=64)
+
+        self.final_refine = nn.Sequential(
+            nn.Conv2d(96 + 64, 96, 3, padding=1),
+            LayerNorm(96, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Conv2d(96, 64, 3, padding=1),
+            LayerNorm(64, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Conv2d(64, num_classes, 1)
+        )
         
         # Initialize decoder
         self._init_decoder()
@@ -325,16 +350,19 @@ class ConvNeXtUNet(nn.Module):
         d2 = self.decoder2(d3)
         d2 = torch.cat([d2, f1], dim=1)
         d2 = self.bsei2(d2)
-        
+        detail = self.detail(x)   # H/2 resolution
         d1 = self.decoder1(d2)
         d1 = self.bsei1(d1)
-        
+        d1 = torch.cat([d1, detail], dim=1)
         # Output
-        out = self.seg_head(d1)
+        # out = self.seg_head(d1)
         
-        if out.shape[-2:] != (352, 352):
-            out = F.interpolate(out, size=(352, 352), mode='bilinear', align_corners=True)
-        
+        # if out.shape[-2:] != (352, 352):
+        #     out = F.interpolate(out, size=(352, 352), mode='bilinear', align_corners=True)
+        out = self.final_refine(d1)
+
+        out = F.interpolate(out, size=x.shape[-2:], mode="bilinear", align_corners=False)
+
         return out
     
     def freeze_encoder(self):
