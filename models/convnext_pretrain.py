@@ -1,7 +1,24 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from timm.models.layers import trunc_normal_, DropPath
+try:
+    from timm.models.layers import trunc_normal_, DropPath
+except ModuleNotFoundError:
+    trunc_normal_ = nn.init.trunc_normal_
+
+    class DropPath(nn.Module):
+        def __init__(self, drop_prob=0.0):
+            super().__init__()
+            self.drop_prob = drop_prob
+
+        def forward(self, x):
+            if self.drop_prob == 0.0 or not self.training:
+                return x
+            keep_prob = 1.0 - self.drop_prob
+            shape = (x.shape[0],) + (1,) * (x.ndim - 1)
+            random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype, device=x.device)
+            random_tensor.floor_()
+            return x.div(keep_prob) * random_tensor
 
 # ============================================================================
 # LAYERNORM (Unified - works for both channels_first and channels_last)
@@ -142,6 +159,7 @@ class ConvNeXtEncoder(nn.Module):
         
 
         if weights_path:
+            print('loading pretrain weights')
             self._load_weights(weights_path)
 
 
@@ -158,7 +176,7 @@ class ConvNeXtEncoder(nn.Module):
             new_state_dict[k] = v
         
         missing, unexpected = self.load_state_dict(new_state_dict, strict=False)
-        print(f"✓ Loaded weights from {weights_path}")
+        print(f"Loaded weights from {weights_path}")
         print(f"  Missing keys: {len(missing)}")
         print(f"  Unexpected keys: {len(unexpected)}")
     
@@ -189,29 +207,78 @@ class ConvNeXtEncoder(nn.Module):
 # BSEI MODULE (Now uses LayerNorm + GELU)
 # ============================================================================
 
+class SeparableConv2d(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size=3, padding=1, dilation=1, bias=False):
+        super().__init__()
+        self.depthwise = nn.Conv2d(
+            in_channels,
+            in_channels,
+            kernel_size=kernel_size,
+            padding=padding,
+            dilation=dilation,
+            groups=in_channels,
+            bias=bias,
+        )
+        self.pointwise = nn.Conv2d(in_channels, out_channels, 1, bias=bias)
+
+    def forward(self, x):
+        return self.pointwise(self.depthwise(x))
+
+
+class ConvNormAct(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size=3, padding=1, dropout_rate=0.0):
+        super().__init__()
+        self.block = nn.Sequential(
+            SeparableConv2d(in_channels, out_channels, kernel_size=kernel_size, padding=padding, bias=False),
+            LayerNorm(out_channels, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Dropout2d(dropout_rate),
+        )
+
+    def forward(self, x):
+        return self.block(x)
+
+
+class LiteBottleneck(nn.Module):
+    def __init__(self, dim, hidden_dim=192, dropout_rate=0.1):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Conv2d(dim, hidden_dim, 1, bias=False),
+            LayerNorm(hidden_dim, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            SeparableConv2d(hidden_dim, hidden_dim, 3, padding=1, bias=False),
+            LayerNorm(hidden_dim, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Dropout2d(dropout_rate),
+            nn.Conv2d(hidden_dim, dim, 1, bias=False),
+            LayerNorm(dim, eps=1e-6, data_format="channels_first"),
+        )
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+    def forward(self, x):
+        return x + self.gamma * self.net(x)
+
 class BSEI(nn.Module):
     def __init__(self, in_channels, out_channels, dropout_rate=0.1):
         super(BSEI, self).__init__()
-        # LayerNorm + GELU for consistency
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False)
         self.norm1 = LayerNorm(out_channels, eps=1e-6, data_format="channels_first")
         self.act1 = nn.GELU()
         
-        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)
+        self.conv2 = SeparableConv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False)
         self.norm2 = LayerNorm(out_channels, eps=1e-6, data_format="channels_first")
         self.act2 = nn.GELU()
         
         self.dropout = nn.Dropout2d(dropout_rate)
         
-        # Edge detection branch
-        self.edge_conv = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1)
+        self.edge_conv = nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, groups=out_channels, bias=False)
         
     def forward(self, x):
         x = self.act1(self.norm1(self.conv1(x)))
         x = self.dropout(x)
         x = self.act2(self.norm2(self.conv2(x)))
         
-        edge = torch.abs(F.conv2d(x, self.edge_conv.weight, padding=1))
+        edge = torch.abs(self.edge_conv(x))
         edge = torch.sigmoid(edge)
         x = x + edge * x
         return x
@@ -225,7 +292,7 @@ class DecoderBlock(nn.Module):
     def __init__(self, in_channels, out_channels, dropout_rate=0.1):
         super().__init__()
         self.upsample = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
+        self.conv = SeparableConv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False)
         self.norm = LayerNorm(out_channels, eps=1e-6, data_format="channels_first")
         self.act = nn.GELU()
         self.dropout = nn.Dropout2d(dropout_rate)
@@ -243,19 +310,128 @@ class DecoderBlock(nn.Module):
 # CONVNEXT U-NET (Unified: LayerNorm + GELU everywhere)
 # ============================================================================
 class DetailBranch(nn.Module):
-    def __init__(self, out_ch=64):
+    def __init__(self, out_ch=32, dropout_rate=0.1):
         super().__init__()
         self.net = nn.Sequential(
             nn.Conv2d(3, 32, 3, stride=2, padding=1, bias=False),
             nn.BatchNorm2d(32),
             nn.GELU(),
-            nn.Conv2d(32, out_ch, 3, stride=1, padding=1, bias=False),
+            nn.Dropout2d(dropout_rate * 0.5),
+            SeparableConv2d(32, out_ch, 3, padding=1, bias=False),
             nn.BatchNorm2d(out_ch),
             nn.GELU(),
+            nn.Dropout2d(dropout_rate * 0.5),
         )
 
     def forward(self, x):
         return self.net(x)
+
+
+class MultiScaleContext(nn.Module):
+    def __init__(self, dim, reduction=8, dropout_rate=0.1):
+        super().__init__()
+        hidden = dim // reduction
+
+        self.reduce = nn.Sequential(
+            nn.Conv2d(dim, hidden, 1, bias=False),
+            LayerNorm(hidden, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+        )
+
+        self.branches = nn.ModuleList(
+            [
+                nn.Sequential(
+                    nn.Conv2d(
+                        hidden,
+                        hidden,
+                        3,
+                        padding=dilation,
+                        dilation=dilation,
+                        groups=hidden,
+                        bias=False,
+                    ),
+                    LayerNorm(hidden, eps=1e-6, data_format="channels_first"),
+                    nn.GELU(),
+                )
+                for dilation in (1, 3, 5)
+            ]
+        )
+
+        self.pool_proj = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(hidden, hidden, 1, bias=False),
+            nn.GELU(),
+        )
+
+        self.project = nn.Sequential(
+            nn.Conv2d(hidden * 4, dim, 1, bias=False),
+            LayerNorm(dim, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Dropout2d(dropout_rate),
+        )
+
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+    def forward(self, x):
+        reduced = self.reduce(x)
+        pooled = self.pool_proj(reduced)
+        pooled = F.interpolate(
+            pooled,
+            size=reduced.shape[-2:],
+            mode="bilinear",
+            align_corners=False,
+        )
+        context = torch.cat([branch(reduced) for branch in self.branches] + [pooled], dim=1)
+        return x + self.gamma * self.project(context)
+
+
+class GatedDetailFusion(nn.Module):
+    def __init__(self, decoder_ch=96, detail_ch=32, out_ch=128, dropout_rate=0.1):
+        super().__init__()
+        self.detail_proj = nn.Sequential(
+            SeparableConv2d(detail_ch, detail_ch, 3, padding=1, bias=False),
+            nn.BatchNorm2d(detail_ch),
+            nn.GELU(),
+            nn.Dropout2d(dropout_rate * 0.5),
+        )
+
+        self.gate = nn.Sequential(
+            nn.Conv2d(decoder_ch + detail_ch, detail_ch, 1),
+            nn.GELU(),
+            nn.Conv2d(detail_ch, detail_ch, 1),
+            nn.Sigmoid(),
+        )
+
+        self.fuse = nn.Sequential(
+            nn.Conv2d(decoder_ch + detail_ch, out_ch, 1, bias=False),
+            LayerNorm(out_ch, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Dropout2d(dropout_rate * 0.5),
+        )
+
+    def forward(self, decoder_feat, detail_feat):
+        if detail_feat.shape[-2:] != decoder_feat.shape[-2:]:
+            detail_feat = F.interpolate(
+                detail_feat,
+                size=decoder_feat.shape[-2:],
+                mode="bilinear",
+                align_corners=False,
+            )
+        detail_feat = self.detail_proj(detail_feat)
+        gate = self.gate(torch.cat([decoder_feat, detail_feat], dim=1))
+        detail_feat = detail_feat * gate
+        return self.fuse(torch.cat([decoder_feat, detail_feat], dim=1))
+
+
+def resize_like(x, ref):
+    if x.shape[-2:] != ref.shape[-2:]:
+        x = F.interpolate(
+            x,
+            size=ref.shape[-2:],
+            mode="bilinear",
+            align_corners=False,
+        )
+    return x
     
 class ConvNeXtUNet(nn.Module):
     def __init__(self, weights_path=None, num_classes=1, encoder_depth=[3, 3, 9, 3], drop_path_rate=0.1, dropout_rate=0.1):
@@ -268,20 +444,21 @@ class ConvNeXtUNet(nn.Module):
             drop_path_rate=drop_path_rate, 
             dropout_rate=dropout_rate
         )
+        self.register_buffer(
+            "encoder_mean",
+            torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1),
+            persistent=False,
+        )
+        self.register_buffer(
+            "encoder_std",
+            torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1),
+            persistent=False,
+        )
         
         dims = [96, 192, 384, 768]
         
-        # Bottleneck (LayerNorm + GELU)
-        self.bottleneck = nn.Sequential(
-            nn.Conv2d(dims[3], dims[3], 3, padding=1),
-            LayerNorm(dims[3], eps=1e-6, data_format="channels_first"),
-            nn.GELU(),
-            nn.Dropout2d(dropout_rate),
-            nn.Conv2d(dims[3], dims[3], 3, padding=1),
-            LayerNorm(dims[3], eps=1e-6, data_format="channels_first"),
-            nn.GELU(),
-            nn.Dropout2d(dropout_rate)
-        )
+        self.bottleneck = LiteBottleneck(dims[3], hidden_dim=dims[1], dropout_rate=dropout_rate)
+        self.context = MultiScaleContext(dims[3], dropout_rate=dropout_rate)
         
         # Decoder (LayerNorm + GELU)
         self.decoder4 = DecoderBlock(dims[3], dims[2], dropout_rate)
@@ -296,25 +473,27 @@ class ConvNeXtUNet(nn.Module):
         self.decoder1 = DecoderBlock(dims[0], dims[0], dropout_rate)
         self.bsei1 = BSEI(dims[0], dims[0], dropout_rate)
         
-        # Segmentation head (LayerNorm + GELU)
-        self.seg_head = nn.Sequential(
-            nn.Conv2d(dims[0], dims[0], 3, padding=1),
-            LayerNorm(dims[0], eps=1e-6, data_format="channels_first"),
-            nn.GELU(),
-            nn.Dropout2d(dropout_rate * 0.5),
-            nn.Conv2d(dims[0], num_classes, 1)
+        self.detail = DetailBranch(out_ch=32, dropout_rate=dropout_rate)
+        self.detail_fusion = GatedDetailFusion(
+            decoder_ch=dims[0],
+            detail_ch=32,
+            out_ch=dims[0] + 32,
+            dropout_rate=dropout_rate,
         )
-        self.detail = DetailBranch(out_ch=64)
 
         self.final_refine = nn.Sequential(
-            nn.Conv2d(96 + 64, 96, 3, padding=1),
+            SeparableConv2d(96 + 32, 96, 3, padding=1, bias=False),
             LayerNorm(96, eps=1e-6, data_format="channels_first"),
             nn.GELU(),
-            nn.Conv2d(96, 64, 3, padding=1),
-            LayerNorm(64, eps=1e-6, data_format="channels_first"),
+            SeparableConv2d(96, 48, 3, padding=1, bias=False),
+            LayerNorm(48, eps=1e-6, data_format="channels_first"),
             nn.GELU(),
-            nn.Conv2d(64, num_classes, 1)
+            nn.Conv2d(48, num_classes, 1)
         )
+
+        self.aux4 = nn.Conv2d(384, num_classes, 1)
+        self.aux3 = nn.Conv2d(192, num_classes, 1)
+        self.aux2 = nn.Conv2d(96, num_classes, 1)
         
         # Initialize decoder
         self._init_decoder()
@@ -333,47 +512,52 @@ class ConvNeXtUNet(nn.Module):
     
     def forward(self, x):
         # Encoder
-        f1, f2, f3, f4 = self.encoder(x)
+        encoder_x = (x - self.encoder_mean) / self.encoder_std
+        f1, f2, f3, f4 = self.encoder(encoder_x)
         
         # Bottleneck
         b = self.bottleneck(f4)
+        b = self.context(b)
         
         # Decoder with skip connections
         d4 = self.decoder4(b)
+        d4 = resize_like(d4, f3)
         d4 = torch.cat([d4, f3], dim=1)
         d4 = self.bsei4(d4)
         
         d3 = self.decoder3(d4)
+        d3 = resize_like(d3, f2)
         d3 = torch.cat([d3, f2], dim=1)
         d3 = self.bsei3(d3)
         
         d2 = self.decoder2(d3)
+        d2 = resize_like(d2, f1)
         d2 = torch.cat([d2, f1], dim=1)
         d2 = self.bsei2(d2)
         detail = self.detail(x)   # H/2 resolution
         d1 = self.decoder1(d2)
         d1 = self.bsei1(d1)
-        d1 = torch.cat([d1, detail], dim=1)
-        # Output
-        # out = self.seg_head(d1)
-        
-        # if out.shape[-2:] != (352, 352):
-        #     out = F.interpolate(out, size=(352, 352), mode='bilinear', align_corners=True)
-        out = self.final_refine(d1)
+        d1 = self.detail_fusion(d1, detail)
+        out_main = self.final_refine(d1)
+        out_main = F.interpolate(out_main, size=x.shape[-2:], mode="bilinear", align_corners=False)
 
-        out = F.interpolate(out, size=x.shape[-2:], mode="bilinear", align_corners=False)
+        if self.training:
+            aux4 = F.interpolate(self.aux4(d4), size=x.shape[-2:], mode="bilinear", align_corners=False)
+            aux3 = F.interpolate(self.aux3(d3), size=x.shape[-2:], mode="bilinear", align_corners=False)
+            aux2 = F.interpolate(self.aux2(d2), size=x.shape[-2:], mode="bilinear", align_corners=False)
+            return [out_main, aux2, aux3, aux4]
 
-        return out
+        return out_main
     
     def freeze_encoder(self):
         for param in self.encoder.parameters():
             param.requires_grad = False
-        print("✓ Encoder frozen")
+        print("Encoder frozen")
     
     def unfreeze_encoder(self):
         for param in self.encoder.parameters():
             param.requires_grad = True
-        print("✓ Encoder unfrozen")
+        print("Encoder unfrozen")
     
     def get_encoder_params(self):
         return self.encoder.parameters()

@@ -7,5 +7,5 @@ __pycache__
 *.pth
 *.rar
 *.zip
-
+.codex/
 *.jpg

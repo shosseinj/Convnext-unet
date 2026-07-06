@@ -45,7 +45,8 @@ class Dataset:
         ttfs_convert,
         ttfs_noise=0,
         data_path='./dataset/',
-        input_size=(256, 256)
+        input_size=(256, 256),
+        evaluate_dataset='kvasir'
     ):
 
         self.name = data_name
@@ -54,6 +55,7 @@ class Dataset:
         self.noise = ttfs_noise
         self.input_size = input_size
         self.logging_dir = logging_dir
+        self.evaluate_dataset = evaluate_dataset
 
 
         # disable OpenCV warnings
@@ -213,12 +215,7 @@ class Dataset:
         self.y_train = self.y_train[indices].astype(np.float32)
         
 
-        # eveluate_dataset = 'clinicdb'
-        # eveluate_dataset = 'CVC-300'
-        # eveluate_dataset = 'CVC-ColonDB'
-        # eveluate_dataset = 'ETIS-LARIBPOLYPDB'
-        eveluate_dataset = 'both'
-        # eveluate_dataset = 'kvasir'
+        eveluate_dataset = self.evaluate_dataset
         if eveluate_dataset == 'both':
             self.x_test = np.concatenate(
                 [
@@ -327,6 +324,177 @@ def mixup_data(images, masks, alpha=0.2):
 bce = nn.BCEWithLogitsLoss()
 
 
+DEEP_SUPERVISION_WEIGHTS = (1.0, 0.1, 0.05, 0.02)
+
+
+def _output_list(outputs):
+    if isinstance(outputs, (list, tuple)):
+        return list(outputs)
+    return [outputs]
+
+
+def _resize_to_target(logits, target):
+    if logits.shape != target.shape:
+        logits = F.interpolate(
+            logits,
+            size=target.shape[2:],
+            mode="bilinear",
+            align_corners=False,
+        )
+    return logits
+
+
+def _outputs_are_finite(outputs):
+    return all(torch.isfinite(output).all() for output in _output_list(outputs))
+
+
+def deep_supervision_loss(outputs, target, criterion, weights=DEEP_SUPERVISION_WEIGHTS):
+    outputs = _output_list(outputs)
+    main_output = _resize_to_target(outputs[0], target)
+    total_loss = criterion(main_output, target)
+
+    for aux_output, weight in zip(outputs[1:], weights[1:]):
+        aux_output = _resize_to_target(aux_output, target)
+        total_loss = total_loss + weight * criterion(aux_output, target)
+
+    return main_output, total_loss
+
+
+def soft_dice_coefficient(logits, target, smooth=1.0):
+    probs = torch.sigmoid(logits)
+    probs = probs.view(probs.size(0), -1)
+    target = target.float().view(target.size(0), -1)
+    intersection = (probs * target).sum(dim=1)
+    dice = (2.0 * intersection + smooth) / (
+        probs.sum(dim=1) + target.sum(dim=1) + smooth
+    )
+    return dice.mean().item()
+
+
+def set_training_stage(model, stage):
+    if stage == "detail":
+        trainable_prefixes = ("detail.", "detail_conv.", "detail_fusion.", "final_refine.")
+    elif stage == "decoder":
+        trainable_prefixes = (
+            "detail.",
+            "detail_conv.",
+            "detail_fusion.",
+            "final_refine.",
+            "decoder",
+            "bsei",
+            "aux",
+            "bottleneck.",
+            "context.",
+        )
+    elif stage == "all":
+        trainable_prefixes = None
+    else:
+        raise ValueError(f"Unknown training stage: {stage}")
+
+    trainable_params = 0
+    total_params = 0
+
+    for name, param in model.named_parameters():
+        total_params += param.numel()
+        param.requires_grad = trainable_prefixes is None or name.startswith(trainable_prefixes)
+        if param.requires_grad:
+            trainable_params += param.numel()
+
+    return trainable_params, total_params
+
+
+def set_frozen_modules_eval(module):
+    for child in module.children():
+        set_frozen_modules_eval(child)
+        params = list(child.parameters(recurse=True))
+        if params and not any(param.requires_grad for param in params):
+            child.eval()
+
+
+def optimizer_lr(optimizer, group_name, fallback_idx=0):
+    for group in optimizer.param_groups:
+        if group.get("name") == group_name:
+            return group["lr"]
+    return optimizer.param_groups[fallback_idx]["lr"]
+
+
+def count_parameters(model):
+    total = sum(param.numel() for param in model.parameters())
+    trainable = sum(param.numel() for param in model.parameters() if param.requires_grad)
+    encoder = sum(param.numel() for param in model.encoder.parameters()) if hasattr(model, "encoder") else 0
+    return total, trainable, encoder
+
+
+class ModelEMA:
+    def __init__(self, model, decay=0.999):
+        self.decay = decay
+        self.shadow = {}
+        self.backup = {}
+        self.update(model, decay=0.0)
+
+    def update(self, model, decay=None):
+        decay = self.decay if decay is None else decay
+        with torch.no_grad():
+            for key, value in model.state_dict().items():
+                if not torch.is_floating_point(value):
+                    continue
+                value = value.detach()
+                if key not in self.shadow:
+                    self.shadow[key] = value.clone()
+                else:
+                    self.shadow[key].mul_(decay).add_(value, alpha=1.0 - decay)
+
+    def store(self, model):
+        self.backup = {
+            key: value.detach().clone()
+            for key, value in model.state_dict().items()
+            if key in self.shadow
+        }
+
+    def copy_to(self, model):
+        state = model.state_dict()
+        with torch.no_grad():
+            for key, value in self.shadow.items():
+                if key in state:
+                    state[key].copy_(value.to(device=state[key].device, dtype=state[key].dtype))
+
+    def restore(self, model):
+        state = model.state_dict()
+        with torch.no_grad():
+            for key, value in self.backup.items():
+                if key in state:
+                    state[key].copy_(value.to(device=state[key].device, dtype=state[key].dtype))
+        self.backup = {}
+
+    def state_dict(self):
+        return {key: value.detach().cpu().clone() for key, value in self.shadow.items()}
+
+    def load_state_dict(self, state_dict):
+        self.shadow = {
+            key: value.detach().clone()
+            for key, value in state_dict.items()
+            if torch.is_floating_point(value)
+        }
+
+
+def snapshot_state_dict(model):
+    return {
+        key: value.detach().cpu().clone()
+        for key, value in model.state_dict().items()
+    }
+
+
+def scored_model_state_dict(model, ema=None):
+    if ema is None:
+        return snapshot_state_dict(model)
+
+    ema.store(model)
+    ema.copy_to(model)
+    state = snapshot_state_dict(model)
+    ema.restore(model)
+    return state
+
+
 def train_epoch_segmentation(
     model,
     train_loader,
@@ -334,7 +502,8 @@ def train_epoch_segmentation(
     criterion,
     device,
     scheduler,
-    threshold
+    threshold,
+    ema=None
 ):
     import random
     import numpy as np
@@ -344,9 +513,11 @@ def train_epoch_segmentation(
     import torch.nn.functional as F
 
     model.train()
+    set_frozen_modules_eval(model)
 
     running_loss = 0.0
     running_dice = 0.0
+    running_soft_dice = 0.0
 
     skipped_batches = 0
 
@@ -381,7 +552,7 @@ def train_epoch_segmentation(
             target = target.unsqueeze(1)
 
         # MixUp
-        if random.random() < 0.4:
+        if random.random() < 0.2:
             lam = np.random.beta(0.2, 0.2)
             idx = torch.randperm(data.size(0), device=device)
 
@@ -393,22 +564,14 @@ def train_epoch_segmentation(
         # ----------------------------
         # Forward
         # ----------------------------
-        output = model(data)
+        outputs = model(data)
 
-        if not torch.isfinite(output).all():
+        if not _outputs_are_finite(outputs):
             skipped_batches += 1
             optimizer.zero_grad(set_to_none=True)
             continue
 
-        if output.shape != target.shape:
-            output = F.interpolate(
-                output,
-                size=target.shape[2:],
-                mode="bilinear",
-                align_corners=False,
-            )
-
-        loss = criterion(output, target)
+        output, loss = deep_supervision_loss(outputs, target, criterion)
 
         if not torch.isfinite(loss):
             skipped_batches += 1
@@ -447,10 +610,12 @@ def train_epoch_segmentation(
 
         grad_norm_total = torch.nn.utils.clip_grad_norm_(
             model.parameters(),
-            max_norm=1.5
+            max_norm=3.5
         )
 
         optimizer.step()
+        if ema is not None:
+            ema.update(model)
 
         # scheduler.step()
 
@@ -461,6 +626,7 @@ def train_epoch_segmentation(
             pred = (prob > threshold).float()
 
             dice = dice_coefficient(pred, target)
+            soft_dice = soft_dice_coefficient(output, target)
 
             prob_mean = prob.mean().item()
             prob_std = prob.std().item()
@@ -472,6 +638,7 @@ def train_epoch_segmentation(
 
         running_loss += loss.item()
         running_dice += dice
+        running_soft_dice += soft_dice
 
         enc_grad_sum += enc_grad
         dec_grad_sum += dec_grad
@@ -484,19 +651,19 @@ def train_epoch_segmentation(
 
         # Current learning rates
 
-        enc_lr = optimizer.param_groups[0]["lr"]
-
-        dec_lr = (
-            optimizer.param_groups[1]["lr"]
-            if len(optimizer.param_groups) > 1
-            else enc_lr
-        )
+        detail_lr = optimizer_lr(optimizer, "detail", fallback_idx=0)
+        refine_lr = optimizer_lr(optimizer, "refine", fallback_idx=0)
+        context_lr = optimizer_lr(optimizer, "context", fallback_idx=0)
+        enc_lr = optimizer_lr(optimizer, "encoder", fallback_idx=0)
+        dec_lr = optimizer_lr(optimizer, "decoder", fallback_idx=-1)
 
         pbar.set_postfix(
 
             Loss=f"{loss.item():.4f}",
 
             Dice=f"{dice:.4f}",
+
+            SoftDice=f"{soft_dice:.4f}",
 
             EncGrad=f"{enc_grad:.2f}",
 
@@ -505,6 +672,12 @@ def train_epoch_segmentation(
             Prob=f"{prob_mean:.3f}",
 
             Area=f"{mask_area:.3f}",
+
+            DetailLR=f"{detail_lr:.2e}",
+
+            RefineLR=f"{refine_lr:.2e}",
+
+            ContextLR=f"{context_lr:.2e}",
 
             EncLR=f"{enc_lr:.2e}",
 
@@ -518,24 +691,7 @@ def train_epoch_segmentation(
             f"Skipped {skipped_batches}/{len(train_loader)} batches."
         )
 
-    # ----------------------------
-    # Epoch summary
-    # ----------------------------
 
-    if valid_batches > 0:
-
-        logging.info(
-            "\n"
-            f"Train Dice      : {running_dice / valid_batches:.4f}\n"
-            f"Train Loss      : {running_loss / valid_batches:.4f}\n"
-            f"Encoder Grad    : {enc_grad_sum / valid_batches:.4f}\n"
-            f"Decoder Grad    : {dec_grad_sum / valid_batches:.4f}\n"
-            f"Mean Prob       : {prob_mean_sum / valid_batches:.4f}\n"
-            f"Prob Std        : {prob_std_sum / valid_batches:.4f}\n"
-            f"Mask Area       : {mask_area_sum / valid_batches:.4f}\n"
-            f"Encoder LR      : {optimizer.param_groups[0]['lr']:.2e}\n"
-            f"Decoder LR      : {optimizer.param_groups[1]['lr']:.2e}"
-        )
 
     return running_loss / max(valid_batches, 1)
 
@@ -1047,7 +1203,7 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             # ----------------------------------
             # Horizontal Flip
             # ----------------------------------
-            RAN = 0.9
+            RAN = 0.5
             if random.random() < RAN:
                 image = torch.flip(image, [-1])
                 mask = torch.flip(mask, [-1])
@@ -1165,43 +1321,36 @@ class KvasirSEGDataset(torch.utils.data.Dataset):
             #     )
 
             # ----------------------------------
-            # Brightness
+            # Mild photometric augmentation
             # ----------------------------------
-            # if random.random() < 0.9:
+            if random.random() < 0.5:
+                image = TF.adjust_brightness(
+                    image,
+                    random.uniform(0.85, 1.15)
+                )
 
-            #     image = TF.adjust_brightness(
-            #         image,
-            #         random.uniform(0.8, 1.2)
-            #     )
+                image = TF.adjust_contrast(
+                    image,
+                    random.uniform(0.85, 1.15)
+                )
 
-            #     image = TF.adjust_contrast(
-            #         image,
-            #         random.uniform(0.8, 1.2)
-            #     )
-
-            #     image = TF.adjust_saturation(
-            #         image,
-            #         random.uniform(0.8, 1.2)
-            #     )
+                image = TF.adjust_saturation(
+                    image,
+                    random.uniform(0.9, 1.1)
+                )
 
             # ----------------------------------
-            # Gaussian Blur
+            # Mild blur/noise
             # ----------------------------------
-            # if random.random() < 0.8:
+            if random.random() < 0.15:
+                image = TF.gaussian_blur(
+                    image,
+                    kernel_size=3
+                )
 
-            #     image = TF.gaussian_blur(
-            #         image,
-            #         kernel_size=5
-            #     )
-
-            # # ----------------------------------
-            # # Gaussian Noise
-            # # ----------------------------------
-            # if random.random() < 0.8:
-
-            #     noise = (
-            #         torch.randn_like(image) * 0.03
-            #     )
+            if random.random() < 0.25:
+                noise = torch.randn_like(image) * 0.015
+                image = image + noise
 
             #     image = image + noise
 
@@ -1890,26 +2039,36 @@ if __name__ == "__main__":
     # torch.set_default_dtype(torch.float32)
 
     strtobool = (lambda s: s=='True')
-    path_weight = './logs/ConvNeXt-pretrain_depth3393/start/checkpoints_KvasirSEG-ConvNeXt/2765-test0.88.pth'
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain_depth3393/start-detail/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-55/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    # parser.add_argument('--checkpoint_path', type=str, default=None, help='Directory for logging')
-    parser.add_argument('--checkpoint_path', type=str, default=path_weight, help='Directory for logging')
+    parser.add_argument('--eval_dataset', type=str, default='both', choices=['kvasir', 'clinicdb', 'both', 'CVC-300', 'CVC-ColonDB', 'ETIS-LARIBPOLYPDB'], help='Validation/test split or external test dataset')
+    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-0/checkpoints_KvasirSEG-ConvNeXt/55-test0.79.pth', help='Checkpoint path used only when --load True')
+    parser.add_argument('--encoder_weights', type=str, default='./convnext_tiny_22k_1k_384.pth', help='ConvNeXt-Tiny pretrained encoder weights')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
-    parser.add_argument('--lr', type=float, default=5e-4, help='Learning rate')
+    parser.add_argument('--lr', type=float, default=5e-5, help='Decoder and auxiliary head learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--escape_lr', type=float, default=5e-5, help='Learning rate for escape')
-    parser.add_argument('--batch_size', type=int, default=25, help='Batch size')
+    parser.add_argument('--batch_size', type=int, default=15, help='Batch size')
     parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
     parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
-    parser.add_argument('--warmup_epochs', type=int, default=4, help='Epochs. 0 -skip training')
+    parser.add_argument('--warmup_epochs', type=int, default=12, help='Epochs. 0 -skip training')
+    parser.add_argument('--detail_warmup_epochs', type=int, default=36, help='Train detail and final_refine for this many epochs')
+    parser.add_argument('--decoder_warmup_epochs', type=int, default=24, help='Train decoder while keeping encoder frozen for this many epochs after detail warmup')
+    parser.add_argument('--focal_tversky_after_warmup', type=strtobool, default=True, help='Enable Focal Tversky loss after detail warmup')
+    parser.add_argument('--focal_tversky_w', type=float, default=0.05, help='Focal Tversky loss weight after detail warmup')
+    parser.add_argument('--weight_decay', type=float, default=5e-4, help='Decoder weight decay')
+    parser.add_argument('--new_layer_weight_decay', type=float, default=1e-3, help='Weight decay for detail and final_refine')
+    parser.add_argument('--early_stop_patience', type=int, default=40, help='Stop training after this many epochs without validation IoU improvement. 0 disables it')
+    parser.add_argument('--use_ema', type=strtobool, default=True, help='Evaluate and save an exponential moving average of model weights')
+    parser.add_argument('--ema_decay', type=float, default=0.995, help='EMA decay for model weights')
     parser.add_argument('--testing', type=strtobool, default=False, help='Execute testing.')
     parser.add_argument('--tta_check', type=strtobool, default=False, help='Execute testing.')
     parser.add_argument('--training', type=strtobool, default=True, help='Execute training.')
-    parser.add_argument('--load', type=str, default=False, help='Load before training.')
+    parser.add_argument('--load', type=strtobool, default=True, help='Load checkpoint before training.')
+    parser.add_argument('--resume_optimizer', type=strtobool, default=False, help='Resume optimizer and scheduler states when compatible')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
     parser.add_argument('--time_bits', type=int, default=0, help='number of bits to represent time. 0 -disabled')
@@ -1943,7 +2102,8 @@ if __name__ == "__main__":
         ttfs_convert='SNN' in args.model_type,
         ttfs_noise=args.noise,
         data_path= args.data_path,
-        input_size= args.input_size
+        input_size= args.input_size,
+        evaluate_dataset=args.eval_dataset
     )
 
     train_dataset = KvasirSEGDataset(data.x_train, data.y_train, is_train=True, target_size=args.input_size[0])  # Pass target size to dataset
@@ -1998,33 +2158,49 @@ if __name__ == "__main__":
             #     bottleneck_dim=768,
             #     drop_path_rate=0.1
             # )
+            encoder_weights = args.encoder_weights if args.encoder_weights and os.path.exists(args.encoder_weights) else None
+            if encoder_weights is None:
+                logging.warning(
+                    f"Encoder pretrained weights not found at {args.encoder_weights}; "
+                    "training encoder from scratch."
+                )
             model = ConvNeXtUNet(
-        # weights_path="./convnext_tiny_22k_1k_384.pth",
-                drop_path_rate=0.00,
-                dropout_rate=0.0,
+                weights_path=encoder_weights,
+                drop_path_rate=0.15,
+                dropout_rate=0.15,
                 
                 encoder_depth= [3,3,9,3]
             )
-            # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
-            print('loaded Relu version of ConvNeXt-Tiny')
+            print('loaded lightweight ConvNeXt-Tiny U-Net')
     
 
 
 
     model = model.to(device)
+    total_params, trainable_params, encoder_params_count = count_parameters(model)
+    decoder_params_count = total_params - encoder_params_count
+    logging.info(
+        f"Parameter count: total={total_params / 1e6:.2f}M, "
+        f"encoder={encoder_params_count / 1e6:.2f}M, "
+        f"decoder_head={decoder_params_count / 1e6:.2f}M, "
+        f"trainable={trainable_params / 1e6:.2f}M"
+    )
     # print(model)
 
     
 
     class DiceBCEBoundaryLoss(nn.Module):
-        def __init__(self, dice_w=0.55, bce_w=0.25, boundary_w=0.20):
+        def __init__(self, dice_w=0.55, bce_w=0.25, boundary_w=0.20, focal_tversky_w=0.0, label_smoothing=0.02):
             super().__init__()
             self.dice_w = dice_w
             self.bce_w = bce_w
             self.boundary_w = boundary_w
+            self.focal_tversky_w = focal_tversky_w
+            self.label_smoothing = label_smoothing
             self.bce = nn.BCEWithLogitsLoss()
             self.boundary = BoundaryAwareLoss(kappa=5)
+            self.focal_tversky = FocalTverskyLoss(alpha=0.3, beta=0.7, gamma=0.75)
 
         def dice_loss(self, logits, targets, smooth=1.0):
             probs = torch.sigmoid(logits)
@@ -2037,18 +2213,26 @@ if __name__ == "__main__":
             return 1 - dice.mean()
 
         def forward(self, logits, targets):
-            return (
+            bce_targets = targets.float()
+            if self.label_smoothing > 0:
+                bce_targets = bce_targets * (1.0 - self.label_smoothing) + 0.5 * self.label_smoothing
+            loss = (
                 self.dice_w * self.dice_loss(logits, targets) +
-                self.bce_w * self.bce(logits, targets.float()) +
+                self.bce_w * self.bce(logits, bce_targets) +
                 self.boundary_w * self.boundary(logits, targets)
             )
+            if self.focal_tversky_w > 0:
+                loss = loss + self.focal_tversky_w * self.focal_tversky(logits, targets)
+            return loss
     if 'Kvasir' in args.data_name:
 
         # criterion = BoundaryAwareLoss(kappa=10)
         criterion = DiceBCEBoundaryLoss(
-    dice_w=0.55,
-    bce_w=0.25,
-    boundary_w=0.20
+    dice_w=0.4,
+    bce_w=0.3,
+    boundary_w=0.30,
+    focal_tversky_w=0.0,
+    label_smoothing=0.02
 )
         # criterion = BoundaryDiceLoss(
         #         kappa=10,
@@ -2082,34 +2266,84 @@ if __name__ == "__main__":
         param.requires_grad = True
 
  
-    lr = 0.0001   
+    decoder_lr = args.lr
+    encoder_lr = args.lr * 0.1
+    detail_lr = args.lr * 1.5
+    refine_lr = args.lr * 1.5
+    context_lr = args.lr * 1.5
+    eta_min = min(args.min_lr, encoder_lr, decoder_lr, detail_lr, refine_lr, context_lr)
     # optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
-    other_params = []
+    detail_params = []
+    refine_params = []
+    context_params = []
+    encoder_params = []
+    decoder_params = []
+
     for name, param in model.named_parameters():
-        if 'encoder' not in name:  # or 'ConvNeXtEncoder' depending on your model
-            other_params.append(param)
+        if name.startswith(("detail.", "detail_conv.")):
+            detail_params.append(param)
+        elif name.startswith(("final_refine.", "detail_fusion.")):
+            refine_params.append(param)
+        elif name.startswith("context."):
+            context_params.append(param)
+        elif name.startswith("encoder."):
+            encoder_params.append(param)
+        else:
+            decoder_params.append(param)
 
 
     optimizer = torch.optim.AdamW(
         [
             {
-                "params": model.encoder.parameters(),
-                "lr": 1e-5,
+                "name": "detail",
+                "params": detail_params,
+                "lr": detail_lr,
+                "weight_decay": args.new_layer_weight_decay,
             },
             {
-                "params": other_params,
-                "lr": 1e-4,
+                "name": "refine",
+                "params": refine_params,
+                "lr": refine_lr,
+                "weight_decay": args.new_layer_weight_decay,
+            },
+            {
+                "name": "context",
+                "params": context_params,
+                "lr": context_lr,
+                "weight_decay": args.new_layer_weight_decay,
+            },
+            {
+                "name": "encoder",
+                "params": encoder_params,
+                "lr": encoder_lr,
+                "weight_decay": args.weight_decay * 0.2,
+            },
+            {
+                "name": "decoder",
+                "params": decoder_params,
+                "lr": decoder_lr,
+                "weight_decay": args.weight_decay,
             },
         ],
-        weight_decay=1e-4,
         betas=(0.9, 0.999),
     )
 
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
-        T_max=170,
-        eta_min= 0.000006  
+        T_max=total_epochs_remaining,
+        eta_min=eta_min
     )  
+
+    logging.info(
+        f"Optimizer: AdamW | detail_lr={detail_lr:.2e}, "
+        f"refine_lr={refine_lr:.2e}, "
+        f"context_lr={context_lr:.2e}, "
+        f"encoder_lr={encoder_lr:.2e}, "
+        f"decoder_lr={decoder_lr:.2e}, eta_min={eta_min:.2e}, "
+        f"weight_decay={args.weight_decay:.2e}, "
+        f"new_layer_weight_decay={args.new_layer_weight_decay:.2e}, "
+        f"scheduler=CosineAnnealingLR(T_max={total_epochs_remaining})"
+    )
 
 
     # for name, param in model.named_parameters():
@@ -2149,7 +2383,12 @@ if __name__ == "__main__":
 
     # scheduler = get_triangular_scheduler(optimizer, min_lr=lr, max_lr=0.0001, epochs_to_peak=80, total_epochs=160)
         
-    if args.checkpoint_path:
+    checkpoint = None
+    restart_stage_schedule = False
+    new_arch_prefixes = ("context.", "detail_fusion.")
+    if args.load:
+            if not args.checkpoint_path:
+                raise ValueError("--load True requires --checkpoint_path")
             checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
             
             # Load model and optimizer states
@@ -2172,33 +2411,118 @@ if __name__ == "__main__":
             #     state_dict,
             #     strict=False
             # )
-            model.load_state_dict(checkpoint['model_state_dict'], strict=False)
+            state_key = (
+                'raw_model_state_dict'
+                if args.training and 'raw_model_state_dict' in checkpoint
+                else 'model_state_dict'
+            )
+            checkpoint_state = checkpoint[state_key]
+            logging.info(f"Loading model weights from checkpoint['{state_key}'].")
+            model_state = model.state_dict()
+            compatible_state = {}
+            skipped_keys = []
+
+            for key, value in checkpoint_state.items():
+                if key in model_state and model_state[key].shape == value.shape:
+                    compatible_state[key] = value
+                else:
+                    skipped_keys.append(key)
+
+            load_msg = model.load_state_dict(compatible_state, strict=False)
+            logging.info(
+                f"Loaded {len(compatible_state)}/{len(model_state)} compatible "
+                f"model tensors from checkpoint."
+            )
+            if skipped_keys:
+                logging.info(
+                    "Skipped checkpoint tensors because they are new or shape-mismatched: "
+                    f"{skipped_keys[:20]}"
+                )
+            if load_msg.missing_keys:
+                logging.info(
+                    f"Freshly initialized model tensors: {load_msg.missing_keys[:20]}"
+                )
+            restart_stage_schedule = any(
+                key.startswith(new_arch_prefixes)
+                for key in load_msg.missing_keys
+            )
+            if restart_stage_schedule:
+                logging.info(
+                    "New architecture tensors were missing in the checkpoint; "
+                    "staged warmup will restart from the resumed epoch."
+                )
             # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
-            # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            
-            # DON'T load scheduler state - it was a different scheduler!
-            # scheduler.load_state_dict(checkpoint['scheduler_state_dict'])  # REMOVE THIS
+            if args.resume_optimizer:
+                try:
+                    if 'optimizer_state_dict' in checkpoint:
+                        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+                    if 'scheduler_state_dict' in checkpoint:
+                        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+                    logging.info("Optimizer/scheduler state resumed from checkpoint.")
+                except (ValueError, KeyError, RuntimeError) as exc:
+                    logging.warning(
+                        "Could not resume optimizer/scheduler state; continuing "
+                        f"with fresh states. Reason: {exc}"
+                    )
             # with torch.no_grad():
             #     model.bsei1.alpha.fill_(0.5)
             #     model.bsei2.alpha.fill_(0.5)
             #     model.bsei3.alpha.fill_(0.5)
             #         logging.info(f"Reset {name} to 0.1")
 
-            logging.info(f"Resumed from epoch {checkpoint['epoch']}, best_acc={best_acc:.4f}")
-
-
             start_epoch = checkpoint['epoch'] + 1
-            # best_acc = 0
-            best_acc = checkpoint['best_acc']
-            
-        
+            best_acc = max(
+                float(checkpoint.get('best_acc', 0.0)),
+                float(checkpoint.get('test_iou', 0.0))
+            )
             
             logging.info(f"Resumed from epoch {checkpoint['epoch']}")
-            logging.info(f"Previous best accuracy: {best_acc:.4f}")
+            logging.info(f"Previous best IoU: {best_acc:.4f}")
      
             # for param_group in optimizer.param_groups:
             #     param_group['lr'] = args.escape_lr
+
+    ema = None
+    if args.use_ema:
+        ema = ModelEMA(model, decay=args.ema_decay)
+        if checkpoint is not None and "ema_state_dict" in checkpoint:
+            model_state = model.state_dict()
+            ema_state = {
+                key: value
+                for key, value in checkpoint["ema_state_dict"].items()
+                if key in model_state and model_state[key].shape == value.shape
+            }
+            ema.load_state_dict(ema_state)
+            logging.info(
+                f"Loaded {len(ema_state)} compatible EMA tensors from checkpoint."
+            )
+        logging.info(f"EMA enabled with decay={args.ema_decay}.")
+
+    detail_warmup_epochs = max(args.detail_warmup_epochs, 0)
+    decoder_warmup_epochs = max(args.decoder_warmup_epochs, 0)
+    stage_schedule_start_epoch = start_epoch if restart_stage_schedule else 0
+    detail_warmup_end_epoch = stage_schedule_start_epoch + detail_warmup_epochs
+    full_train_start_epoch = detail_warmup_end_epoch + decoder_warmup_epochs+50
+
+    if args.training and args.epochs > 0:
+        if start_epoch < detail_warmup_end_epoch:
+            stage = "detail"
+        elif start_epoch < full_train_start_epoch:
+            stage = "decoder"
+        else:
+            stage = "all"
+
+        trainable_params, total_params = set_training_stage(model, stage=stage)
+        logging.info(
+            f"Training stage '{stage}' starts at epoch {start_epoch + 1} "
+            f"({trainable_params:,}/{total_params:,} parameters trainable)."
+        )
+        if start_epoch >= detail_warmup_end_epoch and args.focal_tversky_after_warmup and hasattr(criterion, "focal_tversky_w"):
+            criterion.focal_tversky_w = args.focal_tversky_w
+            logging.info(
+                f"Focal Tversky enabled with weight {criterion.focal_tversky_w:.3f}."
+            )
 
     from torchinfo import summary
     summary(
@@ -2210,6 +2534,9 @@ if __name__ == "__main__":
     # # Training
     best_threshold = 0.45
     if  args.testing:
+        if ema is not None:
+            ema.store(model)
+            ema.copy_to(model)
         best_threshold, best_dice, best_iou = find_best_threshold(
                 model,
                 test_loader,
@@ -2217,7 +2544,6 @@ if __name__ == "__main__":
                 device
             )
         test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device ,threshold=best_threshold ,use_tta=True)
-            
         logging.info(
                         f"First EvaluationTest Loss: {test_loss:.4f}, "
                         f"Test Dice: {test_dice:.4f}, "
@@ -2226,6 +2552,8 @@ if __name__ == "__main__":
             tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
             print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
             print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")        
+        if ema is not None:
+            ema.restore(model)
         # result = evaluate_model(
         #     model,
         #     test_loader,
@@ -2254,11 +2582,27 @@ if __name__ == "__main__":
         
 
         # Log the actual starting LR
-        current_lr = optimizer.param_groups[0]['lr']
-        logging.info( f"initial LR: {current_lr:.6f}")
+        detail_start_lr = optimizer_lr(optimizer, "detail")
+        refine_start_lr = optimizer_lr(optimizer, "refine")
+        context_start_lr = optimizer_lr(optimizer, "context")
+        enc_start_lr = optimizer_lr(optimizer, "encoder")
+        dec_start_lr = optimizer_lr(optimizer, "decoder", fallback_idx=-1)
+        logging.info(
+            f"initial LR: detail={detail_start_lr:.6f}, "
+            f"refine={refine_start_lr:.6f}, "
+            f"context={context_start_lr:.6f}, "
+            f"encoder={enc_start_lr:.6f}, "
+            f"decoder_aux={dec_start_lr:.6f}"
+        )
             
         # Training loop
         best_dice = 0
+        epochs_without_improvement = 0
+        last_epoch = start_epoch - 1
+        last_train_loss = None
+        last_test_loss = None
+        last_test_dice = None
+        last_test_iou = None
 
         FREEZE_EPOCHS = start_epoch + 200
         if args.training:
@@ -2266,25 +2610,59 @@ if __name__ == "__main__":
 
 
             for epoch in range(start_epoch, args.epochs):
+                if detail_warmup_epochs > 0 and epoch == detail_warmup_end_epoch:
+                    next_stage = "decoder" if decoder_warmup_epochs > 0 else "all"
+                    trainable_params, total_params = set_training_stage(model, stage=next_stage)
+                    logging.info(
+                        f"Epoch {epoch + 1}: detail warmup finished; "
+                        f"stage '{next_stage}' active "
+                        f"({trainable_params:,}/{total_params:,} parameters trainable)."
+                    )
+                    if args.focal_tversky_after_warmup and hasattr(criterion, "focal_tversky_w"):
+                        criterion.focal_tversky_w = args.focal_tversky_w
+                        logging.info(
+                            f"Focal Tversky enabled with weight {criterion.focal_tversky_w:.3f}."
+                        )
+
+                if decoder_warmup_epochs > 0 and epoch == full_train_start_epoch:
+                    trainable_params, total_params = set_training_stage(model, stage="all")
+                    logging.info(
+                        f"Epoch {epoch + 1}: decoder warmup finished; "
+                        f"all layers unfrozen ({trainable_params:,}/{total_params:,} "
+                        "parameters trainable)."
+                    )
+
                 # if epoch == FREEZE_EPOCHS:
                 #     
                 #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
                 if 'Kvasir' in args.data_name:
-                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler,threshold=best_threshold)
+                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler,threshold=best_threshold, ema=ema)
+                    if ema is not None:
+                        ema.store(model)
+                        ema.copy_to(model)
                     test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device, threshold=best_threshold)
-                    scheduler.step()
+                    if ema is not None:
+                        ema.restore(model)
+                    if epoch >= full_train_start_epoch:
+                        scheduler.step()
 
                     logging.info(f"Epoch {epoch+1}/{args.epochs}: "
                                 f"Train Loss: {train_loss:.4f}, "
                                 f"Test Loss: {test_loss:.4f}, "
                                 f"Test Dice: {test_dice:.4f}, "
-                                f"Test IoU: {test_iou:.4f}")
+                                f"Test IoU: {test_iou:.4f}, "
+                                f"EMA: {ema is not None}")
+                    last_epoch = epoch
+                    last_train_loss = train_loss
+                    last_test_loss = test_loss
+                    last_test_dice = test_dice
+                    last_test_iou = test_iou
                     
 
                     # Flush immediately for Kvasir
                     for handler in logging.root.handlers:
                         handler.flush()
-                    
+
                     test_acc  = test_iou
 
            
@@ -2294,26 +2672,75 @@ if __name__ == "__main__":
 
                 # Save best model
                 if test_acc > best_acc:
+                    best_acc = test_acc
                     checkpoint_dict = {
                             'epoch': epoch,
-                            'model_state_dict': model.state_dict(),
+                            'model_state_dict': scored_model_state_dict(model, ema),
                             'optimizer_state_dict': optimizer.state_dict(),
                             'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
                             'best_acc': best_acc,
                             'test_dice': test_dice,
+                            'test_iou': test_iou,
                         }
+                    if ema is not None:
+                        checkpoint_dict['ema_state_dict'] = ema.state_dict()
+                        checkpoint_dict['raw_model_state_dict'] = snapshot_state_dict(model)
                 
-                    best_acc = test_acc
                     torch.save(checkpoint_dict, 
                             f"{args.logging_dir}checkpoints_{args.model_name}/{epoch}-test{test_acc:.2f}.pth")
                     logging.info(f"New best model saved with accuracy: {best_acc:.2f}%")
                     if args.tta_check:
+                        if ema is not None:
+                            ema.store(model)
+                            ema.copy_to(model)
                         tta_dice, tta_iou = evaluate_with_tta(model, test_loader, device, threshold=best_threshold)
+                        if ema is not None:
+                            ema.restore(model)
                         print(f"TTA      → Dice: {tta_dice:.4f}, IoU: {tta_iou:.4f}")
                         print(f"IMPROVEMENT: +{(tta_iou - test_iou)*100:.2f}% IoU")
                     # Flush after saving
                     for handler in logging.root.handlers:
                         handler.flush()
+                    epochs_without_improvement = 0
+                else:
+                    epochs_without_improvement += 1
+                    if (
+                        args.early_stop_patience > 0
+                        and epoch >= full_train_start_epoch
+                        and epochs_without_improvement >= args.early_stop_patience
+                    ):
+                        logging.info(
+                            f"Early stopping at epoch {epoch + 1}: "
+                            f"no validation IoU improvement for "
+                            f"{epochs_without_improvement} epochs."
+                        )
+                        break
+
+        if args.training and last_epoch >= start_epoch:
+            final_checkpoint = {
+                'epoch': last_epoch,
+                'model_state_dict': scored_model_state_dict(model, ema),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict(),
+                'best_acc': best_acc,
+                'train_loss': last_train_loss,
+                'test_loss': last_test_loss,
+                'test_dice': last_test_dice,
+                'test_iou': last_test_iou,
+            }
+            if ema is not None:
+                final_checkpoint['ema_state_dict'] = ema.state_dict()
+                final_checkpoint['raw_model_state_dict'] = snapshot_state_dict(model)
+
+            final_checkpoint_path = (
+                f"{args.logging_dir}checkpoints_{args.model_name}/"
+                f"final-epoch{last_epoch}-test{(last_test_iou or 0.0):.4f}.pth"
+            )
+            torch.save(final_checkpoint, final_checkpoint_path)
+            logging.info(f"Final checkpoint saved: {final_checkpoint_path}")
+
+            for handler in logging.root.handlers:
+                handler.flush()
     # Save model
     if args.save and 'ReLU' in args.model_type:
         logging.info("#### Saving ReLU model ####")

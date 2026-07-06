@@ -1,0 +1,56 @@
+2026-07-05 04:46:03 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain_depth3393/start-detail/KvasirSEG-ConvNeXt_log.txt
+2026-07-05 04:46:23 - INFO - Optimizer: AdamW | detail_lr=7.50e-05, refine_lr=7.50e-05, encoder_lr=5.00e-06, decoder_lr=5.00e-05, eta_min=1.00e-06, weight_decay=5.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
+2026-07-05 04:46:24 - INFO - Loaded 276/306 compatible model tensors from checkpoint.
+2026-07-05 04:46:24 - INFO - Freshly initialized model tensors: ['context.gamma', 'context.reduce.0.weight', 'context.reduce.1.weight', 'context.reduce.1.bias', 'context.branches.0.0.weight', 'context.branches.0.1.weight', 'context.branches.0.1.bias', 'context.branches.1.0.weight', 'context.branches.1.1.weight', 'context.branches.1.1.bias', 'context.branches.2.0.weight', 'context.branches.2.1.weight', 'context.branches.2.1.bias', 'context.pool_proj.1.weight', 'context.project.0.weight', 'context.project.1.weight', 'context.project.1.bias', 'detail_fusion.detail_proj.0.weight', 'detail_fusion.detail_proj.1.weight', 'detail_fusion.detail_proj.1.bias']
+2026-07-05 04:46:24 - INFO - Resumed from epoch 2929
+2026-07-05 04:46:24 - INFO - Previous best IoU: 0.8812
+2026-07-05 04:46:24 - INFO - Loaded 274 compatible EMA tensors from checkpoint.
+2026-07-05 04:46:24 - INFO - EMA enabled with decay=0.995.
+2026-07-05 04:46:24 - INFO - Training stage 'detail' starts at epoch 2931 (290,945/50,387,782 parameters trainable).
+2026-07-05 04:46:25 - INFO - #### Training ####
+2026-07-05 04:46:25 - INFO - initial LR: detail=0.000075, refine=0.000075, encoder=0.000005, decoder_aux=0.000050
+2026-07-05 04:46:51 - INFO - Epoch 2931/50000: Train Loss: 0.2432, Test Loss: 0.2212, Test Dice: 0.9172, Test IoU: 0.8491, EMA: True
+2026-07-05 04:47:18 - INFO - Epoch 2932/50000: Train Loss: 0.2372, Test Loss: 0.2130, Test Dice: 0.9195, Test IoU: 0.8531, EMA: True
+2026-07-05 04:47:44 - INFO - Epoch 2933/50000: Train Loss: 0.2621, Test Loss: 0.2119, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 04:48:10 - INFO - Epoch 2934/50000: Train Loss: 0.2397, Test Loss: 0.2117, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 04:48:36 - INFO - Epoch 2935/50000: Train Loss: 0.2496, Test Loss: 0.2113, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 04:49:03 - INFO - Epoch 2936/50000: Train Loss: 0.2306, Test Loss: 0.2113, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 04:49:29 - INFO - Epoch 2937/50000: Train Loss: 0.2435, Test Loss: 0.2113, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 04:49:55 - INFO - Epoch 2938/50000: Train Loss: 0.1955, Test Loss: 0.2120, Test Dice: 0.9195, Test IoU: 0.8531, EMA: True
+2026-07-05 04:50:21 - INFO - Epoch 2939/50000: Train Loss: 0.2614, Test Loss: 0.2112, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 04:50:47 - INFO - Epoch 2940/50000: Train Loss: 0.2408, Test Loss: 0.2110, Test Dice: 0.9195, Test IoU: 0.8531, EMA: True
+2026-07-05 04:51:14 - INFO - Epoch 2941/50000: Train Loss: 0.2050, Test Loss: 0.2119, Test Dice: 0.9196, Test IoU: 0.8532, EMA: True
+2026-07-05 04:51:40 - INFO - Epoch 2942/50000: Train Loss: 0.2354, Test Loss: 0.2115, Test Dice: 0.9196, Test IoU: 0.8532, EMA: True
+2026-07-05 04:51:40 - INFO - Epoch 2943: detail warmup finished; stage 'decoder' active (22,569,190/50,387,782 parameters trainable).
+2026-07-05 04:51:40 - INFO - Focal Tversky enabled with weight 0.050.
+2026-07-05 04:52:15 - INFO - Epoch 2943/50000: Train Loss: 0.2378, Test Loss: 0.2191, Test Dice: 0.9200, Test IoU: 0.8538, EMA: True
+2026-07-05 04:52:49 - INFO - Epoch 2944/50000: Train Loss: 0.2360, Test Loss: 0.2189, Test Dice: 0.9196, Test IoU: 0.8532, EMA: True
+2026-07-05 04:53:22 - INFO - Epoch 2945/50000: Train Loss: 0.2255, Test Loss: 0.2189, Test Dice: 0.9197, Test IoU: 0.8534, EMA: True
+2026-07-05 04:53:57 - INFO - Epoch 2946/50000: Train Loss: 0.2280, Test Loss: 0.2175, Test Dice: 0.9204, Test IoU: 0.8546, EMA: True
+2026-07-05 04:54:35 - INFO - Epoch 2947/50000: Train Loss: 0.2530, Test Loss: 0.2161, Test Dice: 0.9209, Test IoU: 0.8555, EMA: True
+2026-07-05 04:55:11 - INFO - Epoch 2948/50000: Train Loss: 0.2455, Test Loss: 0.2133, Test Dice: 0.9227, Test IoU: 0.8587, EMA: True
+2026-07-05 04:55:47 - INFO - Epoch 2949/50000: Train Loss: 0.2197, Test Loss: 0.2137, Test Dice: 0.9225, Test IoU: 0.8584, EMA: True
+2026-07-05 04:56:23 - INFO - Epoch 2950/50000: Train Loss: 0.2197, Test Loss: 0.2149, Test Dice: 0.9221, Test IoU: 0.8577, EMA: True
+2026-07-05 04:56:23 - INFO - Epoch 2951: decoder warmup finished; all layers unfrozen (50,387,782/50,387,782 parameters trainable).
+2026-07-05 04:57:05 - INFO - Epoch 2951/50000: Train Loss: 0.2613, Test Loss: 0.2152, Test Dice: 0.9214, Test IoU: 0.8565, EMA: True
+2026-07-05 04:57:48 - INFO - Epoch 2952/50000: Train Loss: 0.2304, Test Loss: 0.2161, Test Dice: 0.9212, Test IoU: 0.8561, EMA: True
+2026-07-05 04:58:30 - INFO - Epoch 2953/50000: Train Loss: 0.2297, Test Loss: 0.2153, Test Dice: 0.9206, Test IoU: 0.8549, EMA: True
+2026-07-05 04:59:12 - INFO - Epoch 2954/50000: Train Loss: 0.2245, Test Loss: 0.2180, Test Dice: 0.9196, Test IoU: 0.8531, EMA: True
+2026-07-05 04:59:55 - INFO - Epoch 2955/50000: Train Loss: 0.2029, Test Loss: 0.2209, Test Dice: 0.9189, Test IoU: 0.8521, EMA: True
+2026-07-05 05:00:38 - INFO - Epoch 2956/50000: Train Loss: 0.2550, Test Loss: 0.2209, Test Dice: 0.9190, Test IoU: 0.8522, EMA: True
+2026-07-05 05:01:20 - INFO - Epoch 2957/50000: Train Loss: 0.2117, Test Loss: 0.2225, Test Dice: 0.9182, Test IoU: 0.8509, EMA: True
+2026-07-05 05:02:03 - INFO - Epoch 2958/50000: Train Loss: 0.2407, Test Loss: 0.2239, Test Dice: 0.9168, Test IoU: 0.8484, EMA: True
+2026-07-05 05:02:44 - INFO - Epoch 2959/50000: Train Loss: 0.2154, Test Loss: 0.2233, Test Dice: 0.9179, Test IoU: 0.8504, EMA: True
+2026-07-05 05:03:26 - INFO - Epoch 2960/50000: Train Loss: 0.2290, Test Loss: 0.2221, Test Dice: 0.9188, Test IoU: 0.8519, EMA: True
+2026-07-05 05:04:10 - INFO - Epoch 2961/50000: Train Loss: 0.2337, Test Loss: 0.2226, Test Dice: 0.9187, Test IoU: 0.8517, EMA: True
+2026-07-05 05:04:53 - INFO - Epoch 2962/50000: Train Loss: 0.2500, Test Loss: 0.2227, Test Dice: 0.9184, Test IoU: 0.8513, EMA: True
+2026-07-05 05:05:36 - INFO - Epoch 2963/50000: Train Loss: 0.2337, Test Loss: 0.2214, Test Dice: 0.9185, Test IoU: 0.8513, EMA: True
+2026-07-05 05:06:17 - INFO - Epoch 2964/50000: Train Loss: 0.2295, Test Loss: 0.2193, Test Dice: 0.9198, Test IoU: 0.8536, EMA: True
+2026-07-05 05:07:00 - INFO - Epoch 2965/50000: Train Loss: 0.2077, Test Loss: 0.2195, Test Dice: 0.9200, Test IoU: 0.8538, EMA: True
+2026-07-05 05:07:43 - INFO - Epoch 2966/50000: Train Loss: 0.2298, Test Loss: 0.2194, Test Dice: 0.9195, Test IoU: 0.8530, EMA: True
+2026-07-05 05:08:25 - INFO - Epoch 2967/50000: Train Loss: 0.2501, Test Loss: 0.2191, Test Dice: 0.9190, Test IoU: 0.8521, EMA: True
+2026-07-05 05:09:08 - INFO - Epoch 2968/50000: Train Loss: 0.2276, Test Loss: 0.2206, Test Dice: 0.9182, Test IoU: 0.8507, EMA: True
+2026-07-05 05:09:49 - INFO - Epoch 2969/50000: Train Loss: 0.2206, Test Loss: 0.2206, Test Dice: 0.9188, Test IoU: 0.8518, EMA: True
+2026-07-05 05:10:31 - INFO - Epoch 2970/50000: Train Loss: 0.2536, Test Loss: 0.2194, Test Dice: 0.9197, Test IoU: 0.8534, EMA: True
+2026-07-05 05:10:31 - INFO - Early stopping at epoch 2970: no validation IoU improvement for 40 epochs.
+2026-07-05 05:10:31 - INFO - Final checkpoint saved: ./logs/ConvNeXt-pretrain_depth3393/start-detail/checkpoints_KvasirSEG-ConvNeXt/final-epoch2969-test0.8534.pth
