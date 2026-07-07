@@ -552,7 +552,7 @@ def train_epoch_segmentation(
             target = target.unsqueeze(1)
 
         # MixUp
-        if random.random() < 0.2:
+        if random.random() < 0.2 and False:
             lam = np.random.beta(0.2, 0.2)
             idx = torch.randperm(data.size(0), device=device)
 
@@ -714,10 +714,49 @@ def iou_score(pred, target, smooth=1e-6):
     return iou.item()  # Return as Python float
 
 
+# def evaluate_with_tta(model, test_loader, device, threshold=0.40):
+#     model.eval()
+#     all_preds = []
+#     all_targets = []
+    
+#     with torch.no_grad():
+#         for data, target in tqdm(test_loader, desc='TTA'):
+#             data = data.to(device)
+            
+#             # Original
+#             pred1 = torch.sigmoid(model(data))
+            
+#             # Horizontal flip
+#             pred2 = torch.flip(torch.sigmoid(model(torch.flip(data, [-1]))), [-1])
+            
+#             # Vertical flip  
+#             pred3 = torch.flip(torch.sigmoid(model(torch.flip(data, [-2]))), [-2])
+            
+#             # Average
+#             pred = (pred1 + pred2 + pred3) / 3
+            
+#             all_preds.append((pred > threshold).float().cpu())
+#             all_targets.append(target.cpu())
+    
+#     # Calculate metrics
+#     all_preds = torch.cat(all_preds)
+#     all_targets = torch.cat(all_targets)
+    
+#     dice = dice_coefficient(all_preds, all_targets)
+#     iou = iou_score(all_preds, all_targets)
+    
+#     return dice, iou
+
 def evaluate_with_tta(model, test_loader, device, threshold=0.40):
     model.eval()
     all_preds = []
     all_targets = []
+    
+    # Initialize advanced metric calculators
+    SM = py_sod_metrics.Smeasure()
+    WFM = py_sod_metrics.WeightedFmeasure()
+    EM = py_sod_metrics.Emeasure()
+    MAE = py_sod_metrics.MAE()
     
     with torch.no_grad():
         for data, target in tqdm(test_loader, desc='TTA'):
@@ -732,28 +771,121 @@ def evaluate_with_tta(model, test_loader, device, threshold=0.40):
             # Vertical flip  
             pred3 = torch.flip(torch.sigmoid(model(torch.flip(data, [-2]))), [-2])
             
-            # Average
-            pred = (pred1 + pred2 + pred3) / 3
+            # Average (Continuous Probability Map)
+            prob = (pred1 + pred2 + pred3) / 3
             
-            all_preds.append((pred > threshold).float().cpu())
+            # Store thresholded predictions for Dice/IoU
+            all_preds.append((prob > threshold).float().cpu())
             all_targets.append(target.cpu())
+            
+            # --- Advanced Metrics Evaluation FIX ---
+            prob_np = prob.cpu().numpy()
+            target_np = target.cpu().numpy()
+            
+            # Ensure target has a channel dimension (B, 1, H, W)
+            if target_np.ndim == 3:
+                target_np = np.expand_dims(target_np, axis=1)
+                
+            for b in range(prob_np.shape[0]):
+                # 1. Scale continuous probability to [0, 255] and convert to uint8
+                p = (prob_np[b, 0] * 255.0).astype(np.uint8) 
+                g = (target_np[b, 0] * 255.0).astype(np.uint8)
+                
+                # 2. Ensure ground truth is strictly binary (0 or 255)
+                g = (g > 127).astype(np.uint8) * 255
+                
+                # Step the calculators safely with uint8 data
+                SM.step(pred=p, gt=g)
+                WFM.step(pred=p, gt=g)
+                EM.step(pred=p, gt=g)
+                MAE.step(pred=p, gt=g)
     
-    # Calculate metrics
+    # Calculate basic metrics (Dice & IoU)
     all_preds = torch.cat(all_preds)
     all_targets = torch.cat(all_targets)
     
     dice = dice_coefficient(all_preds, all_targets)
     iou = iou_score(all_preds, all_targets)
     
+    # Extract advanced metrics
+    sm = SM.get_results()['sm']
+    wfm = WFM.get_results()['wfm']
+    em_max = EM.get_results()['em']['curve'].max()
+    em_mean = EM.get_results()['em']['curve'].mean()
+    mae = MAE.get_results()['mae']
+    
+    print(f"\nTTA Evaluation Results:")
+    print(f"Dice: {dice:.4f} | IoU: {iou:.4f}")
+    print(f"S-measure: {sm:.4f} | Weighted F-measure: {wfm:.4f}")
+    print(f"Max E-measure: {em_max:.4f} | Mean E-measure: {em_mean:.4f} | MAE: {mae:.4f}\n")
+    
     return dice, iou
 
 
+# def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_tta=False):
+#     """Testing function with optional TTA"""
+#     model.eval()
+#     test_loss = 0
+#     dice_scores = []
+#     iou_scores = []
+    
+#     with torch.no_grad():
+#         for data, target in tqdm(test_loader, desc='Testing'):
+#             data, target = data.to(device), target.to(device)
+            
+#             if target.dim() == 3:
+#                 target = target.unsqueeze(1)
+            
+#             if use_tta:
+#                 # Use TTA for prediction
+#                 prob = tta_predict(
+#                     model,
+#                     data
+#                 )
+
+#                 pred = (
+#                     prob > threshold
+#                 ).float()
+                
+#                 # For loss calculation, use original forward pass
+#                 output = model(data)
+#                 if output.shape != target.shape:
+#                     output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
+#                 test_loss += criterion(output, target).item()
+#             else:
+#                 # Regular prediction
+#                 output = model(data)
+#                 if output.shape != target.shape:
+#                     output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
+#                 test_loss += criterion(output, target).item()
+#                 pred = (torch.sigmoid(output) > threshold).float()
+            
+#             dice_scores.append(dice_coefficient(pred, target))
+#             iou_scores.append(iou_score(pred, target))
+    
+#     avg_loss = test_loss / len(test_loader)
+#     avg_dice = np.mean(dice_scores)
+#     avg_iou = np.mean(iou_scores)
+    
+#     return avg_loss, avg_dice, avg_iou
+
+
+import torch.nn.functional as F
+from tqdm import tqdm
+import py_sod_metrics  # Make sure this is imported
+
 def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_tta=False):
-    """Testing function with optional TTA"""
+    """Testing function with optional TTA and advanced SOD metrics"""
     model.eval()
     test_loss = 0
     dice_scores = []
     iou_scores = []
+    
+    # Initialize advanced metric calculators
+    SM = py_sod_metrics.Smeasure()
+    WFM = py_sod_metrics.WeightedFmeasure()
+    EM = py_sod_metrics.Emeasure()
+    MAE = py_sod_metrics.MAE()
     
     with torch.no_grad():
         for data, target in tqdm(test_loader, desc='Testing'):
@@ -784,21 +916,55 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
                 if output.shape != target.shape:
                     output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
                 test_loss += criterion(output, target).item()
-                pred = (torch.sigmoid(output) > threshold).float()
+                
+                prob = torch.sigmoid(output)
+                pred = (prob > threshold).float()
             
             dice_scores.append(dice_coefficient(pred, target))
             iou_scores.append(iou_score(pred, target))
+            
+            # --- Advanced Metrics Evaluation FIX ---
+            prob_np = prob.cpu().numpy()
+            target_np = target.cpu().numpy()
+            
+            for b in range(prob_np.shape[0]):
+                # 1. Scale to [0, 255] and convert to uint8
+                p = (prob_np[b, 0] * 255.0).astype(np.uint8) 
+                g = (target_np[b, 0] * 255.0).astype(np.uint8)
+                
+                # 2. Ensure ground truth is strictly binary (0 or 255)
+                g = (g > 127).astype(np.uint8) * 255
+                
+                # Step the calculators safely
+                SM.step(pred=p, gt=g)
+                WFM.step(pred=p, gt=g)
+                EM.step(pred=p, gt=g)
+                MAE.step(pred=p, gt=g)
     
     avg_loss = test_loss / len(test_loader)
     avg_dice = np.mean(dice_scores)
     avg_iou = np.mean(iou_scores)
+    
+    # Get final SOD metric scores
+    sm = SM.get_results()['sm']
+    wfm = WFM.get_results()['wfm']
+    em_max = EM.get_results()['em']['curve'].max()
+    em_mean = EM.get_results()['em']['curve'].mean()
+    mae = MAE.get_results()['mae']
+    
+    # Optional: Print the results cleanly
+    print(f"\nTest Results:")
+    print(f"Loss: {avg_loss:.4f} | Dice: {avg_dice:.4f} | IoU: {avg_iou:.4f}")
+    print(f"S-measure: {sm:.4f} | Weighted F-measure: {wfm:.4f}")
+    print(f"Max E-measure: {em_max:.4f} | Mean E-measure: {em_mean:.4f} | MAE: {mae:.4f}")
     
     return avg_loss, avg_dice, avg_iou
 
 def find_best_threshold(model, test_loader, criterion, device):
     model.eval()
 
-    thresholds = np.arange(0.4, 0.99, 0.05)
+    # thresholds = np.arange(0.89, 0.990, 0.005)
+    thresholds = np.arange(0.4, 0.990, 0.05)
     # hossein
     # thresholds = np.arange(0.7, 0.999, 0.005)
 
@@ -2037,14 +2203,14 @@ if __name__ == "__main__":
 
     # Set default dtype to float32 (equivalent to TF's float32)
     # torch.set_default_dtype(torch.float32)
-
+# jafari
     strtobool = (lambda s: s=='True')
     parser = argparse.ArgumentParser(description='TTFS')
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-55/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-100/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    parser.add_argument('--eval_dataset', type=str, default='both', choices=['kvasir', 'clinicdb', 'both', 'CVC-300', 'CVC-ColonDB', 'ETIS-LARIBPOLYPDB'], help='Validation/test split or external test dataset')
-    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-0/checkpoints_KvasirSEG-ConvNeXt/55-test0.79.pth', help='Checkpoint path used only when --load True')
+    parser.add_argument('--eval_dataset', type=str, default='CVC-300', choices=['kvasir', 'clinicdb', 'both', 'CVC-300', 'CVC-ColonDB', 'ETIS-LARIBPOLYPDB'], help='Validation/test split or external test dataset')
+    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-0/checkpoints_KvasirSEG-ConvNeXt/100-test0.88.pth', help='Checkpoint path used only when --load True')
     parser.add_argument('--encoder_weights', type=str, default='./convnext_tiny_22k_1k_384.pth', help='ConvNeXt-Tiny pretrained encoder weights')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
@@ -2064,9 +2230,9 @@ if __name__ == "__main__":
     parser.add_argument('--early_stop_patience', type=int, default=40, help='Stop training after this many epochs without validation IoU improvement. 0 disables it')
     parser.add_argument('--use_ema', type=strtobool, default=True, help='Evaluate and save an exponential moving average of model weights')
     parser.add_argument('--ema_decay', type=float, default=0.995, help='EMA decay for model weights')
-    parser.add_argument('--testing', type=strtobool, default=False, help='Execute testing.')
-    parser.add_argument('--tta_check', type=strtobool, default=False, help='Execute testing.')
-    parser.add_argument('--training', type=strtobool, default=True, help='Execute training.')
+    parser.add_argument('--testing', type=strtobool, default=True, help='Execute testing.')
+    parser.add_argument('--tta_check', type=strtobool, default=True, help='Execute testing.')
+    parser.add_argument('--training', type=strtobool, default=False, help='Execute training.')
     parser.add_argument('--load', type=strtobool, default=True, help='Load checkpoint before training.')
     parser.add_argument('--resume_optimizer', type=strtobool, default=False, help='Resume optimizer and scheduler states when compatible')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
@@ -2166,8 +2332,8 @@ if __name__ == "__main__":
                 )
             model = ConvNeXtUNet(
                 weights_path=encoder_weights,
-                drop_path_rate=0.15,
-                dropout_rate=0.15,
+                drop_path_rate=0.25,
+                dropout_rate=0.2,
                 
                 encoder_depth= [3,3,9,3]
             )
@@ -2228,10 +2394,10 @@ if __name__ == "__main__":
 
         # criterion = BoundaryAwareLoss(kappa=10)
         criterion = DiceBCEBoundaryLoss(
-    dice_w=0.4,
+    dice_w=0.3,
     bce_w=0.3,
-    boundary_w=0.30,
-    focal_tversky_w=0.0,
+    boundary_w=0.40,
+    focal_tversky_w=0.01,
     label_smoothing=0.02
 )
         # criterion = BoundaryDiceLoss(
@@ -2530,7 +2696,24 @@ if __name__ == "__main__":
             input_size=(1, 3) + args.input_size,  # (batch, channels, H, W)
             device="cuda"
         )
-    
+    model.eval() # Set to evaluation mode
+
+# 2. Create a dummy input tensor matching your image size (Batch, Channels, Height, Width)
+# Based on your previous prompts, your input size is 352x352x3
+    dummy_input = torch.randn(1, 3, 352, 352).to(device)
+    from thop import profile
+    from thop import clever_format
+    # 3. Profile the model
+    macs, params = profile(model, inputs=(dummy_input, ))
+
+    # 4. Format and print the results
+    macs_formatted, params_formatted = clever_format([macs, params], "%.2f")
+
+    print(f"Total Parameters: {params_formatted}")
+    print(f"Total MACs (approx GFLOPs): {macs_formatted}")
+    # Note: 1 MAC is generally considered as 2 FLOPs (one multiply, one add).
+    print(f"Total FLOPs (Giga): {(macs * 2) / 1e9:.2f} GFLOPs")
+
     # # Training
     best_threshold = 0.45
     if  args.testing:
