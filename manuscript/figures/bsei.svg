@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="230" viewBox="0 0 1050 230">
+  <rect width="1050" height="230" fill="white"/>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#333"/></marker></defs>
+  <g font-family="Arial" text-anchor="middle" fill="#111">
+    <rect x="20" y="65" width="145" height="65" rx="8" fill="#e8f0fe" stroke="#315a9b"/><text x="92" y="93" font-size="16">Concatenated</text><text x="92" y="116" font-size="14">skip tensor X</text>
+    <path d="M165 98 H215" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="215" y="65" width="155" height="65" rx="8" fill="#eaf4ea" stroke="#3c7a3c"/><text x="292" y="93" font-size="16">1 x 1 Conv</text><text x="292" y="116" font-size="14">LN + GELU + dropout</text>
+    <path d="M370 98 H420" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="420" y="65" width="155" height="65" rx="8" fill="#fff4df" stroke="#9a6b16"/><text x="497" y="93" font-size="16">SepConv 3 x 3</text><text x="497" y="116" font-size="14">LN + GELU = Y</text>
+    <path d="M575 98 H625" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="625" y="65" width="165" height="65" rx="8" fill="#f4eafa" stroke="#76428a"/><text x="707" y="91" font-size="16">Channel-wise E</text><text x="707" y="115" font-size="14">sigmoid(abs(DWConv(Y)))</text>
+    <path d="M790 98 H845" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="845" y="65" width="180" height="65" rx="8" fill="#e8f5f3" stroke="#277a70"/><text x="935" y="93" font-size="16">Residual enhancement</text><text x="935" y="116" font-size="14">O = Y + E elementwise Y</text>
+    <path d="M497 130 V178 H935 V130" fill="none" stroke="#555" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="715" y="205" font-size="13">Y supplies both the residual feature and the channel-wise response input</text>
+  </g>
+</svg>

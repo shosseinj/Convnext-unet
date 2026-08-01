@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="330" viewBox="0 0 1000 330">
+  <style>.b{stroke-width:2;rx:8}.t{font:18px Arial,sans-serif;fill:#202124}.s{font:14px Arial,sans-serif;fill:#40464d}.a{stroke:#555;stroke-width:2;marker-end:url(#m)}</style>
+  <defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#555"/></marker></defs>
+  <rect class="b" x="25" y="60" width="270" height="200" fill="#d4edda" stroke="#155724"/>
+  <text class="t" x="50" y="95">Eligible evidence</text><text class="s" x="50" y="128">Validated official metrics</text><text class="s" x="50" y="154">Per-seed values, SD, CI</text><text class="s" x="50" y="180">Audited Params and GFLOPs</text><text class="s" x="50" y="206">Fixed split and selection rule</text>
+  <line class="a" x1="295" y1="160" x2="360" y2="160"/>
+  <rect class="b" x="365" y="60" width="270" height="200" fill="#fff3cd" stroke="#856404"/>
+  <text class="t" x="390" y="95">Must be qualified</text><text class="s" x="390" y="128">Image-level split only</text><text class="s" x="390" y="154">Three-seed uncertainty</text><text class="s" x="390" y="180">Descriptive comparisons</text><text class="s" x="390" y="206">External test generalization</text>
+  <line class="a" x1="635" y1="160" x2="700" y2="160"/>
+  <rect class="b" x="705" y="60" width="270" height="200" fill="#f8d7da" stroke="#721c24"/>
+  <text class="t" x="730" y="95">Do not claim</text><text class="s" x="730" y="128">Unimplemented S-measure</text><text class="s" x="730" y="154">Unbenchmarked speed/memory</text><text class="s" x="730" y="180">Patient-level leakage freedom</text><text class="s" x="730" y="206">Unverified significance</text>
+</svg>

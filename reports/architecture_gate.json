@@ -1,0 +1,139 @@
+{
+  "gate": "architecture",
+  "status": "PASS",
+  "timestamp_utc": "2026-08-01T07:55:17.897801+00:00",
+  "input_size": [
+    352,
+    352
+  ],
+  "device": "cpu",
+  "flops_definition": "2 * MACs",
+  "variants": [
+    {
+      "variant": "baseline",
+      "status": "PASS",
+      "output_shapes": [
+        [
+          1,
+          1,
+          352,
+          352
+        ]
+      ],
+      "parameters": 29190098,
+      "trainable_parameters": 29190098,
+      "macs": 13601058240,
+      "gflops_convention_2x_macs": 27.20211648,
+      "strict_round_trip": true,
+      "incompatible_checkpoint_error": true
+    },
+    {
+      "variant": "baseline_msc",
+      "status": "PASS",
+      "output_shapes": [
+        [
+          1,
+          1,
+          352,
+          352
+        ]
+      ],
+      "parameters": 29572851,
+      "trainable_parameters": 29572851,
+      "macs": 13645998240,
+      "gflops_convention_2x_macs": 27.29199648,
+      "strict_round_trip": true,
+      "incompatible_checkpoint_error": true
+    },
+    {
+      "variant": "baseline_msc_bsei",
+      "status": "PASS",
+      "output_shapes": [
+        [
+          1,
+          1,
+          352,
+          352
+        ]
+      ],
+      "parameters": 29579763,
+      "trainable_parameters": 29579763,
+      "macs": 13684470432,
+      "gflops_convention_2x_macs": 27.368940864,
+      "strict_round_trip": true,
+      "incompatible_checkpoint_error": true
+    },
+    {
+      "variant": "baseline_msc_bsei_detail",
+      "status": "PASS",
+      "output_shapes": [
+        [
+          1,
+          1,
+          352,
+          352
+        ]
+      ],
+      "parameters": 29604819,
+      "trainable_parameters": 29604819,
+      "macs": 14452675232,
+      "gflops_convention_2x_macs": 28.905350464,
+      "strict_round_trip": true,
+      "incompatible_checkpoint_error": true
+    },
+    {
+      "variant": "baseline_msc_bsei_detail_gdf",
+      "status": "PASS",
+      "output_shapes": [
+        [
+          1,
+          1,
+          352,
+          352
+        ]
+      ],
+      "parameters": 29601107,
+      "trainable_parameters": 29601107,
+      "macs": 14343639712,
+      "gflops_convention_2x_macs": 28.687279424,
+      "strict_round_trip": true,
+      "incompatible_checkpoint_error": true
+    },
+    {
+      "variant": "full",
+      "status": "PASS",
+      "output_shapes": [
+        [
+          1,
+          1,
+          352,
+          352
+        ],
+        [
+          1,
+          1,
+          352,
+          352
+        ],
+        [
+          1,
+          1,
+          352,
+          352
+        ],
+        [
+          1,
+          1,
+          352,
+          352
+        ]
+      ],
+      "parameters": 29601782,
+      "trainable_parameters": 29601782,
+      "macs": 14344940704,
+      "gflops_convention_2x_macs": 28.689881408,
+      "strict_round_trip": true,
+      "incompatible_checkpoint_error": true
+    }
+  ]
+}

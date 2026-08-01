@@ -1,0 +1,11 @@
+field,value,evidence
+Input size,352 x 352,configs/training_protocol.yaml
+Seeds,"42; 3407; 2026",configs/training_protocol.yaml
+Maximum epochs,150,configs/training_protocol.yaml
+Encoder freeze,epochs 1-10,configs/training_protocol.yaml
+Encoder learning rate,1e-5,configs/training_protocol.yaml
+Decoder learning rate,1e-4,configs/training_protocol.yaml
+Weight decay,1e-4,configs/training_protocol.yaml
+Early stopping patience,30,configs/training_protocol.yaml
+Checkpoint selection,equal mean validation Dice on Kvasir-SEG and CVC-ClinicDB,train_research.py
+Test-time augmentation,disabled,configs/training_protocol.yaml

@@ -1,0 +1,4 @@
+{"timestamp_utc": "2026-08-01T10:34:35.697369+00:00", "event": "campaign_start", "pid": 35652, "python": "C:\\Users\\jafari.h\\Desktop\\ai_project\\.venv\\Scripts\\python.exe", "device": "cuda"}
+{"timestamp_utc": "2026-08-01T10:34:35.716372+00:00", "event": "incremental_progress", "completed": 1, "total": 18}
+{"timestamp_utc": "2026-08-01T10:56:45.020561+00:00", "event": "campaign_start", "pid": 28016, "python": "C:\\Users\\jafari.h\\Desktop\\ai_project\\.venv\\Scripts\\python.exe", "device": "cuda"}
+{"timestamp_utc": "2026-08-01T10:56:45.031560+00:00", "event": "incremental_progress", "completed": 1, "total": 18}

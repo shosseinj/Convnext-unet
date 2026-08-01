@@ -1,0 +1,102 @@
+{
+  "workflow": "bsei_convnext_article_completion",
+  "current_stage": "EXPERIMENT",
+  "status": "IN_PROGRESS",
+  "previous_completed_stages": ["AUDIT", "PLAN", "IMPLEMENT", "TEST", "PILOT"],
+  "module_name": "BSEI",
+  "excluded_components": ["Video QA Tester"],
+  "active_run": {
+    "matrix": "incremental",
+    "variant": "baseline",
+    "seed": 3407,
+    "last_verified_epoch": 78,
+    "completed_official_runs": 1,
+    "total_official_runs": 18,
+    "checkpoint_selection": "equal mean validation Dice on Kvasir-SEG and CVC-ClinicDB",
+    "test_data_used_for_selection": false
+  },
+  "evaluation_backlog": [
+    {"variant": "baseline", "seed": 42, "run_validation": "PASS", "evaluation": "DEFERRED_UNTIL_GPU_QUEUE_IDLE"}
+  ],
+  "campaign_guardian": {
+    "pid": 28016,
+    "status": "ACTIVE",
+    "incremental_validated": 1,
+    "incremental_total": 18,
+    "control_total": 42,
+    "gpu_overlap_policy": "evaluation and control queue start only after incremental completion"
+  },
+  "artifacts": [
+    "reports/repository_audit.md",
+    "reports/architecture_inventory.json",
+    "reports/manuscript_inventory.md",
+    "reports/manuscript_placeholders.csv",
+    "docs/research_spec.md",
+    "configs/training_protocol.yaml",
+    "configs/ablation_matrix.yaml",
+    "reports/architecture_gate.json",
+    "reports/smoke_gate.json",
+    "results/aggregated/pilot_seed42.json",
+    "results/raw/official_queue.jsonl"
+    ,"tools/evaluate_official.py"
+    ,"tools/aggregate_official.py"
+    ,"manuscript/tables/complexity.csv"
+    ,"manuscript/sections/bsei.md"
+    ,"reports/control_architecture_smoke_gate.json"
+    ,"pretrained/manifest.json"
+    ,"tools/run_control_queue.py"
+    ,"manuscript/sections/controls.md"
+    ,"manuscript/tables/controls.csv"
+    ,"manuscript/tables/controls.tex"
+    ,"manuscript/figures/controls.svg"
+    ,"manuscript/captions/controls.md"
+    ,"tools/finalize_incremental.py"
+    ,"reports/control_architecture_gate.json"
+    ,"manuscript/tables/control_complexity.csv"
+    ,"manuscript/tables/control_complexity.tex"
+    ,"manuscript/figures/control_complexity.svg"
+    ,"manuscript/captions/control_complexity.md"
+    ,"tools/generate_incremental_result_artifacts.py"
+    ,"tools/finalize_controls.py"
+    ,"results/raw/baseline/seed_42/official/validation.json"
+    ,"tools/run_experiment_campaign.py"
+    ,"results/raw/experiment_campaign.jsonl"
+    ,"manuscript/sections/limitations.md"
+    ,"manuscript/tables/reporting_decisions.csv"
+    ,"manuscript/tables/reporting_decisions.tex"
+    ,"manuscript/figures/evidence_boundaries.svg"
+    ,"manuscript/captions/limitations.md"
+    ,"reports/manuscript_artifact_gate.json"
+    ,"reports/docx_target_paragraphs.json"
+    ,"reports/docx_source_render_proof.json"
+    ,"manuscript/user_inputs_required.md"
+    ,"tools/generate_qualitative_figures.py"
+    ,"tools/generate_control_result_artifacts.py"
+    ,"tools/audit_manuscript_artifacts.py"
+    ,"tests/test_qualitative_figures.py"
+    ,"tests/test_control_result_artifacts.py"
+    ,"tests/test_manuscript_artifact_audit.py"
+    ,"tools/render_pdf_winrt.ps1"
+    ,"reports/docx_source_render_winrt/render_manifest.json"
+    ,"tools/check_word_update_readiness.py"
+    ,"tests/test_word_update_readiness.py"
+    ,"reports/word_update_readiness.json"
+    ,"manuscript/author_inputs.template.json"
+    ,"tools/prepare_word_update_backup.py"
+    ,"tests/test_word_update_backup.py"
+    ,"tools/build_word_update_plan.py"
+    ,"tests/test_word_update_plan.py"
+    ,"tools/apply_word_update_plan.py"
+    ,"tests/test_apply_word_update_plan.py"
+  ],
+  "tests": {
+    "approved_unit_tests": {"passed": 51, "failed": 0},
+    "architecture_gate": "PASS",
+    "smoke_gate": "PASS",
+    "pilot_gate": "PASS",
+    "video_qa_tester_executed": false,
+    "word_visual_render": "SOURCE_DOCX_29_OF_29_PAGES_PASS; FINAL_DOCX_NOT_PASSED"
+  },
+  "failures": ["F-001", "F-002", "F-003", "F-004", "F-005", "F-006", "F-007", "F-008", "F-009", "F-010", "F-011", "F-012", "F-013", "F-014", "F-015", "F-016", "F-017", "F-018", "F-019", "F-020", "F-021", "F-022", "F-023"],
+  "timestamp_utc": "2026-08-01T11:31:25.5043030Z"
+}

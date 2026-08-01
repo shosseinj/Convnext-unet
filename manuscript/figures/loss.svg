@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="950" height="220" viewBox="0 0 950 220">
+  <rect width="950" height="220" fill="white"/>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#333"/></marker></defs>
+  <g font-family="Arial" text-anchor="middle" fill="#111">
+    <rect x="25" y="75" width="150" height="65" rx="8" fill="#e8f0fe" stroke="#315a9b"/><text x="100" y="103" font-size="17">Logits and mask</text><text x="100" y="126" font-size="14">z, y</text>
+    <path d="M175 108 H235" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="235" y="30" width="165" height="50" rx="8" fill="#eaf4ea" stroke="#3c7a3c"/><text x="317" y="61" font-size="16">0.30 Dice loss</text>
+    <rect x="235" y="88" width="165" height="50" rx="8" fill="#fff4df" stroke="#9a6b16"/><text x="317" y="119" font-size="16">0.30 smoothed BCE</text>
+    <rect x="235" y="146" width="165" height="50" rx="8" fill="#f4eafa" stroke="#76428a"/><text x="317" y="168" font-size="15">0.40 boundary BCE</text><text x="317" y="187" font-size="13">+ weighted IoU</text>
+    <path d="M400 55 H535 V108" fill="none" stroke="#333" stroke-width="2" marker-end="url(#a)"/><path d="M400 113 H535" stroke="#333" stroke-width="2" marker-end="url(#a)"/><path d="M400 171 H535 V108" fill="none" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="535" y="75" width="170" height="65" rx="8" fill="#e8f5f3" stroke="#277a70"/><text x="620" y="103" font-size="17">Segmentation loss</text><text x="620" y="126" font-size="14">shared by all variants</text>
+    <path d="M705 108 H770" stroke="#333" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="770" y="75" width="155" height="65" rx="8" fill="#f1f1f1" stroke="#555"/><text x="847" y="101" font-size="16">Deep supervision</text><text x="847" y="125" font-size="13">1, 0.1, 0.05, 0.02</text>
+  </g>
+</svg>

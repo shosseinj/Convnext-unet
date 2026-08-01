@@ -1,0 +1,8 @@
+family,independent_controls,reused_controls,variable
+MSC branch count,control_msc_branches_2; control_msc_branches_4; control_msc_branches_5,control_msc_branches_3,number of branches
+MSC dilation pattern,control_msc_dilations_1_2_3; control_msc_dilations_1_3_7,control_msc_dilations_1_3_5,dilation rates
+Detail width,control_detail_16; control_detail_64,control_detail_0; control_detail_32,detail channels
+Deep supervision,control_ds_1; control_ds_2,control_ds_0; control_ds_3,auxiliary heads
+Skip fusion,control_skip_attention_gate,control_skip_normal; control_skip_bsei,skip operator
+Detail fusion,control_gdf_addition; control_gdf_attention,control_gdf_concatenation; control_gdf_proposed,fusion operator
+Backbone,control_backbone_resnet34; control_backbone_efficientnet_b0,control_backbone_convnext_tiny,encoder backbone

@@ -1,0 +1,26 @@
+[
+  {
+    "epoch": 1,
+    "encoder_frozen": true,
+    "train_loss": 2.6595816612243652,
+    "selection_dice": 0.23349414393305779,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.24662876222282648,
+        "iou": 0.15268504479900002,
+        "soft_dice": 0.24440880212932825,
+        "predicted_positive_fraction": 0.9956568852066994,
+        "mae": 0.7742551863193512,
+        "samples": 8
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.2203595256432891,
+        "iou": 0.12723390059545636,
+        "soft_dice": 0.2207216713577509,
+        "predicted_positive_fraction": 0.9992211312055588,
+        "mae": 0.7988761886954308,
+        "samples": 8
+      }
+    }
+  }
+]

@@ -1,0 +1,52 @@
+project: Convnext-unet-main
+schema_version: 1
+canonical: true
+seeds: [42, 3407, 2026]
+reuse_duplicate_variants: true
+metrics: [dice, iou, precision, recall, specificity, pixel_accuracy, mae]
+input_size: [352, 352]
+incremental:
+  - {id: baseline, msc: false, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0}
+  - {id: baseline_msc, msc: true, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0}
+  - {id: baseline_msc_bsei, msc: true, skip: bsei, detail_channels: 0, gdf: false, deep_supervision_heads: 0}
+  - {id: baseline_msc_bsei_detail, msc: true, skip: bsei, detail_channels: 32, gdf: false, deep_supervision_heads: 0}
+  - {id: baseline_msc_bsei_detail_gdf, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 0}
+  - {id: full, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 3}
+controls:
+  - {id: control_msc_branches_2, msc: true, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0, msc_dilations: [1, 3]}
+  - {id: control_msc_branches_4, msc: true, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0, msc_dilations: [1, 3, 5, 7]}
+  - {id: control_msc_branches_5, msc: true, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0, msc_dilations: [1, 3, 5, 7, 9]}
+  - {id: control_msc_dilations_1_2_3, msc: true, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0, msc_dilations: [1, 2, 3]}
+  - {id: control_msc_dilations_1_3_7, msc: true, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0, msc_dilations: [1, 3, 7]}
+  - {id: control_detail_16, msc: true, skip: bsei, detail_channels: 16, gdf: false, deep_supervision_heads: 0}
+  - {id: control_detail_64, msc: true, skip: bsei, detail_channels: 64, gdf: false, deep_supervision_heads: 0}
+  - {id: control_ds_1, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 1}
+  - {id: control_ds_2, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 2}
+  - {id: control_skip_attention_gate, msc: true, skip: attention_gate, detail_channels: 0, gdf: false, deep_supervision_heads: 0}
+  - {id: control_gdf_addition, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 0, gdf_mode: addition}
+  - {id: control_gdf_attention, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 0, gdf_mode: attention_fusion}
+  - {id: control_backbone_resnet34, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 3, backbone: resnet34}
+  - {id: control_backbone_efficientnet_b0, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 3, backbone: efficientnet_b0}
+control_reuse:
+  control_msc_branches_3: baseline_msc
+  control_msc_dilations_1_3_5: baseline_msc
+  control_detail_0: baseline_msc_bsei
+  control_detail_32: baseline_msc_bsei_detail
+  control_ds_0: baseline_msc_bsei_detail_gdf
+  control_ds_3: full
+  control_skip_normal: baseline_msc
+  control_skip_bsei: baseline_msc_bsei
+  control_gdf_proposed: baseline_msc_bsei_detail_gdf
+  control_gdf_concatenation: baseline_msc_bsei_detail
+  control_backbone_convnext_tiny: full
+special:
+  backbones: [resnet34, efficientnet, convnext_tiny]
+  skip_modes: [normal, attention_gate, bsei]
+  gdf_modes: [addition, concatenation, attention_fusion, gdf]
+  msc_branch_counts: [2, 3, 4, 5]
+  msc_dilation_sets: [[1, 2, 3], [1, 3, 5], [1, 3, 7]]
+  detail_channels: [0, 16, 32, 64]
+  deep_supervision_heads: [0, 1, 2, 3]
+size_bins:
+  small_max_area_ratio: 0.05
+  medium_max_area_ratio: 0.20

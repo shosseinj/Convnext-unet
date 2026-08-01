@@ -1,0 +1,10 @@
+item,decision,rationale,evidence_or_owner
+BSEI channel mapping,report,Verified by implementation and tensor inspection,models/convnext_pretrain.py; manuscript/tables/bsei.csv
+Parameters and GFLOPs,report,Passed 352x352 architecture gate,reports/architecture_gate.json
+Per-seed values and sample SD,report,Prespecified three-seed protocol,configs/training_protocol.yaml
+95% confidence interval,report,Two-sided Student t interval with df=2,tools/aggregate_official.py
+S-measure,omit,Not implemented in validated evaluator,research_pipeline/evaluation.py
+Latency FPS and peak memory,omit,No reproducible benchmark evidence,owner: future benchmark
+Patient-level leakage claim,omit,Patient/procedure/video identifiers unavailable,reports/repository_audit.md
+Code archive URL,pending,External publication decision required,owner: user
+Author contributions,pending,Author roles cannot be inferred,owner: authors

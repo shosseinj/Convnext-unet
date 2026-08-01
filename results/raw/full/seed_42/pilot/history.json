@@ -1,0 +1,290 @@
+[
+  {
+    "epoch": 1,
+    "encoder_frozen": true,
+    "train_loss": 1.4907415437698364,
+    "selection_dice": 0.011808157225975939,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.022242636204464362,
+        "iou": 0.011299306735454593,
+        "soft_dice": 0.15339108834043144,
+        "predicted_positive_fraction": 0.03362030131742358,
+        "mae": 0.3000265981256962,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.001373678247487518,
+        "iou": 0.0006880820751135734,
+        "soft_dice": 0.11001533158724347,
+        "predicted_positive_fraction": 0.014377024820855549,
+        "mae": 0.2569839490517493,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 2,
+    "encoder_frozen": true,
+    "train_loss": 1.2665206718444824,
+    "selection_dice": 0.003557150188450666,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.005183481897911406,
+        "iou": 0.002610058470054355,
+        "soft_dice": 0.17083910702727734,
+        "predicted_positive_fraction": 0.01060328922700137,
+        "mae": 0.27628911152482033,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.0019308184789899256,
+        "iou": 0.0009684579389642984,
+        "soft_dice": 0.14865777644539072,
+        "predicted_positive_fraction": 0.0030463229519345106,
+        "mae": 0.2265738263245552,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 3,
+    "encoder_frozen": true,
+    "train_loss": 1.2105399227142335,
+    "selection_dice": 0.1378494120867277,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.0850609042774886,
+        "iou": 0.04789755261852406,
+        "soft_dice": 0.21749482210725546,
+        "predicted_positive_fraction": 0.032272564633749425,
+        "mae": 0.26813067227602005,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.19063791989596682,
+        "iou": 0.12516953262844077,
+        "soft_dice": 0.20364492780138407,
+        "predicted_positive_fraction": 0.1012502088485616,
+        "mae": 0.22627761960029602,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 4,
+    "encoder_frozen": true,
+    "train_loss": 1.1707193565368652,
+    "selection_dice": 0.20973756542934419,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.1936240140872542,
+        "iou": 0.11980105552764143,
+        "soft_dice": 0.25026836808770897,
+        "predicted_positive_fraction": 0.08142012844793499,
+        "mae": 0.2864569301903248,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.2258511167714342,
+        "iou": 0.151348994754728,
+        "soft_dice": 0.21750340097013018,
+        "predicted_positive_fraction": 0.13796788995199266,
+        "mae": 0.2353659707211679,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 5,
+    "encoder_frozen": true,
+    "train_loss": 1.1197687482833862,
+    "selection_dice": 0.042719797473020606,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.07888018360623392,
+        "iou": 0.04330451533169253,
+        "soft_dice": 0.23040958917699755,
+        "predicted_positive_fraction": 0.022344152628211305,
+        "mae": 0.2413749548792839,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.006559411339807294,
+        "iou": 0.0033278548421109126,
+        "soft_dice": 0.1787335598360627,
+        "predicted_positive_fraction": 0.0021970702857229737,
+        "mae": 0.1675928572733556,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 6,
+    "encoder_frozen": true,
+    "train_loss": 1.1307369709014892,
+    "selection_dice": 0.10051038828383166,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.1938743967114715,
+        "iou": 0.1197849169242545,
+        "soft_dice": 0.2592428110260516,
+        "predicted_positive_fraction": 0.07429033481654188,
+        "mae": 0.24997894905507564,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.0071463798561918306,
+        "iou": 0.0036372255529004767,
+        "soft_dice": 0.18391119259139221,
+        "predicted_positive_fraction": 0.002768272087186849,
+        "mae": 0.16801287966870493,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 7,
+    "encoder_frozen": true,
+    "train_loss": 1.0933290028572082,
+    "selection_dice": 0.26763745777820136,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.3435396822041366,
+        "iou": 0.23640769219433422,
+        "soft_dice": 0.29417789275292305,
+        "predicted_positive_fraction": 0.2072792553214822,
+        "mae": 0.29119393214583394,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.19173523335226608,
+        "iou": 0.12579512168732407,
+        "soft_dice": 0.21813100113743736,
+        "predicted_positive_fraction": 0.10167040947764631,
+        "mae": 0.2136424508306288,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 8,
+    "encoder_frozen": true,
+    "train_loss": 1.0883437967300416,
+    "selection_dice": 0.30438375369559284,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.37629046909045427,
+        "iou": 0.26344196969876066,
+        "soft_dice": 0.3063558842567727,
+        "predicted_positive_fraction": 0.26755478836828844,
+        "mae": 0.30992441475391386,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.23247703830073138,
+        "iou": 0.15686152705212966,
+        "soft_dice": 0.22598952884154935,
+        "predicted_positive_fraction": 0.14266507500301925,
+        "mae": 0.22430974893992947,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 9,
+    "encoder_frozen": true,
+    "train_loss": 1.0741159105300904,
+    "selection_dice": 0.2330098965085645,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.3538137443282176,
+        "iou": 0.24585894867719615,
+        "soft_dice": 0.2951420194050297,
+        "predicted_positive_fraction": 0.2285930946440203,
+        "mae": 0.29745933920145035,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.11220604868891139,
+        "iou": 0.06705068482551724,
+        "soft_dice": 0.20704772578732622,
+        "predicted_positive_fraction": 0.04119487249972149,
+        "mae": 0.20588484478573646,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 10,
+    "encoder_frozen": true,
+    "train_loss": 1.0657341909408569,
+    "selection_dice": 0.11053302606355564,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.21639134714088867,
+        "iou": 0.13690200660043048,
+        "soft_dice": 0.26997146822046486,
+        "predicted_positive_fraction": 0.08565840928922626,
+        "mae": 0.2564102203398943,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.004674704986222599,
+        "iou": 0.002372224488827933,
+        "soft_dice": 0.19078998000270897,
+        "predicted_positive_fraction": 0.002070932028243166,
+        "mae": 0.17415721978872054,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 11,
+    "encoder_frozen": false,
+    "train_loss": 1.062351450920105,
+    "selection_dice": 0.3124459124510852,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.3747006793669425,
+        "iou": 0.26338617789326235,
+        "soft_dice": 0.30943212304264306,
+        "predicted_positive_fraction": 0.2675431674887659,
+        "mae": 0.30366622120141984,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.250191145535228,
+        "iou": 0.1695037040560912,
+        "soft_dice": 0.23543127151506563,
+        "predicted_positive_fraction": 0.16512835521491304,
+        "mae": 0.22327521707742445,
+        "samples": 62
+      }
+    }
+  },
+  {
+    "epoch": 12,
+    "encoder_frozen": false,
+    "train_loss": 1.045821943283081,
+    "selection_dice": 0.16974598561908352,
+    "validation": {
+      "Kvasir-SEG": {
+        "dice": 0.29281290981540226,
+        "iou": 0.19811571327518324,
+        "soft_dice": 0.2814003232680261,
+        "predicted_positive_fraction": 0.14115919817239045,
+        "mae": 0.2671135072410107,
+        "samples": 100
+      },
+      "CVC-ClinicDB": {
+        "dice": 0.04667906142276479,
+        "iou": 0.025500314895438234,
+        "soft_dice": 0.2045359073146697,
+        "predicted_positive_fraction": 0.009926128647777895,
+        "mae": 0.18571440286694035,
+        "samples": 62
+      }
+    }
+  }
+]

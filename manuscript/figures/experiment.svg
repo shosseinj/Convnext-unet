@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="190" viewBox="0 0 1000 190">
+  <rect width="1000" height="190" fill="white"/>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#333"/></marker></defs>
+  <g font-family="Arial" text-anchor="middle" fill="#111">
+    <rect x="25" y="55" width="200" height="70" rx="8" fill="#e8f0fe" stroke="#315a9b"/>
+    <text x="125" y="84" font-size="17">Fixed train/validation</text><text x="125" y="108" font-size="14">three persisted seed splits</text>
+    <path d="M225 90 H300" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="300" y="55" width="200" height="70" rx="8" fill="#eaf4ea" stroke="#3c7a3c"/>
+    <text x="400" y="84" font-size="17">Validation selection</text><text x="400" y="108" font-size="14">equal dataset-level Dice mean</text>
+    <path d="M500 90 H575" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="575" y="55" width="180" height="70" rx="8" fill="#fff4df" stroke="#9a6b16"/>
+    <text x="665" y="84" font-size="17">Freeze checkpoint</text><text x="665" y="108" font-size="14">no test-set tuning</text>
+    <path d="M755 90 H830" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="830" y="55" width="145" height="70" rx="8" fill="#f4eafa" stroke="#76428a"/>
+    <text x="902" y="84" font-size="17">Final tests</text><text x="902" y="108" font-size="14">report only</text>
+  </g>
+</svg>

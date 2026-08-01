@@ -1,0 +1,52 @@
+{
+  "source": "C:/Users/jafari.h/Downloads/Telegram Desktop/hossein_paper_revised.docx",
+  "source_sha256": "515c8d5c2d30e70206242bf84aa418d134955992b307246beb3011dce80c3b24",
+  "inspection_mode": "read-only OOXML",
+  "body_paragraph_count": 329,
+  "global_replacements": [
+    {"find": "Learned Local-Response Skip Enhancement (LRS-E)", "replace": "BSEI"},
+    {"find": "Learned Local-Response Skip Enhancement", "replace": "BSEI"},
+    {"find": "LRS-E", "replace": "BSEI"},
+    {"find": "LRSE", "replace": "BSEI"}
+  ],
+  "structured_updates": [
+    {
+      "kind": "table_cell_patch",
+      "table_index": 1,
+      "anchor_after_paragraph": 50,
+      "evidence": "manuscript/tables/bsei.csv",
+      "cells": [
+        {"row": 7, "column": 3, "expected": "LRS-E output", "text": "BSEI output"},
+        {"row": 8, "column": 3, "expected": "LRS-E output", "text": "BSEI output"},
+        {"row": 9, "column": 3, "expected": "LRS-E output", "text": "BSEI output"},
+        {"row": 10, "column": 1, "expected": "XX", "text": "96"}
+      ]
+    }
+  ],
+  "targets": [
+    {"paragraph": 0, "action": "replace", "status": "READY_FOR_WORD", "replacement_text": "A ConvNeXt-Tiny U-Net with Multi-Scale Context, BSEI, and Gated Detail Fusion for Colorectal Polyp Segmentation", "evidence": ["models/convnext_pretrain.py", "manuscript/sections/bsei.md"]},
+    {"paragraph": 1, "action": "replace", "status": "USER_REQUIRED", "required": "author names"},
+    {"paragraph": 2, "action": "replace", "status": "USER_REQUIRED", "required": "author affiliations"},
+    {"paragraph": 3, "action": "replace", "status": "USER_REQUIRED", "required": "corresponding-author email"},
+    {"paragraph": 5, "action": "replace", "status": "BLOCKED_BY_EXPERIMENT", "required": "validated official aggregate; BSEI terminology and audited complexity are ready"},
+    {"paragraph": 50, "action": "replace", "status": "READY_FOR_WORD", "replacement_text": "Table 2. Audited tensor dimensions in the proposed network at an input size of H by W.", "evidence": ["manuscript/tables/bsei.csv", "reports/architecture_inventory.json"], "note": "The adjacent table is updated through structured_updates rather than inserted into this caption paragraph."},
+    {"paragraph": 104, "action": "replace", "status": "READY_FOR_WORD", "replacement_source": "manuscript/sections/bsei.md", "replacement_mode": "markdown_body", "note": "Use verified channel-wise BSEI response, padding, and output channels."},
+    {"paragraph": 117, "action": "replace", "status": "READY_FOR_WORD", "replacement_text": "The final decoder width is 96 channels. The notation separates the decoder block from the upsampling operation so that the mathematical description and implementation use the same tensor path.", "evidence": ["models/convnext_pretrain.py", "reports/architecture_inventory.json"]},
+    {"paragraph": 144, "action": "replace", "status": "READY_FOR_WORD", "replacement_source": "manuscript/sections/loss.md", "replacement_mode": "markdown_body"},
+    {"paragraph": 163, "action": "delete", "status": "READY_FOR_WORD", "reason": "No reproducible latency benchmark."},
+    {"paragraph": 164, "action": "delete", "status": "READY_FOR_WORD", "reason": "No reproducible FPS benchmark."},
+    {"paragraph": 165, "action": "delete", "status": "READY_FOR_WORD", "reason": "No reproducible peak-memory benchmark."},
+    {"paragraph": 166, "action": "replace", "status": "READY_FOR_WORD", "replacement_source": "manuscript/sections/complexity.md", "replacement_mode": "markdown_body"},
+    {"paragraph": 178, "action": "replace", "status": "READY_FOR_WORD", "replacement_source": "manuscript/sections/limitations.md", "replacement_mode": "markdown_body", "note": "State image-level split limitation; do not claim patient/video-level separation or a fabricated removal count."},
+    {"paragraph": 193, "action": "delete", "status": "READY_FOR_WORD", "reason": "S-measure is not implemented in the validated evaluator."},
+    {"paragraph": 229, "action": "replace", "status": "READY_FOR_WORD", "replacement_text": "Experiments use three prespecified random seeds (42, 3407, and 2026). We report per-seed values, the sample standard deviation, and a two-sided 95% Student-t interval with two degrees of freedom. Comparisons are interpreted descriptively unless a separately prespecified validated significance test is reported.", "evidence": ["configs/training_protocol.yaml", "tools/aggregate_official.py"]},
+    {"paragraph": 234, "action": "replace", "status": "BLOCKED_BY_EXPERIMENT", "required": "validated official aggregate"},
+    {"paragraph": 236, "action": "replace", "status": "BLOCKED_BY_EXPERIMENT", "required": "validated official aggregate"},
+    {"paragraph": 243, "action": "replace", "status": "BLOCKED_BY_EXPERIMENT", "required": "18 validated incremental runs"},
+    {"paragraph": 244, "action": "replace", "status": "BLOCKED_BY_EXPERIMENT", "required": "42 validated independent control runs plus reuse mapping"},
+    {"paragraph": 245, "action": "replace", "status": "BLOCKED_BY_EXPERIMENT", "required": "validated aggregate and uncertainty"},
+    {"paragraph": 254, "action": "replace", "status": "BLOCKED_BY_EVALUATION", "required": "validated size-stratified official evaluation and qualitative protocol"},
+    {"paragraph": 279, "action": "replace", "status": "USER_REQUIRED", "required": "code/archive URL and release conditions"},
+    {"paragraph": 285, "action": "replace", "status": "USER_REQUIRED", "required": "author-provided contribution roles"}
+  ]
+}

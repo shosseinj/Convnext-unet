@@ -1,0 +1,5 @@
+### Special-control protocol
+
+The cumulative six-configuration experiment is complemented by controlled mechanism-isolation experiments. All controls retain the fixed optimization, data-splitting, checkpoint-selection, and evaluation protocol. The independent controls vary one specified architectural choice: the encoder backbone; the skip-fusion operator, including BSEI; the detail-fusion operator; the number or dilation pattern of multi-scale context branches; the detail-branch width; or the number of deep-supervision heads. Each independent control is evaluated with seeds 42, 3407, and 2026. Configurations that are computation-identical to a cumulative configuration are reused rather than retrained, and their provenance must be reported explicitly. External test sets are not used for checkpoint selection or hyperparameter tuning.
+
+No performance statement is authorized from this protocol description. Numerical tables, uncertainty estimates, comparisons, and conclusions remain pending until every required official run passes artifact and reproducibility validation.

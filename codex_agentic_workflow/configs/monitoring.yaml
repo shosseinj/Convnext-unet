@@ -1,0 +1,14 @@
+workflow: bsei_convnext_article_completion
+article_file: hossein_paper_revised.docx
+module_name: BSEI
+excluded_components: [Video QA Tester]
+state_file: .agentic/state.json
+monitoring_file: MONITORING.md
+canonical_ablation_matrix: configs/ablation_matrix.yaml
+retry:
+  default_max_attempts: 3
+  repeated_root_cause_limit: 2
+  on_exhaustion: BLOCKED
+  preserve_traceback: true
+stages: [AUDIT, PLAN, IMPLEMENT, TEST, PILOT, EXPERIMENT, VALIDATE, AGGREGATE, WORD_UPDATE, REVIEW, DONE]
+required_word_artifacts: [section_text, table_csv, table_latex, figure_file, caption, insertion_location, evidence_manifest]

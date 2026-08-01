@@ -1,0 +1,5 @@
+item,verified_value,evidence,status
+Body paragraphs,329,reports/manuscript_inventory.md,verified structurally
+Tables,10,reports/manuscript_inventory.md,verified structurally
+Embedded figures,5,reports/manuscript_inventory.md,verified structurally
+Placeholder paragraphs,21,reports/manuscript_placeholders.csv,open

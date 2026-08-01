@@ -9,3 +9,5 @@
 7. State the exact threshold policy and whether TTA was used.
 8. Cite every external GitHub implementation and respect its license.
 9. Replace placeholders only after the Reviewer QA Gate passes.
+10. Use `BSEI` as the official module name throughout the manuscript and remove legacy aliases from the final text.
+11. Treat the supplied Word draft's provisional/source-audit tables as audit artifacts until they are traced to a verified checkpoint and split.

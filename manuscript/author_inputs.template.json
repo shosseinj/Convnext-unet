@@ -1,0 +1,28 @@
+{
+  "authors": [
+    {
+      "name": "",
+      "affiliation_ids": []
+    }
+  ],
+  "affiliations": [
+    {
+      "id": "",
+      "text": ""
+    }
+  ],
+  "corresponding_author": {
+    "name": "",
+    "email": ""
+  },
+  "code_availability": {
+    "url": "",
+    "release_conditions": ""
+  },
+  "credit_roles": [
+    {
+      "author": "",
+      "roles": []
+    }
+  ]
+}

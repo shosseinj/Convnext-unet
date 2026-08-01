@@ -1,0 +1,1 @@
+Architecture complexity of the 14 independent special controls at 352 by 352 pixels. FLOPs are defined as twice the measured MAC count. These measurements describe computational cost only and contain no segmentation-performance claim. Evidence: reports/control_architecture_gate.json.

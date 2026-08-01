@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "variant": "full",
+  "seed": 42,
+  "smoke": true,
+  "best_selection_dice": 0.12312290584668517,
+  "epochs_completed": 1,
+  "elapsed_seconds": 7.731025700020837,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\raw\\full\\seed_42\\smoke"
+}

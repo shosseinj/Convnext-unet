@@ -1,8 +1,10 @@
-# Agentic Workflow — ConvNeXt-UNet Polyp Segmentation
+# Agentic Workflow V2 — BSEI-ConvNeXt-UNet Article Completion
 
 ## نقش Codex
 
-تو مدیر یک workflow پژوهشی reproducible هستی. پروژه `Convnext-unet-main` را از روی کد، داده و نتایج واقعی جلو ببر. نقش‌های منطقی زیر را به‌ترتیب اجرا کن:
+تو مدیر یک workflow پژوهشی reproducible و مقاله‌محور هستی. پروژه `Convnext-unet-main` و فایل Word `hossein_paper_revised.docx` را از روی کد، داده و نتایج واقعی جلو ببر. هدف نهایی تکمیل implementation و مقاله است.
+
+نقش‌های منطقی:
 
 1. Research Planner
 2. Repository Auditor
@@ -13,29 +15,35 @@
 7. Manuscript Engineer
 8. Reviewer QA Engineer
 
-در محیطی که agentهای موازی در دسترس نیستند، این نقش‌ها را به‌صورت sequential اجرا کن و برای هر نقش artifact مشخص بساز.
+`Video QA Tester` وجود ندارد و نباید ساخته یا اجرا شود.
 
-## اصل اول: audit قبل از implementation
+نام رسمی ماژول در کل workflow، کد، شکل‌ها، جدول‌ها و مقاله `BSEI` است. نام‌های قدیمی را audit کن و فقط پس از تطبیق implementation با BSEI هماهنگ کن؛ equations و channel counts را کورکورانه replace نکن.
+
+## مرحله ۱ — Audit
 
 قبل از تغییر کد:
 
-- ساختار repository و Git status را بررسی کن.
+- ساختار repository، Git status، environment و dependencies را بررسی کن.
 - مدل، train loop، evaluation، preprocessing، checkpoint loading و logها را پیدا کن.
-- تفاوت کد فعلی با `ABLATION_TRAINING_PROTOCOL.md` را گزارش کن.
-- مشخص کن `LRSE` همان `BSEI` است یا ماژول دیگری است؛ اگر مبهم بود، توقف کن و سؤال بپرس.
-- مسیر و موجودبودن datasetها، pretrained weights و checkpointها را بررسی کن.
+- تفاوت کد با `ABLATION_TRAINING_PROTOCOL.md` را گزارش کن.
+- فایل Word را inventory کن: sections، tables، figures، placeholders، `XX` و `TBD`.
+- موجودبودن datasetها، pretrained weights و checkpointها را بررسی کن.
 - هیچ refactor نامرتبطی انجام نده.
 
-خروجی اجباری:
+خروجی:
 
 ```text
 reports/repository_audit.md
 reports/architecture_inventory.json
+reports/manuscript_inventory.md
+reports/manuscript_placeholders.csv
 ```
 
-## اصل دوم: طراحی پژوهش
+نسخه فعلی مقاله حدود 913 پاراگراف، 10 جدول و 5 تصویر دارد؛ این اعداد را با نسخه واقعی verify کن.
 
-بعد از audit، این فایل‌ها را تولید کن:
+## مرحله ۲ — Research Specification
+
+تولید کن:
 
 ```text
 docs/research_spec.md
@@ -43,18 +51,17 @@ configs/training_protocol.yaml
 configs/ablation_matrix.yaml
 ```
 
-در design باید این موارد قطعی باشند:
+موارد قطعی:
 
 - split ثابت train/validation/test
 - seedهای `42`, `3407`, `2026`
-- input size برابر 352×352
+- input برابر 352×352
 - checkpoint selection با میانگین validation Dice روی Kvasir و ClinicDB
-- عدم استفاده از test datasets برای انتخاب checkpoint یا threshold
-- پروتکل یکسان برای تمام variantها
+- عدم استفاده از test برای انتخاب checkpoint یا threshold
+- protocol یکسان برای تمام variantها
+- مقاله Word منبع اصلی متن است؛ هر تغییر در `manuscript/word_update_queue.md` ثبت شود.
 
 ## پروتکل آموزش پیشنهادی
-
-مگر اینکه کاربر یا داده‌ی پروژه مقدار دیگری را تأیید کند:
 
 ```text
 Input: 352×352
@@ -70,138 +77,105 @@ Seeds: 42, 3407, 2026
 TTA during ablation: disabled
 ```
 
-## معماری variantها
+## معماری و آزمایش‌ها
 
-Baseline باید ConvNeXt-Tiny به‌همراه lightweight U-Net decoder و normal skip باشد و MSC، LRSE/BSEI، Detail Branch، GDF و DS نداشته باشد.
+Baseline باید ConvNeXt-Tiny، lightweight U-Net decoder و normal skip باشد و MSC، BSEI، Detail Branch، GDF و DS نداشته باشد.
 
 ترتیب incremental:
 
 ```text
-Baseline
-Baseline + MSC
-Baseline + MSC + LRSE/BSEI
-Baseline + MSC + LRSE/BSEI + Detail Branch
-Baseline + MSC + LRSE/BSEI + Detail Branch + GDF
-Full model + Deep Supervision
+Baseline → +MSC → +BSEI → +Detail Branch → +GDF → +Deep Supervision
 ```
 
-Ablationهای جداگانه:
+کنترل‌ها:
 
 - Backbone: ResNet34، EfficientNet و ConvNeXt-Tiny
-- Skip: normal، attention gate و proposed LRSE/BSEI
+- Skip: normal، attention gate و proposed BSEI
 - GDF: addition، concatenation، attention fusion و proposed GDF
-- MSC branch count: 2، 3، 4 و 5 شاخه
+- MSC branch count: 2، 3، 4 و 5
 - MSC dilation sets: `(1,2,3)`, `(1,3,5)`, `(1,3,7)`
-- Detail channels: بدون detail، 16، 32 و 64
-- Deep supervision: صفر، یک، دو و سه auxiliary head
+- detail channels: بدون detail، 16، 32 و 64
+- deep supervision: صفر، یک، دو و سه auxiliary head
 
-حالت proposed و حالت‌های تکراری را دوباره اجرا نکن؛ در ماتریس با یک شناسه مشترک reuse کن.
+## حلقه خودکار و retry
 
-## Gateهای اجباری
+State machine:
+
+```text
+AUDIT → PLAN → IMPLEMENT → TEST → PILOT → EXPERIMENT → VALIDATE → AGGREGATE → WORD_UPDATE → REVIEW → DONE
+```
+
+در خطا:
+
+```text
+TEST/VALIDATE/WORD_UPDATE failure
+→ DIAGNOSE → PATCH → targeted retest → regression test
+```
+
+حداکثر retry برابر 3 است. اگر یک root cause دو بار تکرار شد، workflow باید `BLOCKED` شود و traceback، command، مسیر فایل و پیشنهاد اصلاح را در `MONITORING.md` و `.agentic/state.json` ثبت کند. نتیجه جعلی نساز و بی‌نهایت retry نکن.
+
+## Gateها
 
 ### Gate 1 — Architecture
 
 - همه variantها instantiate می‌شوند.
-- ابعاد output درست است.
-- checkpoint load با خطای واضح انجام می‌شود.
-- تعداد پارامتر و FLOPs محاسبه می‌شود.
+- tensor shape، output و checkpoint load درست است.
+- Params و FLOPs محاسبه می‌شود.
 
 ### Gate 2 — Smoke test
 
-- حداقل یک forward و backward موفق است.
-- loss finite است.
+- forward، backward و یک epoch کوتاه موفق است.
+- loss/gradient finite است.
 - checkpoint save/load موفق است.
-- یک epoch کوتاه بدون crash اجرا می‌شود.
 
 ### Gate 3 — Pilot
 
-- تمام variantها ابتدا با seed 42 اجرا می‌شوند.
-- هیچ نتیجه‌ای برای مقاله قبل از بررسی pilot استفاده نمی‌شود.
+- همه variantها ابتدا با seed 42 اجرا می‌شوند.
+- نتیجه pilot قبل از full run بررسی می‌شود.
 
 ### Gate 4 — Full experiments
 
 - هر variant با هر سه seed اجرا شده است.
-- metadata، log، checkpoint و نتیجه خام حفظ شده‌اند.
-- validation و test از هم جدا هستند.
+- raw log، checkpoint و metadata حفظ شده‌اند.
 
 ### Gate 5 — Statistics
 
-- میانگین هر seed ابتدا محاسبه می‌شود.
-- سپس mean و sample standard deviation بین seedها محاسبه می‌شود.
-- جدول‌ها به شکل `mean ± std` تولید می‌شوند.
+- میانگین هر seed محاسبه شده است.
+- mean±std بین seedها محاسبه شده است.
+- confidence interval/effect size در صورت نیاز ثبت شده است.
 
-### Gate 6 — Manuscript
+### Gate 6 — Word update
 
-- تمام عددهای متن از JSON/CSV تأییدشده می‌آیند.
-- هیچ `[TBD]`، `XX%` یا ادعای بدون evidence باقی نمی‌ماند.
-- متن با جدول‌ها و شکل‌ها تطابق دارد.
+- متن نهایی، محل درج، جدول، شکل، caption و evidence manifest آماده است.
+- قبل از replace مقاله، backup ساخته و DOCX render شده است.
 
-## استفاده از GitHub
+### Gate 7 — Reviewer QA
 
-برای هر کد خارجی این مراحل را انجام بده:
+- متن، جدول و شکل سازگارند.
+- هیچ `XX`، `TBD` یا claim بدون evidence باقی نمانده است.
+- reference، DOI و citation audit انجام شده است.
 
-1. repository و commit/release دقیق را ثبت کن.
-2. license را بررسی کن.
-3. سازگاری نسخه Python/PyTorch/CUDA را بررسی کن.
-4. کد را در صورت امکان به‌عنوان dependency نگه دار؛ copy کردن را محدود کن.
-5. test یا benchmark قبل و بعد از integration اجرا کن.
-6. citation و license را در `templates/github_dependency_record.md` ثبت کن.
+## قرارداد Word-ready
 
-کد خارجی نباید بدون تأیید کاربر جایگزین بخش اصلی معماری شود.
-
-## نتایج و مقاله
-
-ساختار خروجی را حفظ کن:
+هر مرحله باید طبق `templates/word_update_contract.md` این artifactها را تولید کند:
 
 ```text
-results/raw/
-results/aggregated/
-results/tables/
-results/figures/
-manuscript/sections/
-manuscript/tables/
-manuscript/figures/
-reports/
+manuscript/sections/<stage>.md
+manuscript/tables/<stage>.csv
+manuscript/tables/<stage>.tex
+manuscript/figures/<stage>.*
+manuscript/captions/<stage>.md
+manuscript/word_update_queue.md
 ```
 
-تحلیل اندازه پولیپ را با نسبت area mask به area تصویر انجام بده:
+اگر داده کافی نیست، عدد نساز؛ placeholder دقیق با owner و evidence موردنیاز ثبت کن.
 
-```text
-Small: < 5%
-Medium: 5% تا 20%
-Large: > 20%
-```
+## خروجی نهایی
 
-برای هر گروه تعداد نمونه، Dice mean±std و IoU mean±std گزارش کن.
-
-## قرارداد گزارش پیشرفت
-
-در پایان هر مرحله، Codex باید این موارد را بنویسد:
-
-```text
-Stage:
-Status: PASS | BLOCKED | NEEDS_REVIEW
-Files changed:
-Commands run:
-Evidence:
-Risks:
-Next gate:
-```
-
-در صورت BLOCKED شدن، حدس نزن و نتیجه بساز؛ blocker را با مسیر فایل و خطای دقیق گزارش کن.
-
-## قرارداد تحویل نهایی
-
-تحویل نهایی باید شامل این موارد باشد:
-
-- کد قابل اجرا
-- configهای تمام آزمایش‌ها
-- log و metadata
-- checkpointهای منتخب
+- کد و configهای reproducible
 - raw و aggregated results
-- CSV و LaTeX tableها
-- شکل‌های مقاله
-- متن اصلاح‌شده مقاله
-- گزارش reproducibility
-- گزارش license و citation کدهای GitHub
-- دستورهای دقیق اجرای مجدد
+- جدول‌های CSV و LaTeX
+- شکل معماری، ablation، size analysis و qualitative analysis
+- متن نهایی Word
+- گزارش reviewer و reproducibility
+- ثبت license و citation کدهای GitHub

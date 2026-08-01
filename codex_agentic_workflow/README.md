@@ -1,26 +1,28 @@
-# Agentic Workflow for ConvNeXt-UNet Polyp Segmentation
+# Agentic Workflow V2 — BSEI-ConvNeXt-UNet Article Completion
 
-این بسته برای استفاده در Codex آماده شده است. هدف آن مدیریت یک پروژه پژوهشی کامل از audit کد و تکمیل پیاده‌سازی تا اجرای ablation، تولید جدول و شکل، و تکمیل مقاله است.
+این پوشه جایگزین نسخه قبلی workflow است. هدف آن مدیریت خودکار و مرحله‌ای تکمیل implementation، اجرای آزمایش‌ها، تولید شکل/جدول و تکمیل فایل Word مقاله `hossein_paper_revised.docx` است.
 
 ## شروع سریع
 
-1. این پوشه را در ریشه repository با نام `codex_agentic_workflow/` کپی کنید.
-2. فایل `AGENTIC_WORKFLOW.md` را به Codex بدهید و صریحاً بگویید آن را به‌عنوان دستورالعمل پروژه اجرا کند.
-3. قبل از تغییر کد، مقدار LRSE/BSEI، مسیر دیتاست‌ها، وزن pretrained و checkpointها را مشخص کنید.
-4. Codex باید ابتدا `reports/repository_audit.md`، سپس `docs/research_spec.md` و بعد plan اجرایی را تولید کند.
+1. این پوشه را در ریشه repository با نام `codex_agentic_workflow/` کپی کنید و نسخه قبلی همین پوشه را جایگزین کنید.
+2. فایل `AGENTIC_WORKFLOW.md` را به Codex بدهید و بگویید آن را به‌عنوان دستورالعمل پروژه اجرا کند.
+3. فایل مقاله `hossein_paper_revised.docx` را در workspace قرار دهید.
+4. فایل `MONITORING.md` را برای مشاهده وضعیت کارها باز کنید؛ Codex باید آن را در پایان هر مرحله به‌روزرسانی کند.
 
-## قوانین غیرقابل‌مذاکره
+## قوانین اصلی
 
-- نتیجه، Dice یا عدد مقاله هرگز جعل، دست‌کاری یا برای صعودی‌کردن مصنوعی انتخاب نمی‌شود.
-- همه ablationها با protocol، split، loss، augmentation و seedهای یکسان اجرا می‌شوند.
-- هر عدد مقاله باید از فایل نتیجه‌ی تأییدشده استخراج شود.
+- نام رسمی ماژول فقط `BSEI` است؛ نام‌های قدیمی باید در audit شناسایی و با BSEI هماهنگ شوند.
+- Video QA Tester در این workflow وجود ندارد.
+- نتیجه یا عدد مقاله هرگز جعل یا برای صعودی‌کردن مصنوعی Dice انتخاب نمی‌شود.
+- هر عدد مقاله باید از evidence تأییدشده استخراج شود.
+- هر مرحله باید خروجی Word-ready شامل متن، جدول، شکل، caption و محل درج تولید کند.
 - کد GitHub فقط پس از بررسی license، commit و سازگاری وارد پروژه می‌شود.
-- تا عبور از Gate هر مرحله، مرحله بعد شروع نمی‌شود.
 
-فایل‌های اصلی:
+## فایل‌های اصلی
 
-- `AGENTIC_WORKFLOW.md`: دستورالعمل کامل برای Codex
+- `AGENTIC_WORKFLOW.md`: دستورالعمل کامل Codex
+- `MONITORING.md`: داشبورد کارهای انجام‌شده، باقیمانده و blockerها
+- `configs/monitoring.yaml`: state machine و retry policy
 - `configs/ablation_matrix.yaml`: ماتریس آزمایش‌ها
-- `templates/experiment_result_schema.json`: schema نتایج
-- `templates/github_dependency_record.md`: ثبت کدهای خارجی
-- `templates/manuscript_claim_rules.md`: قوانین تولید متن مقاله
+- `templates/word_update_contract.md`: قرارداد خروجی برای Word
+- `templates/stage_report.md`: قالب گزارش هر مرحله

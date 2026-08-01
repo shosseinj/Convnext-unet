@@ -1,0 +1,3 @@
+**Table X. Special-control experiment matrix.** Independent controls are trained with the three prespecified seeds under the fixed protocol. Computation-identical configurations are linked to their cumulative-run evidence and are not retrained. This table defines the experiment design only; it contains no performance results.
+
+**Figure X. Evidence flow for special controls.** The canonical matrix separates independent configurations from computation-identical reuse mappings. Independent controls become manuscript eligible only after three-seed training, run validation, fixed-checkpoint evaluation, and aggregation.

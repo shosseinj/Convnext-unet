@@ -1,0 +1,10 @@
+component,value,evidence
+Dice loss weight,0.30,configs/training_protocol.yaml
+BCE loss weight,0.30,configs/training_protocol.yaml
+Boundary loss weight,0.40,configs/training_protocol.yaml
+Boundary kappa,5.0,configs/training_protocol.yaml
+Label smoothing epsilon,0.02,configs/training_protocol.yaml
+Main prediction weight,1.0,configs/training_protocol.yaml
+Auxiliary head 1 weight,0.1,configs/training_protocol.yaml
+Auxiliary head 2 weight,0.05,configs/training_protocol.yaml
+Auxiliary head 3 weight,0.02,configs/training_protocol.yaml

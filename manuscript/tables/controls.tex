@@ -1,0 +1,13 @@
+\begin{tabular}{llll}
+\hline
+Family & Independent controls & Reused controls & Variable \\
+\hline
+MSC branches & 2, 4, 5 & 3 & Branch count \\
+MSC dilation & (1,2,3), (1,3,7) & (1,3,5) & Dilation rates \\
+Detail width & 16, 64 & 0, 32 & Detail channels \\
+Deep supervision & 1, 2 & 0, 3 & Auxiliary heads \\
+Skip fusion & Attention gate & Normal, BSEI & Skip operator \\
+Detail fusion & Addition, attention & Concatenation, GDF & Fusion operator \\
+Backbone & ResNet-34, EfficientNet-B0 & ConvNeXt-Tiny & Encoder \\
+\hline
+\end{tabular}

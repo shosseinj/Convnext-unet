@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from pathlib import Path
 try:
     from timm.models.layers import trunc_normal_, DropPath
 except ModuleNotFoundError:
@@ -301,6 +302,22 @@ class SimpleFusion(nn.Module):
         return self.block(x)
 
 
+class AttentionGateSkip(nn.Module):
+    """Spatial attention gate followed by matched decoder/skip fusion."""
+    def __init__(self, decoder_channels, skip_channels, out_channels, dropout_rate=0.1):
+        super().__init__()
+        hidden = max(1, out_channels // 2)
+        self.decoder_proj = nn.Conv2d(decoder_channels, hidden, 1, bias=False)
+        self.skip_proj = nn.Conv2d(skip_channels, hidden, 1, bias=False)
+        self.attention = nn.Sequential(nn.GELU(), nn.Conv2d(hidden, 1, 1), nn.Sigmoid())
+        self.fuse = SimpleFusion(decoder_channels + skip_channels, out_channels, dropout_rate)
+
+    def forward(self, decoder, skip):
+        decoder = resize_like(decoder, skip)
+        gate = self.attention(self.decoder_proj(decoder) + self.skip_proj(skip))
+        return self.fuse(torch.cat([decoder, skip * gate], dim=1))
+
+
 # ============================================================================
 # DECODER BLOCK (LayerNorm + GELU)
 # ============================================================================
@@ -345,8 +362,11 @@ class DetailBranch(nn.Module):
 
 
 class MultiScaleContext(nn.Module):
-    def __init__(self, dim, reduction=8, dropout_rate=0.1):
+    def __init__(self, dim, reduction=8, dropout_rate=0.1, dilations=(1, 3, 5)):
         super().__init__()
+        if not dilations or len(dilations) > 5 or any(value <= 0 for value in dilations):
+            raise ValueError("MSC dilations must contain 1..5 positive integers")
+        self.dilations = tuple(dilations)
         hidden = dim // reduction
 
         self.reduce = nn.Sequential(
@@ -370,7 +390,7 @@ class MultiScaleContext(nn.Module):
                     LayerNorm(hidden, eps=1e-6, data_format="channels_first"),
                     nn.GELU(),
                 )
-                for dilation in (1, 3, 5)
+                for dilation in self.dilations
             ]
         )
 
@@ -381,7 +401,7 @@ class MultiScaleContext(nn.Module):
         )
 
         self.project = nn.Sequential(
-            nn.Conv2d(hidden * 4, dim, 1, bias=False),
+            nn.Conv2d(hidden * (len(self.dilations) + 1), dim, 1, bias=False),
             LayerNorm(dim, eps=1e-6, data_format="channels_first"),
             nn.GELU(),
             nn.Dropout2d(dropout_rate),
@@ -440,6 +460,30 @@ class GatedDetailFusion(nn.Module):
         return self.fuse(torch.cat([decoder_feat, detail_feat], dim=1))
 
 
+class AdditionDetailFusion(nn.Module):
+    def __init__(self, decoder_ch, detail_ch, out_ch, dropout_rate=0.1):
+        super().__init__()
+        self.detail_proj = nn.Conv2d(detail_ch, decoder_ch, 1, bias=False)
+        self.refine = SimpleFusion(decoder_ch, out_ch, dropout_rate)
+
+    def forward(self, decoder_feat, detail_feat):
+        detail_feat = resize_like(detail_feat, decoder_feat)
+        return self.refine(decoder_feat + self.detail_proj(detail_feat))
+
+
+class AttentionDetailFusion(nn.Module):
+    def __init__(self, decoder_ch, detail_ch, out_ch, dropout_rate=0.1):
+        super().__init__()
+        self.detail_proj = nn.Conv2d(detail_ch, decoder_ch, 1, bias=False)
+        self.gate = nn.Sequential(nn.Conv2d(decoder_ch * 2, decoder_ch, 1), nn.Sigmoid())
+        self.refine = SimpleFusion(decoder_ch, out_ch, dropout_rate)
+
+    def forward(self, decoder_feat, detail_feat):
+        detail_feat = resize_like(self.detail_proj(detail_feat), decoder_feat)
+        gate = self.gate(torch.cat([decoder_feat, detail_feat], dim=1))
+        return self.refine(decoder_feat + gate * detail_feat)
+
+
 def resize_like(x, ref):
     if x.shape[-2:] != ref.shape[-2:]:
         x = F.interpolate(
@@ -449,18 +493,93 @@ def resize_like(x, ref):
             align_corners=False,
         )
     return x
+
+
+class TorchvisionFeatureEncoder(nn.Module):
+    """Four-scale ImageNet encoder backed by an explicit local weight file."""
+    def __init__(self, backbone, weights_path):
+        super().__init__()
+        from torchvision.models import efficientnet_b0, resnet34
+
+        if weights_path is None or not Path(weights_path).is_file():
+            raise FileNotFoundError(f"Required local pretrained weights missing for {backbone}: {weights_path}")
+        state = torch.load(weights_path, map_location="cpu", weights_only=True)
+        if backbone == "resnet34":
+            model = resnet34(weights=None)
+            model.load_state_dict(state, strict=True)
+            self.stem = nn.Sequential(model.conv1, model.bn1, model.relu, model.maxpool)
+            self.stages = nn.ModuleList([model.layer1, model.layer2, model.layer3, model.layer4])
+            self.channels = (64, 128, 256, 512)
+            self.kind = backbone
+        elif backbone == "efficientnet_b0":
+            model = efficientnet_b0(weights=None)
+            model.load_state_dict(state, strict=True)
+            self.features = model.features
+            self.channels = (24, 40, 112, 320)
+            self.kind = backbone
+        else:
+            raise ValueError(f"Unsupported torchvision backbone: {backbone}")
+
+    def forward(self, x):
+        if self.kind == "resnet34":
+            x = self.stem(x)
+            outputs = []
+            for stage in self.stages:
+                x = stage(x); outputs.append(x)
+            return tuple(outputs)
+        outputs = []
+        for index, block in enumerate(self.features):
+            x = block(x)
+            if index in {2, 3, 5, 7}:
+                outputs.append(x)
+        return tuple(outputs)
     
 class ConvNeXtUNet(nn.Module):
-    def __init__(self, weights_path=None, num_classes=1, encoder_depth=[3, 3, 9, 3], drop_path_rate=0.1, dropout_rate=0.1):
+    def __init__(self, weights_path=None, num_classes=1, encoder_depth=[3, 3, 9, 3],
+                 drop_path_rate=0.1, dropout_rate=0.1, enable_msc=True,
+                 skip_mode="normal", detail_channels=0, enable_gdf=False,
+                 deep_supervision_heads=0, msc_dilations=(1, 3, 5),
+                 detail_fusion_mode=None, backbone="convnext_tiny"):
         super(ConvNeXtUNet, self).__init__()
+        if skip_mode not in {"normal", "attention_gate", "bsei"}:
+            raise ValueError(f"Unsupported skip_mode: {skip_mode}")
+        if detail_channels < 0:
+            raise ValueError("detail_channels must be non-negative")
+        if enable_gdf and detail_channels == 0:
+            raise ValueError("GDF requires detail_channels > 0")
+        if detail_fusion_mode is None:
+            detail_fusion_mode = "gdf" if enable_gdf else ("concatenation" if detail_channels else "none")
+        if detail_fusion_mode not in {"none", "addition", "concatenation", "attention_fusion", "gdf"}:
+            raise ValueError(f"Unsupported detail_fusion_mode: {detail_fusion_mode}")
+        if detail_fusion_mode != "none" and detail_channels == 0:
+            raise ValueError("Detail fusion requires detail_channels > 0")
+        if deep_supervision_heads not in {0, 1, 2, 3}:
+            raise ValueError("deep_supervision_heads must be between 0 and 3")
+        if backbone not in {"resnet34", "efficientnet_b0", "convnext_tiny"}:
+            raise ValueError(f"Unsupported backbone: {backbone}")
+        self.variant_config = {
+            "enable_msc": bool(enable_msc),
+            "skip_mode": skip_mode,
+            "detail_channels": int(detail_channels),
+            "enable_gdf": bool(enable_gdf),
+            "deep_supervision_heads": int(deep_supervision_heads),
+            "msc_dilations": tuple(msc_dilations),
+            "detail_fusion_mode": detail_fusion_mode,
+            "backbone": backbone,
+        }
         
         # Encoder
-        self.encoder = ConvNeXtEncoder(
-            weights_path=weights_path,
-            depth=encoder_depth,
-            drop_path_rate=drop_path_rate, 
-            dropout_rate=dropout_rate
-        )
+        if backbone == "convnext_tiny":
+            self.encoder = ConvNeXtEncoder(
+                weights_path=weights_path,
+                depth=encoder_depth,
+                drop_path_rate=drop_path_rate,
+                dropout_rate=dropout_rate
+            )
+            encoder_channels = (96, 192, 384, 768)
+        else:
+            self.encoder = TorchvisionFeatureEncoder(backbone, weights_path)
+            encoder_channels = self.encoder.channels
         self.register_buffer(
             "encoder_mean",
             torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1),
@@ -472,25 +591,51 @@ class ConvNeXtUNet(nn.Module):
             persistent=False,
         )
         
-        dims = [96, 192, 384, 768]
+        dims = [96, 192, 384, encoder_channels[3]]
         
         self.bottleneck = LiteBottleneck(dims[3], hidden_dim=dims[1], dropout_rate=dropout_rate)
-        # Ablation +MSC: MultiScaleContext enabled
-        self.context = MultiScaleContext(dims[3], dropout_rate=dropout_rate)
+        self.context = (MultiScaleContext(dims[3], dropout_rate=dropout_rate,
+                                          dilations=msc_dilations)
+                        if enable_msc else nn.Identity())
         
         # Decoder (LayerNorm + GELU)
-        # Ablation +MSC: BSEI, DetailBranch, GatedDetailFusion, and deep supervision remain disabled
+        fusion = BSEI if skip_mode == "bsei" else SimpleFusion
         self.decoder4 = DecoderBlock(dims[3], dims[2], dropout_rate)
-        self.bsei4 = SimpleFusion(dims[2] + dims[2], dims[2], dropout_rate)
+        self.bsei4 = (AttentionGateSkip(dims[2], encoder_channels[2], dims[2], dropout_rate)
+                      if skip_mode == "attention_gate" else
+                      fusion(dims[2] + encoder_channels[2], dims[2], dropout_rate))
         
         self.decoder3 = DecoderBlock(dims[2], dims[1], dropout_rate)
-        self.bsei3 = SimpleFusion(dims[1] + dims[1], dims[1], dropout_rate)
+        self.bsei3 = (AttentionGateSkip(dims[1], encoder_channels[1], dims[1], dropout_rate)
+                      if skip_mode == "attention_gate" else
+                      fusion(dims[1] + encoder_channels[1], dims[1], dropout_rate))
         
         self.decoder2 = DecoderBlock(dims[1], dims[0], dropout_rate)
-        self.bsei2 = SimpleFusion(dims[0] + dims[0], dims[0], dropout_rate)
+        self.bsei2 = (AttentionGateSkip(dims[0], encoder_channels[0], dims[0], dropout_rate)
+                      if skip_mode == "attention_gate" else
+                      fusion(dims[0] + encoder_channels[0], dims[0], dropout_rate))
         
         self.decoder1 = DecoderBlock(dims[0], dims[0], dropout_rate)
-        self.bsei1 = SimpleFusion(dims[0], dims[0], dropout_rate)
+        self.bsei1 = (SimpleFusion(dims[0], dims[0], dropout_rate)
+                      if skip_mode == "attention_gate" else fusion(dims[0], dims[0], dropout_rate))
+
+        self.detail_branch = DetailBranch(detail_channels, dropout_rate) if detail_channels else None
+        if detail_fusion_mode == "gdf":
+            self.detail_fusion = GatedDetailFusion(dims[0], detail_channels, dims[0], dropout_rate)
+        elif detail_fusion_mode == "addition":
+            self.detail_fusion = AdditionDetailFusion(dims[0], detail_channels, dims[0], dropout_rate)
+        elif detail_fusion_mode == "attention_fusion":
+            self.detail_fusion = AttentionDetailFusion(dims[0], detail_channels, dims[0], dropout_rate)
+        elif detail_fusion_mode == "concatenation":
+            self.detail_fusion = SimpleFusion(dims[0] + detail_channels, dims[0], dropout_rate)
+        else:
+            self.detail_fusion = None
+
+        auxiliary_channels = (dims[0], dims[1], dims[2])
+        self.auxiliary_heads = nn.ModuleList(
+            [nn.Conv2d(auxiliary_channels[index], num_classes, 1)
+             for index in range(deep_supervision_heads)]
+        )
         
         self.final_refine = nn.Sequential(
             SeparableConv2d(96, 96, 3, padding=1, bias=False),
@@ -518,6 +663,7 @@ class ConvNeXtUNet(nn.Module):
                 nn.init.constant_(module.bias, 0)
     
     def forward(self, x):
+        original_input = x
         # Encoder
         encoder_x = (x - self.encoder_mean) / self.encoder_std
         f1, f2, f3, f4 = self.encoder(encoder_x)
@@ -529,25 +675,39 @@ class ConvNeXtUNet(nn.Module):
         # Decoder with skip connections
         d4 = self.decoder4(b)
         d4 = resize_like(d4, f3)
-        d4 = torch.cat([d4, f3], dim=1)
-        d4 = self.bsei4(d4)
+        d4 = (self.bsei4(d4, f3) if self.variant_config["skip_mode"] == "attention_gate"
+              else self.bsei4(torch.cat([d4, f3], dim=1)))
         
         d3 = self.decoder3(d4)
         d3 = resize_like(d3, f2)
-        d3 = torch.cat([d3, f2], dim=1)
-        d3 = self.bsei3(d3)
+        d3 = (self.bsei3(d3, f2) if self.variant_config["skip_mode"] == "attention_gate"
+              else self.bsei3(torch.cat([d3, f2], dim=1)))
         
         d2 = self.decoder2(d3)
         d2 = resize_like(d2, f1)
-        d2 = torch.cat([d2, f1], dim=1)
-        d2 = self.bsei2(d2)
+        d2 = (self.bsei2(d2, f1) if self.variant_config["skip_mode"] == "attention_gate"
+              else self.bsei2(torch.cat([d2, f1], dim=1)))
 
         d1 = self.decoder1(d2)
         d1 = self.bsei1(d1)
+        if self.detail_branch is not None:
+            detail = self.detail_branch(original_input)
+            if self.variant_config["detail_fusion_mode"] != "concatenation":
+                d1 = self.detail_fusion(d1, detail)
+            else:
+                detail = resize_like(detail, d1)
+                d1 = self.detail_fusion(torch.cat([d1, detail], dim=1))
         out_main = self.final_refine(d1)
         out_main = F.interpolate(out_main, size=x.shape[-2:], mode="bilinear", align_corners=False)
 
-        return out_main
+        if not self.auxiliary_heads:
+            return out_main
+        auxiliary_features = (d2, d3, d4)
+        auxiliary_outputs = [
+            F.interpolate(head(feature), size=x.shape[-2:], mode="bilinear", align_corners=False)
+            for head, feature in zip(self.auxiliary_heads, auxiliary_features)
+        ]
+        return (out_main, *auxiliary_outputs)
     
     def freeze_encoder(self):
         for param in self.encoder.parameters():

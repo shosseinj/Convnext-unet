@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "variant": "baseline_msc",
+  "seed": 42,
+  "run_mode": "pilot",
+  "best_selection_dice": 0.5033466496151842,
+  "epochs_completed": 12,
+  "elapsed_seconds": 78.01531409999006,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\raw\\baseline_msc\\seed_42\\pilot"
+}

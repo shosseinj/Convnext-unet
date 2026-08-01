@@ -14,7 +14,7 @@ This file is the protocol reminder for all ConvNeXtUNet polyp segmentation ablat
 ## Abbreviations
 
 - MSC: MultiScaleContext
-- BSEI: Boundary-aware Spatial Enhancement Integration
+- BSEI: official module name; no expanded form is used in this project
 - DB: DetailBranch
 - GDF: GatedDetailFusion
 - DS: Deep Supervision

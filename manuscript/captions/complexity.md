@@ -1,0 +1,1 @@
+Computational complexity of the six incremental BSEI-ConvNeXt-UNet variants at an input size of 352 by 352 pixels. FLOPs are reported using the explicit convention FLOPs = 2 x MACs. Values are architecture measurements and do not imply segmentation performance. Evidence: reports/architecture_gate.json.

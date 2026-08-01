@@ -1,0 +1,83 @@
+{
+  "status": "NEEDS_REVIEW",
+  "rows": [
+    {
+      "variant": "baseline",
+      "status": "PASS",
+      "epochs": 12,
+      "best_epoch": 11,
+      "selection_dice": 0.07879676836477066,
+      "kvasir_dice": 0.1263406783156097,
+      "clinicdb_dice": 0.03125285841393164,
+      "kvasir_soft_dice": 0.24137621497735381,
+      "clinicdb_soft_dice": 0.1812033333304909,
+      "elapsed_seconds": 77.26831270000548,
+      "eligible_for_manuscript": false
+    },
+    {
+      "variant": "baseline_msc",
+      "status": "PASS",
+      "epochs": 12,
+      "best_epoch": 12,
+      "selection_dice": 0.5033466496151842,
+      "kvasir_dice": 0.5547228539828211,
+      "clinicdb_dice": 0.45197044524754726,
+      "kvasir_soft_dice": 0.4122323792800307,
+      "clinicdb_soft_dice": 0.3369908822520125,
+      "elapsed_seconds": 78.01531409999006,
+      "eligible_for_manuscript": false
+    },
+    {
+      "variant": "baseline_msc_bsei",
+      "status": "PASS",
+      "epochs": 12,
+      "best_epoch": 3,
+      "selection_dice": 0.05924593599118863,
+      "kvasir_dice": 0.07736986153526232,
+      "clinicdb_dice": 0.04112201044711495,
+      "kvasir_soft_dice": 0.20967330653220415,
+      "clinicdb_soft_dice": 0.1466282632562422,
+      "elapsed_seconds": 86.26999810000416,
+      "eligible_for_manuscript": false
+    },
+    {
+      "variant": "baseline_msc_bsei_detail",
+      "status": "PASS",
+      "epochs": 12,
+      "best_epoch": 11,
+      "selection_dice": 0.2820865366882607,
+      "kvasir_dice": 0.3493199579976499,
+      "clinicdb_dice": 0.2148531153788715,
+      "kvasir_soft_dice": 0.3031341340020299,
+      "clinicdb_soft_dice": 0.22197735381703224,
+      "elapsed_seconds": 96.5362146999978,
+      "eligible_for_manuscript": false
+    },
+    {
+      "variant": "baseline_msc_bsei_detail_gdf",
+      "status": "PASS",
+      "epochs": 12,
+      "best_epoch": 7,
+      "selection_dice": 0.3217614569227613,
+      "kvasir_dice": 0.39614432211674283,
+      "clinicdb_dice": 0.24737859172877977,
+      "kvasir_soft_dice": 0.305577146615833,
+      "clinicdb_soft_dice": 0.2307732042165533,
+      "elapsed_seconds": 92.29270409999299,
+      "eligible_for_manuscript": false
+    },
+    {
+      "variant": "full",
+      "status": "PASS",
+      "epochs": 12,
+      "best_epoch": 11,
+      "selection_dice": 0.3124459124510852,
+      "kvasir_dice": 0.3747006793669425,
+      "clinicdb_dice": 0.250191145535228,
+      "kvasir_soft_dice": 0.30943212304264306,
+      "clinicdb_soft_dice": 0.23543127151506563,
+      "elapsed_seconds": 95.17189399999916,
+      "eligible_for_manuscript": false
+    }
+  ]
+}

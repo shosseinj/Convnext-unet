@@ -1,0 +1,16 @@
+\begin{tabular}{ll}
+\hline
+Protocol field & Fixed value \\
+\hline
+Input size & $352 \times 352$ \\
+Seeds & 42, 3407, 2026 \\
+Maximum epochs & 150 \\
+Encoder freeze & Epochs 1--10 \\
+Encoder learning rate & $1\times10^{-5}$ \\
+Decoder learning rate & $1\times10^{-4}$ \\
+Weight decay & $1\times10^{-4}$ \\
+Early-stopping patience & 30 \\
+Checkpoint selection & Equal mean validation Dice on two development datasets \\
+Test-time augmentation & Disabled \\
+\hline
+\end{tabular}

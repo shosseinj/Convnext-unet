@@ -1,0 +1,186 @@
+{
+    "status":  "PASS",
+    "renderer":  "Windows.Data.Pdf PdfDocument.RenderToStreamAsync",
+    "source":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render.pdf",
+    "source_sha256":  "2b17ec104ea51c5f4c1e15e36e77a725be2d56ae868ec6fea4afb2c93c09e6c9",
+    "page_count":  29,
+    "png_width":  1224,
+    "png_height":  1584,
+    "pages":  [
+                  {
+                      "page":  1,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-001.png",
+                      "bytes":  266683,
+                      "sha256":  "40f9ae60a65a7451d2c0773c5abbea514cebb65d04876cd962f40ca5590180b8"
+                  },
+                  {
+                      "page":  2,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-002.png",
+                      "bytes":  292676,
+                      "sha256":  "f731f5b71e03cb594e0a3ef9b218d95d5d7867c03538b874811d49b9d5f99a4c"
+                  },
+                  {
+                      "page":  3,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-003.png",
+                      "bytes":  274471,
+                      "sha256":  "7902f7204bb42ac4fd082c508298a06663ba2469fcfecd42a21cdaf79c6241d1"
+                  },
+                  {
+                      "page":  4,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-004.png",
+                      "bytes":  287732,
+                      "sha256":  "12f623cf67451127bb18e5d09708773ef09697e451f9fd6ed7a55da8d03f8666"
+                  },
+                  {
+                      "page":  5,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-005.png",
+                      "bytes":  144693,
+                      "sha256":  "b7e90150ce34e06316464cbca034e760c96a4f89aefbde1c833a1e62480b9c43"
+                  },
+                  {
+                      "page":  6,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-006.png",
+                      "bytes":  239123,
+                      "sha256":  "1039c7046366f6c9885f38b8eca88832a048bb63a7f008284139708788fd2fea"
+                  },
+                  {
+                      "page":  7,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-007.png",
+                      "bytes":  157001,
+                      "sha256":  "c989c0c2c3658808eb5c3d78abc8d21a9182e1e2ecd9f4892e036dc7ed180a47"
+                  },
+                  {
+                      "page":  8,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-008.png",
+                      "bytes":  269393,
+                      "sha256":  "1c8c7f5ee06c65d8ea782b2440bb538ffbb63f2e35cee013cc0603596cdff3f1"
+                  },
+                  {
+                      "page":  9,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-009.png",
+                      "bytes":  187884,
+                      "sha256":  "93ee603ada9bc7d995f93de9ff4e6fa917d12ef4194ba4fe827acff0981265e3"
+                  },
+                  {
+                      "page":  10,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-010.png",
+                      "bytes":  244350,
+                      "sha256":  "cebc758893e85fb3d1c258ddcea88cba0a109a11ee0cde5f956f78f4d1a30b90"
+                  },
+                  {
+                      "page":  11,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-011.png",
+                      "bytes":  233085,
+                      "sha256":  "e1c68049d3f6091daf97c7d85773a1fbdf4bda3e8b4acebbb511e8c332e9e6c3"
+                  },
+                  {
+                      "page":  12,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-012.png",
+                      "bytes":  227906,
+                      "sha256":  "17a0e55745cc458cd0983da52fb15afb5350b5d99d921f482f7f4ee0ee97c512"
+                  },
+                  {
+                      "page":  13,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-013.png",
+                      "bytes":  168458,
+                      "sha256":  "d13be0da7e4f966ff9356a0449480eb4cbc45eb5acb2ea7481e0200e6517078d"
+                  },
+                  {
+                      "page":  14,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-014.png",
+                      "bytes":  194271,
+                      "sha256":  "a11d86aaf12bea725aeb0e8c1a593495993a683e4072174f4b5f4c3df2cf67d4"
+                  },
+                  {
+                      "page":  15,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-015.png",
+                      "bytes":  344937,
+                      "sha256":  "99d35882b6f6aee83b7b1c34e3910e657077f743967f0921348400efb46b296f"
+                  },
+                  {
+                      "page":  16,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-016.png",
+                      "bytes":  157591,
+                      "sha256":  "bf67b58d07362a8c7102bc08193560069bdbaaaa99653f1549d6580880b038df"
+                  },
+                  {
+                      "page":  17,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-017.png",
+                      "bytes":  258470,
+                      "sha256":  "59e84ace3c494312359725af7c8e8b671dabd6b32bf9b350136f3291b1f96c2b"
+                  },
+                  {
+                      "page":  18,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-018.png",
+                      "bytes":  180911,
+                      "sha256":  "f2a6e9f90d3439bec8725bc60b947bc2022738ba9688b1b93d4b3fc2ce3cc4be"
+                  },
+                  {
+                      "page":  19,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-019.png",
+                      "bytes":  236151,
+                      "sha256":  "88a415505c14dede99e6ef1f2bd69828a96c43bfd53d4f24c21b0dd32e99cbe2"
+                  },
+                  {
+                      "page":  20,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-020.png",
+                      "bytes":  174468,
+                      "sha256":  "a2347d6a44fdd097e1c93b2331ccce8bcbe41389e97ed18cd482fbc141a86956"
+                  },
+                  {
+                      "page":  21,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-021.png",
+                      "bytes":  122977,
+                      "sha256":  "1b6ba34eb80629f1bbd2f2750b3e05e094e7fb48c1ada416f7fd3d39b31f9e82"
+                  },
+                  {
+                      "page":  22,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-022.png",
+                      "bytes":  181523,
+                      "sha256":  "fcfa1e9a92f90a0501948fb3c0417ee8f12edcfb9047ac2193c7b50faf6cb673"
+                  },
+                  {
+                      "page":  23,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-023.png",
+                      "bytes":  247448,
+                      "sha256":  "a8ad10fbca5ac61904da3ac7443b92c2e31f7fef8b043e7d6eb3c7a5826faa8f"
+                  },
+                  {
+                      "page":  24,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-024.png",
+                      "bytes":  236699,
+                      "sha256":  "b2b3eaa725d4804f7826650663a11b8493e342371bbca9e9eeea1abb91980d1e"
+                  },
+                  {
+                      "page":  25,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-025.png",
+                      "bytes":  205189,
+                      "sha256":  "cf9e39205759444be7224a06d08ff4183ebfa9fa828c42340fc6a0a1db14afcc"
+                  },
+                  {
+                      "page":  26,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-026.png",
+                      "bytes":  279486,
+                      "sha256":  "cec574b0958644188d9c6f2bcba1a034d2e9ba47ed50704f3f2b406358a9dd48"
+                  },
+                  {
+                      "page":  27,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-027.png",
+                      "bytes":  271537,
+                      "sha256":  "6a6937d12a8cc6b1cff94ff49318f3f0d5c97a48a6ffb1e1255ec305ee61e43d"
+                  },
+                  {
+                      "page":  28,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-028.png",
+                      "bytes":  290593,
+                      "sha256":  "b9de8c8ed2de677191d5cba559e7824ecadfd2db7576adb5948293b384a7699b"
+                  },
+                  {
+                      "page":  29,
+                      "path":  "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\reports\\docx_source_render_winrt\\page-029.png",
+                      "bytes":  66507,
+                      "sha256":  "207d4a2e71904b74085de36c4336d8d447e0c2a7746327717b04786fca462b29"
+                  }
+              ],
+    "timestamp_utc":  "2026-08-01T11:06:53.4789390Z"
+}

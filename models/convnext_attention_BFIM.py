@@ -35,7 +35,7 @@ import torch.nn.functional as F
 
 class BSEI(nn.Module):
     """
-    Boundary-Semantic Enhancement with Interaction (BSEI).
+    BSEI module.
     FFTEnhance removed — did not improve performance.
     ASG lives outside this class in the decoder (parallel, trainable).
     """

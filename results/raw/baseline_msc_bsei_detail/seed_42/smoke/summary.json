@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "variant": "baseline_msc_bsei_detail",
+  "seed": 42,
+  "smoke": true,
+  "best_selection_dice": 0.22977606719359756,
+  "epochs_completed": 1,
+  "elapsed_seconds": 8.082945300004212,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\raw\\baseline_msc_bsei_detail\\seed_42\\smoke"
+}

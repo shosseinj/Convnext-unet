@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "variant": "baseline_msc_bsei_detail_gdf",
+  "seed": 42,
+  "run_mode": "pilot",
+  "best_selection_dice": 0.3217614569227613,
+  "epochs_completed": 12,
+  "elapsed_seconds": 92.29270409999299,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\raw\\baseline_msc_bsei_detail_gdf\\seed_42\\pilot"
+}

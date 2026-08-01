@@ -1,0 +1,27 @@
+{
+  "captured_utc": "2026-08-01T09:25:22.7164000Z",
+  "purpose": "baseline seed 42 active-run source fingerprint captured before metadata-only patch",
+  "git_commit": "8e7e6912d1d6783a0c13d66774f31cd6f3e45b79",
+  "environment": {
+    "python": "3.10.4",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "torch": "2.5.1+cu124",
+    "cuda": "12.4",
+    "cudnn": 90100,
+    "numpy": "2.2.6",
+    "pyyaml": "6.0.3",
+    "opencv": "4.13.0",
+    "gpu": "NVIDIA GeForce RTX 4090"
+  },
+  "files": [
+    {"path": "train_research.py", "sha256": "567e345ac3740e89144651d59df0531c61fa47005a7df34c6ee24bbc29de7532", "bytes": 11480},
+    {"path": "models/architecture_factory.py", "sha256": "86ed52c466fa2596c6f6c5470603678db3f6de3b204280ddfa03ee77b3cac924", "bytes": 2513},
+    {"path": "models/convnext_pretrain.py", "sha256": "5421cb867e503fef376e90d6f60a12e87767f68ae5cbc2c7a8302e049a85d076", "bytes": 21953},
+    {"path": "research_pipeline/data.py", "sha256": "e2f0b46f97183120f7ac651cf8d7027eb053e77f53ab7e4a9ed8c0caa2e58f7f", "bytes": 3742},
+    {"path": "research_pipeline/losses.py", "sha256": "fecc6f5ee6b03ae6a88e037bb8b7f74ede5e6ebda349436621bad8df728af0fc", "bytes": 2135},
+    {"path": "research_pipeline/reproducibility.py", "sha256": "5cd7f729896e6eab6f61700374bcd6562428003869ab63a9108eeeb7d485e141", "bytes": 3355},
+    {"path": "configs/training_protocol.yaml", "sha256": "dcc4aa96f01b737e38cc713ace5bb89848cf52c6ba83455d8d83ef6d526e68a0", "bytes": 1502},
+    {"path": "configs/ablation_matrix.yaml", "sha256": "f37ab5ca4b7defbd0f2eb5f88ab0da856601385ae44b13fe031e74247066a6dc", "bytes": 1085},
+    {"path": "configs/splits/development_seed_42.json", "sha256": "20891626ff0830cc53ac618b240aa5f32c80216f66fa04b374b1d3fc938e942c", "bytes": 178108}
+  ]
+}

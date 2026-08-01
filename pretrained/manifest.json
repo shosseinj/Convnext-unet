@@ -1,0 +1,22 @@
+{
+  "source": "official torchvision weight enums",
+  "records": [
+    {
+      "backbone": "resnet34",
+      "url": "https://download.pytorch.org/models/resnet34-b627a593.pth",
+      "path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\pretrained\\resnet34-b627a593.pth",
+      "bytes": 87319819,
+      "sha256": "b627a593bcbe140c234610266fe4f8ae95ea42fc881d091c9b6052e6b1d0590f",
+      "strict_load": true
+    },
+    {
+      "backbone": "efficientnet_b0",
+      "url": "https://download.pytorch.org/models/efficientnet_b0_rwightman-7f5810bc.pth",
+      "path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\pretrained\\efficientnet_b0_rwightman-7f5810bc.pth",
+      "bytes": 21444401,
+      "sha256": "7f5810bc96def8f7552d5b7e68d53c4786f81167d28291b21c0d90e1fca14934",
+      "strict_load": true
+    }
+  ],
+  "created_utc": "2026-08-01T09:54:57.650801+00:00"
+}
