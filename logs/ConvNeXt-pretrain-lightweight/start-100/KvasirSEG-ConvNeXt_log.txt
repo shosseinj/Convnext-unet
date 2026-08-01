@@ -1,12 +1,12 @@
-2026-07-07 11:27:49 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain-lightweight/start-100/KvasirSEG-ConvNeXt_log.txt
-2026-07-07 11:27:57 - INFO - Parameter count: total=29.61M, encoder=27.82M, decoder_head=1.79M, trainable=29.61M
-2026-07-07 11:27:57 - INFO - Optimizer: AdamW | detail_lr=7.50e-05, refine_lr=7.50e-05, context_lr=7.50e-05, encoder_lr=5.00e-06, decoder_lr=5.00e-05, eta_min=1.00e-06, weight_decay=5.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
-2026-07-07 11:27:58 - INFO - Loading model weights from checkpoint['model_state_dict'].
-2026-07-07 11:27:58 - INFO - Loaded 297/297 compatible model tensors from checkpoint.
-2026-07-07 11:27:58 - INFO - Resumed from epoch 100
-2026-07-07 11:27:58 - INFO - Previous best IoU: 0.8803
-2026-07-07 11:27:58 - INFO - Loaded 294 compatible EMA tensors from checkpoint.
-2026-07-07 11:27:58 - INFO - EMA enabled with decay=0.995.
-2026-07-07 11:28:04 - INFO - First EvaluationTest Loss: 0.2132, Test Dice: 0.8960, Test IoU: 0.8150
-2026-07-07 11:28:06 - INFO - #### Training ####
-2026-07-07 11:28:06 - INFO - initial LR: detail=0.000075, refine=0.000075, context=0.000075, encoder=0.000005, decoder_aux=0.000050
+2026-07-07 12:10:36 - INFO - Logging initialized to ./logs/ConvNeXt-pretrain-lightweight/start-100/KvasirSEG-ConvNeXt_log.txt
+2026-07-07 12:10:45 - INFO - Parameter count: total=29.61M, encoder=27.82M, decoder_head=1.79M, trainable=29.61M
+2026-07-07 12:10:45 - INFO - Optimizer: AdamW | detail_lr=7.50e-05, refine_lr=7.50e-05, context_lr=7.50e-05, encoder_lr=5.00e-06, decoder_lr=5.00e-05, eta_min=1.00e-06, weight_decay=5.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
+2026-07-07 12:10:45 - INFO - Loading model weights from checkpoint['model_state_dict'].
+2026-07-07 12:10:45 - INFO - Loaded 297/297 compatible model tensors from checkpoint.
+2026-07-07 12:10:45 - INFO - Resumed from epoch 100
+2026-07-07 12:10:45 - INFO - Previous best IoU: 0.8803
+2026-07-07 12:10:45 - INFO - Loaded 294 compatible EMA tensors from checkpoint.
+2026-07-07 12:10:45 - INFO - EMA enabled with decay=0.995.
+2026-07-07 12:10:56 - INFO - First EvaluationTest Loss: 0.2077, Test Dice: 0.9315, Test IoU: 0.8731
+2026-07-07 12:10:59 - INFO - #### Training ####
+2026-07-07 12:10:59 - INFO - initial LR: detail=0.000075, refine=0.000075, context=0.000075, encoder=0.000005, decoder_aux=0.000050

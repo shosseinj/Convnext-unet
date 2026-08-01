@@ -651,9 +651,7 @@ def train_epoch_segmentation(
 
         # Current learning rates
 
-        detail_lr = optimizer_lr(optimizer, "detail", fallback_idx=0)
         refine_lr = optimizer_lr(optimizer, "refine", fallback_idx=0)
-        context_lr = optimizer_lr(optimizer, "context", fallback_idx=0)
         enc_lr = optimizer_lr(optimizer, "encoder", fallback_idx=0)
         dec_lr = optimizer_lr(optimizer, "decoder", fallback_idx=-1)
 
@@ -673,11 +671,7 @@ def train_epoch_segmentation(
 
             Area=f"{mask_area:.3f}",
 
-            DetailLR=f"{detail_lr:.2e}",
-
             RefineLR=f"{refine_lr:.2e}",
-
-            ContextLR=f"{context_lr:.2e}",
 
             EncLR=f"{enc_lr:.2e}",
 
@@ -2206,27 +2200,33 @@ if __name__ == "__main__":
 # jafari
     strtobool = (lambda s: s=='True')
     parser = argparse.ArgumentParser(description='TTFS')
+    # Ablation reminder: keep all ConvNeXtUNet ablation variants on the shared
+    # protocol in ABLATION_TRAINING_PROTOCOL.md. Do not change epochs, LR,
+    # weight decay, loss, augmentation, scheduler, checkpoint selection, or
+    # test-dataset usage for one variant unless the experiment explicitly says so.
     parser.add_argument('--data_name', type=str, default='KvasirSEG', help='(MNIST|CIFAR10|CIFAR100)')
-    parser.add_argument('--logging_dir', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-100/', help='Directory for logging')
+    parser.add_argument('--logging_dir', type=str, default='./logs/ablation/baseline+MSC/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
-    parser.add_argument('--eval_dataset', type=str, default='CVC-300', choices=['kvasir', 'clinicdb', 'both', 'CVC-300', 'CVC-ColonDB', 'ETIS-LARIBPOLYPDB'], help='Validation/test split or external test dataset')
-    parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-0/checkpoints_KvasirSEG-ConvNeXt/100-test0.88.pth', help='Checkpoint path used only when --load True')
+    parser.add_argument('--eval_dataset', type=str, default='both', choices=['kvasir', 'clinicdb', 'both', 'CVC-300', 'CVC-ColonDB', 'ETIS-LARIBPOLYPDB'], help='Validation/test split or external test dataset')
+    parser.add_argument('--checkpoint_path', type=str, default='./logs/ablation/baseline+MSC/checkpoints_KvasirSEG-ConvNeXt/179-test0.86.pth', help='Checkpoint path used only when --load True')
+    # parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-100/checkpoints_KvasirSEG-ConvNeXt/126-test0.88.pth', help='Checkpoint path used only when --load True')
+    # parser.add_argument('--checkpoint_path', type=str, default=None, help='Checkpoint path used only when --load True')
     parser.add_argument('--encoder_weights', type=str, default='./convnext_tiny_22k_1k_384.pth', help='ConvNeXt-Tiny pretrained encoder weights')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
-    parser.add_argument('--lr', type=float, default=5e-5, help='Decoder and auxiliary head learning rate')
+    parser.add_argument('--lr', type=float, default=1e-4, help='Baseline decoder learning rate')
     parser.add_argument('--min_lr', type=float, default=1e-6, help='Learning rate')
     parser.add_argument('--escape_lr', type=float, default=5e-5, help='Learning rate for escape')
     parser.add_argument('--batch_size', type=int, default=15, help='Batch size')
     parser.add_argument('--epochs', type=int, default=50000, help='Epochs. 0 -skip training')
     parser.add_argument('--input_size', type=tuple, default=(352, 352), help='Input size for the images')
     parser.add_argument('--warmup_epochs', type=int, default=12, help='Epochs. 0 -skip training')
-    parser.add_argument('--detail_warmup_epochs', type=int, default=36, help='Train detail and final_refine for this many epochs')
-    parser.add_argument('--decoder_warmup_epochs', type=int, default=24, help='Train decoder while keeping encoder frozen for this many epochs after detail warmup')
+    parser.add_argument('--detail_warmup_epochs', type=int, default=0, help='Baseline disables detail warmup')
+    parser.add_argument('--decoder_warmup_epochs', type=int, default=24, help='Train baseline decoder while keeping encoder frozen for this many epochs')
     parser.add_argument('--focal_tversky_after_warmup', type=strtobool, default=True, help='Enable Focal Tversky loss after detail warmup')
     parser.add_argument('--focal_tversky_w', type=float, default=0.05, help='Focal Tversky loss weight after detail warmup')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Decoder weight decay')
-    parser.add_argument('--new_layer_weight_decay', type=float, default=1e-3, help='Weight decay for detail and final_refine')
+    parser.add_argument('--new_layer_weight_decay', type=float, default=1e-3, help='Weight decay for final_refine')
     parser.add_argument('--early_stop_patience', type=int, default=40, help='Stop training after this many epochs without validation IoU improvement. 0 disables it')
     parser.add_argument('--use_ema', type=strtobool, default=True, help='Evaluate and save an exponential moving average of model weights')
     parser.add_argument('--ema_decay', type=float, default=0.995, help='EMA decay for model weights')
@@ -2330,6 +2330,8 @@ if __name__ == "__main__":
                     f"Encoder pretrained weights not found at {args.encoder_weights}; "
                     "training encoder from scratch."
                 )
+            else:
+                logging.info(f"Loading ConvNeXt-Tiny ImageNet encoder weights from {encoder_weights}.")
             model = ConvNeXtUNet(
                 weights_path=encoder_weights,
                 drop_path_rate=0.25,
@@ -2434,24 +2436,16 @@ if __name__ == "__main__":
  
     decoder_lr = args.lr
     encoder_lr = args.lr * 0.1
-    detail_lr = args.lr * 1.5
     refine_lr = args.lr * 1.5
-    context_lr = args.lr * 1.5
-    eta_min = min(args.min_lr, encoder_lr, decoder_lr, detail_lr, refine_lr, context_lr)
+    eta_min = min(args.min_lr, encoder_lr, decoder_lr, refine_lr)
     # optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
-    detail_params = []
     refine_params = []
-    context_params = []
     encoder_params = []
     decoder_params = []
 
     for name, param in model.named_parameters():
-        if name.startswith(("detail.", "detail_conv.")):
-            detail_params.append(param)
-        elif name.startswith(("final_refine.", "detail_fusion.")):
+        if name.startswith("final_refine."):
             refine_params.append(param)
-        elif name.startswith("context."):
-            context_params.append(param)
         elif name.startswith("encoder."):
             encoder_params.append(param)
         else:
@@ -2461,21 +2455,9 @@ if __name__ == "__main__":
     optimizer = torch.optim.AdamW(
         [
             {
-                "name": "detail",
-                "params": detail_params,
-                "lr": detail_lr,
-                "weight_decay": args.new_layer_weight_decay,
-            },
-            {
                 "name": "refine",
                 "params": refine_params,
                 "lr": refine_lr,
-                "weight_decay": args.new_layer_weight_decay,
-            },
-            {
-                "name": "context",
-                "params": context_params,
-                "lr": context_lr,
                 "weight_decay": args.new_layer_weight_decay,
             },
             {
@@ -2501,9 +2483,7 @@ if __name__ == "__main__":
     )  
 
     logging.info(
-        f"Optimizer: AdamW | detail_lr={detail_lr:.2e}, "
-        f"refine_lr={refine_lr:.2e}, "
-        f"context_lr={context_lr:.2e}, "
+        f"Optimizer: AdamW | refine_lr={refine_lr:.2e}, "
         f"encoder_lr={encoder_lr:.2e}, "
         f"decoder_lr={decoder_lr:.2e}, eta_min={eta_min:.2e}, "
         f"weight_decay={args.weight_decay:.2e}, "
@@ -2669,7 +2649,7 @@ if __name__ == "__main__":
     decoder_warmup_epochs = max(args.decoder_warmup_epochs, 0)
     stage_schedule_start_epoch = start_epoch if restart_stage_schedule else 0
     detail_warmup_end_epoch = stage_schedule_start_epoch + detail_warmup_epochs
-    full_train_start_epoch = detail_warmup_end_epoch + decoder_warmup_epochs+50
+    full_train_start_epoch = detail_warmup_end_epoch + decoder_warmup_epochs
 
     if args.training and args.epochs > 0:
         if start_epoch < detail_warmup_end_epoch:
@@ -2765,17 +2745,13 @@ if __name__ == "__main__":
         
 
         # Log the actual starting LR
-        detail_start_lr = optimizer_lr(optimizer, "detail")
         refine_start_lr = optimizer_lr(optimizer, "refine")
-        context_start_lr = optimizer_lr(optimizer, "context")
         enc_start_lr = optimizer_lr(optimizer, "encoder")
         dec_start_lr = optimizer_lr(optimizer, "decoder", fallback_idx=-1)
         logging.info(
-            f"initial LR: detail={detail_start_lr:.6f}, "
-            f"refine={refine_start_lr:.6f}, "
-            f"context={context_start_lr:.6f}, "
+            f"initial LR: refine={refine_start_lr:.6f}, "
             f"encoder={enc_start_lr:.6f}, "
-            f"decoder_aux={dec_start_lr:.6f}"
+            f"decoder={dec_start_lr:.6f}"
         )
             
         # Training loop

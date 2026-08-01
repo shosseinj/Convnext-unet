@@ -1,0 +1,14 @@
+2026-08-01 08:02:02 - INFO - Logging initialized to ./logs/ablation/baseline+MSC/KvasirSEG-ConvNeXt_log.txt
+2026-08-01 08:02:09 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from ./convnext_tiny_22k_1k_384.pth.
+2026-08-01 08:02:09 - INFO - Parameter count: total=29.57M, encoder=27.82M, decoder_head=1.75M, trainable=29.57M
+2026-08-01 08:02:09 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=5.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
+2026-08-01 08:02:10 - INFO - Loading model weights from checkpoint['model_state_dict'].
+2026-08-01 08:02:10 - INFO - Loaded 260/260 compatible model tensors from checkpoint.
+2026-08-01 08:02:10 - INFO - Skipped checkpoint tensors because they are new or shape-mismatched: ['total_ops', 'total_params', 'encoder.total_ops', 'encoder.total_params', 'encoder.dropout.total_ops', 'encoder.dropout.total_params', 'encoder.downsample_layers.total_ops', 'encoder.downsample_layers.total_params', 'encoder.downsample_layers.0.1.total_ops', 'encoder.downsample_layers.0.1.total_params', 'encoder.downsample_layers.1.0.total_ops', 'encoder.downsample_layers.1.0.total_params', 'encoder.downsample_layers.2.0.total_ops', 'encoder.downsample_layers.2.0.total_params', 'encoder.downsample_layers.3.0.total_ops', 'encoder.downsample_layers.3.0.total_params', 'encoder.stages.total_ops', 'encoder.stages.total_params', 'encoder.stages.0.0.total_ops', 'encoder.stages.0.0.total_params']
+2026-08-01 08:02:10 - INFO - Resumed from epoch 179
+2026-08-01 08:02:10 - INFO - Previous best IoU: 0.8600
+2026-08-01 08:02:10 - INFO - Loaded 260 compatible EMA tensors from checkpoint.
+2026-08-01 08:02:10 - INFO - EMA enabled with decay=0.995.
+2026-08-01 08:02:24 - INFO - First EvaluationTest Loss: 0.2058, Test Dice: 0.9273, Test IoU: 0.8661
+2026-08-01 08:02:28 - INFO - #### Training ####
+2026-08-01 08:02:28 - INFO - initial LR: refine=0.000150, encoder=0.000010, decoder=0.000100

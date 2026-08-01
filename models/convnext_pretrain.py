@@ -284,6 +284,23 @@ class BSEI(nn.Module):
         return x
 
 
+class SimpleFusion(nn.Module):
+    def __init__(self, in_channels, out_channels, dropout_rate=0.1):
+        super().__init__()
+        self.block = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False),
+            LayerNorm(out_channels, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            SeparableConv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False),
+            LayerNorm(out_channels, eps=1e-6, data_format="channels_first"),
+            nn.GELU(),
+            nn.Dropout2d(dropout_rate),
+        )
+
+    def forward(self, x):
+        return self.block(x)
+
+
 # ============================================================================
 # DECODER BLOCK (LayerNorm + GELU)
 # ============================================================================
@@ -458,31 +475,25 @@ class ConvNeXtUNet(nn.Module):
         dims = [96, 192, 384, 768]
         
         self.bottleneck = LiteBottleneck(dims[3], hidden_dim=dims[1], dropout_rate=dropout_rate)
+        # Ablation +MSC: MultiScaleContext enabled
         self.context = MultiScaleContext(dims[3], dropout_rate=dropout_rate)
         
         # Decoder (LayerNorm + GELU)
+        # Ablation +MSC: BSEI, DetailBranch, GatedDetailFusion, and deep supervision remain disabled
         self.decoder4 = DecoderBlock(dims[3], dims[2], dropout_rate)
-        self.bsei4 = BSEI(dims[2] + dims[2], dims[2], dropout_rate)
+        self.bsei4 = SimpleFusion(dims[2] + dims[2], dims[2], dropout_rate)
         
         self.decoder3 = DecoderBlock(dims[2], dims[1], dropout_rate)
-        self.bsei3 = BSEI(dims[1] + dims[1], dims[1], dropout_rate)
+        self.bsei3 = SimpleFusion(dims[1] + dims[1], dims[1], dropout_rate)
         
         self.decoder2 = DecoderBlock(dims[1], dims[0], dropout_rate)
-        self.bsei2 = BSEI(dims[0] + dims[0], dims[0], dropout_rate)
+        self.bsei2 = SimpleFusion(dims[0] + dims[0], dims[0], dropout_rate)
         
         self.decoder1 = DecoderBlock(dims[0], dims[0], dropout_rate)
-        self.bsei1 = BSEI(dims[0], dims[0], dropout_rate)
+        self.bsei1 = SimpleFusion(dims[0], dims[0], dropout_rate)
         
-        self.detail = DetailBranch(out_ch=32, dropout_rate=dropout_rate)
-        self.detail_fusion = GatedDetailFusion(
-            decoder_ch=dims[0],
-            detail_ch=32,
-            out_ch=dims[0] + 32,
-            dropout_rate=dropout_rate,
-        )
-
         self.final_refine = nn.Sequential(
-            SeparableConv2d(96 + 32, 96, 3, padding=1, bias=False),
+            SeparableConv2d(96, 96, 3, padding=1, bias=False),
             LayerNorm(96, eps=1e-6, data_format="channels_first"),
             nn.GELU(),
             SeparableConv2d(96, 48, 3, padding=1, bias=False),
@@ -490,10 +501,6 @@ class ConvNeXtUNet(nn.Module):
             nn.GELU(),
             nn.Conv2d(48, num_classes, 1)
         )
-
-        self.aux4 = nn.Conv2d(384, num_classes, 1)
-        self.aux3 = nn.Conv2d(192, num_classes, 1)
-        self.aux2 = nn.Conv2d(96, num_classes, 1)
         
         # Initialize decoder
         self._init_decoder()
@@ -534,18 +541,11 @@ class ConvNeXtUNet(nn.Module):
         d2 = resize_like(d2, f1)
         d2 = torch.cat([d2, f1], dim=1)
         d2 = self.bsei2(d2)
-        detail = self.detail(x)   # H/2 resolution
+
         d1 = self.decoder1(d2)
         d1 = self.bsei1(d1)
-        d1 = self.detail_fusion(d1, detail)
         out_main = self.final_refine(d1)
         out_main = F.interpolate(out_main, size=x.shape[-2:], mode="bilinear", align_corners=False)
-
-        if self.training:
-            aux4 = F.interpolate(self.aux4(d4), size=x.shape[-2:], mode="bilinear", align_corners=False)
-            aux3 = F.interpolate(self.aux3(d3), size=x.shape[-2:], mode="bilinear", align_corners=False)
-            aux2 = F.interpolate(self.aux2(d2), size=x.shape[-2:], mode="bilinear", align_corners=False)
-            return [out_main, aux2, aux3, aux4]
 
         return out_main
     

@@ -1,3 +1,7 @@
+## Ablation Training Protocol
+
+Use `ABLATION_TRAINING_PROTOCOL.md` for all ConvNeXtUNet ablation runs so every variant uses the same fair training setup and checkpoint-selection rule.
+
 Edge enhancement ->
 
 - Depthwise conv → Sigmoid, multiplied into skip
