@@ -1,0 +1,10 @@
+{
+  "dice": 0.927316161731783,
+  "iou": 0.8738290373976983,
+  "precision": 0.8942983031653129,
+  "recall": 0.9746127003036185,
+  "specificity": 0.9835645626626452,
+  "pixel_accuracy": 0.9841000759548609,
+  "evaluated_frames": 300,
+  "processed_frames": 300
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Convnext-unet-main",
+  "experiment_id": "full",
+  "variant": "full",
+  "seed": 42,
+  "dataset": "Kvasir-SEG",
+  "split": "test",
+  "checkpoint": "",
+  "threshold": 0.5,
+  "metrics": {
+    "dice": 0.0,
+    "iou": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "specificity": 0.0,
+    "pixel_accuracy": 0.0,
+    "mae": 0.0
+  },
+  "efficiency": {
+    "parameters": 0,
+    "trainable_parameters": 0,
+    "macs": 0,
+    "gflops": 0.0,
+    "latency_ms": null,
+    "fps": null
+  },
+  "training": {
+    "input_size": [352, 352],
+    "epochs": 150,
+    "optimizer": "AdamW",
+    "encoder_lr": 1e-5,
+    "decoder_lr": 1e-4,
+    "weight_decay": 1e-4
+  },
+  "source": {
+    "git_commit": "",
+    "code_version": "",
+    "timestamp_utc": ""
+  }
+}

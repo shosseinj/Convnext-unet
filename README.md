@@ -30,3 +30,71 @@ ETIS-LARIBPOLYPDB -> 196
 CVC-COLONDB -> 380
 CVC-ClinicDB -> 61 Test and 551 Train
 Kvasir-SEG -> 100 Test and 900 Train
+
+## Video Evaluation
+
+The video tools reuse the validation preprocessing in this repository: OpenCV BGR
+frames are converted to RGB, resized to `352 x 352`, scaled to `[0, 1]`, and
+passed to the model. `ConvNeXtUNet` applies ImageNet normalization internally.
+Training behavior is not affected.
+
+Expected Kvasir-SEG layout:
+
+```text
+data/Kvasir-SEG/
+  images/   # .jpg, .jpeg, or .png
+  masks/    # masks with matching filename (or matching stem)
+```
+
+Create an input video and a JSON frame-to-source manifest:
+
+```bash
+python tools/create_kvasir_video.py --images-dir data/Kvasir-SEG/images \
+  --ground-truth-dir data/Kvasir-SEG/masks --output outputs/kvasir_input.mp4 \
+  --fps 10 --width 640 --height 480 --frames-per-image 3
+```
+
+Use `--letterbox` to preserve aspect ratio, `--shuffle --seed 42` for a
+repeatable shuffled sequence, `--max-images N` for a subset, and `--repeat N`
+to repeat the selected sequence. The default manifest is
+`outputs/kvasir_input_manifest.json`.
+
+Run segmentation while preserving the source resolution and FPS:
+
+```bash
+python inference_video.py --input-video outputs/kvasir_input.mp4 \
+  --checkpoint path/to/best_model.pth --output-video outputs/kvasir_prediction.mp4 \
+  --device cuda --threshold 0.5 --min-area 100
+```
+
+The default model is `models.convnext_pretrain:ConvNeXtUNet`. If construction
+requires local encoder initialization, add
+`--encoder-weights convnext_tiny_22k_1k_384.pth`. Direct state dictionaries and
+checkpoint keys named `state_dict` or `model_state_dict` are supported, as are
+DataParallel `module.` prefixes. Model/checkpoint mismatches fail explicitly.
+
+Ground-truth contours, side-by-side output, and metrics:
+
+```bash
+python inference_video.py --input-video outputs/kvasir_input.mp4 \
+  --checkpoint path/to/best_model.pth --output-video outputs/kvasir_prediction.mp4 \
+  --manifest outputs/kvasir_input_manifest.json \
+  --ground-truth-dir data/Kvasir-SEG/masks --show-ground-truth --side-by-side \
+  --metrics-csv outputs/frame_metrics.csv --metrics-json outputs/summary_metrics.json
+```
+
+Outputs include the annotated MP4, per-frame CSV (Dice, IoU, precision, recall,
+specificity, and pixel accuracy), and aggregate JSON. `--display` provides a
+preview and `q` stops processing; omit it on headless systems. Other controls
+include `--mask-alpha`, `--contour-thickness`, `--box-thickness`, `--output-fps`,
+and `--codec`.
+
+Troubleshooting:
+
+- Checkpoint mismatch: select the same `--model` architecture used for training;
+  the error lists missing, unexpected, or size-mismatched weights.
+- CUDA unavailable/out of memory: use `--device cpu`, or verify the installed
+  PyTorch build and GPU driver.
+- MP4 writer failure: try `--codec mp4v` and ensure OpenCV has video codec support.
+- Incorrect mask dimensions: keep the default `--input-size 352`; probability
+  masks are always resized back to the decoded frame dimensions before drawing.
