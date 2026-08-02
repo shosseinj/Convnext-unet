@@ -49,13 +49,35 @@ class DiceBCEBoundaryLoss(nn.Module):
         return self.dice_weight * dice_loss + self.bce_weight * bce + self.boundary_weight * boundary
 
 
+class DiceBCELoss(nn.Module):
+    """Ordinary segmentation loss used by the UGBR segmentation terms.
+
+    DiceBCEBoundaryLoss is intentionally retained unchanged for legacy runs.
+    """
+    def __init__(self, dice_weight=0.30, bce_weight=0.30, label_smoothing=0.02):
+        super().__init__()
+        self.dice_weight = dice_weight
+        self.bce_weight = bce_weight
+        self.label_smoothing = label_smoothing
+
+    def forward(self, logits, target):
+        probability = torch.sigmoid(logits)
+        dims = (1, 2, 3)
+        intersection = (probability * target).sum(dims)
+        dice_loss = 1 - ((2 * intersection + 1.0) /
+                         (probability.sum(dims) + target.sum(dims) + 1.0)).mean()
+        smooth_target = target * (1 - self.label_smoothing) + 0.5 * self.label_smoothing
+        bce = F.binary_cross_entropy_with_logits(logits, smooth_target)
+        return self.dice_weight * dice_loss + self.bce_weight * bce
+
+
 def supervised_loss(outputs, target, criterion, weights=(1.0, 0.1, 0.05, 0.02)):
     tensors = outputs if isinstance(outputs, (tuple, list)) else (outputs,)
     return sum(weight * criterion(output, target) for output, weight in zip(tensors, weights))
 
 
 def ugbr_composite_loss(outputs, target, segmentation_criterion,
-                        uncertainty_threshold=0.5):
+                        uncertainty_threshold=0.5, boundary_coefficient=0.2):
     """Compute the contracted UGBR loss and expose every finite component.
 
     Consistency penalizes final-vs-initial probability changes only where the
@@ -77,7 +99,7 @@ def ugbr_composite_loss(outputs, target, segmentation_criterion,
         torch.sigmoid(outputs["initial_logits"])
     ).square()
     consistency = (probability_change * confident_mask).sum() / confident_mask.sum().clamp_min(1.0)
-    total = final_seg + 0.4 * initial_seg + 0.2 * boundary + 0.1 * consistency
+    total = final_seg + 0.4 * initial_seg + boundary_coefficient * boundary + 0.1 * consistency
     components = {
         "total": total,
         "seg_final": final_seg,

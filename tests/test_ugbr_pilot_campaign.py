@@ -6,8 +6,9 @@ from pathlib import Path
 from unittest.mock import patch
 
 from tools.run_ugbr_pilot_campaign import (
-    PILOT_JOBS, SEED, STATUS_FIELDS, acquire_lock, metadata_equivalent,
-    run_campaign, training_command, validation_command, write_status,
+    PILOT_JOBS, PILOT_NAMESPACE, SEED, STATUS_FIELDS, acquire_lock,
+    metadata_equivalent, pilot_run_dir, run_campaign, training_command,
+    validation_command, write_status,
 )
 
 
@@ -27,6 +28,25 @@ class PilotCampaignTests(unittest.TestCase):
         self.assertNotIn("--resume", command)
         resumed = training_command("target-python", Path("repo"), "baseline_ugbr", "cuda", True)
         self.assertEqual(resumed[-1], "--resume")
+
+    def test_training_targets_only_fresh_pilot_namespace(self):
+        command = training_command("python", Path("repo"), "baseline", "cuda")
+        output_root = Path(command[command.index("--output-root") + 1])
+        self.assertEqual(output_root, Path("repo") / PILOT_NAMESPACE)
+        self.assertEqual(pilot_run_dir(Path("repo"), "baseline"),
+                         Path("repo") / PILOT_NAMESPACE / "baseline" / "seed_42" / "pilot")
+        self.assertNotIn("results/raw", str(output_root))
+
+    def test_legacy_raw_artifacts_cannot_be_reused_or_overwritten(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            legacy = root / "results/raw/baseline/seed_42/pilot"
+            legacy.mkdir(parents=True)
+            (legacy / "last.pth").write_bytes(b"legacy")
+            self.assertEqual(pilot_run_dir(root, "baseline"),
+                             root / PILOT_NAMESPACE / "baseline/seed_42/pilot")
+            self.assertFalse(pilot_run_dir(root, "baseline").exists())
+            self.assertEqual((legacy / "last.pth").read_bytes(), b"legacy")
 
     def test_validation_is_an_independent_subprocess_command(self):
         command = validation_command("target-python", Path("validator.py"), Path("repo"), "baseline")

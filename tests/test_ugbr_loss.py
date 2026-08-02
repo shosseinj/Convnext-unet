@@ -8,6 +8,7 @@ from research_pipeline.losses import (
     morphological_gradient_target,
     supervised_loss,
     ugbr_composite_loss,
+    DiceBCELoss,
 )
 
 
@@ -35,6 +36,16 @@ class UGBRLossTests(unittest.TestCase):
                     0.2 * parts["boundary"] + 0.1 * parts["consistency"])
         self.assertEqual(set(parts), {"total", "seg_final", "seg_initial", "boundary", "consistency"})
         torch.testing.assert_close(parts["total"], expected)
+
+    def test_boundary_coefficient_is_applied_once_and_zero_disables_it(self):
+        target = torch.zeros(1, 1, 5, 5); target[:, :, 2, 2] = 1
+        values = self.outputs(torch.zeros_like(target), torch.zeros_like(target),
+                               torch.ones_like(target), torch.zeros_like(target))
+        criterion = DiceBCELoss()
+        parts = ugbr_composite_loss(values, target, criterion)
+        without = ugbr_composite_loss(values, target, criterion, boundary_coefficient=0.0)
+        torch.testing.assert_close(parts["total"] - without["total"], 0.2 * parts["boundary"])
+        torch.testing.assert_close(without["total"], without["seg_final"] + 0.4 * without["seg_initial"] + 0.1 * without["consistency"])
 
     def test_morphological_gradient_target(self):
         target = torch.zeros(1, 1, 7, 7)

@@ -21,7 +21,7 @@ from torch.utils.data import ConcatDataset, DataLoader
 
 from models.architecture_factory import build_variant, load_variant_configs
 from research_pipeline.data import ManifestSegmentationDataset
-from research_pipeline.losses import DiceBCEBoundaryLoss, supervised_loss, ugbr_composite_loss
+from research_pipeline.losses import DiceBCEBoundaryLoss, DiceBCELoss, supervised_loss, ugbr_composite_loss
 from research_pipeline.reproducibility import seed_everything, seed_worker
 
 
@@ -250,6 +250,11 @@ def main():
     cfg = protocol["training"]; loss_cfg = dict(cfg["loss"]); ds_weights = loss_cfg.pop("deep_supervision_weights")
     loss_cfg.pop("name")
     criterion = DiceBCEBoundaryLoss(**loss_cfg)
+    ugbr_criterion = DiceBCELoss(
+        dice_weight=criterion.dice_weight,
+        bce_weight=criterion.bce_weight,
+        label_smoothing=criterion.label_smoothing,
+    )
     encoder_params = list(model.encoder.parameters())
     decoder_params = [parameter for name, parameter in model.named_parameters() if not name.startswith("encoder.")]
     optimizer = torch.optim.AdamW([{"params": encoder_params, "lr": cfg["encoder_lr"]},
@@ -297,7 +302,7 @@ def main():
             optimizer.zero_grad(set_to_none=True)
             outputs = model(images)
             if isinstance(outputs, dict):
-                components = ugbr_composite_loss(outputs, masks, criterion)
+                components = ugbr_composite_loss(outputs, masks, ugbr_criterion)
                 loss = components["total"]
             else:
                 loss = supervised_loss(outputs, masks, criterion, ds_weights)

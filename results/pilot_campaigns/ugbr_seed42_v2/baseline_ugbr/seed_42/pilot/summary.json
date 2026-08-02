@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "variant": "baseline_ugbr",
+  "seed": 42,
+  "run_mode": "pilot",
+  "best_selection_dice": 0.29346440990098693,
+  "epochs_completed": 12,
+  "elapsed_seconds": 105.24599649998709,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\pilot_campaigns\\ugbr_seed42_v2\\baseline_ugbr\\seed_42\\pilot",
+  "completed": true
+}

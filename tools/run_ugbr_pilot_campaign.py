@@ -25,6 +25,7 @@ PILOT_JOBS = (
     "baseline_best_existing_ugbr",
 )
 SEED = 42
+PILOT_NAMESPACE = Path("results/pilot_campaigns/ugbr_seed42_v2")
 EVIDENCE_SOURCE_FILES = (
     "train_research.py",
     "models/architecture_factory.py",
@@ -151,9 +152,14 @@ def metadata_equivalent(config, expected):
     return not mismatched, mismatched
 
 
+def pilot_run_dir(root, variant):
+    """Return the isolated fresh-pilot directory; legacy raw results are never targeted."""
+    return Path(root) / PILOT_NAMESPACE / variant / "seed_42" / "pilot"
+
+
 def validate_run(root, variant):
     """Strict exact-protocol validation suitable for reuse and post-run gating."""
-    run_dir = Path(root) / "results/raw" / variant / "seed_42/pilot"
+    run_dir = pilot_run_dir(root, variant)
     required = ("summary.json", "resolved_config.json", "history.json", "best.pth", "last.pth")
     missing = [name for name in required if not (run_dir / name).is_file()]
     if missing:
@@ -187,7 +193,7 @@ def validate_run(root, variant):
 
 
 def resume_compatible(root, variant):
-    run_dir = Path(root) / "results/raw" / variant / "seed_42/pilot"
+    run_dir = pilot_run_dir(root, variant)
     checkpoint = run_dir / "last.pth"
     config_path = run_dir / "resolved_config.json"
     if not checkpoint.is_file():
@@ -205,7 +211,8 @@ def resume_compatible(root, variant):
 
 def training_command(python, root, variant, device, resume=False):
     command = [python, "-u", str(Path(root) / "train_research.py"), "--variant", variant,
-               "--seed", str(SEED), "--device", device, "--pilot"]
+               "--seed", str(SEED), "--device", device, "--pilot",
+               "--output-root", str(Path(root) / PILOT_NAMESPACE)]
     if resume:
         command.append("--resume")
     return command
@@ -217,7 +224,7 @@ def validation_command(python, script, root, variant):
 
 def run_campaign(root, python, device, run=subprocess.run):
     root = Path(root).resolve()
-    ledger = root / "results/raw/ugbr_pilot_queue.jsonl"
+    ledger = root / PILOT_NAMESPACE / "ugbr_pilot_queue.jsonl"
     lock_path = root / ".agentic/ugbr_pilot_campaign.lock.json"
     owned_lock = acquire_lock(lock_path)
     completed = 0
@@ -230,7 +237,7 @@ def run_campaign(root, python, device, run=subprocess.run):
                 emit(ledger, "reuse", variant=variant, seed=SEED, evidence=reason)
                 continue
             can_resume, resume_reason = resume_compatible(root, variant)
-            run_dir = root / "results/raw" / variant / "seed_42/pilot"
+            run_dir = pilot_run_dir(root, variant)
             if run_dir.exists() and any(run_dir.iterdir()) and not can_resume:
                 raise RuntimeError(f"Preserved incompatible prior run {variant}: {resume_reason}")
             command = training_command(python, root, variant, device, can_resume)
