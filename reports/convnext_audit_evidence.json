@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "probe_device": "cpu",
+  "backbone": {"identity": "convnext_tiny", "depths": [3, 3, 9, 3]},
+  "pretrained": {
+    "path": "convnext_tiny_22k_1k_384.pth",
+    "sha256": "F22F8850DCDED245F4AE3BC402BBDE9C6F5E4E23E76DFAEA3AADB75AA9D3705A",
+    "bytes": 114414741,
+    "model_keys": 178,
+    "matched_keys": 178,
+    "key_coverage": 1.0,
+    "numel_coverage": 1.0,
+    "missing_keys": [],
+    "shape_mismatch_keys": [],
+    "unexpected_keys": ["norm.weight", "norm.bias", "head.weight", "head.bias"],
+    "unexpected_key_justification": "ImageNet classifier norm/head are not part of the segmentation encoder."
+  },
+  "preprocessing": {
+    "trace": ["OpenCV BGR to RGB", "float divide by 255 and clamp", "single ImageNet mean/std in ConvNeXtUNet.forward"],
+    "duplicate_normalization": false,
+    "paths": ["research_pipeline/data.py", "models/convnext_pretrain.py"]
+  },
+  "shape_probe": {
+    "input": [1, 3, 352, 352],
+    "stages": [[1, 96, 88, 88], [1, 192, 44, 44], [1, 384, 22, 22], [1, 768, 11, 11]],
+    "skips": ["f3->d4", "f2->d3", "f1->d2"],
+    "final": [1, 1, 352, 352]
+  },
+  "optimizer_probe": {"encoder_total": 178, "encoder_covered": 178, "decoder_total": 65, "decoder_covered": 65, "groups_disjoint": true},
+  "unfreeze_probe": {"frozen_verified": true, "unfrozen_verified": true, "encoder_grads": 178, "encoder_parameters": 178, "gradient_l2_norm": 8.856485366821289, "finite": true, "nonzero": true, "loss": 2.640625476837158},
+  "checkpoint_selection": {"metric": "mean validation Dice", "datasets": ["Kvasir-SEG", "CVC-ClinicDB"], "test_data_used_for_selection": false},
+  "source_paths": ["models/architecture_factory.py", "models/convnext_pretrain.py", "research_pipeline/data.py", "train_research.py", "configs/training_protocol.yaml"]
+}
+

@@ -1,3 +1,0 @@
-canonical_matrix: configs/ablation_matrix.yaml
-status: pointer_only
-note: The repository-root path above is the only executable experiment matrix.

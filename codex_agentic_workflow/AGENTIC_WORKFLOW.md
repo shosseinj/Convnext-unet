@@ -1,181 +1,160 @@
-# Agentic Workflow V2 — BSEI-ConvNeXt-UNet Article Completion
+# Agentic Workflow V3 — ConvNeXt Audit + UGBR
 
-## نقش Codex
+## نقش
 
-تو مدیر یک workflow پژوهشی reproducible و مقاله‌محور هستی. پروژه `Convnext-unet-main` و فایل Word `hossein_paper_revised.docx` را از روی کد، داده و نتایج واقعی جلو ببر. هدف نهایی تکمیل implementation و مقاله است.
+تو Orchestrator یک workflow پژوهشی multi-agent هستی. کار باید evidence-driven، کم‌مصرف از نظر token و بدون جعل نتیجه باشد.
 
-نقش‌های منطقی:
+## محدودیت قطعی
 
-1. Research Planner
-2. Repository Auditor
-3. Implementation Engineer
-4. Experiment Engineer
-5. Evaluation and Statistics Engineer
-6. Figure and Table Engineer
-7. Manuscript Engineer
-8. Reviewer QA Engineer
+- ورودی: `352×352`
+- campaign قبلی باید متوقف شود؛ نتایج قبلی حذف نشوند.
+- هیچ مدل یا ماژولی تضمین نمی‌کند Dice از 0.94 عبور کند.
+- هدف pilot: اثبات بهبود منصفانه نسبت به baseline متناظر.
+- بهترین ماژول موجود باید از نتایج سه-seed معتبر تعیین شود؛ مقدار اولیه پیشنهادی `baseline_msc_bsei_detail` است.
+- تا پایان pilot، manuscript، Word، figure، control experiment و qualitative evaluation ممنوع است.
+- اجرای طولانی داخل session Codex ممنوع است؛ training در PowerShell visible اجرا شود.
+- فقط یک GPU training job فعال باشد.
 
-`Video QA Tester` وجود ندارد و نباید ساخته یا اجرا شود.
+## Agentها
 
-نام رسمی ماژول در کل workflow، کد، شکل‌ها، جدول‌ها و مقاله `BSEI` است. نام‌های قدیمی را audit کن و فقط پس از تطبیق implementation با BSEI هماهنگ کن؛ equations و channel counts را کورکورانه replace نکن.
+1. `orchestrator`: مالک state، dispatch و gateها.
+2. `process_safety_agent`: توقف campaign قدیمی، PID/lock/GPU safety.
+3. `convnext_audit_agent`: backbone، pretrained، preprocessing، stages، optimizer و gradient audit.
+4. `architecture_agent`: طراحی و پیاده‌سازی UGBR و variantها.
+5. `loss_agent`: پیاده‌سازی loss چندجزئی و boundary target.
+6. `experiment_agent`: اجرای pilot و full seedها در terminal visible.
+7. `validation_agent`: بررسی artifacts، NaN/Inf، checkpoint و official PASS.
+8. `analysis_agent`: مقایسه paired و تصمیم gate.
+9. `review_agent`: QA نهایی هر transition، بدون اجرای training.
 
-## مرحله ۱ — Audit
+Agentها حق ندارند مستقیم stage را تغییر دهند. فقط Orchestrator پس از دریافت evidence از Validation و Review transition می‌دهد.
 
-قبل از تغییر کد:
-
-- ساختار repository، Git status، environment و dependencies را بررسی کن.
-- مدل، train loop، evaluation، preprocessing، checkpoint loading و logها را پیدا کن.
-- تفاوت کد با `ABLATION_TRAINING_PROTOCOL.md` را گزارش کن.
-- فایل Word را inventory کن: sections، tables، figures، placeholders، `XX` و `TBD`.
-- موجودبودن datasetها، pretrained weights و checkpointها را بررسی کن.
-- هیچ refactor نامرتبطی انجام نده.
-
-خروجی:
-
-```text
-reports/repository_audit.md
-reports/architecture_inventory.json
-reports/manuscript_inventory.md
-reports/manuscript_placeholders.csv
-```
-
-نسخه فعلی مقاله حدود 913 پاراگراف، 10 جدول و 5 تصویر دارد؛ این اعداد را با نسخه واقعی verify کن.
-
-## مرحله ۲ — Research Specification
-
-تولید کن:
+## Graph اصلی
 
 ```text
-docs/research_spec.md
-configs/training_protocol.yaml
-configs/ablation_matrix.yaml
+STOP_OLD_CAMPAIGN
+  -> CONVNEXT_AUDIT
+  -> AUDIT_GATE
+       FAIL -> DIAGNOSE -> PATCH -> TARGETED_RETEST -> AUDIT_GATE
+       PASS -> IMPLEMENT_UGBR
+  -> ARCHITECTURE_TEST
+       FAIL -> DIAGNOSE -> PATCH -> TARGETED_RETEST
+       PASS -> PILOT
+  -> PILOT_VALIDATE
+  -> PILOT_DECISION
+       REJECT -> STOP_AND_REPORT
+       REVISE -> ONE_REVISION_LOOP -> PILOT
+       ACCEPT -> FULL_THREE_SEED
+  -> FINAL_VALIDATE
+  -> AGGREGATE
+  -> STOP_BEFORE_MANUSCRIPT
 ```
 
-موارد قطعی:
+## Pilot matrix
 
-- split ثابت train/validation/test
-- seedهای `42`, `3407`, `2026`
-- input برابر 352×352
-- checkpoint selection با میانگین validation Dice روی Kvasir و ClinicDB
-- عدم استفاده از test برای انتخاب checkpoint یا threshold
-- protocol یکسان برای تمام variantها
-- مقاله Word منبع اصلی متن است؛ هر تغییر در `manuscript/word_update_queue.md` ثبت شود.
+```yaml
+- baseline
+- baseline_ugbr
+- baseline_best_existing
+- baseline_best_existing_ugbr
+```
 
-## پروتکل آموزش پیشنهادی
+در pilot ابتدا seed `42` اجرا شود. baseline و best-existing معتبر قبلی می‌توانند reuse شوند، اما فقط اگر config، split، input size، preprocessing و training protocol دقیقاً برابر باشند.
+
+## UGBR contract
+
+UGBR باید حداقل این interface را ارائه دهد:
 
 ```text
-Input: 352×352
-Encoder: ImageNet-pretrained
-Max epochs: 150
-Encoder freeze: 10 epochs
-Encoder LR: 1e-5
-Decoder LR: 1e-4
-Weight decay: 1e-4
-Optimizer: AdamW
-Early stopping: 30 epochs
-Seeds: 42, 3407, 2026
-TTA during ablation: disabled
+input:
+  decoder_feature
+  shallow_encoder_feature
+  initial_logits
+output:
+  initial_logits
+  boundary_logits
+  refinement_logits
+  final_logits = initial_logits + refinement_logits
 ```
 
-## معماری و آزمایش‌ها
-
-Baseline باید ConvNeXt-Tiny، lightweight U-Net decoder و normal skip باشد و MSC، BSEI، Detail Branch، GDF و DS نداشته باشد.
-
-ترتیب incremental:
+Uncertainty map:
 
 ```text
-Baseline → +MSC → +BSEI → +Detail Branch → +GDF → +Deep Supervision
+p = sigmoid(initial_logits)
+uncertainty = 1 - abs(2*p - 1)
 ```
 
-کنترل‌ها:
-
-- Backbone: ResNet34، EfficientNet و ConvNeXt-Tiny
-- Skip: normal، attention gate و proposed BSEI
-- GDF: addition، concatenation، attention fusion و proposed GDF
-- MSC branch count: 2، 3، 4 و 5
-- MSC dilation sets: `(1,2,3)`, `(1,3,5)`, `(1,3,7)`
-- detail channels: بدون detail، 16، 32 و 64
-- deep supervision: صفر، یک، دو و سه auxiliary head
-
-## حلقه خودکار و retry
-
-State machine:
+## Loss contract
 
 ```text
-AUDIT → PLAN → IMPLEMENT → TEST → PILOT → EXPERIMENT → VALIDATE → AGGREGATE → WORD_UPDATE → REVIEW → DONE
+L_total = Lseg(final)
+        + 0.4 * Lseg(initial)
+        + 0.2 * Lboundary
+        + 0.1 * Lconsistency
 ```
 
-در خطا:
+- `Lboundary` روی morphological-gradient target محاسبه شود.
+- `Lconsistency` خارج از نواحی uncertain از تغییر بی‌دلیل prediction جلوگیری کند.
+- تمام اجزا باید finite و جداگانه log شوند.
+
+## ConvNeXt audit gate
+
+PASS فقط وقتی:
+
+- exact backbone identity مشخص است.
+- pretrained coverage قابل قبول و مستند است.
+- missing/unexpected keys توجیه شده‌اند.
+- RGB و normalization درست‌اند و duplicate normalization وجود ندارد.
+- stage shapeها برای 352×352 صحیح‌اند.
+- skipها به stage مورد انتظار وصل‌اند.
+- encoder و decoder داخل optimizer هستند.
+- unfreeze واقعاً انجام می‌شود.
+- encoder gradient بعد از unfreeze nonzero و finite است.
+- checkpoint selection فقط بر validation است.
+
+خروجی: `CONVNEXT_AUDIT.md` حداکثر 40 خط.
+
+## Pilot decision gate
+
+برای هر زوج:
 
 ```text
-TEST/VALIDATE/WORD_UPDATE failure
-→ DIAGNOSE → PATCH → targeted retest → regression test
+baseline_ugbr - baseline
+baseline_best_existing_ugbr - baseline_best_existing
 ```
 
-حداکثر retry برابر 3 است. اگر یک root cause دو بار تکرار شد، workflow باید `BLOCKED` شود و traceback، command، مسیر فایل و پیشنهاد اصلاح را در `MONITORING.md` و `.agentic/state.json` ثبت کند. نتیجه جعلی نساز و بی‌نهایت retry نکن.
+- `ACCEPT`: حداقل یکی از زوج‌ها `ΔDice >= +0.003` و هیچ regression جدی در IoU/HD95 ندارد.
+- `REVISE`: `0 < ΔDice < 0.003` و failure فنی مشاهده نشده؛ فقط یک revision loop مجاز است.
+- `REJECT`: Dice بهتر نشده، instability وجود دارد، یا complexity بدون سود معنی‌دار افزایش یافته است.
 
-## Gateها
+عبور از 0.94 هدف مطلوب است، نه شرط صداقت یا PASS workflow.
 
-### Gate 1 — Architecture
+## Loop engineering
 
-- همه variantها instantiate می‌شوند.
-- tensor shape، output و checkpoint load درست است.
-- Params و FLOPs محاسبه می‌شود.
+- retry فنی برای هر failure signature: حداکثر 2 بار.
+- revision معماری UGBR: حداکثر 1 بار.
+- اگر root cause تکرار شد: `BLOCKED`.
+- هیچ polling پیوسته توسط Codex انجام نشود.
+- launcher پس از پایان run باید log و artifacts را validate کند و فقط بعد از PASS run بعدی را شروع کند.
 
-### Gate 2 — Smoke test
+## User-facing status
 
-- forward، backward و یک epoch کوتاه موفق است.
-- loss/gradient finite است.
-- checkpoint save/load موفق است.
-
-### Gate 3 — Pilot
-
-- همه variantها ابتدا با seed 42 اجرا می‌شوند.
-- نتیجه pilot قبل از full run بررسی می‌شود.
-
-### Gate 4 — Full experiments
-
-- هر variant با هر سه seed اجرا شده است.
-- raw log، checkpoint و metadata حفظ شده‌اند.
-
-### Gate 5 — Statistics
-
-- میانگین هر seed محاسبه شده است.
-- mean±std بین seedها محاسبه شده است.
-- confidence interval/effect size در صورت نیاز ثبت شده است.
-
-### Gate 6 — Word update
-
-- متن نهایی، محل درج، جدول، شکل، caption و evidence manifest آماده است.
-- قبل از replace مقاله، backup ساخته و DOCX render شده است.
-
-### Gate 7 — Reviewer QA
-
-- متن، جدول و شکل سازگارند.
-- هیچ `XX`، `TBD` یا claim بدون evidence باقی نمانده است.
-- reference، DOI و citation audit انجام شده است.
-
-## قرارداد Word-ready
-
-هر مرحله باید طبق `templates/word_update_contract.md` این artifactها را تولید کند:
+فقط `RUN_STATUS.md` با این فیلدها:
 
 ```text
-manuscript/sections/<stage>.md
-manuscript/tables/<stage>.csv
-manuscript/tables/<stage>.tex
-manuscript/figures/<stage>.*
-manuscript/captions/<stage>.md
-manuscript/word_update_queue.md
+Stage:
+Workflow status:
+Active agent:
+Active run:
+Latest epoch:
+Completed pilots:
+ConvNeXt audit:
+Last validation:
+Process status:
+Last error:
+Next action:
+Console log:
+Last update:
 ```
 
-اگر داده کافی نیست، عدد نساز؛ placeholder دقیق با owner و evidence موردنیاز ثبت کن.
-
-## خروجی نهایی
-
-- کد و configهای reproducible
-- raw و aggregated results
-- جدول‌های CSV و LaTeX
-- شکل معماری، ablation، size analysis و qualitative analysis
-- متن نهایی Word
-- گزارش reviewer و reproducibility
-- ثبت license و citation کدهای GitHub
+حداکثر 15 خط و بدون history انباشته.

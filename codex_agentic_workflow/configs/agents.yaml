@@ -1,0 +1,29 @@
+schema_version: 1
+agents:
+  orchestrator:
+    write_scope: [.agentic/state.json, RUN_STATUS.md]
+    duties: [dispatch, state_transition, gate_enforcement]
+  process_safety_agent:
+    write_scope: [.agentic]
+    duties: [process_inventory, safe_stop, stale_lock_cleanup, gpu_zero_check]
+  convnext_audit_agent:
+    write_scope: [CONVNEXT_AUDIT.md, reports/convnext_audit]
+    duties: [backbone_identity, weight_loading, preprocessing, stage_shapes, optimizer, gradients]
+  architecture_agent:
+    write_scope: [models, configs/model_variants.yaml]
+    duties: [ugbr, variant_factory, architecture_fix]
+  loss_agent:
+    write_scope: [research_pipeline/losses.py, tests/test_ugbr_loss.py]
+    duties: [composite_loss, boundary_target, finite_component_logging]
+  experiment_agent:
+    write_scope: [results, CAMPAIGN_CONSOLE.log]
+    duties: [visible_launcher, sequential_training, resume]
+  validation_agent:
+    write_scope: [reports/validation]
+    duties: [artifact_validation, metric_validation, checkpoint_validation]
+  analysis_agent:
+    write_scope: [reports/pilot_decision.json, reports/aggregate]
+    duties: [paired_comparison, gate_decision, aggregate]
+  review_agent:
+    write_scope: [reports/review_gate.json]
+    duties: [independent_transition_review]

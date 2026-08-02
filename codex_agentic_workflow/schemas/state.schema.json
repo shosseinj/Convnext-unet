@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ConvNeXt UGBR Agentic State",
+  "type": "object",
+  "required": ["workflow", "node", "status", "updated_at", "evidence"],
+  "properties": {
+    "workflow": {"const": "convnext_ugbr_v3"},
+    "node": {"type": "string"},
+    "status": {"enum": ["PENDING", "RUNNING", "PASS", "FAIL", "BLOCKED", "COMPLETE"]},
+    "active_agent": {"type": ["string", "null"]},
+    "active_run": {"type": ["string", "null"]},
+    "attempts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "last_error": {"type": ["string", "null"]},
+    "updated_at": {"type": "string"}
+  },
+  "additionalProperties": true
+}

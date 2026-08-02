@@ -1,0 +1,28 @@
+schema_version: 1
+input_size: [352, 352]
+pilot_seed: 42
+full_seeds: [42, 3407, 2026]
+best_existing_candidate: baseline_msc_bsei_detail
+variants:
+  - id: baseline
+    ugbr: false
+    base_variant: baseline
+  - id: baseline_ugbr
+    ugbr: true
+    base_variant: baseline
+  - id: baseline_best_existing
+    ugbr: false
+    base_variant: baseline_msc_bsei_detail
+  - id: baseline_best_existing_ugbr
+    ugbr: true
+    base_variant: baseline_msc_bsei_detail
+loss:
+  final_seg: 1.0
+  initial_seg: 0.4
+  boundary: 0.2
+  consistency: 0.1
+pilot_gate:
+  minimum_absolute_dice_gain: 0.003
+  require_no_major_iou_regression: true
+  require_no_major_hd95_regression: true
+  max_architecture_revisions: 1

@@ -1,0 +1,79 @@
+schema_version: 1
+workflow: convnext_ugbr_v3
+initial_node: stop_old_campaign
+terminal_nodes: [stop_and_report, aggregate_complete, blocked]
+nodes:
+  stop_old_campaign:
+    agent: process_safety_agent
+    on_pass: convnext_audit
+    on_fail: blocked
+  convnext_audit:
+    agent: convnext_audit_agent
+    on_pass: audit_review
+    on_fail: diagnose_audit
+  diagnose_audit:
+    agent: convnext_audit_agent
+    loop: technical_retry
+    on_pass: targeted_audit_retest
+    on_fail: blocked
+  targeted_audit_retest:
+    agent: validation_agent
+    on_pass: audit_review
+    on_fail: diagnose_audit
+  audit_review:
+    agent: review_agent
+    on_pass: implement_ugbr
+    on_fail: diagnose_audit
+  implement_ugbr:
+    agent: architecture_agent
+    on_pass: implement_loss
+    on_fail: diagnose_implementation
+  implement_loss:
+    agent: loss_agent
+    on_pass: architecture_test
+    on_fail: diagnose_implementation
+  architecture_test:
+    agent: validation_agent
+    on_pass: pilot_launch
+    on_fail: diagnose_implementation
+  diagnose_implementation:
+    agent: architecture_agent
+    loop: technical_retry
+    on_pass: architecture_test
+    on_fail: blocked
+  pilot_launch:
+    agent: experiment_agent
+    on_pass: pilot_validate
+    on_fail: blocked
+  pilot_validate:
+    agent: validation_agent
+    on_pass: pilot_analyze
+    on_fail: diagnose_pilot
+  diagnose_pilot:
+    agent: experiment_agent
+    loop: technical_retry
+    on_pass: pilot_validate
+    on_fail: blocked
+  pilot_analyze:
+    agent: analysis_agent
+    decisions:
+      ACCEPT: full_three_seed
+      REVISE: revise_ugbr
+      REJECT: stop_and_report
+  revise_ugbr:
+    agent: architecture_agent
+    loop: architecture_revision
+    on_pass: architecture_test
+    on_fail: stop_and_report
+  full_three_seed:
+    agent: experiment_agent
+    on_pass: final_validate
+    on_fail: blocked
+  final_validate:
+    agent: validation_agent
+    on_pass: aggregate
+    on_fail: blocked
+  aggregate:
+    agent: analysis_agent
+    on_pass: aggregate_complete
+    on_fail: blocked

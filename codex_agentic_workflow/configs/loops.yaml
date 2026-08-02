@@ -1,0 +1,28 @@
+schema_version: 1
+loops:
+  technical_retry:
+    max_attempts: 2
+    fingerprint_fields: [node, exception_type, root_cause, affected_file]
+    stop_when_same_fingerprint_repeats: true
+    required_cycle: [diagnose, minimal_patch, targeted_test, independent_validation]
+  architecture_revision:
+    max_attempts: 1
+    allowed_changes:
+      - uncertainty_gate
+      - boundary_width
+      - refinement_channels
+      - loss_weights
+    forbidden_changes:
+      - dataset_split
+      - test_set_selection
+      - seed_cherry_picking
+      - metric_definition
+  run_validation:
+    max_attempts: 1
+    checks:
+      - expected_epoch_count
+      - finite_metrics
+      - checkpoint_integrity
+      - identity_match
+      - metadata_complete
+      - validator_pass

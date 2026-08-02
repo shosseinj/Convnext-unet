@@ -1,0 +1,16 @@
+# ConvNeXt Audit Gate — PASS
+- Contract: `codex_agentic_workflow/AGENTIC_WORKFLOW.md` (V3 heading; requested folder alias is absent).
+- Backbone: ConvNeXt-Tiny, depths `[3,3,9,3]`; paths `models/architecture_factory.py`, `models/convnext_pretrain.py`.
+- Local weights: `convnext_tiny_22k_1k_384.pth`, SHA256 `F22F8850DCDED245F4AE3BC402BBDE9C6F5E4E23E76DFAEA3AADB75AA9D3705A`.
+- Pretrained coverage: 178/178 model keys and 100% parameter elements; missing=0; shape mismatch=0.
+- Unexpected keys: `norm.weight`, `norm.bias`, `head.weight`, `head.bias`; classifier-only and intentionally excluded from the segmentation encoder.
+- Input path: OpenCV BGR→RGB, float scaling to `[0,1]`, then one ImageNet mean/std normalization in the model; no duplicate normalization.
+- 352 stage shapes: `[1,96,88,88]`, `[1,192,44,44]`, `[1,384,22,22]`, `[1,768,11,11]`.
+- Skip wiring: `f3→d4`, `f2→d3`, `f1→d2`; final logits shape `[1,1,352,352]`.
+- Optimizer coverage: encoder 178/178 tensors, decoder 65/65 tensors, disjoint parameter groups.
+- Unfreeze probe: frozen and unfrozen states verified; encoder grads 178/178, L2 norm 8.856485366821289, finite and nonzero.
+- Checkpoint selection: best score is mean Dice over Kvasir-SEG and CVC-ClinicDB validation loaders only.
+- Detailed machine evidence: `reports/convnext_audit_evidence.json`.
+- Process-safety evidence: `reports/process_safety_evidence.json`.
+- Independent validation: pending `reports/audit_validation.json`.
+

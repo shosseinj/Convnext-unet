@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "scope": "repository-owned campaign, queue, watcher, and training processes",
+  "safe_stop_script": "codex_agentic_workflow/scripts/stop_old_campaign.ps1",
+  "safe_stop_result": "Old campaign processes stopped. Results and checkpoints were not deleted.",
+  "after": {"repository_process_count": 0, "python_process_count": 0, "repository_gpu_process_count": 0},
+  "gpu_check": {"tool": "nvidia-smi", "resolved_nontraining_pids": {"2384": "dwm.exe", "27700": "Taskmgr.exe"}, "repository_pid_found": false},
+  "stale_lock": {"path": ".agentic/official_queue.lock.json", "recorded_pid": 37252, "pid_verified_absent": true, "removed": true},
+  "historical_guardian": {"source": ".agentic/state.json", "pid": 28016, "pid_verified_absent": true},
+  "preservation": {"results_exists": true, "results_file_count_after": 148, "checkpoint_tree_deleted": false},
+  "remaining_candidate_lock_count": 0
+}
