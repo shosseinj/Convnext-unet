@@ -98,6 +98,59 @@ def validate_completed_run(run_dir, variant, seed):
     return True, "validated completed run"
 
 
+def deep_validation_pass(run_dir, variant, seed):
+    path = run_dir / "validation.json"
+    if not path.is_file():
+        return False
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return report.get("status") == "PASS" and report.get("variant") == variant and report.get("seed") == seed
+
+
+def write_run_status(root, *, campaign_status, active_run, latest_epoch, completed,
+                     last_completed, last_result, process_status, last_error, next_action):
+    timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
+    lines = [
+        "Stage: EXPERIMENT",
+        f"Campaign status: {campaign_status}",
+        f"Active run: {active_run}",
+        f"Latest epoch: {latest_epoch}",
+        f"Completed runs: {completed}/18",
+        f"Last completed run: {last_completed}",
+        f"Last result: {last_result}",
+        f"Process status: {process_status}",
+        f"Last error: {last_error}",
+        f"Next action: {next_action}",
+        f"Console log: {root / 'CAMPAIGN_CONSOLE.log'}",
+        f"Last update: {timestamp}",
+    ]
+    (root / "RUN_STATUS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def run_deep_validation(root, python, run_dir, variant, seed):
+    command = [python, str(root / "tools" / "validate_official_run.py"),
+               "--variant", variant, "--seed", str(seed)]
+    result = subprocess.run(command, cwd=root)
+    return result.returncode == 0 and deep_validation_pass(run_dir, variant, seed)
+
+
+def training_command(python, script, variant, seed, device, resume_checkpoint):
+    arguments = [str(script), "--variant", variant, "--seed", str(seed),
+                 "--device", device, "--resume"]
+    if not resume_checkpoint.is_file():
+        return [python, *arguments]
+    wrapper = (
+        "import runpy,sys,torch;"
+        "_real_load=torch.load;"
+        "torch.load=lambda *a,**kw:_real_load(*a,**dict(kw,map_location='cpu'));"
+        "_script=sys.argv[1];sys.argv=sys.argv[1:];"
+        "runpy.run_path(_script,run_name='__main__')"
+    )
+    return [python, "-u", "-c", wrapper, *arguments]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--device", default="cuda")
@@ -110,14 +163,31 @@ def main():
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     owned_lock = acquire_lock(lock_path)
     try:
-        for variant, seed in load_incremental_jobs(root / "configs" / "ablation_matrix.yaml"):
+        jobs = load_incremental_jobs(root / "configs" / "ablation_matrix.yaml")
+        completed = 0
+        for variant, seed in jobs:
                 run_dir = root / "results" / "raw" / variant / f"seed_{seed}" / "official"
                 valid, reason = validate_completed_run(run_dir, variant, seed)
                 if valid:
+                    if not deep_validation_pass(run_dir, variant, seed):
+                        if not run_deep_validation(root, args.python, run_dir, variant, seed):
+                            raise SystemExit(f"Official queue stopped: deep validation failed for {variant} seed={seed}")
+                    completed += 1
                     print(f"SKIP completed {variant} seed={seed}: {reason}", flush=True)
                     continue
-                command = [args.python, str(root / "train_research.py"), "--variant", variant,
-                           "--seed", str(seed), "--device", args.device, "--resume"]
+                now = datetime.now(timezone.utc).isoformat()
+                print("=" * 64, flush=True)
+                print(f"RUN START | variant={variant} | seed={seed} | time={now}", flush=True)
+                print("=" * 64, flush=True)
+                write_run_status(root, campaign_status="RUNNING", active_run=f"{variant} / seed {seed}",
+                                 latest_epoch="Starting", completed=completed,
+                                 last_completed="None" if completed == 0 else "See validated artifacts",
+                                 last_result="Run started", process_status="Visible terminal active",
+                                 last_error="None", next_action="Train and validate the active run")
+                command = training_command(
+                    args.python, root / "train_research.py", variant, seed, args.device,
+                    run_dir / "last.pth"
+                )
                 event = {"timestamp_utc": datetime.now(timezone.utc).isoformat(), "event": "start",
                          "variant": variant, "seed": seed, "command": command,
                          "python": args.python, "device": args.device, "resume_reason": reason,
@@ -125,15 +195,42 @@ def main():
                 with queue_log.open("a", encoding="utf-8") as handle: handle.write(json.dumps(event) + "\n")
                 result = subprocess.run(command, cwd=root)
                 valid_after, validation_reason = validate_completed_run(run_dir, variant, seed)
+                deep_valid = False
+                if result.returncode == 0 and valid_after:
+                    deep_valid = run_deep_validation(root, args.python, run_dir, variant, seed)
                 event.update({"timestamp_utc": datetime.now(timezone.utc).isoformat(), "event": "finish",
                               "returncode": result.returncode, "artifact_valid": valid_after,
-                              "validation": validation_reason})
+                              "validation": validation_reason, "deep_validation_pass": deep_valid})
                 with queue_log.open("a", encoding="utf-8") as handle: handle.write(json.dumps(event) + "\n")
-                if result.returncode or not valid_after:
+                if result.returncode or not valid_after or not deep_valid:
+                    error = (f"returncode={result.returncode}; artifact_valid={valid_after}; "
+                             f"deep_validation_pass={deep_valid}; {validation_reason}")
+                    print(f"RUN END | variant={variant} | seed={seed} | status=FAIL | "
+                          f"time={datetime.now(timezone.utc).isoformat()}", flush=True)
+                    write_run_status(root, campaign_status="FAILED", active_run="None",
+                                     latest_epoch="See run history", completed=completed,
+                                     last_completed="None" if completed == 0 else "See validated artifacts",
+                                     last_result="Official validation failed", process_status="Stopped",
+                                     last_error=error, next_action="Inspect the console log and run artifacts")
                     raise SystemExit(
                         f"Official queue stopped: {variant} seed={seed} returncode={result.returncode}; "
-                        f"validation={validation_reason}"
+                        f"validation={validation_reason}; deep_validation_pass={deep_valid}"
                     )
+                completed += 1
+                print(f"RUN END | variant={variant} | seed={seed} | status=PASS | "
+                      f"time={datetime.now(timezone.utc).isoformat()}", flush=True)
+                write_run_status(root, campaign_status="RUNNING", active_run="None",
+                                 latest_epoch="Complete", completed=completed,
+                                 last_completed=f"{variant} / seed {seed}",
+                                 last_result="Official validation PASS", process_status="Transitioning",
+                                 last_error="None", next_action="Start the next pending official run")
+        write_run_status(root, campaign_status="COMPLETE", active_run="None", latest_epoch="None",
+                         completed=len(jobs), last_completed=f"{jobs[-1][0]} / seed {jobs[-1][1]}",
+                         last_result="Official validation PASS", process_status="Stopped normally",
+                         last_error="None",
+                         next_action="Review aggregate official results before entering the next stage")
+        print(f"CAMPAIGN COMPLETE | runs={len(jobs)}/{len(jobs)} | "
+              f"time={datetime.now(timezone.utc).isoformat()}", flush=True)
     finally:
         try:
             current = json.loads(lock_path.read_text(encoding="utf-8"))

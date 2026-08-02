@@ -1,0 +1,180 @@
+{
+  "variant": "baseline_msc_bsei_detail",
+  "seed": 2026,
+  "run_mode": "official",
+  "manifest": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\configs\\splits\\development_seed_2026.json",
+  "manifest_sha256": "7eedc1f59930b29a60d102c1e160b897774f5b240d21a19c2e58915d9cd61819",
+  "git_commit": "17fdce83b20f9ab1f9ba84fa8749bd2f1522427d",
+  "protocol": {
+    "project": "Convnext-unet-main",
+    "input_size": [
+      352,
+      352
+    ],
+    "seeds": [
+      42,
+      3407,
+      2026
+    ],
+    "datasets": {
+      "development": [
+        "Kvasir-SEG",
+        "CVC-ClinicDB"
+      ],
+      "external_test_only": [
+        "CVC-300",
+        "CVC-ColonDB",
+        "ETIS-LARIBPOLYPDB"
+      ]
+    },
+    "split": {
+      "validation_fraction": 0.1,
+      "persist_manifests": true
+    },
+    "training": {
+      "max_epochs": 150,
+      "freeze_encoder_epochs": 10,
+      "batch_size": 8,
+      "num_workers": 0,
+      "optimizer": "AdamW",
+      "encoder_lr": 1e-05,
+      "decoder_lr": 0.0001,
+      "weight_decay": 0.0001,
+      "early_stopping_patience": 30,
+      "tta": false,
+      "scheduler": "cosine_annealing",
+      "loss": {
+        "name": "dice_bce_boundary",
+        "dice_weight": 0.3,
+        "bce_weight": 0.3,
+        "boundary_weight": 0.4,
+        "boundary_kappa": 5.0,
+        "label_smoothing": 0.02,
+        "deep_supervision_weights": [
+          1.0,
+          0.1,
+          0.05,
+          0.02
+        ]
+      },
+      "augmentation": {
+        "horizontal_flip_probability": 0.5,
+        "vertical_flip_probability": 0.5,
+        "rotation_probability": 0.5,
+        "rotation_degrees": 15,
+        "crop_probability": 0.5,
+        "crop_ratio": [
+          0.7,
+          1.0
+        ],
+        "photometric_probability": 0.5,
+        "blur_probability": 0.15,
+        "noise_probability": 0.25,
+        "noise_std": 0.015
+      }
+    },
+    "selection": {
+      "metric": "mean_validation_dice",
+      "formula": "(kvasir_val_dice + clinicdb_val_dice) / 2",
+      "forbid_test_dataset_selection": true
+    },
+    "reporting": {
+      "metrics": [
+        "dice",
+        "iou",
+        "precision",
+        "recall",
+        "specificity",
+        "pixel_accuracy",
+        "mae"
+      ],
+      "standard_deviation": "sample",
+      "size_bins": {
+        "small": "area_ratio < 0.05",
+        "medium": "0.05 <= area_ratio <= 0.20",
+        "large": "area_ratio > 0.20"
+      }
+    },
+    "pilot": {
+      "seed": 42,
+      "epochs": 12,
+      "max_train_batches_per_epoch": 25,
+      "max_validation_batches": 0,
+      "eligible_for_manuscript": false
+    }
+  },
+  "epochs": 150,
+  "max_train_batches": 0,
+  "max_val_batches": 0,
+  "environment": {
+    "python": "3.10.4 (tags/v3.10.4:9d38120, Mar 23 2022, 23:13:41) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.2.6",
+      "opencv-python": "4.13.0.92",
+      "PyYAML": "6.0.3",
+      "timm": "1.0.27",
+      "torch": "2.5.1+cu124",
+      "torchvision": "0.20.1+cu124"
+    },
+    "torch_cuda": "12.4",
+    "cudnn": 90100,
+    "device": "cuda",
+    "cuda_device": {
+      "name": "NVIDIA GeForce RTX 4090",
+      "capability": [
+        8,
+        9
+      ]
+    }
+  },
+  "model": {
+    "parameters": 29604819,
+    "trainable_parameters_at_initialization": 29604819,
+    "complexity_evidence": "reports/architecture_gate.json",
+    "complexity_convention": "GFLOPs = 2 * MACs at 1x3x352x352"
+  },
+  "source_fingerprints": {
+    "train_research.py": {
+      "sha256": "4754aa606cf0fa168dce9837645cc2f7455bb0712c42eb968799a2f996b06349",
+      "bytes": 16888
+    },
+    "models/architecture_factory.py": {
+      "sha256": "97ce628cd116e8be50d11a4d0d87e33fbef9f2d9c6695dd93a9dbc5e49b3053a",
+      "bytes": 3780
+    },
+    "models/convnext_pretrain.py": {
+      "sha256": "037006461f17c85c0f6e131efe11cc73cb1cd52ff371bb4f279c247b95eea766",
+      "bytes": 28354
+    },
+    "research_pipeline/data.py": {
+      "sha256": "e2f0b46f97183120f7ac651cf8d7027eb053e77f53ab7e4a9ed8c0caa2e58f7f",
+      "bytes": 3742
+    },
+    "research_pipeline/losses.py": {
+      "sha256": "fecc6f5ee6b03ae6a88e037bb8b7f74ede5e6ebda349436621bad8df728af0fc",
+      "bytes": 2135
+    },
+    "research_pipeline/reproducibility.py": {
+      "sha256": "5cd7f729896e6eab6f61700374bcd6562428003869ab63a9108eeeb7d485e141",
+      "bytes": 3355
+    },
+    "configs/training_protocol.yaml": {
+      "sha256": "dcc4aa96f01b737e38cc713ace5bb89848cf52c6ba83455d8d83ef6d526e68a0",
+      "bytes": 1502
+    },
+    "configs/ablation_matrix.yaml": {
+      "sha256": "8ed4b32dc20b07aa56845e26649fcfa57b5b5e1652598eaf8c4d39e1bae5d98d",
+      "bytes": 3623
+    },
+    "configs/splits/development_seed_2026.json": {
+      "sha256": "0b0156afeafd7f12f696449c9259ea6be9f5cff803cec9131253d36cb64e96a6",
+      "bytes": 178110
+    }
+  },
+  "pretrained_weights": {
+    "path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\convnext_tiny_22k_1k_384.pth",
+    "sha256": "f22f8850dcded245f4ae3bc402bbde9c6f5e4e23e76dfaea3aadb75aa9d3705a",
+    "bytes": 114414741
+  }
+}

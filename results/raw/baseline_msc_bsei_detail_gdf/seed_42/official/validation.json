@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "variant": "baseline_msc_bsei_detail_gdf",
+  "seed": 42,
+  "epochs_completed": 145,
+  "best_epoch": 115,
+  "best_selection_dice": 0.9135248077276252,
+  "recovery_contract": "rng-restorable",
+  "manifest_sha256": "ae39a534009f8a46c6aa7b87b9c78a886b251bdff24ad639024ba623715b5bbe",
+  "best_checkpoint_sha256": "e4fdd4c1e1d99ecbd1f24441de3cf7165869d664d03b569499eb93223b58546c",
+  "last_checkpoint_sha256": "0cad61a556a84a6af5ca9f255844c913dd9c95ce52026e0b9e88d9820f917e54",
+  "history_sha256": "31ed5489f12c6af9dd9548f518e53f933dc0372cf1c5ef8756428be9dc0b920d",
+  "resolved_config_sha256": "5783c8e827fd7cfb2c609de8d641d89103fe7e202c0a7bce4cf401981d685092",
+  "validated_utc": "2026-08-02T02:37:39.519038+00:00"
+}

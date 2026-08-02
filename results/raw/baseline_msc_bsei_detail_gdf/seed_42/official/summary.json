@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "variant": "baseline_msc_bsei_detail_gdf",
+  "seed": 42,
+  "run_mode": "official",
+  "best_selection_dice": 0.9135248077276252,
+  "epochs_completed": 145,
+  "elapsed_seconds": 5435.981241899979,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\raw\\baseline_msc_bsei_detail_gdf\\seed_42\\official",
+  "completed": true
+}

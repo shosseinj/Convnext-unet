@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "variant": "baseline",
+  "seed": 3407,
+  "run_mode": "official",
+  "best_selection_dice": 0.9161144410362168,
+  "epochs_completed": 94,
+  "elapsed_seconds": 4253.233956499986,
+  "run_dir": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\raw\\baseline\\seed_3407\\official",
+  "completed": true
+}

@@ -8,20 +8,21 @@
   "active_run": {
     "matrix": "incremental",
     "variant": "baseline",
-    "seed": 3407,
-    "last_verified_epoch": 78,
-    "completed_official_runs": 1,
+    "seed": 2026,
+    "last_verified_epoch": 31,
+    "completed_official_runs": 2,
     "total_official_runs": 18,
     "checkpoint_selection": "equal mean validation Dice on Kvasir-SEG and CVC-ClinicDB",
     "test_data_used_for_selection": false
   },
   "evaluation_backlog": [
-    {"variant": "baseline", "seed": 42, "run_validation": "PASS", "evaluation": "DEFERRED_UNTIL_GPU_QUEUE_IDLE"}
+    {"variant": "baseline", "seed": 42, "run_validation": "PASS", "evaluation": "DEFERRED_UNTIL_GPU_QUEUE_IDLE"},
+    {"variant": "baseline", "seed": 3407, "run_validation": "PASS", "evaluation": "DEFERRED_UNTIL_GPU_QUEUE_IDLE"}
   ],
   "campaign_guardian": {
     "pid": 28016,
     "status": "ACTIVE",
-    "incremental_validated": 1,
+    "incremental_validated": 2,
     "incremental_total": 18,
     "control_total": 42,
     "gpu_overlap_policy": "evaluation and control queue start only after incremental completion"
@@ -98,5 +99,5 @@
     "word_visual_render": "SOURCE_DOCX_29_OF_29_PAGES_PASS; FINAL_DOCX_NOT_PASSED"
   },
   "failures": ["F-001", "F-002", "F-003", "F-004", "F-005", "F-006", "F-007", "F-008", "F-009", "F-010", "F-011", "F-012", "F-013", "F-014", "F-015", "F-016", "F-017", "F-018", "F-019", "F-020", "F-021", "F-022", "F-023"],
-  "timestamp_utc": "2026-08-01T11:31:25.5043030Z"
+  "timestamp_utc": "2026-08-01T12:06:26.3021754Z"
 }

@@ -2,3 +2,8 @@
 {"timestamp_utc": "2026-08-01T10:34:35.716372+00:00", "event": "incremental_progress", "completed": 1, "total": 18}
 {"timestamp_utc": "2026-08-01T10:56:45.020561+00:00", "event": "campaign_start", "pid": 28016, "python": "C:\\Users\\jafari.h\\Desktop\\ai_project\\.venv\\Scripts\\python.exe", "device": "cuda"}
 {"timestamp_utc": "2026-08-01T10:56:45.031560+00:00", "event": "incremental_progress", "completed": 1, "total": 18}
+{"timestamp_utc": "2026-08-01T11:43:45.527731+00:00", "event": "deep_validation_start", "variant": "baseline", "seed": 3407, "command": ["C:\\Users\\jafari.h\\Desktop\\ai_project\\.venv\\Scripts\\python.exe", "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\tools\\validate_official_run.py", "--variant", "baseline", "--seed", "3407"]}
+{"timestamp_utc": "2026-08-01T11:43:47.954222+00:00", "event": "deep_validation_finish", "variant": "baseline", "seed": 3407, "returncode": 0, "artifact_valid": true}
+{"timestamp_utc": "2026-08-01T11:43:47.955221+00:00", "event": "incremental_progress", "completed": 2, "total": 18}
+{"timestamp_utc": "2026-08-01T12:22:16.505826+00:00", "event": "campaign_start", "pid": 33656, "python": "C:\\Users\\jafari.h\\Desktop\\ai_project\\.venv\\Scripts\\python.exe", "device": "cuda"}
+{"timestamp_utc": "2026-08-01T12:22:16.516828+00:00", "event": "incremental_progress", "completed": 2, "total": 18}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "variant": "baseline_msc",
+  "seed": 2026,
+  "epochs_completed": 120,
+  "best_epoch": 90,
+  "best_selection_dice": 0.9196795816142713,
+  "recovery_contract": "rng-restorable",
+  "manifest_sha256": "7eedc1f59930b29a60d102c1e160b897774f5b240d21a19c2e58915d9cd61819",
+  "best_checkpoint_sha256": "ab99555d4baee061156902f2a26446d81ec30fb9b1f66cdc7126b493c504dd72",
+  "last_checkpoint_sha256": "3be5ac790638be0a6cb4ed4b2035c77d79d19478f54c4a87a6198d4bf21b52d2",
+  "history_sha256": "89bd892db1cf8ab34b8f582d377b296e9fcae80f5ffb99821b3211921f21e91e",
+  "resolved_config_sha256": "bea48ffda62ed955f9d2c33a12953cd587e4f383cf665b537dbffa7fe43cbe20",
+  "validated_utc": "2026-08-01T17:41:09.753037+00:00"
+}

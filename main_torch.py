@@ -2211,7 +2211,7 @@ if __name__ == "__main__":
     parser.add_argument('--checkpoint_path', type=str, default='./logs/ablation/baseline+MSC/checkpoints_KvasirSEG-ConvNeXt/179-test0.86.pth', help='Checkpoint path used only when --load True')
     # parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-100/checkpoints_KvasirSEG-ConvNeXt/126-test0.88.pth', help='Checkpoint path used only when --load True')
     # parser.add_argument('--checkpoint_path', type=str, default=None, help='Checkpoint path used only when --load True')
-    parser.add_argument('--encoder_weights', type=str, default='./convnext_tiny_22k_1k_384.pth', help='ConvNeXt-Tiny pretrained encoder weights')
+    # parser.add_argument('--encoder_weights', type=str, default='./convnext_tiny_22k_1k_384.pth', help='ConvNeXt-Tiny pretrained encoder weights')
     parser.add_argument('--model_type', type=str, default='Gelu', help='(SNN|ReLU|Gelu)')
     parser.add_argument('--model_name', type=str, default='ConvNeXt', help='Should contain (FC2|VGG[BN]): e.g. VGG_BN_test1')
     parser.add_argument('--lr', type=float, default=1e-4, help='Baseline decoder learning rate')
