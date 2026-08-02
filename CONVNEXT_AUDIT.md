@@ -12,5 +12,4 @@
 - Checkpoint selection: best score is mean Dice over Kvasir-SEG and CVC-ClinicDB validation loaders only.
 - Detailed machine evidence: `reports/convnext_audit_evidence.json`.
 - Process-safety evidence: `reports/process_safety_evidence.json`.
-- Independent validation: pending `reports/audit_validation.json`.
-
+- Independent validation: PASS at `reports/audit_validation.json`.

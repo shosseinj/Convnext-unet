@@ -21,7 +21,7 @@ from torch.utils.data import ConcatDataset, DataLoader
 
 from models.architecture_factory import build_variant, load_variant_configs
 from research_pipeline.data import ManifestSegmentationDataset
-from research_pipeline.losses import DiceBCEBoundaryLoss, supervised_loss
+from research_pipeline.losses import DiceBCEBoundaryLoss, supervised_loss, ugbr_composite_loss
 from research_pipeline.reproducibility import seed_everything, seed_worker
 
 
@@ -35,6 +35,7 @@ EVIDENCE_SOURCE_FILES = (
     "train_research.py",
     "models/architecture_factory.py",
     "models/convnext_pretrain.py",
+    "models/ugbr.py",
     "research_pipeline/data.py",
     "research_pipeline/losses.py",
     "research_pipeline/reproducibility.py",
@@ -141,6 +142,11 @@ def limited(loader, maximum):
         yield batch
 
 
+def load_runner_variants(matrix_path):
+    """Load every variant section accepted by the experiment runner."""
+    return load_variant_configs(matrix_path, sections=("incremental", "controls", "pilot"))
+
+
 def binary_scores(probability, target, threshold=0.5):
     pred, truth = probability >= threshold, target >= 0.5
     dims = (1, 2, 3)
@@ -157,7 +163,11 @@ def evaluate(model, loader, device, maximum=0):
     with torch.inference_mode():
         for images, masks, _ in limited(loader, maximum):
             images, masks = images.to(device), masks.to(device)
-            output = model(images); output = output[0] if isinstance(output, (tuple, list)) else output
+            output = model(images)
+            if isinstance(output, dict):
+                output = output["final_logits"]
+            elif isinstance(output, (tuple, list)):
+                output = output[0]
             probability = torch.sigmoid(output)
             dice, iou = binary_scores(probability, masks)
             dice_values.extend(dice.cpu().tolist()); iou_values.extend(iou.cpu().tolist())
@@ -218,7 +228,7 @@ def main():
         args.max_val_batches = protocol["pilot"]["max_validation_batches"]
     else:
         epochs = args.epochs or protocol["training"]["max_epochs"]
-    variants = load_variant_configs(args.matrix, sections=("incremental", "controls"))
+    variants = load_runner_variants(args.matrix)
     if args.variant not in variants:
         raise SystemExit(f"Unknown variant: {args.variant}")
     variant_config = variants[args.variant]
@@ -281,18 +291,31 @@ def main():
     for epoch in range(start_epoch, epochs):
         encoder_frozen = epoch < cfg["freeze_encoder_epochs"]
         for parameter in model.encoder.parameters(): parameter.requires_grad = not encoder_frozen
-        model.train(); train_losses = []
+        model.train(); train_components = []
         for images, masks, _ in limited(train_loader, args.max_train_batches):
             images, masks = images.to(device), masks.to(device)
             optimizer.zero_grad(set_to_none=True)
-            loss = supervised_loss(model(images), masks, criterion, ds_weights)
+            outputs = model(images)
+            if isinstance(outputs, dict):
+                components = ugbr_composite_loss(outputs, masks, criterion)
+                loss = components["total"]
+            else:
+                loss = supervised_loss(outputs, masks, criterion, ds_weights)
+                zero = loss.detach().new_zeros(())
+                components = {"total": loss, "seg_final": loss, "seg_initial": zero,
+                              "boundary": zero, "consistency": zero}
             if not torch.isfinite(loss): raise RuntimeError(f"Non-finite loss at epoch {epoch + 1}")
-            loss.backward(); optimizer.step(); train_losses.append(float(loss.detach().cpu()))
+            loss.backward(); optimizer.step()
+            train_components.append({name: float(value.detach().cpu())
+                                     for name, value in components.items()})
         metrics = {name: evaluate(model, loader, device, args.max_val_batches)
                    for name, loader in validation_loaders.items()}
         selection = float(np.mean([metrics[name]["dice"] for name in DEVELOPMENT_DATASETS]))
+        component_means = {name: float(np.mean([item[name] for item in train_components]))
+                           for name in train_components[0]}
         row = {"epoch": epoch + 1, "encoder_frozen": encoder_frozen,
-               "train_loss": float(np.mean(train_losses)), "selection_dice": selection, "validation": metrics}
+               "train_loss": component_means["total"], "train_loss_components": component_means,
+               "selection_dice": selection, "validation": metrics}
         history.append(row); print(json.dumps(row), flush=True)
         (run_dir / "history.json").write_text(json.dumps(history, indent=2), encoding="utf-8")
         best_score, epochs_without_improvement, is_best = update_early_stopping(

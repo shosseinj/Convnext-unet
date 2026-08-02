@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    "agentic_workflow/docs/WORKFLOW.md"
+  ],
+  "permission": {
+    "git push*": "deny",
+    "git commit*": "ask",
+    "bash": "ask",
+    "edit": "ask",
+    "task": "allow",
+    "websearch": "allow",
+    "webfetch": "allow"
+  }
+}

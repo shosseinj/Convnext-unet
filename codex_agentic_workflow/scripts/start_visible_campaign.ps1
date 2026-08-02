@@ -9,9 +9,11 @@ $log = Join-Path $Repo "CAMPAIGN_CONSOLE.log"
 $command = @"
 Set-Location '$Repo'
 `$env:PYTHONUNBUFFERED='1'
-& '$Python' -u '$EntryPoint' 2>&1 | Tee-Object -FilePath '$log' -Append
+& '$Python' -u '$EntryPoint' --python '$Python' 2>&1 | Tee-Object -FilePath '$log' -Append
+`$campaignExit = `$LASTEXITCODE
 Write-Host ''
-Write-Host 'Campaign ended. This window remains open.'
+Write-Host "Campaign ended with exit code `$campaignExit. This window remains open."
 "@
 
-Start-Process powershell.exe -ArgumentList @("-NoExit", "-Command", $command)
+$process = Start-Process powershell.exe -ArgumentList @("-NoExit", "-Command", $command) -PassThru
+Write-Output "Visible campaign launcher PID: $($process.Id)"

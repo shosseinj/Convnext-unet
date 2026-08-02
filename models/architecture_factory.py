@@ -6,9 +6,11 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, Iterable
 
+import torch.nn as nn
 import yaml
 
 from .convnext_pretrain import ConvNeXtUNet
+from .ugbr import UGBR
 
 
 @dataclass(frozen=True)
@@ -22,6 +24,7 @@ class VariantConfig:
     msc_dilations: tuple[int, ...] = (1, 3, 5)
     gdf_mode: str = "gdf"
     backbone: str = "convnext_tiny"
+    ugbr: bool = False
 
     def validate(self) -> None:
         if self.skip not in {"normal", "attention_gate", "bsei"}:
@@ -59,6 +62,66 @@ def load_variant_configs(path: Path | str = "configs/ablation_matrix.yaml",
     return variants
 
 
+class UGBRVariant(nn.Module):
+    """Optional adapter that preserves the untouched base model implementation."""
+
+    def __init__(self, base_model: ConvNeXtUNet, num_classes: int = 1) -> None:
+        super().__init__()
+        self.base_model = base_model
+        self.ugbr = UGBR(96, 96, num_classes=num_classes)
+        self._decoder_feature = None
+        self._shallow_feature = None
+        self.base_model.final_refine.register_forward_pre_hook(self._capture_decoder)
+        self.base_model.encoder.register_forward_hook(self._capture_encoder)
+        self.experiment_variant = base_model.experiment_variant
+
+    @property
+    def encoder(self):
+        """Expose the canonical encoder without registering a second module alias."""
+        return self.base_model.encoder
+
+    @property
+    def variant_config(self):
+        return self.base_model.variant_config
+
+    def named_parameters(self, prefix: str = "", recurse: bool = True,
+                         remove_duplicate: bool = True):
+        """Present base encoder names as ``encoder.*`` to existing optimizers."""
+        for name, parameter in super().named_parameters(
+                prefix=prefix, recurse=recurse, remove_duplicate=remove_duplicate):
+            base_encoder_prefix = f"{prefix}.base_model.encoder." if prefix else "base_model.encoder."
+            public_encoder_prefix = f"{prefix}.encoder." if prefix else "encoder."
+            if name.startswith(base_encoder_prefix):
+                name = public_encoder_prefix + name[len(base_encoder_prefix):]
+            yield name, parameter
+
+    def _capture_decoder(self, _module, inputs) -> None:
+        self._decoder_feature = inputs[0]
+
+    def _capture_encoder(self, _module, _inputs, output) -> None:
+        self._shallow_feature = output[0]
+
+    def forward(self, x):
+        base_output = self.base_model(x)
+        initial_logits = base_output[0] if isinstance(base_output, tuple) else base_output
+        if self._decoder_feature is None or self._shallow_feature is None:
+            raise RuntimeError("UGBR feature hooks did not capture required tensors")
+        return self.ugbr(self._decoder_feature, self._shallow_feature, initial_logits)
+
+    def freeze_encoder(self):
+        return self.base_model.freeze_encoder()
+
+    def unfreeze_encoder(self):
+        return self.base_model.unfreeze_encoder()
+
+    def get_encoder_params(self):
+        return self.base_model.get_encoder_params()
+
+    def get_decoder_params(self):
+        return (parameter for name, parameter in self.named_parameters()
+                if not name.startswith("encoder."))
+
+
 def build_variant(config: VariantConfig, weights_path=None, num_classes=1,
                   encoder_depth: Iterable[int] = (3, 3, 9, 3),
                   drop_path_rate=0.1, dropout_rate=0.1) -> ConvNeXtUNet:
@@ -79,11 +142,11 @@ def build_variant(config: VariantConfig, weights_path=None, num_classes=1,
         backbone=config.backbone,
     )
     model.experiment_variant = asdict(config)
-    return model
+    return UGBRVariant(model, num_classes=num_classes) if config.ugbr else model
 
 
 def build_variant_by_id(variant_id: str, matrix_path="configs/ablation_matrix.yaml", **kwargs):
-    variants = load_variant_configs(matrix_path, sections=("incremental", "controls"))
+    variants = load_variant_configs(matrix_path, sections=("incremental", "controls", "pilot"))
     if variant_id not in variants:
         raise KeyError(f"Unknown variant '{variant_id}'. Available: {', '.join(variants)}")
     return build_variant(variants[variant_id], **kwargs)

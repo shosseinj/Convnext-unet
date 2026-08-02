@@ -27,6 +27,10 @@ controls:
   - {id: control_gdf_attention, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 0, gdf_mode: attention_fusion}
   - {id: control_backbone_resnet34, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 3, backbone: resnet34}
   - {id: control_backbone_efficientnet_b0, msc: true, skip: bsei, detail_channels: 32, gdf: true, deep_supervision_heads: 3, backbone: efficientnet_b0}
+pilot:
+  - {id: baseline_ugbr, msc: false, skip: normal, detail_channels: 0, gdf: false, deep_supervision_heads: 0, ugbr: true}
+  - {id: baseline_best_existing, msc: true, skip: bsei, detail_channels: 32, gdf: false, deep_supervision_heads: 0}
+  - {id: baseline_best_existing_ugbr, msc: true, skip: bsei, detail_channels: 32, gdf: false, deep_supervision_heads: 0, ugbr: true}
 control_reuse:
   control_msc_branches_3: baseline_msc
   control_msc_dilations_1_3_5: baseline_msc
