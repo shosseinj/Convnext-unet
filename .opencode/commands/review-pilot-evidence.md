@@ -19,7 +19,7 @@ Do not rerun training and do not merely repeat the existing validator.
 
 Use only:
 
-C:\Users\jafari.h\Desktop\ai_project.venv\Scripts\python.exe
+C:\Users\jafari.h\Desktop\ai_project\.venv\Scripts\python.exe
 
 Review the four pilot runs independently from the orchestration logic.
 

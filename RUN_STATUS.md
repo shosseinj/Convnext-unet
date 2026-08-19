@@ -1,13 +1,12 @@
 Stage: EXPERIMENT
-Workflow status: Pilot evidence review PASS; next stage approved
-Active agent: Independent scientific evidence reviewer
-Active run: None
-Latest epoch: 12
-Completed pilots: 4/4
-ConvNeXt audit: PASS
-Last validation: Independent evidence review PASS
-Process status: No repository training or campaign process active
+Campaign status: RUNNING
+Active run: baseline_msc_bsei_detail_gdf / seed 2026
+Latest epoch: Starting
+Completed runs: 0/18
+Last completed run: None
+Last result: Run started
+Process status: Visible terminal active
 Last error: None
-Next action: Launch newly approved EXPERIMENT stage through /resume-workflow
-Console log: CAMPAIGN_CONSOLE.log
-Last update: 2026-08-02T10:25:00-04:00
+Next action: Train and validate the active run
+Console log: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\CAMPAIGN_CONSOLE.log
+Last update: 2026-08-02T11:36:30+03:30

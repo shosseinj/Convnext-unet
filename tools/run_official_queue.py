@@ -131,14 +131,18 @@ def write_run_status(root, *, campaign_status, active_run, latest_epoch, complet
 
 def run_deep_validation(root, python, run_dir, variant, seed):
     command = [python, str(root / "tools" / "validate_official_run.py"),
-               "--variant", variant, "--seed", str(seed)]
+               "--variant", variant, "--seed", str(seed),
+               "--results-root", str(run_dir.parents[2])]
     result = subprocess.run(command, cwd=root)
     return result.returncode == 0 and deep_validation_pass(run_dir, variant, seed)
 
 
-def training_command(python, script, variant, seed, device, resume_checkpoint):
+def training_command(python, script, variant, seed, device, resume_checkpoint, resume=True):
     arguments = [str(script), "--variant", variant, "--seed", str(seed),
-                 "--device", device, "--resume"]
+                 "--device", device]
+    if not resume:
+        return [python, *arguments]
+    arguments.append("--resume")
     if not resume_checkpoint.is_file():
         return [python, *arguments]
     wrapper = (
@@ -155,18 +159,29 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--python", default=sys.executable)
+    parser.add_argument("--output-root", type=Path, default=Path("results/raw"))
+    parser.add_argument("--only-variant")
+    parser.add_argument("--only-seed", type=int)
+    parser.add_argument("--no-resume", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    queue_log = root / "results" / "raw" / "official_queue.jsonl"
+    output_root = args.output_root if args.output_root.is_absolute() else root / args.output_root
+    queue_log = output_root / "official_queue.jsonl"
     queue_log.parent.mkdir(parents=True, exist_ok=True)
     lock_path = root / ".agentic" / "official_queue.lock.json"
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     owned_lock = acquire_lock(lock_path)
     try:
         jobs = load_incremental_jobs(root / "configs" / "ablation_matrix.yaml")
+        if args.only_variant is not None or args.only_seed is not None:
+            jobs = tuple((variant, seed) for variant, seed in jobs
+                         if (args.only_variant is None or variant == args.only_variant)
+                         and (args.only_seed is None or seed == args.only_seed))
+            if not jobs:
+                raise SystemExit("Recovery mapping does not match a canonical official job")
         completed = 0
         for variant, seed in jobs:
-                run_dir = root / "results" / "raw" / variant / f"seed_{seed}" / "official"
+                run_dir = output_root / variant / f"seed_{seed}" / "official"
                 valid, reason = validate_completed_run(run_dir, variant, seed)
                 if valid:
                     if not deep_validation_pass(run_dir, variant, seed):
@@ -186,8 +201,9 @@ def main():
                                  last_error="None", next_action="Train and validate the active run")
                 command = training_command(
                     args.python, root / "train_research.py", variant, seed, args.device,
-                    run_dir / "last.pth"
-                )
+                     run_dir / "last.pth", resume=not args.no_resume
+                 )
+                command.extend(["--output-root", str(output_root)])
                 event = {"timestamp_utc": datetime.now(timezone.utc).isoformat(), "event": "start",
                          "variant": variant, "seed": seed, "command": command,
                          "python": args.python, "device": args.device, "resume_reason": reason,
