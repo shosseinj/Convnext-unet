@@ -71,6 +71,7 @@ foreach ($seed in $Seeds) {
     }
 
     New-Item -ItemType Directory -Force -Path $seedDir | Out-Null
+    Write-Host "[seed $seed] Checking training state..."
     $stateJson = & $stateCommand[0] $stateCommand[1..($stateCommand.Count - 1)]
     if ($LASTEXITCODE -ne 0) { throw "[seed $seed] State inspection failed." }
     $state = $stateJson | ConvertFrom-Json
@@ -85,11 +86,12 @@ foreach ($seed in $Seeds) {
         $state = $stateJson | ConvertFrom-Json
         if ($state.training_action -ne "skip") { throw "[seed $seed] Training exited without a valid completed checkpoint: $($state.training_reason)" }
     } else {
-        Write-Host "[seed $seed] Valid completed checkpoint found - skipping training."
+        Write-Host "[seed $seed] Training already complete - skipping training."
     }
 
+    Write-Host "[seed $seed] Checking evaluation state..."
     if (-not $state.evaluation_valid) {
-        Write-Host "[seed $seed] Evaluation missing or invalid - running evaluator."
+        Write-Host "[seed $seed] Evaluation missing or invalid - running evaluate.py."
         & $evaluateCommand[0] $evaluateCommand[1..($evaluateCommand.Count - 1)]
         if ($LASTEXITCODE -ne 0) { throw "[seed $seed] Evaluation failed with exit code $LASTEXITCODE" }
         $stateJson = & $stateCommand[0] $stateCommand[1..($stateCommand.Count - 1)]
@@ -102,7 +104,8 @@ foreach ($seed in $Seeds) {
 }
 
 $canonicalSeeds = @(42, 6543, 7777)
-if ($Seeds.Count -eq 3 -and -not (Compare-Object ($Seeds | Sort-Object) $canonicalSeeds)) {
+if (-not $DryRun -and $Seeds.Count -eq 3 -and -not (Compare-Object ($Seeds | Sort-Object) $canonicalSeeds)) {
+    Write-Host "All three seed evaluations are valid - running summarize_seeds.py."
     & $summarizeCommand[0] $summarizeCommand[1..($summarizeCommand.Count - 1)]
     if ($LASTEXITCODE -ne 0) { throw "Aggregation failed with exit code $LASTEXITCODE" }
 }

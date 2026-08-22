@@ -71,6 +71,48 @@ class CheckpointManagementTests(unittest.TestCase):
             )
             self.assertEqual(decision.action, "resume")
 
+    def test_completed_legacy_checkpoint_is_migrated_to_canonical_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            seed_dir = Path(directory)
+            legacy_dir = seed_dir / "checkpoints_KvasirSEG-ConvNeXt"
+            legacy_dir.mkdir()
+            torch.save(self.checkpoint(133, 0.87), legacy_dir / "best.pth")
+            log_path = seed_dir / "KvasirSEG-ConvNeXt_log.txt"
+            log_path.write_text(
+                "Epoch 150/150: Train Loss: 0.2\n"
+                "Training stopped after epoch 150; best.pth retained.\n",
+                encoding="utf-8",
+            )
+
+            config = get_experiment("01_baseline")
+            decision = prepare_checkpoint(seed_dir, config, 42, 150, log_path)
+
+            self.assertEqual(decision.action, "skip")
+            self.assertEqual(decision.checkpoint_path, seed_dir / "best_checkpoint.pth")
+            migrated = torch.load(decision.checkpoint_path, map_location="cpu", weights_only=False)
+            self.assertEqual(migrated["experiment_name"], "01_baseline")
+            self.assertEqual(migrated["seed"], 42)
+            self.assertEqual(migrated["architecture"], config.to_dict())
+            self.assertTrue(migrated["training_complete"])
+            self.assertEqual(migrated["final_epoch"], 149)
+
+    def test_incomplete_legacy_checkpoint_is_migrated_for_resume(self):
+        with tempfile.TemporaryDirectory() as directory:
+            seed_dir = Path(directory)
+            legacy_dir = seed_dir / "checkpoints_KvasirSEG-ConvNeXt"
+            legacy_dir.mkdir()
+            torch.save(self.checkpoint(20, 0.70), legacy_dir / "best.pth")
+            log_path = seed_dir / "KvasirSEG-ConvNeXt_log.txt"
+            log_path.write_text("Epoch 21/150: Train Loss: 0.4\n", encoding="utf-8")
+
+            decision = prepare_checkpoint(
+                seed_dir, get_experiment("01_baseline"), 42, 150, log_path
+            )
+
+            self.assertEqual(decision.action, "resume")
+            migrated = torch.load(decision.checkpoint_path, map_location="cpu", weights_only=False)
+            self.assertFalse(migrated["training_complete"])
+
     def test_mark_complete_preserves_best_weights(self):
         checkpoint = self.checkpoint(10, 0.8)
         before = checkpoint["model_state_dict"]["weight"].clone()
