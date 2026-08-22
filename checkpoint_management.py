@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+import re
 
 import torch
 
@@ -37,7 +38,7 @@ def load_checkpoint_file(path):
 def strip_thop_state(state_dict):
     return {
         key: value for key, value in state_dict.items()
-        if not key.endswith((".total_ops", ".total_params"))
+        if key.rsplit(".", 1)[-1] not in {"total_ops", "total_params"}
     }
 
 
@@ -54,8 +55,35 @@ def atomic_save_checkpoint(checkpoint, path):
 
 
 def prepare_checkpoint(seed_dir, experiment, seed, max_epochs, log_path):
-    del max_epochs, log_path  # completion is explicit checkpoint metadata
-    path = Path(seed_dir) / "best_checkpoint.pth"
+    seed_dir = Path(seed_dir)
+    path = seed_dir / "best_checkpoint.pth"
+    if not path.exists():
+        legacy_path = seed_dir / "checkpoints_KvasirSEG-ConvNeXt" / "best.pth"
+        legacy = _load_valid(legacy_path) if legacy_path.is_file() else None
+        if legacy is not None:
+            log_text = ""
+            try:
+                log_text = Path(log_path).read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                pass
+            completed = re.search(
+                rf"Training stopped after epoch\s+{int(max_epochs)};\s+best\.pth retained\.",
+                log_text,
+            ) is not None
+            migrated = dict(legacy)
+            migrated.update({
+                "experiment_name": experiment.name,
+                "seed": seed,
+                "architecture": experiment.to_dict(),
+                "best_epoch": int(legacy.get("best_epoch", legacy["epoch"])),
+                "best_validation_metric": float(
+                    legacy.get("best_validation_metric", _score(legacy))
+                ),
+                "final_epoch": int(max_epochs - 1) if completed else None,
+                "training_complete": completed,
+                "completion_reason": "max_epochs" if completed else None,
+            })
+            atomic_save_checkpoint(migrated, path)
     if not path.exists():
         return CheckpointDecision("train", "No checkpoint found")
     checkpoint = _load_valid(path)

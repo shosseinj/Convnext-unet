@@ -10,6 +10,7 @@ from checkpoint_management import (
     mark_training_complete,
     prepare_best_checkpoint,
     prepare_checkpoint,
+    strip_thop_state,
 )
 
 
@@ -124,6 +125,17 @@ class CheckpointManagementTests(unittest.TestCase):
     def test_prepare_returns_none_when_no_checkpoint_exists(self):
         with tempfile.TemporaryDirectory() as directory:
             self.assertIsNone(prepare_best_checkpoint(Path(directory)))
+
+    def test_strip_thop_state_removes_root_and_nested_profile_buffers(self):
+        state = {
+            "total_ops": torch.tensor([1.0]),
+            "total_params": torch.tensor([2.0]),
+            "encoder.total_ops": torch.tensor([3.0]),
+            "encoder.total_params": torch.tensor([4.0]),
+            "encoder.weight": torch.tensor([5.0]),
+        }
+        stripped = strip_thop_state(state)
+        self.assertEqual(list(stripped), ["encoder.weight"])
 
 
 if __name__ == "__main__":

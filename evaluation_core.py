@@ -4,6 +4,8 @@ import copy
 import glob
 import os
 
+os.environ.setdefault("OPENCV_LOG_LEVEL", "ERROR")
+
 import cv2
 import numpy as np
 import torch

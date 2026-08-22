@@ -13,6 +13,11 @@ def parse_bool(value):
 
 
 def add_ablation_arguments(parser):
+    parser.add_argument("--experiment_name")
+    parser.add_argument("--seed_dir")
+    parser.add_argument("--best_checkpoint_path")
+    parser.add_argument("--training_history_path")
+    parser.add_argument("--training_summary_path")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--encoder_weights", default="./convnext_tiny_22k_1k_384.pth")
     parser.add_argument("--enable_msc", type=parse_bool, default=True)

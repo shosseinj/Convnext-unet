@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "4eee9a89154e41903dc2b865b91828d4ce1811ac6e6f6a7f526ee94fe1d14611",
+  "experiment_name": "01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8721622190455097,
+      "MAE": 0.00680663755344922,
+      "S_alpha": 0.9360879723876164,
+      "mDice": 0.8967454115549723,
+      "mE_phi": 0.9663192841934615,
+      "mIoU": 0.82405357559522,
+      "maxE_phi": 0.9755837553383865,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9292507084789369,
+      "MAE": 0.01046970900033613,
+      "S_alpha": 0.9515857250656174,
+      "mDice": 0.9434396547655906,
+      "mE_phi": 0.9822856585556565,
+      "mIoU": 0.8941970015725782,
+      "maxE_phi": 0.9885146944483213,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7576112434304322,
+      "MAE": 0.03408241956380436,
+      "S_alpha": 0.8548466076286556,
+      "mDice": 0.7801313982577118,
+      "mE_phi": 0.8872042877078712,
+      "mIoU": 0.6999032812539874,
+      "maxE_phi": 0.8957094607620365,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7483075957898232,
+      "MAE": 0.012167527664510304,
+      "S_alpha": 0.8751500761758889,
+      "mDice": 0.7823525108352408,
+      "mE_phi": 0.8874463759859702,
+      "mIoU": 0.7015038681342999,
+      "maxE_phi": 0.9023316802119141,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8988621344510271,
+      "MAE": 0.027022988905304392,
+      "S_alpha": 0.9282501753912328,
+      "mDice": 0.9239440852403641,
+      "mE_phi": 0.9551838006811699,
+      "mIoU": 0.8709563845396042,
+      "maxE_phi": 0.964780396698666,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}
