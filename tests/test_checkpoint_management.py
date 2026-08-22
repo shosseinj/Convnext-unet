@@ -4,7 +4,13 @@ from pathlib import Path
 
 import torch
 
-from checkpoint_management import atomic_save_best, prepare_best_checkpoint
+from ablation_registry import get_experiment
+from checkpoint_management import (
+    atomic_save_best,
+    mark_training_complete,
+    prepare_best_checkpoint,
+    prepare_checkpoint,
+)
 
 
 class CheckpointManagementTests(unittest.TestCase):
@@ -32,14 +38,46 @@ class CheckpointManagementTests(unittest.TestCase):
             checkpoint_dir = Path(directory)
             torch.save(self.checkpoint(3, 0.71), checkpoint_dir / "3-test0.71.pth")
             torch.save(self.checkpoint(8, 0.83), checkpoint_dir / "8-test0.83.pth")
-            (checkpoint_dir / "broken.pth").write_bytes(b"not a checkpoint")
-
             selected = prepare_best_checkpoint(checkpoint_dir)
 
             self.assertEqual(selected, checkpoint_dir / "best.pth")
             self.assertEqual([path.name for path in checkpoint_dir.glob("*.pth")], ["best.pth"])
             saved = torch.load(selected, map_location="cpu", weights_only=False)
             self.assertEqual(saved["epoch"], 8)
+
+    def test_corrupt_canonical_checkpoint_is_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            seed_dir = Path(directory)
+            (seed_dir / "best_checkpoint.pth").write_bytes(b"broken")
+            decision = prepare_checkpoint(
+                seed_dir, get_experiment("01_baseline"), 42, 150, seed_dir / "log.txt"
+            )
+            self.assertEqual(decision.action, "error")
+            self.assertIn("cannot be loaded", decision.reason)
+
+    def test_valid_incomplete_checkpoint_resumes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            seed_dir = Path(directory)
+            checkpoint = self.checkpoint(10, 0.8)
+            checkpoint.update({
+                "experiment_name": "01_baseline",
+                "seed": 42,
+                "architecture": get_experiment("01_baseline").to_dict(),
+                "training_complete": False,
+            })
+            torch.save(checkpoint, seed_dir / "best_checkpoint.pth")
+            decision = prepare_checkpoint(
+                seed_dir, get_experiment("01_baseline"), 42, 150, seed_dir / "log.txt"
+            )
+            self.assertEqual(decision.action, "resume")
+
+    def test_mark_complete_preserves_best_weights(self):
+        checkpoint = self.checkpoint(10, 0.8)
+        before = checkpoint["model_state_dict"]["weight"].clone()
+        completed = mark_training_complete(checkpoint, 149, 500.0, "max_epochs")
+        torch.testing.assert_close(completed["model_state_dict"]["weight"], before)
+        self.assertTrue(completed["training_complete"])
+        self.assertEqual(completed["final_epoch"], 149)
 
     def test_prepare_returns_none_when_no_checkpoint_exists(self):
         with tempfile.TemporaryDirectory() as directory:

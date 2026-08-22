@@ -30,8 +30,11 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
         return json.loads(completed.stdout.strip().splitlines()[-1])
 
     def test_baseline_invokes_root_main_torch_with_baseline_architecture(self):
-        invocation = self.dry_run("01_baseline.ps1")
-        expected_python = str(ROOT / ".venv" / "Scripts" / "python.exe")
+        dry_run = self.dry_run("01_baseline.ps1")
+        invocation = dry_run["train"]
+        expected_python = str(ROOT.parent / ".venv" / "Scripts" / "python.exe")
+        if not Path(expected_python).is_file():
+            expected_python = str(ROOT / ".venv" / "Scripts" / "python.exe")
         if not Path(expected_python).is_file():
             expected_python = "python"
         self.assertEqual(invocation[0], expected_python)
@@ -42,7 +45,7 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
         self.assertEqual(invocation[invocation.index("--seed") + 1], "42")
 
     def test_full_model_selects_all_architecture_components(self):
-        invocation = self.dry_run("06_full_model.ps1")
+        invocation = self.dry_run("06_full_model.ps1")["train"]
         expected = {
             "--enable_msc": "True",
             "--skip_mode": "bsei",
@@ -55,9 +58,14 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
             self.assertEqual(invocation[invocation.index(option) + 1], value)
 
     def test_launcher_enables_automatic_best_checkpoint_resume(self):
-        invocation = self.dry_run("01_baseline.ps1")
+        invocation = self.dry_run("01_baseline.ps1")["train"]
         self.assertEqual(invocation[invocation.index("--auto_resume") + 1], "True")
         self.assertEqual(invocation[invocation.index("--resume_optimizer") + 1], "True")
+
+    def test_dry_run_contains_train_evaluate_and_summarize_commands(self):
+        dry_run = self.dry_run("01_baseline.ps1")
+        self.assertEqual(Path(dry_run["evaluate"][1]).name, "evaluate.py")
+        self.assertEqual(Path(dry_run["summarize"][1]).name, "summarize_seeds.py")
 
     def test_main_torch_ablation_arguments_parse_launcher_values(self):
         parser = argparse.ArgumentParser()

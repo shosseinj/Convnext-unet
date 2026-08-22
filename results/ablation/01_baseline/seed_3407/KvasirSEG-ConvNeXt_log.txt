@@ -1,0 +1,20 @@
+2026-08-22 12:42:51 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_3407\KvasirSEG-ConvNeXt_log.txt
+2026-08-22 12:42:59 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-22 12:42:59 - INFO - Parameter count: total=29.19M, encoder=27.82M, decoder_head=1.37M, trainable=29.19M
+2026-08-22 12:42:59 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
+2026-08-22 12:43:00 - INFO - Auto-resume selected checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_3407\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 12:43:00 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-22 12:43:00 - INFO - Loaded 243/243 compatible model tensors from checkpoint.
+2026-08-22 12:43:00 - INFO - Skipped checkpoint tensors because they are new or shape-mismatched: ['total_ops', 'total_params', 'encoder.total_ops', 'encoder.total_params', 'encoder.dropout.total_ops', 'encoder.dropout.total_params', 'encoder.downsample_layers.total_ops', 'encoder.downsample_layers.total_params', 'encoder.downsample_layers.0.1.total_ops', 'encoder.downsample_layers.0.1.total_params', 'encoder.downsample_layers.1.0.total_ops', 'encoder.downsample_layers.1.0.total_params', 'encoder.downsample_layers.2.0.total_ops', 'encoder.downsample_layers.2.0.total_params', 'encoder.downsample_layers.3.0.total_ops', 'encoder.downsample_layers.3.0.total_params', 'encoder.stages.total_ops', 'encoder.stages.total_params', 'encoder.stages.0.0.total_ops', 'encoder.stages.0.0.total_params']
+2026-08-22 12:43:00 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-22 12:43:00 - INFO - Resumed from epoch 1
+2026-08-22 12:43:00 - INFO - Previous best IoU: 0.3072
+2026-08-22 12:43:00 - INFO - Loaded 243 compatible EMA tensors from checkpoint.
+2026-08-22 12:43:00 - INFO - EMA enabled with decay=0.995.
+2026-08-22 12:43:00 - INFO - Training stage 'decoder' starts at epoch 3 (1,371,506/29,190,098 parameters trainable).
+2026-08-22 12:43:00 - INFO - Focal Tversky enabled with weight 0.050.
+2026-08-22 12:43:00 - INFO - #### Training ####
+2026-08-22 12:43:00 - INFO - initial LR: refine=0.000150, encoder=0.000010, decoder=0.000100
+2026-08-22 12:43:25 - INFO - Epoch 3/150: Train Loss: 0.5648, Test Loss: 0.5152, Test Dice: 0.7413, Test IoU: 0.5924, EMA: True
+2026-08-22 12:43:25 - INFO - New best model saved with accuracy: 0.59%
+2026-08-22 12:43:25 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_3407\checkpoints_KvasirSEG-ConvNeXt\best.pth

@@ -22,7 +22,12 @@ from sklearn.model_selection import train_test_split
 import glob
 import cv2
 from ablation_cli import add_ablation_arguments
-from checkpoint_management import atomic_save_best, prepare_best_checkpoint
+from ablation_registry import get_experiment
+from checkpoint_management import (
+    atomic_save_best, atomic_save_checkpoint, load_checkpoint_file,
+    mark_training_complete, prepare_best_checkpoint, prepare_checkpoint,
+)
+from training_artifacts import append_history_row, write_training_summary
 
 
 import numpy as np
@@ -2547,11 +2552,31 @@ if __name__ == "__main__":
         
     checkpoint = None
     resumed_epochs_without_improvement = 0
+    elapsed_seconds_before_resume = 0.0
     restart_stage_schedule = False
     new_arch_prefixes = ("context.", "detail_fusion.")
     checkpoint_dir = Path(args.logging_dir) / f"checkpoints_{args.model_name}"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
-    if args.auto_resume:
+    canonical_checkpoint_path = (
+        Path(args.best_checkpoint_path) if args.best_checkpoint_path
+        else checkpoint_dir / "best.pth"
+    )
+    if args.experiment_name and args.seed_dir:
+        experiment_config = get_experiment(args.experiment_name)
+        decision = prepare_checkpoint(
+            Path(args.seed_dir), experiment_config, args.seed, args.epochs,
+            Path(args.logging_dir) / f"{args.model_name}_log.txt",
+        )
+        if decision.action == "error":
+            raise RuntimeError(decision.reason)
+        if decision.checkpoint_path is not None:
+            args.load = True
+            args.checkpoint_path = str(decision.checkpoint_path)
+            canonical_checkpoint_path = decision.checkpoint_path
+            logging.info(f"Checkpoint decision: {decision.action} - {decision.reason}")
+        else:
+            args.load = False
+    elif args.auto_resume:
         resume_path = prepare_best_checkpoint(checkpoint_dir)
         if resume_path is not None:
             args.load = True
@@ -2653,6 +2678,9 @@ if __name__ == "__main__":
             resumed_epochs_without_improvement = int(
                 checkpoint.get('epochs_without_improvement', 0)
             )
+            elapsed_seconds_before_resume = float(
+                checkpoint.get('training_time_seconds', 0.0)
+            )
             
             logging.info(f"Resumed from epoch {checkpoint['epoch']}")
             logging.info(f"Previous best IoU: {best_acc:.4f}")
@@ -2701,29 +2729,9 @@ if __name__ == "__main__":
                 f"Focal Tversky enabled with weight {criterion.focal_tversky_w:.3f}."
             )
 
-    from torchinfo import summary
-    summary(
-            model,
-            input_size=(1, 3) + args.input_size,  # (batch, channels, H, W)
-            device="cuda"
-        )
-    model.eval() # Set to evaluation mode
-
-# 2. Create a dummy input tensor matching your image size (Batch, Channels, Height, Width)
-# Based on your previous prompts, your input size is 352x352x3
-    dummy_input = torch.randn(1, 3, 352, 352).to(device)
-    from thop import profile
-    from thop import clever_format
-    # 3. Profile the model
-    macs, params = profile(model, inputs=(dummy_input, ))
-
-    # 4. Format and print the results
-    macs_formatted, params_formatted = clever_format([macs, params], "%.2f")
-
-    print(f"Total Parameters: {params_formatted}")
-    print(f"Total MACs (approx GFLOPs): {macs_formatted}")
-    # Note: 1 MAC is generally considered as 2 FLOPs (one multiply, one add).
-    print(f"Total FLOPs (Giga): {(macs * 2) / 1e9:.2f} GFLOPs")
+    # evaluate.py measures complexity on an isolated model copy. Profiling the
+    # training instance adds THOP buffers to checkpoints and breaks strict load.
+    model.eval()
 
     # # Training
     best_threshold = 0.45
@@ -2788,6 +2796,7 @@ if __name__ == "__main__":
         # Training loop
         best_dice = 0
         epochs_without_improvement = resumed_epochs_without_improvement
+        completion_reason = "max_epochs"
         last_epoch = start_epoch - 1
         last_train_loss = None
         last_test_loss = None
@@ -2861,7 +2870,20 @@ if __name__ == "__main__":
                     handler.flush()
 
                 # Save best model
-                if test_acc > best_acc:
+                is_best = test_acc > best_acc
+                elapsed_seconds_total = elapsed_seconds_before_resume + (time.time() - start_time)
+                if args.training_history_path:
+                    append_history_row(args.training_history_path, {
+                        "epoch": epoch + 1,
+                        "train_loss": train_loss,
+                        "validation_dice": test_dice,
+                        "validation_iou": test_iou,
+                        "encoder_lr": optimizer_lr(optimizer, "encoder"),
+                        "decoder_lr": optimizer_lr(optimizer, "decoder", fallback_idx=-1),
+                        "elapsed_seconds": elapsed_seconds_total,
+                        "is_best": is_best,
+                    })
+                if is_best:
                     best_acc = test_acc
                     checkpoint_dict = {
                             'epoch': epoch,
@@ -2872,12 +2894,29 @@ if __name__ == "__main__":
                             'test_dice': test_dice,
                             'test_iou': test_iou,
                             'epochs_without_improvement': 0,
+                            'experiment_name': args.experiment_name,
+                            'seed': args.seed,
+                            'architecture': (
+                                get_experiment(args.experiment_name).to_dict()
+                                if args.experiment_name else None
+                            ),
+                            'best_epoch': epoch,
+                            'best_validation_metric': best_acc,
+                            'final_epoch': None,
+                            'training_time_seconds': elapsed_seconds_total,
+                            'training_complete': False,
+                            'completion_reason': None,
                         }
                     if ema is not None:
                         checkpoint_dict['ema_state_dict'] = ema.state_dict()
                         checkpoint_dict['raw_model_state_dict'] = snapshot_state_dict(model)
                 
-                    best_checkpoint_path = atomic_save_best(checkpoint_dict, checkpoint_dir)
+                    if args.best_checkpoint_path:
+                        best_checkpoint_path = atomic_save_checkpoint(
+                            checkpoint_dict, canonical_checkpoint_path
+                        )
+                    else:
+                        best_checkpoint_path = atomic_save_best(checkpoint_dict, checkpoint_dir)
                     logging.info(f"New best model saved with accuracy: {best_acc:.2f}%")
                     logging.info(f"Best checkpoint: {best_checkpoint_path}")
                     if args.tta_check:
@@ -2905,10 +2944,30 @@ if __name__ == "__main__":
                             f"no validation IoU improvement for "
                             f"{epochs_without_improvement} epochs."
                         )
+                        completion_reason = "early_stopping"
                         break
 
         if args.training and last_epoch >= start_epoch:
-            logging.info(f"Training stopped after epoch {last_epoch + 1}; best.pth retained.")
+            if canonical_checkpoint_path.is_file():
+                best_checkpoint = load_checkpoint_file(canonical_checkpoint_path)
+                training_time_seconds = elapsed_seconds_before_resume + (time.time() - start_time)
+                completed_checkpoint = mark_training_complete(
+                    best_checkpoint, last_epoch, training_time_seconds, completion_reason
+                )
+                atomic_save_checkpoint(completed_checkpoint, canonical_checkpoint_path)
+                if args.training_summary_path:
+                    write_training_summary(args.training_summary_path, {
+                        "experiment_name": args.experiment_name,
+                        "seed": args.seed,
+                        "best_epoch": int(completed_checkpoint.get("best_epoch", completed_checkpoint["epoch"])),
+                        "best_validation_metric": float(completed_checkpoint.get("best_validation_metric", best_acc)),
+                        "final_epoch": last_epoch,
+                        "training_time_seconds": training_time_seconds,
+                        "best_checkpoint_path": str(canonical_checkpoint_path.resolve()),
+                        "training_complete": True,
+                        "completion_reason": completion_reason,
+                    })
+            logging.info(f"Training stopped after epoch {last_epoch + 1}; best checkpoint retained.")
             for handler in logging.root.handlers:
                 handler.flush()
     # Save model
