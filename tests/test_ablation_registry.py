@@ -15,6 +15,11 @@ class AblationRegistryTests(unittest.TestCase):
             (True, "bsei", 32, True, "gdf", 3),
         )
 
+    def test_lrse_configuration_does_not_include_msc(self):
+        cfg = get_experiment("03_add_lrse")
+        self.assertFalse(cfg.enable_msc)
+        self.assertEqual(cfg.skip_mode, "bsei")
+
     def test_unknown_experiment_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "Unknown ablation experiment"):
             get_experiment("missing")

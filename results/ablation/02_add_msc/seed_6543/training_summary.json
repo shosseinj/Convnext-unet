@@ -1,0 +1,11 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\02_add_msc\\seed_6543\\best_checkpoint.pth",
+  "best_epoch": 146,
+  "best_validation_metric": 0.8380800570760455,
+  "completion_reason": "max_epochs",
+  "experiment_name": "02_add_msc",
+  "final_epoch": 149,
+  "seed": 6543,
+  "training_complete": true,
+  "training_time_seconds": 4175.809835910797
+}

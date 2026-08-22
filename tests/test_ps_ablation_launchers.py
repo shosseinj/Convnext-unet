@@ -60,6 +60,11 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
         for option, value in expected.items():
             self.assertEqual(invocation[invocation.index(option) + 1], value)
 
+    def test_lrse_runner_disables_msc_and_enables_bsei(self):
+        invocation = self.dry_run("03_add_lrse.ps1")["train"]
+        self.assertEqual(invocation[invocation.index("--enable_msc") + 1], "False")
+        self.assertEqual(invocation[invocation.index("--skip_mode") + 1], "bsei")
+
     def test_launcher_enables_automatic_best_checkpoint_resume(self):
         invocation = self.dry_run("01_baseline.ps1")["train"]
         self.assertEqual(invocation[invocation.index("--auto_resume") + 1], "True")

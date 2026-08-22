@@ -1,0 +1,359 @@
+2026-08-22 17:35:22 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\KvasirSEG-ConvNeXt_log.txt
+2026-08-22 17:35:29 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-22 17:35:30 - INFO - Parameter count: total=29.57M, encoder=27.82M, decoder_head=1.75M, trainable=29.57M
+2026-08-22 17:35:30 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
+2026-08-22 17:35:30 - INFO - EMA enabled with decay=0.995.
+2026-08-22 17:35:30 - INFO - Training stage 'decoder' starts at epoch 1 (1,754,259/29,572,851 parameters trainable).
+2026-08-22 17:35:30 - INFO - Focal Tversky enabled with weight 0.050.
+2026-08-22 17:35:30 - INFO - #### Training ####
+2026-08-22 17:35:30 - INFO - initial LR: refine=0.000150, encoder=0.000010, decoder=0.000100
+2026-08-22 17:35:52 - INFO - Epoch 1/150: Train Loss: 1.1747, Test Loss: 1.2646, Test Dice: 0.0001, Test IoU: 0.0000, EMA: True
+2026-08-22 17:35:53 - INFO - New best model saved with accuracy: 0.00%
+2026-08-22 17:35:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:36:14 - INFO - Epoch 2/150: Train Loss: 0.9955, Test Loss: 1.0467, Test Dice: 0.0003, Test IoU: 0.0002, EMA: True
+2026-08-22 17:36:15 - INFO - New best model saved with accuracy: 0.00%
+2026-08-22 17:36:15 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:36:37 - INFO - Epoch 3/150: Train Loss: 0.9365, Test Loss: 0.9455, Test Dice: 0.0020, Test IoU: 0.0010, EMA: True
+2026-08-22 17:36:37 - INFO - New best model saved with accuracy: 0.00%
+2026-08-22 17:36:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:36:59 - INFO - Epoch 4/150: Train Loss: 0.6612, Test Loss: 0.9223, Test Dice: 0.3792, Test IoU: 0.2343, EMA: True
+2026-08-22 17:37:00 - INFO - New best model saved with accuracy: 0.23%
+2026-08-22 17:37:00 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:37:22 - INFO - Epoch 5/150: Train Loss: 0.5858, Test Loss: 0.8517, Test Dice: 0.4766, Test IoU: 0.3137, EMA: True
+2026-08-22 17:37:22 - INFO - New best model saved with accuracy: 0.31%
+2026-08-22 17:37:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:37:44 - INFO - Epoch 6/150: Train Loss: 0.5452, Test Loss: 0.6298, Test Dice: 0.6570, Test IoU: 0.4903, EMA: True
+2026-08-22 17:37:44 - INFO - New best model saved with accuracy: 0.49%
+2026-08-22 17:37:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:38:06 - INFO - Epoch 7/150: Train Loss: 0.5177, Test Loss: 0.5226, Test Dice: 0.7327, Test IoU: 0.5792, EMA: True
+2026-08-22 17:38:07 - INFO - New best model saved with accuracy: 0.58%
+2026-08-22 17:38:07 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:38:28 - INFO - Epoch 8/150: Train Loss: 0.5027, Test Loss: 0.4898, Test Dice: 0.7600, Test IoU: 0.6141, EMA: True
+2026-08-22 17:38:29 - INFO - New best model saved with accuracy: 0.61%
+2026-08-22 17:38:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:38:51 - INFO - Epoch 9/150: Train Loss: 0.4884, Test Loss: 0.4779, Test Dice: 0.7716, Test IoU: 0.6293, EMA: True
+2026-08-22 17:38:51 - INFO - New best model saved with accuracy: 0.63%
+2026-08-22 17:38:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:39:13 - INFO - Epoch 10/150: Train Loss: 0.4787, Test Loss: 0.4668, Test Dice: 0.7806, Test IoU: 0.6412, EMA: True
+2026-08-22 17:39:13 - INFO - New best model saved with accuracy: 0.64%
+2026-08-22 17:39:13 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:39:13 - INFO - Epoch 11: decoder warmup finished; all layers unfrozen (29,572,851/29,572,851 parameters trainable).
+2026-08-22 17:39:41 - INFO - Epoch 11/150: Train Loss: 0.7161, Test Loss: 0.4598, Test Dice: 0.7835, Test IoU: 0.6451, EMA: True
+2026-08-22 17:39:42 - INFO - New best model saved with accuracy: 0.65%
+2026-08-22 17:39:42 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:40:10 - INFO - Epoch 12/150: Train Loss: 0.6496, Test Loss: 0.4500, Test Dice: 0.7895, Test IoU: 0.6532, EMA: True
+2026-08-22 17:40:11 - INFO - New best model saved with accuracy: 0.65%
+2026-08-22 17:40:11 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:40:39 - INFO - Epoch 13/150: Train Loss: 0.6118, Test Loss: 0.4405, Test Dice: 0.7958, Test IoU: 0.6620, EMA: True
+2026-08-22 17:40:39 - INFO - New best model saved with accuracy: 0.66%
+2026-08-22 17:40:39 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:41:07 - INFO - Epoch 14/150: Train Loss: 0.5987, Test Loss: 0.4306, Test Dice: 0.8023, Test IoU: 0.6711, EMA: True
+2026-08-22 17:41:08 - INFO - New best model saved with accuracy: 0.67%
+2026-08-22 17:41:08 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:41:35 - INFO - Epoch 15/150: Train Loss: 0.5691, Test Loss: 0.4205, Test Dice: 0.8094, Test IoU: 0.6812, EMA: True
+2026-08-22 17:41:36 - INFO - New best model saved with accuracy: 0.68%
+2026-08-22 17:41:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:42:04 - INFO - Epoch 16/150: Train Loss: 0.5515, Test Loss: 0.4113, Test Dice: 0.8156, Test IoU: 0.6902, EMA: True
+2026-08-22 17:42:05 - INFO - New best model saved with accuracy: 0.69%
+2026-08-22 17:42:05 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:42:33 - INFO - Epoch 17/150: Train Loss: 0.5413, Test Loss: 0.4056, Test Dice: 0.8198, Test IoU: 0.6961, EMA: True
+2026-08-22 17:42:33 - INFO - New best model saved with accuracy: 0.70%
+2026-08-22 17:42:33 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:43:01 - INFO - Epoch 18/150: Train Loss: 0.5199, Test Loss: 0.3975, Test Dice: 0.8252, Test IoU: 0.7041, EMA: True
+2026-08-22 17:43:02 - INFO - New best model saved with accuracy: 0.70%
+2026-08-22 17:43:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:43:30 - INFO - Epoch 19/150: Train Loss: 0.5181, Test Loss: 0.3908, Test Dice: 0.8297, Test IoU: 0.7106, EMA: True
+2026-08-22 17:43:30 - INFO - New best model saved with accuracy: 0.71%
+2026-08-22 17:43:30 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:43:58 - INFO - Epoch 20/150: Train Loss: 0.5048, Test Loss: 0.3856, Test Dice: 0.8334, Test IoU: 0.7159, EMA: True
+2026-08-22 17:43:59 - INFO - New best model saved with accuracy: 0.72%
+2026-08-22 17:43:59 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:44:27 - INFO - Epoch 21/150: Train Loss: 0.5018, Test Loss: 0.3794, Test Dice: 0.8371, Test IoU: 0.7215, EMA: True
+2026-08-22 17:44:27 - INFO - New best model saved with accuracy: 0.72%
+2026-08-22 17:44:27 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:44:55 - INFO - Epoch 22/150: Train Loss: 0.4900, Test Loss: 0.3751, Test Dice: 0.8399, Test IoU: 0.7256, EMA: True
+2026-08-22 17:44:56 - INFO - New best model saved with accuracy: 0.73%
+2026-08-22 17:44:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:45:24 - INFO - Epoch 23/150: Train Loss: 0.4758, Test Loss: 0.3701, Test Dice: 0.8433, Test IoU: 0.7307, EMA: True
+2026-08-22 17:45:24 - INFO - New best model saved with accuracy: 0.73%
+2026-08-22 17:45:24 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:45:52 - INFO - Epoch 24/150: Train Loss: 0.4708, Test Loss: 0.3667, Test Dice: 0.8458, Test IoU: 0.7343, EMA: True
+2026-08-22 17:45:53 - INFO - New best model saved with accuracy: 0.73%
+2026-08-22 17:45:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:46:21 - INFO - Epoch 25/150: Train Loss: 0.4611, Test Loss: 0.3635, Test Dice: 0.8482, Test IoU: 0.7379, EMA: True
+2026-08-22 17:46:21 - INFO - New best model saved with accuracy: 0.74%
+2026-08-22 17:46:21 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:46:49 - INFO - Epoch 26/150: Train Loss: 0.4528, Test Loss: 0.3593, Test Dice: 0.8508, Test IoU: 0.7419, EMA: True
+2026-08-22 17:46:50 - INFO - New best model saved with accuracy: 0.74%
+2026-08-22 17:46:50 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:47:17 - INFO - Epoch 27/150: Train Loss: 0.4531, Test Loss: 0.3564, Test Dice: 0.8527, Test IoU: 0.7447, EMA: True
+2026-08-22 17:47:18 - INFO - New best model saved with accuracy: 0.74%
+2026-08-22 17:47:18 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:47:46 - INFO - Epoch 28/150: Train Loss: 0.4521, Test Loss: 0.3530, Test Dice: 0.8547, Test IoU: 0.7476, EMA: True
+2026-08-22 17:47:47 - INFO - New best model saved with accuracy: 0.75%
+2026-08-22 17:47:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:48:14 - INFO - Epoch 29/150: Train Loss: 0.4410, Test Loss: 0.3506, Test Dice: 0.8559, Test IoU: 0.7495, EMA: True
+2026-08-22 17:48:15 - INFO - New best model saved with accuracy: 0.75%
+2026-08-22 17:48:15 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:48:43 - INFO - Epoch 30/150: Train Loss: 0.4343, Test Loss: 0.3489, Test Dice: 0.8571, Test IoU: 0.7512, EMA: True
+2026-08-22 17:48:44 - INFO - New best model saved with accuracy: 0.75%
+2026-08-22 17:48:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:49:11 - INFO - Epoch 31/150: Train Loss: 0.4324, Test Loss: 0.3449, Test Dice: 0.8593, Test IoU: 0.7546, EMA: True
+2026-08-22 17:49:12 - INFO - New best model saved with accuracy: 0.75%
+2026-08-22 17:49:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:49:39 - INFO - Epoch 32/150: Train Loss: 0.4238, Test Loss: 0.3429, Test Dice: 0.8606, Test IoU: 0.7567, EMA: True
+2026-08-22 17:49:40 - INFO - New best model saved with accuracy: 0.76%
+2026-08-22 17:49:40 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:50:08 - INFO - Epoch 33/150: Train Loss: 0.4160, Test Loss: 0.3401, Test Dice: 0.8623, Test IoU: 0.7593, EMA: True
+2026-08-22 17:50:08 - INFO - New best model saved with accuracy: 0.76%
+2026-08-22 17:50:08 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:50:36 - INFO - Epoch 34/150: Train Loss: 0.4134, Test Loss: 0.3362, Test Dice: 0.8647, Test IoU: 0.7629, EMA: True
+2026-08-22 17:50:37 - INFO - New best model saved with accuracy: 0.76%
+2026-08-22 17:50:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:51:05 - INFO - Epoch 35/150: Train Loss: 0.4090, Test Loss: 0.3310, Test Dice: 0.8675, Test IoU: 0.7672, EMA: True
+2026-08-22 17:51:06 - INFO - New best model saved with accuracy: 0.77%
+2026-08-22 17:51:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:51:33 - INFO - Epoch 36/150: Train Loss: 0.4127, Test Loss: 0.3265, Test Dice: 0.8699, Test IoU: 0.7709, EMA: True
+2026-08-22 17:51:34 - INFO - New best model saved with accuracy: 0.77%
+2026-08-22 17:51:34 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:52:02 - INFO - Epoch 37/150: Train Loss: 0.4020, Test Loss: 0.3215, Test Dice: 0.8725, Test IoU: 0.7750, EMA: True
+2026-08-22 17:52:03 - INFO - New best model saved with accuracy: 0.77%
+2026-08-22 17:52:03 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:52:30 - INFO - Epoch 38/150: Train Loss: 0.4007, Test Loss: 0.3195, Test Dice: 0.8737, Test IoU: 0.7767, EMA: True
+2026-08-22 17:52:31 - INFO - New best model saved with accuracy: 0.78%
+2026-08-22 17:52:31 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:52:59 - INFO - Epoch 39/150: Train Loss: 0.3972, Test Loss: 0.3163, Test Dice: 0.8752, Test IoU: 0.7790, EMA: True
+2026-08-22 17:52:59 - INFO - New best model saved with accuracy: 0.78%
+2026-08-22 17:52:59 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:53:27 - INFO - Epoch 40/150: Train Loss: 0.3910, Test Loss: 0.3133, Test Dice: 0.8767, Test IoU: 0.7814, EMA: True
+2026-08-22 17:53:28 - INFO - New best model saved with accuracy: 0.78%
+2026-08-22 17:53:28 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:53:56 - INFO - Epoch 41/150: Train Loss: 0.3943, Test Loss: 0.3107, Test Dice: 0.8779, Test IoU: 0.7833, EMA: True
+2026-08-22 17:53:56 - INFO - New best model saved with accuracy: 0.78%
+2026-08-22 17:53:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:54:24 - INFO - Epoch 42/150: Train Loss: 0.3974, Test Loss: 0.3074, Test Dice: 0.8795, Test IoU: 0.7859, EMA: True
+2026-08-22 17:54:25 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 17:54:25 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:54:52 - INFO - Epoch 43/150: Train Loss: 0.3859, Test Loss: 0.3042, Test Dice: 0.8809, Test IoU: 0.7882, EMA: True
+2026-08-22 17:54:53 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 17:54:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:55:21 - INFO - Epoch 44/150: Train Loss: 0.3778, Test Loss: 0.3010, Test Dice: 0.8826, Test IoU: 0.7908, EMA: True
+2026-08-22 17:55:22 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 17:55:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:55:50 - INFO - Epoch 45/150: Train Loss: 0.3665, Test Loss: 0.2983, Test Dice: 0.8837, Test IoU: 0.7925, EMA: True
+2026-08-22 17:55:51 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 17:55:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:56:19 - INFO - Epoch 46/150: Train Loss: 0.3793, Test Loss: 0.2971, Test Dice: 0.8836, Test IoU: 0.7924, EMA: True
+2026-08-22 17:56:46 - INFO - Epoch 47/150: Train Loss: 0.3641, Test Loss: 0.2957, Test Dice: 0.8840, Test IoU: 0.7931, EMA: True
+2026-08-22 17:56:47 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 17:56:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:57:15 - INFO - Epoch 48/150: Train Loss: 0.3624, Test Loss: 0.2938, Test Dice: 0.8850, Test IoU: 0.7946, EMA: True
+2026-08-22 17:57:16 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 17:57:16 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:57:43 - INFO - Epoch 49/150: Train Loss: 0.3600, Test Loss: 0.2930, Test Dice: 0.8853, Test IoU: 0.7951, EMA: True
+2026-08-22 17:57:44 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 17:57:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:58:12 - INFO - Epoch 50/150: Train Loss: 0.3529, Test Loss: 0.2915, Test Dice: 0.8861, Test IoU: 0.7964, EMA: True
+2026-08-22 17:58:12 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 17:58:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:58:40 - INFO - Epoch 51/150: Train Loss: 0.3559, Test Loss: 0.2895, Test Dice: 0.8870, Test IoU: 0.7978, EMA: True
+2026-08-22 17:58:41 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 17:58:41 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:59:09 - INFO - Epoch 52/150: Train Loss: 0.3530, Test Loss: 0.2874, Test Dice: 0.8878, Test IoU: 0.7992, EMA: True
+2026-08-22 17:59:09 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 17:59:09 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 17:59:37 - INFO - Epoch 53/150: Train Loss: 0.3490, Test Loss: 0.2858, Test Dice: 0.8882, Test IoU: 0.7997, EMA: True
+2026-08-22 17:59:38 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 17:59:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:00:06 - INFO - Epoch 54/150: Train Loss: 0.3479, Test Loss: 0.2832, Test Dice: 0.8890, Test IoU: 0.8011, EMA: True
+2026-08-22 18:00:06 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 18:00:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:00:34 - INFO - Epoch 55/150: Train Loss: 0.3422, Test Loss: 0.2818, Test Dice: 0.8896, Test IoU: 0.8020, EMA: True
+2026-08-22 18:00:35 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 18:00:35 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:01:03 - INFO - Epoch 56/150: Train Loss: 0.3437, Test Loss: 0.2798, Test Dice: 0.8906, Test IoU: 0.8036, EMA: True
+2026-08-22 18:01:03 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 18:01:03 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:01:31 - INFO - Epoch 57/150: Train Loss: 0.3410, Test Loss: 0.2783, Test Dice: 0.8907, Test IoU: 0.8039, EMA: True
+2026-08-22 18:01:32 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 18:01:32 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:02:00 - INFO - Epoch 58/150: Train Loss: 0.3429, Test Loss: 0.2760, Test Dice: 0.8911, Test IoU: 0.8045, EMA: True
+2026-08-22 18:02:01 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 18:02:01 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:02:28 - INFO - Epoch 59/150: Train Loss: 0.3398, Test Loss: 0.2743, Test Dice: 0.8924, Test IoU: 0.8065, EMA: True
+2026-08-22 18:02:29 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:02:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:02:57 - INFO - Epoch 60/150: Train Loss: 0.3391, Test Loss: 0.2724, Test Dice: 0.8930, Test IoU: 0.8075, EMA: True
+2026-08-22 18:02:57 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:02:57 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:03:25 - INFO - Epoch 61/150: Train Loss: 0.3290, Test Loss: 0.2710, Test Dice: 0.8937, Test IoU: 0.8086, EMA: True
+2026-08-22 18:03:26 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:03:26 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:03:53 - INFO - Epoch 62/150: Train Loss: 0.3328, Test Loss: 0.2710, Test Dice: 0.8928, Test IoU: 0.8071, EMA: True
+2026-08-22 18:04:21 - INFO - Epoch 63/150: Train Loss: 0.3265, Test Loss: 0.2698, Test Dice: 0.8926, Test IoU: 0.8068, EMA: True
+2026-08-22 18:04:48 - INFO - Epoch 64/150: Train Loss: 0.3309, Test Loss: 0.2691, Test Dice: 0.8923, Test IoU: 0.8063, EMA: True
+2026-08-22 18:05:16 - INFO - Epoch 65/150: Train Loss: 0.3254, Test Loss: 0.2672, Test Dice: 0.8935, Test IoU: 0.8082, EMA: True
+2026-08-22 18:05:44 - INFO - Epoch 66/150: Train Loss: 0.3178, Test Loss: 0.2657, Test Dice: 0.8947, Test IoU: 0.8100, EMA: True
+2026-08-22 18:05:44 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:05:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:06:12 - INFO - Epoch 67/150: Train Loss: 0.3239, Test Loss: 0.2634, Test Dice: 0.8956, Test IoU: 0.8116, EMA: True
+2026-08-22 18:06:13 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:06:13 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:06:41 - INFO - Epoch 68/150: Train Loss: 0.3181, Test Loss: 0.2622, Test Dice: 0.8953, Test IoU: 0.8111, EMA: True
+2026-08-22 18:07:08 - INFO - Epoch 69/150: Train Loss: 0.3217, Test Loss: 0.2610, Test Dice: 0.8955, Test IoU: 0.8114, EMA: True
+2026-08-22 18:07:36 - INFO - Epoch 70/150: Train Loss: 0.3160, Test Loss: 0.2597, Test Dice: 0.8963, Test IoU: 0.8128, EMA: True
+2026-08-22 18:07:37 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:07:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:08:04 - INFO - Epoch 71/150: Train Loss: 0.3233, Test Loss: 0.2582, Test Dice: 0.8974, Test IoU: 0.8146, EMA: True
+2026-08-22 18:08:05 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:08:05 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:08:32 - INFO - Epoch 72/150: Train Loss: 0.3113, Test Loss: 0.2579, Test Dice: 0.8977, Test IoU: 0.8150, EMA: True
+2026-08-22 18:08:33 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 18:08:33 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:09:01 - INFO - Epoch 73/150: Train Loss: 0.3161, Test Loss: 0.2569, Test Dice: 0.8985, Test IoU: 0.8163, EMA: True
+2026-08-22 18:09:02 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:09:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:09:29 - INFO - Epoch 74/150: Train Loss: 0.3133, Test Loss: 0.2556, Test Dice: 0.8997, Test IoU: 0.8182, EMA: True
+2026-08-22 18:09:30 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:09:30 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:09:58 - INFO - Epoch 75/150: Train Loss: 0.3071, Test Loss: 0.2552, Test Dice: 0.9004, Test IoU: 0.8195, EMA: True
+2026-08-22 18:09:58 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:09:58 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:10:26 - INFO - Epoch 76/150: Train Loss: 0.3067, Test Loss: 0.2548, Test Dice: 0.9005, Test IoU: 0.8196, EMA: True
+2026-08-22 18:10:27 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:10:27 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:10:55 - INFO - Epoch 77/150: Train Loss: 0.3030, Test Loss: 0.2536, Test Dice: 0.9015, Test IoU: 0.8212, EMA: True
+2026-08-22 18:10:55 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:10:55 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:11:23 - INFO - Epoch 78/150: Train Loss: 0.3036, Test Loss: 0.2519, Test Dice: 0.9024, Test IoU: 0.8228, EMA: True
+2026-08-22 18:11:24 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:11:24 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:11:51 - INFO - Epoch 79/150: Train Loss: 0.3067, Test Loss: 0.2514, Test Dice: 0.9022, Test IoU: 0.8224, EMA: True
+2026-08-22 18:12:19 - INFO - Epoch 80/150: Train Loss: 0.3058, Test Loss: 0.2505, Test Dice: 0.9028, Test IoU: 0.8235, EMA: True
+2026-08-22 18:12:20 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:12:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:12:47 - INFO - Epoch 81/150: Train Loss: 0.3053, Test Loss: 0.2497, Test Dice: 0.9033, Test IoU: 0.8242, EMA: True
+2026-08-22 18:12:48 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:12:48 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:13:16 - INFO - Epoch 82/150: Train Loss: 0.3028, Test Loss: 0.2496, Test Dice: 0.9032, Test IoU: 0.8241, EMA: True
+2026-08-22 18:13:43 - INFO - Epoch 83/150: Train Loss: 0.3034, Test Loss: 0.2493, Test Dice: 0.9029, Test IoU: 0.8235, EMA: True
+2026-08-22 18:14:11 - INFO - Epoch 84/150: Train Loss: 0.2968, Test Loss: 0.2483, Test Dice: 0.9035, Test IoU: 0.8245, EMA: True
+2026-08-22 18:14:12 - INFO - New best model saved with accuracy: 0.82%
+2026-08-22 18:14:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:14:39 - INFO - Epoch 85/150: Train Loss: 0.2987, Test Loss: 0.2475, Test Dice: 0.9032, Test IoU: 0.8240, EMA: True
+2026-08-22 18:15:07 - INFO - Epoch 86/150: Train Loss: 0.3015, Test Loss: 0.2460, Test Dice: 0.9040, Test IoU: 0.8253, EMA: True
+2026-08-22 18:15:08 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:15:08 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:15:35 - INFO - Epoch 87/150: Train Loss: 0.2893, Test Loss: 0.2443, Test Dice: 0.9049, Test IoU: 0.8267, EMA: True
+2026-08-22 18:15:36 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:15:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:16:04 - INFO - Epoch 88/150: Train Loss: 0.2900, Test Loss: 0.2434, Test Dice: 0.9055, Test IoU: 0.8277, EMA: True
+2026-08-22 18:16:05 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:16:05 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:16:32 - INFO - Epoch 89/150: Train Loss: 0.2903, Test Loss: 0.2432, Test Dice: 0.9058, Test IoU: 0.8283, EMA: True
+2026-08-22 18:16:33 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:16:33 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:17:01 - INFO - Epoch 90/150: Train Loss: 0.2934, Test Loss: 0.2429, Test Dice: 0.9059, Test IoU: 0.8285, EMA: True
+2026-08-22 18:17:02 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:17:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:17:30 - INFO - Epoch 91/150: Train Loss: 0.2955, Test Loss: 0.2429, Test Dice: 0.9051, Test IoU: 0.8271, EMA: True
+2026-08-22 18:17:57 - INFO - Epoch 92/150: Train Loss: 0.2971, Test Loss: 0.2415, Test Dice: 0.9058, Test IoU: 0.8282, EMA: True
+2026-08-22 18:18:25 - INFO - Epoch 93/150: Train Loss: 0.2869, Test Loss: 0.2417, Test Dice: 0.9051, Test IoU: 0.8272, EMA: True
+2026-08-22 18:18:52 - INFO - Epoch 94/150: Train Loss: 0.2869, Test Loss: 0.2419, Test Dice: 0.9044, Test IoU: 0.8260, EMA: True
+2026-08-22 18:19:20 - INFO - Epoch 95/150: Train Loss: 0.2914, Test Loss: 0.2420, Test Dice: 0.9039, Test IoU: 0.8251, EMA: True
+2026-08-22 18:19:48 - INFO - Epoch 96/150: Train Loss: 0.2781, Test Loss: 0.2423, Test Dice: 0.9037, Test IoU: 0.8248, EMA: True
+2026-08-22 18:20:16 - INFO - Epoch 97/150: Train Loss: 0.2793, Test Loss: 0.2417, Test Dice: 0.9037, Test IoU: 0.8248, EMA: True
+2026-08-22 18:20:43 - INFO - Epoch 98/150: Train Loss: 0.2891, Test Loss: 0.2413, Test Dice: 0.9037, Test IoU: 0.8248, EMA: True
+2026-08-22 18:21:11 - INFO - Epoch 99/150: Train Loss: 0.2875, Test Loss: 0.2404, Test Dice: 0.9041, Test IoU: 0.8254, EMA: True
+2026-08-22 18:21:39 - INFO - Epoch 100/150: Train Loss: 0.2868, Test Loss: 0.2396, Test Dice: 0.9044, Test IoU: 0.8259, EMA: True
+2026-08-22 18:22:06 - INFO - Epoch 101/150: Train Loss: 0.2761, Test Loss: 0.2388, Test Dice: 0.9049, Test IoU: 0.8267, EMA: True
+2026-08-22 18:22:34 - INFO - Epoch 102/150: Train Loss: 0.2836, Test Loss: 0.2377, Test Dice: 0.9055, Test IoU: 0.8278, EMA: True
+2026-08-22 18:23:01 - INFO - Epoch 103/150: Train Loss: 0.2780, Test Loss: 0.2370, Test Dice: 0.9057, Test IoU: 0.8281, EMA: True
+2026-08-22 18:23:29 - INFO - Epoch 104/150: Train Loss: 0.2785, Test Loss: 0.2365, Test Dice: 0.9058, Test IoU: 0.8282, EMA: True
+2026-08-22 18:23:57 - INFO - Epoch 105/150: Train Loss: 0.2788, Test Loss: 0.2363, Test Dice: 0.9059, Test IoU: 0.8283, EMA: True
+2026-08-22 18:24:24 - INFO - Epoch 106/150: Train Loss: 0.2769, Test Loss: 0.2353, Test Dice: 0.9064, Test IoU: 0.8292, EMA: True
+2026-08-22 18:24:25 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:24:25 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:24:53 - INFO - Epoch 107/150: Train Loss: 0.2812, Test Loss: 0.2349, Test Dice: 0.9068, Test IoU: 0.8299, EMA: True
+2026-08-22 18:24:54 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:24:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:25:21 - INFO - Epoch 108/150: Train Loss: 0.2797, Test Loss: 0.2341, Test Dice: 0.9073, Test IoU: 0.8307, EMA: True
+2026-08-22 18:25:22 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:25:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:25:50 - INFO - Epoch 109/150: Train Loss: 0.2797, Test Loss: 0.2335, Test Dice: 0.9078, Test IoU: 0.8314, EMA: True
+2026-08-22 18:25:51 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:25:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:26:18 - INFO - Epoch 110/150: Train Loss: 0.2697, Test Loss: 0.2335, Test Dice: 0.9078, Test IoU: 0.8315, EMA: True
+2026-08-22 18:26:19 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:26:19 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:26:47 - INFO - Epoch 111/150: Train Loss: 0.2769, Test Loss: 0.2332, Test Dice: 0.9079, Test IoU: 0.8316, EMA: True
+2026-08-22 18:26:47 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:26:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:27:15 - INFO - Epoch 112/150: Train Loss: 0.2729, Test Loss: 0.2327, Test Dice: 0.9077, Test IoU: 0.8313, EMA: True
+2026-08-22 18:27:43 - INFO - Epoch 113/150: Train Loss: 0.2745, Test Loss: 0.2320, Test Dice: 0.9079, Test IoU: 0.8316, EMA: True
+2026-08-22 18:27:44 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:27:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:28:11 - INFO - Epoch 114/150: Train Loss: 0.2813, Test Loss: 0.2314, Test Dice: 0.9080, Test IoU: 0.8317, EMA: True
+2026-08-22 18:28:12 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:28:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:28:40 - INFO - Epoch 115/150: Train Loss: 0.2722, Test Loss: 0.2312, Test Dice: 0.9082, Test IoU: 0.8321, EMA: True
+2026-08-22 18:28:41 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:28:41 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:29:08 - INFO - Epoch 116/150: Train Loss: 0.2769, Test Loss: 0.2308, Test Dice: 0.9087, Test IoU: 0.8329, EMA: True
+2026-08-22 18:29:09 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:29:09 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:29:36 - INFO - Epoch 117/150: Train Loss: 0.2711, Test Loss: 0.2304, Test Dice: 0.9092, Test IoU: 0.8337, EMA: True
+2026-08-22 18:29:37 - INFO - New best model saved with accuracy: 0.83%
+2026-08-22 18:29:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:30:05 - INFO - Epoch 118/150: Train Loss: 0.2687, Test Loss: 0.2294, Test Dice: 0.9099, Test IoU: 0.8351, EMA: True
+2026-08-22 18:30:06 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:30:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:30:34 - INFO - Epoch 119/150: Train Loss: 0.2748, Test Loss: 0.2292, Test Dice: 0.9098, Test IoU: 0.8347, EMA: True
+2026-08-22 18:31:01 - INFO - Epoch 120/150: Train Loss: 0.2810, Test Loss: 0.2284, Test Dice: 0.9100, Test IoU: 0.8351, EMA: True
+2026-08-22 18:31:02 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:31:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:31:30 - INFO - Epoch 121/150: Train Loss: 0.2694, Test Loss: 0.2281, Test Dice: 0.9097, Test IoU: 0.8347, EMA: True
+2026-08-22 18:31:57 - INFO - Epoch 122/150: Train Loss: 0.2670, Test Loss: 0.2279, Test Dice: 0.9096, Test IoU: 0.8344, EMA: True
+2026-08-22 18:32:25 - INFO - Epoch 123/150: Train Loss: 0.2679, Test Loss: 0.2269, Test Dice: 0.9104, Test IoU: 0.8358, EMA: True
+2026-08-22 18:32:26 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:32:26 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:32:54 - INFO - Epoch 124/150: Train Loss: 0.2706, Test Loss: 0.2269, Test Dice: 0.9110, Test IoU: 0.8368, EMA: True
+2026-08-22 18:32:54 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:32:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:33:22 - INFO - Epoch 125/150: Train Loss: 0.2579, Test Loss: 0.2273, Test Dice: 0.9110, Test IoU: 0.8367, EMA: True
+2026-08-22 18:33:50 - INFO - Epoch 126/150: Train Loss: 0.2624, Test Loss: 0.2276, Test Dice: 0.9107, Test IoU: 0.8363, EMA: True
+2026-08-22 18:34:17 - INFO - Epoch 127/150: Train Loss: 0.2673, Test Loss: 0.2279, Test Dice: 0.9105, Test IoU: 0.8359, EMA: True
+2026-08-22 18:34:45 - INFO - Epoch 128/150: Train Loss: 0.2674, Test Loss: 0.2276, Test Dice: 0.9105, Test IoU: 0.8360, EMA: True
+2026-08-22 18:35:12 - INFO - Epoch 129/150: Train Loss: 0.2651, Test Loss: 0.2280, Test Dice: 0.9101, Test IoU: 0.8353, EMA: True
+2026-08-22 18:35:40 - INFO - Epoch 130/150: Train Loss: 0.2620, Test Loss: 0.2278, Test Dice: 0.9103, Test IoU: 0.8356, EMA: True
+2026-08-22 18:36:08 - INFO - Epoch 131/150: Train Loss: 0.2636, Test Loss: 0.2278, Test Dice: 0.9105, Test IoU: 0.8360, EMA: True
+2026-08-22 18:36:35 - INFO - Epoch 132/150: Train Loss: 0.2606, Test Loss: 0.2277, Test Dice: 0.9110, Test IoU: 0.8369, EMA: True
+2026-08-22 18:36:36 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:36:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:37:03 - INFO - Epoch 133/150: Train Loss: 0.2603, Test Loss: 0.2279, Test Dice: 0.9105, Test IoU: 0.8360, EMA: True
+2026-08-22 18:37:31 - INFO - Epoch 134/150: Train Loss: 0.2593, Test Loss: 0.2275, Test Dice: 0.9108, Test IoU: 0.8365, EMA: True
+2026-08-22 18:37:59 - INFO - Epoch 135/150: Train Loss: 0.2677, Test Loss: 0.2269, Test Dice: 0.9109, Test IoU: 0.8366, EMA: True
+2026-08-22 18:38:26 - INFO - Epoch 136/150: Train Loss: 0.2611, Test Loss: 0.2265, Test Dice: 0.9110, Test IoU: 0.8368, EMA: True
+2026-08-22 18:38:54 - INFO - Epoch 137/150: Train Loss: 0.2686, Test Loss: 0.2264, Test Dice: 0.9106, Test IoU: 0.8362, EMA: True
+2026-08-22 18:39:22 - INFO - Epoch 138/150: Train Loss: 0.2647, Test Loss: 0.2263, Test Dice: 0.9107, Test IoU: 0.8363, EMA: True
+2026-08-22 18:39:50 - INFO - Epoch 139/150: Train Loss: 0.2593, Test Loss: 0.2263, Test Dice: 0.9106, Test IoU: 0.8361, EMA: True
+2026-08-22 18:40:17 - INFO - Epoch 140/150: Train Loss: 0.2602, Test Loss: 0.2265, Test Dice: 0.9102, Test IoU: 0.8354, EMA: True
+2026-08-22 18:40:45 - INFO - Epoch 141/150: Train Loss: 0.2583, Test Loss: 0.2257, Test Dice: 0.9107, Test IoU: 0.8362, EMA: True
+2026-08-22 18:41:13 - INFO - Epoch 142/150: Train Loss: 0.2644, Test Loss: 0.2252, Test Dice: 0.9106, Test IoU: 0.8361, EMA: True
+2026-08-22 18:41:40 - INFO - Epoch 143/150: Train Loss: 0.2617, Test Loss: 0.2246, Test Dice: 0.9112, Test IoU: 0.8370, EMA: True
+2026-08-22 18:41:41 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:41:41 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:42:09 - INFO - Epoch 144/150: Train Loss: 0.2546, Test Loss: 0.2244, Test Dice: 0.9114, Test IoU: 0.8374, EMA: True
+2026-08-22 18:42:10 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:42:10 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:42:37 - INFO - Epoch 145/150: Train Loss: 0.2645, Test Loss: 0.2245, Test Dice: 0.9113, Test IoU: 0.8372, EMA: True
+2026-08-22 18:43:05 - INFO - Epoch 146/150: Train Loss: 0.2532, Test Loss: 0.2242, Test Dice: 0.9117, Test IoU: 0.8379, EMA: True
+2026-08-22 18:43:06 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:43:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:43:34 - INFO - Epoch 147/150: Train Loss: 0.2601, Test Loss: 0.2238, Test Dice: 0.9118, Test IoU: 0.8381, EMA: True
+2026-08-22 18:43:34 - INFO - New best model saved with accuracy: 0.84%
+2026-08-22 18:43:34 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\02_add_msc\seed_6543\best_checkpoint.pth
+2026-08-22 18:44:02 - INFO - Epoch 148/150: Train Loss: 0.2511, Test Loss: 0.2242, Test Dice: 0.9115, Test IoU: 0.8375, EMA: True
+2026-08-22 18:44:30 - INFO - Epoch 149/150: Train Loss: 0.2606, Test Loss: 0.2240, Test Dice: 0.9116, Test IoU: 0.8378, EMA: True
+2026-08-22 18:44:57 - INFO - Epoch 150/150: Train Loss: 0.2573, Test Loss: 0.2242, Test Dice: 0.9115, Test IoU: 0.8376, EMA: True
+2026-08-22 18:44:58 - INFO - Training stopped after epoch 150; best checkpoint retained.
