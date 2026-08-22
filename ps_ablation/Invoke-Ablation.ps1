@@ -37,7 +37,8 @@ foreach ($seed in $Seeds) {
         "--epochs", "150", "--batch_size", "8", "--decoder_warmup_epochs", "10",
         "--lr", "1e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
         "--training", "True", "--testing", "False", "--tta_check", "False",
-        "--load", "False", "--save", "True"
+        "--load", "False", "--save", "True",
+        "--auto_resume", "True", "--resume_optimizer", "True"
     )
     if ($DryRun) { $command | ConvertTo-Json -Compress; continue }
 

@@ -25,4 +25,5 @@ def add_ablation_arguments(parser):
         default="none",
     )
     parser.add_argument("--deep_supervision_heads", type=int, choices=(0, 1, 2, 3), default=0)
+    parser.add_argument("--auto_resume", type=parse_bool, default=False)
     return parser

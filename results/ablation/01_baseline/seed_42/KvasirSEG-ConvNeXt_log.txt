@@ -1,1 +1,60 @@
-2026-08-22 10:04:35 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-22 10:15:52 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-22 10:16:02 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-22 10:16:02 - INFO - Parameter count: total=29.19M, encoder=27.82M, decoder_head=1.37M, trainable=29.19M
+2026-08-22 10:16:02 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=CosineAnnealingLR(T_max=200)
+2026-08-22 10:16:08 - INFO - Auto-resume selected checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:16:08 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-22 10:16:08 - INFO - Loaded 243/243 compatible model tensors from checkpoint.
+2026-08-22 10:16:08 - INFO - Skipped checkpoint tensors because they are new or shape-mismatched: ['total_ops', 'total_params', 'encoder.total_ops', 'encoder.total_params', 'encoder.dropout.total_ops', 'encoder.dropout.total_params', 'encoder.downsample_layers.total_ops', 'encoder.downsample_layers.total_params', 'encoder.downsample_layers.0.1.total_ops', 'encoder.downsample_layers.0.1.total_params', 'encoder.downsample_layers.1.0.total_ops', 'encoder.downsample_layers.1.0.total_params', 'encoder.downsample_layers.2.0.total_ops', 'encoder.downsample_layers.2.0.total_params', 'encoder.downsample_layers.3.0.total_ops', 'encoder.downsample_layers.3.0.total_params', 'encoder.stages.total_ops', 'encoder.stages.total_params', 'encoder.stages.0.0.total_ops', 'encoder.stages.0.0.total_params']
+2026-08-22 10:16:08 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-22 10:16:08 - INFO - Resumed from epoch 17
+2026-08-22 10:16:08 - INFO - Previous best IoU: 0.7434
+2026-08-22 10:16:08 - INFO - Loaded 243 compatible EMA tensors from checkpoint.
+2026-08-22 10:16:08 - INFO - EMA enabled with decay=0.995.
+2026-08-22 10:16:08 - INFO - Training stage 'all' starts at epoch 19 (29,190,098/29,190,098 parameters trainable).
+2026-08-22 10:16:08 - INFO - Focal Tversky enabled with weight 0.050.
+2026-08-22 10:16:09 - INFO - #### Training ####
+2026-08-22 10:16:09 - INFO - initial LR: refine=0.000149, encoder=0.000010, decoder=0.000100
+2026-08-22 10:16:51 - INFO - Epoch 19/150: Train Loss: 0.4583, Test Loss: 0.3390, Test Dice: 0.8576, Test IoU: 0.7529, EMA: True
+2026-08-22 10:16:52 - INFO - New best model saved with accuracy: 0.75%
+2026-08-22 10:16:52 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:17:35 - INFO - Epoch 20/150: Train Loss: 0.4465, Test Loss: 0.3352, Test Dice: 0.8599, Test IoU: 0.7565, EMA: True
+2026-08-22 10:17:36 - INFO - New best model saved with accuracy: 0.76%
+2026-08-22 10:17:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:18:21 - INFO - Epoch 21/150: Train Loss: 0.4335, Test Loss: 0.3311, Test Dice: 0.8634, Test IoU: 0.7619, EMA: True
+2026-08-22 10:18:22 - INFO - New best model saved with accuracy: 0.76%
+2026-08-22 10:18:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:19:06 - INFO - Epoch 22/150: Train Loss: 0.4310, Test Loss: 0.3253, Test Dice: 0.8663, Test IoU: 0.7664, EMA: True
+2026-08-22 10:19:07 - INFO - New best model saved with accuracy: 0.77%
+2026-08-22 10:19:07 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:19:54 - INFO - Epoch 23/150: Train Loss: 0.4292, Test Loss: 0.3179, Test Dice: 0.8704, Test IoU: 0.7727, EMA: True
+2026-08-22 10:19:55 - INFO - New best model saved with accuracy: 0.77%
+2026-08-22 10:19:55 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:20:41 - INFO - Epoch 24/150: Train Loss: 0.4085, Test Loss: 0.3116, Test Dice: 0.8736, Test IoU: 0.7779, EMA: True
+2026-08-22 10:20:42 - INFO - New best model saved with accuracy: 0.78%
+2026-08-22 10:20:42 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:21:28 - INFO - Epoch 25/150: Train Loss: 0.4035, Test Loss: 0.3039, Test Dice: 0.8775, Test IoU: 0.7841, EMA: True
+2026-08-22 10:21:29 - INFO - New best model saved with accuracy: 0.78%
+2026-08-22 10:21:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:22:12 - INFO - Epoch 26/150: Train Loss: 0.4103, Test Loss: 0.2992, Test Dice: 0.8806, Test IoU: 0.7892, EMA: True
+2026-08-22 10:22:13 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 10:22:13 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:22:56 - INFO - Epoch 27/150: Train Loss: 0.3999, Test Loss: 0.2968, Test Dice: 0.8808, Test IoU: 0.7894, EMA: True
+2026-08-22 10:22:57 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 10:22:57 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:23:42 - INFO - Epoch 28/150: Train Loss: 0.3914, Test Loss: 0.2959, Test Dice: 0.8806, Test IoU: 0.7892, EMA: True
+2026-08-22 10:24:26 - INFO - Epoch 29/150: Train Loss: 0.3857, Test Loss: 0.2937, Test Dice: 0.8817, Test IoU: 0.7911, EMA: True
+2026-08-22 10:24:27 - INFO - New best model saved with accuracy: 0.79%
+2026-08-22 10:24:27 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:25:13 - INFO - Epoch 30/150: Train Loss: 0.3746, Test Loss: 0.2881, Test Dice: 0.8850, Test IoU: 0.7966, EMA: True
+2026-08-22 10:25:14 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 10:25:14 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:25:59 - INFO - Epoch 31/150: Train Loss: 0.3744, Test Loss: 0.2821, Test Dice: 0.8890, Test IoU: 0.8030, EMA: True
+2026-08-22 10:26:00 - INFO - New best model saved with accuracy: 0.80%
+2026-08-22 10:26:00 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:26:48 - INFO - Epoch 32/150: Train Loss: 0.3628, Test Loss: 0.2804, Test Dice: 0.8903, Test IoU: 0.8054, EMA: True
+2026-08-22 10:26:49 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 10:26:49 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth
+2026-08-22 10:27:38 - INFO - Epoch 33/150: Train Loss: 0.3555, Test Loss: 0.2759, Test Dice: 0.8925, Test IoU: 0.8090, EMA: True
+2026-08-22 10:27:39 - INFO - New best model saved with accuracy: 0.81%
+2026-08-22 10:27:39 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\results\ablation\01_baseline\seed_42\checkpoints_KvasirSEG-ConvNeXt\best.pth

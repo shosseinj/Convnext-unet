@@ -16,5 +16,10 @@ Inspect the generated command without training:
 Results and checkpoints are written beneath:
   results\ablation\<experiment>\seed_<seed>\
 
+Each seed keeps only checkpoints_KvasirSEG-ConvNeXt\best.pth. On restart, the
+launcher automatically resumes model, EMA, optimizer, and scheduler state from
+that file. Legacy epoch-named checkpoints are validated and consolidated to the
+highest-scoring valid checkpoint before training resumes.
+
 Experiment 11 has the same architecture as experiment 05 and normally should
 reuse experiment 05 results rather than retraining.

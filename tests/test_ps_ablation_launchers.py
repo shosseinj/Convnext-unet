@@ -54,6 +54,11 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
         for option, value in expected.items():
             self.assertEqual(invocation[invocation.index(option) + 1], value)
 
+    def test_launcher_enables_automatic_best_checkpoint_resume(self):
+        invocation = self.dry_run("01_baseline.ps1")
+        self.assertEqual(invocation[invocation.index("--auto_resume") + 1], "True")
+        self.assertEqual(invocation[invocation.index("--resume_optimizer") + 1], "True")
+
     def test_main_torch_ablation_arguments_parse_launcher_values(self):
         parser = argparse.ArgumentParser()
         add_ablation_arguments(parser)

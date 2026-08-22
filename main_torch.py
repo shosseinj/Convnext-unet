@@ -2,6 +2,7 @@ import os
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 import argparse
 import random
+from pathlib import Path
 import pickle as pkl
 import numpy as np
 
@@ -21,6 +22,7 @@ from sklearn.model_selection import train_test_split
 import glob
 import cv2
 from ablation_cli import add_ablation_arguments
+from checkpoint_management import atomic_save_best, prepare_best_checkpoint
 
 
 import numpy as np
@@ -2544,8 +2546,20 @@ if __name__ == "__main__":
     # scheduler = get_triangular_scheduler(optimizer, min_lr=lr, max_lr=0.0001, epochs_to_peak=80, total_epochs=160)
         
     checkpoint = None
+    resumed_epochs_without_improvement = 0
     restart_stage_schedule = False
     new_arch_prefixes = ("context.", "detail_fusion.")
+    checkpoint_dir = Path(args.logging_dir) / f"checkpoints_{args.model_name}"
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    if args.auto_resume:
+        resume_path = prepare_best_checkpoint(checkpoint_dir)
+        if resume_path is not None:
+            args.load = True
+            args.checkpoint_path = str(resume_path)
+            logging.info(f"Auto-resume selected checkpoint: {resume_path}")
+        else:
+            args.load = False
+            logging.info("Auto-resume found no valid checkpoint; starting a new run.")
     if args.load:
             if not args.checkpoint_path:
                 raise ValueError("--load True requires --checkpoint_path")
@@ -2635,6 +2649,9 @@ if __name__ == "__main__":
             best_acc = max(
                 float(checkpoint.get('best_acc', 0.0)),
                 float(checkpoint.get('test_iou', 0.0))
+            )
+            resumed_epochs_without_improvement = int(
+                checkpoint.get('epochs_without_improvement', 0)
             )
             
             logging.info(f"Resumed from epoch {checkpoint['epoch']}")
@@ -2755,7 +2772,7 @@ if __name__ == "__main__":
         
         saved_lr = args.lr  # Default to args.lr if not resuming
         
-        os.makedirs(f"{args.logging_dir}checkpoints_{args.model_name}", exist_ok=True)
+        checkpoint_dir.mkdir(parents=True, exist_ok=True)
         
 
         # Log the actual starting LR
@@ -2770,7 +2787,7 @@ if __name__ == "__main__":
             
         # Training loop
         best_dice = 0
-        epochs_without_improvement = 0
+        epochs_without_improvement = resumed_epochs_without_improvement
         last_epoch = start_epoch - 1
         last_train_loss = None
         last_test_loss = None
@@ -2854,14 +2871,15 @@ if __name__ == "__main__":
                             'best_acc': best_acc,
                             'test_dice': test_dice,
                             'test_iou': test_iou,
+                            'epochs_without_improvement': 0,
                         }
                     if ema is not None:
                         checkpoint_dict['ema_state_dict'] = ema.state_dict()
                         checkpoint_dict['raw_model_state_dict'] = snapshot_state_dict(model)
                 
-                    torch.save(checkpoint_dict, 
-                            f"{args.logging_dir}checkpoints_{args.model_name}/{epoch}-test{test_acc:.2f}.pth")
+                    best_checkpoint_path = atomic_save_best(checkpoint_dict, checkpoint_dir)
                     logging.info(f"New best model saved with accuracy: {best_acc:.2f}%")
+                    logging.info(f"Best checkpoint: {best_checkpoint_path}")
                     if args.tta_check:
                         if ema is not None:
                             ema.store(model)
@@ -2890,28 +2908,7 @@ if __name__ == "__main__":
                         break
 
         if args.training and last_epoch >= start_epoch:
-            final_checkpoint = {
-                'epoch': last_epoch,
-                'model_state_dict': scored_model_state_dict(model, ema),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'scheduler_state_dict': scheduler.state_dict(),
-                'best_acc': best_acc,
-                'train_loss': last_train_loss,
-                'test_loss': last_test_loss,
-                'test_dice': last_test_dice,
-                'test_iou': last_test_iou,
-            }
-            if ema is not None:
-                final_checkpoint['ema_state_dict'] = ema.state_dict()
-                final_checkpoint['raw_model_state_dict'] = snapshot_state_dict(model)
-
-            final_checkpoint_path = (
-                f"{args.logging_dir}checkpoints_{args.model_name}/"
-                f"final-epoch{last_epoch}-test{(last_test_iou or 0.0):.4f}.pth"
-            )
-            torch.save(final_checkpoint, final_checkpoint_path)
-            logging.info(f"Final checkpoint saved: {final_checkpoint_path}")
-
+            logging.info(f"Training stopped after epoch {last_epoch + 1}; best.pth retained.")
             for handler in logging.root.handlers:
                 handler.flush()
     # Save model
