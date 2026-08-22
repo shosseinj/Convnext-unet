@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\03_add_lrse\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "4b4fd788277c3b98f6aee6eb281b9d319f3480ae7c96edad7a49fcb508cea3c9",
+  "experiment_name": "03_add_lrse",
+  "flops": 27279060864,
+  "gflops": 27.279060864,
+  "gmacs": 13.639530432,
+  "macs": 13639530432,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8507908421183576,
+      "MAE": 0.007245582813415111,
+      "S_alpha": 0.9249225386240458,
+      "mDice": 0.876073594391346,
+      "mE_phi": 0.9494061803422043,
+      "mIoU": 0.8008700037995974,
+      "maxE_phi": 0.957042261312053,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.8965085027520027,
+      "MAE": 0.014766391199879507,
+      "S_alpha": 0.9356512041378688,
+      "mDice": 0.9169051483765905,
+      "mE_phi": 0.9651379290182684,
+      "mIoU": 0.8613734620244453,
+      "maxE_phi": 0.9735689179849406,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7380443646194166,
+      "MAE": 0.037677541685502816,
+      "S_alpha": 0.8461470591968309,
+      "mDice": 0.7636697301774076,
+      "mE_phi": 0.8748154683345768,
+      "mIoU": 0.6805896709160429,
+      "maxE_phi": 0.883848613973301,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.6987357520961481,
+      "MAE": 0.014183714246908861,
+      "S_alpha": 0.8528828311317378,
+      "mDice": 0.7381764844601642,
+      "mE_phi": 0.8584297159861373,
+      "mIoU": 0.6554379278461325,
+      "maxE_phi": 0.8722375779009782,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8833088665040989,
+      "MAE": 0.031493768543693464,
+      "S_alpha": 0.9193936094182442,
+      "mDice": 0.9143485608696937,
+      "mE_phi": 0.945014492038304,
+      "mIoU": 0.8570543086528778,
+      "maxE_phi": 0.9562540336537525,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "total_parameters": 29197010,
+  "trainable_parameters": 29197010
+}

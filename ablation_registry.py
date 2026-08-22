@@ -23,7 +23,7 @@ _EXPERIMENTS = {
         ("01_baseline", False, "normal", 0, False, "none", 0),
         ("02_add_msc", True, "normal", 0, False, "none", 0),
         ("03_add_lrse", False, "bsei", 0, False, "none", 0),
-        ("04_add_db", True, "bsei", 32, False, "concatenation", 0),
+        ("04_add_db", False, "normal", 32, False, "concatenation", 0),
         ("05_add_gdf", True, "bsei", 32, True, "gdf", 0),
         ("06_full_model", True, "bsei", 32, True, "gdf", 3),
         ("07_full_without_msc", False, "bsei", 32, True, "gdf", 3),

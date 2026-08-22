@@ -65,6 +65,19 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
         self.assertEqual(invocation[invocation.index("--enable_msc") + 1], "False")
         self.assertEqual(invocation[invocation.index("--skip_mode") + 1], "bsei")
 
+    def test_detail_branch_runner_uses_baseline_without_msc_or_bsei(self):
+        invocation = self.dry_run("04_add_db.ps1")["train"]
+        expected = {
+            "--enable_msc": "False",
+            "--skip_mode": "normal",
+            "--detail_channels": "32",
+            "--enable_gdf": "False",
+            "--detail_fusion_mode": "concatenation",
+            "--deep_supervision_heads": "0",
+        }
+        for option, value in expected.items():
+            self.assertEqual(invocation[invocation.index(option) + 1], value)
+
     def test_launcher_enables_automatic_best_checkpoint_resume(self):
         invocation = self.dry_run("01_baseline.ps1")["train"]
         self.assertEqual(invocation[invocation.index("--auto_resume") + 1], "True")

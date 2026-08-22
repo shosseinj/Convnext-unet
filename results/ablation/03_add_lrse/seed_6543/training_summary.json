@@ -1,0 +1,11 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\03_add_lrse\\seed_6543\\best_checkpoint.pth",
+  "best_epoch": 140,
+  "best_validation_metric": 0.8419695581708636,
+  "completion_reason": "max_epochs",
+  "experiment_name": "03_add_lrse",
+  "final_epoch": 149,
+  "seed": 6543,
+  "training_complete": true,
+  "training_time_seconds": 4051.549149274826
+}

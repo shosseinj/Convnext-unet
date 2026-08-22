@@ -20,6 +20,14 @@ class AblationRegistryTests(unittest.TestCase):
         self.assertFalse(cfg.enable_msc)
         self.assertEqual(cfg.skip_mode, "bsei")
 
+    def test_detail_branch_configuration_uses_baseline_backbone(self):
+        cfg = get_experiment("04_add_db")
+        self.assertEqual(
+            (cfg.enable_msc, cfg.skip_mode, cfg.detail_channels,
+             cfg.enable_gdf, cfg.detail_fusion_mode, cfg.deep_supervision_heads),
+            (False, "normal", 32, False, "concatenation", 0),
+        )
+
     def test_unknown_experiment_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "Unknown ablation experiment"):
             get_experiment("missing")
