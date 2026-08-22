@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\01_baseline\\seed_6543\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "aa730f82a219bbc9d1b628bd5a76b85a2d85de2dda8a77085c0f4eed48ffbe76",
+  "experiment_name": "01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.868262981242223,
+      "MAE": 0.006813959495015022,
+      "S_alpha": 0.9327888953636069,
+      "mDice": 0.8925065631667773,
+      "mE_phi": 0.9625446596274992,
+      "mIoU": 0.8186343068877856,
+      "maxE_phi": 0.971051887448479,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9194473607414616,
+      "MAE": 0.01148066706079822,
+      "S_alpha": 0.9477016261239383,
+      "mDice": 0.9361050032800243,
+      "mE_phi": 0.9765832402886474,
+      "mIoU": 0.884997695684433,
+      "maxE_phi": 0.9843571901353103,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.747901687472988,
+      "MAE": 0.03475372263900003,
+      "S_alpha": 0.8520310024706075,
+      "mDice": 0.7693587514157861,
+      "mE_phi": 0.8781528671498264,
+      "mIoU": 0.6897267917308577,
+      "maxE_phi": 0.8860880185732091,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.730253121626437,
+      "MAE": 0.01430730968868183,
+      "S_alpha": 0.8683430812554757,
+      "mDice": 0.7731757950038697,
+      "mE_phi": 0.8793821376837065,
+      "mIoU": 0.6896720496786558,
+      "maxE_phi": 0.8951386659934649,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8923987451997369,
+      "MAE": 0.027877761027587523,
+      "S_alpha": 0.9265802376994264,
+      "mDice": 0.9201299154758453,
+      "mE_phi": 0.9516235018799731,
+      "mIoU": 0.8657829165458679,
+      "maxE_phi": 0.9626852009371291,
+      "samples": 100
+    }
+  },
+  "seed": 6543,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}

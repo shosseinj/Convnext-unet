@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\01_baseline\\seed_7777\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "7b44f503c29e31ef0c2a013b55a931337682850eaaadfcbb5e958e826c060df8",
+  "experiment_name": "01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8542937011683698,
+      "MAE": 0.007314290756470846,
+      "S_alpha": 0.9280284157248357,
+      "mDice": 0.8790248264869054,
+      "mE_phi": 0.9511513984639783,
+      "mIoU": 0.8039914665122827,
+      "maxE_phi": 0.9645670325593325,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.8961728315292815,
+      "MAE": 0.015406337803574999,
+      "S_alpha": 0.9359975912243189,
+      "mDice": 0.9187946824296829,
+      "mE_phi": 0.9660293653811403,
+      "mIoU": 0.8584819873494487,
+      "maxE_phi": 0.9756475857386752,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7467416906967574,
+      "MAE": 0.03664515078518175,
+      "S_alpha": 0.8529035417735835,
+      "mDice": 0.7778579545059329,
+      "mE_phi": 0.8811492257166039,
+      "mIoU": 0.693647294416378,
+      "maxE_phi": 0.8935288079030799,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7152515310599612,
+      "MAE": 0.014034485123814057,
+      "S_alpha": 0.8616688634065507,
+      "mDice": 0.7565964159904723,
+      "mE_phi": 0.8813504344937485,
+      "mIoU": 0.6741720076904338,
+      "maxE_phi": 0.894128362170627,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8720605808838751,
+      "MAE": 0.032337366470155206,
+      "S_alpha": 0.9156651975563453,
+      "mDice": 0.9073549547791481,
+      "mE_phi": 0.9409663194291573,
+      "mIoU": 0.8466082346439362,
+      "maxE_phi": 0.9575512718511444,
+      "samples": 100
+    }
+  },
+  "seed": 7777,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}

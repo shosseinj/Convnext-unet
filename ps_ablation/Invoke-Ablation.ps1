@@ -53,7 +53,7 @@ foreach ($seed in $Seeds) {
         "--detail_channels", [string]$DetailChannels, "--enable_gdf", ([string]$EnableGdf),
         "--detail_fusion_mode", $DetailFusionMode,
         "--deep_supervision_heads", [string]$DeepSupervisionHeads,
-        "--epochs", "150", "--batch_size", "8", "--decoder_warmup_epochs", "10",
+        "--epochs", "150", "--batch_size", "24", "--decoder_warmup_epochs", "10",
         "--lr", "1e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
         "--training", "True", "--testing", "False", "--tta_check", "False",
         "--load", "False", "--save", "True", "--auto_resume", "True",
