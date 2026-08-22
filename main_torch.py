@@ -1,6 +1,7 @@
 import os
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 import argparse
+import random
 import pickle as pkl
 import numpy as np
 
@@ -19,6 +20,7 @@ from PIL import Image
 from sklearn.model_selection import train_test_split
 import glob
 import cv2
+from ablation_cli import add_ablation_arguments
 
 
 import numpy as np
@@ -2242,7 +2244,14 @@ if __name__ == "__main__":
     parser.add_argument('--w_min', type=float, default=-1.0, help='w_min to use if weight_bits is enabled')
     parser.add_argument('--w_max', type=float, default=1.0, help='w_max to use if weight_bits is enabled')
     parser.add_argument('--latency_quantiles', type=float, default=0.0, help='Number of quantiles for t_max. 0 -disabled')
+    add_ablation_arguments(parser)
     args = parser.parse_args()
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
 
     args.model_name = args.data_name + '-' + args.model_name
     set_up_logging(args.logging_dir, args.model_name)  # Assuming this exists
@@ -2336,8 +2345,13 @@ if __name__ == "__main__":
                 weights_path=encoder_weights,
                 drop_path_rate=0.25,
                 dropout_rate=0.2,
-                
-                encoder_depth= [3,3,9,3]
+                encoder_depth=[3, 3, 9, 3],
+                enable_msc=args.enable_msc,
+                skip_mode=args.skip_mode,
+                detail_channels=args.detail_channels,
+                enable_gdf=args.enable_gdf,
+                deep_supervision_heads=args.deep_supervision_heads,
+                detail_fusion_mode=args.detail_fusion_mode,
             )
 
             print('loaded lightweight ConvNeXt-Tiny U-Net')

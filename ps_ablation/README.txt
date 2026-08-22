@@ -1,34 +1,20 @@
-# Polyp Segmentation Ablation Launchers
+Polyp Segmentation Ablation Launchers
 
-Three seeds are used in every experiment:
-- 42
-- 6543
-- 7777
+These launchers call the repository-root main_torch.py through
+Invoke-Ablation.ps1. They use the shared 352x352 ablation protocol and the
+canonical seeds 42, 3407, and 2026. Seeds run sequentially, never concurrently.
 
-Results are stored as:
+Run only the seed-42 baseline:
+  .\ps_ablation\01_baseline.ps1 -Seeds 42
 
-results/
-└── ablation/
-    ├── 01_baseline/
-    │   ├── seed_42/
-    │   ├── seed_6543/
-    │   └── seed_7777/
-    ├── 02_add_msc/
-    └── ...
+Run all canonical seeds for the baseline:
+  .\ps_ablation\01_baseline.ps1
 
-Important:
-The PowerShell files assume the training program accepts these arguments:
+Inspect the generated command without training:
+  .\ps_ablation\01_baseline.ps1 -Seeds 42 -DryRun
 
---seed
---output_dir
---use_msc
---use_lrse
---use_detail_branch
---detail_fusion
---deep_supervision
+Results and checkpoints are written beneath:
+  results\ablation\<experiment>\seed_<seed>\
 
-If your existing train.py uses different flag names, change only those argument names.
-Do not change the experiment definitions.
-
-Experiment 11 (full without DS) is identical to experiment 05 (+GDF without DS).
-You therefore do NOT need to train it twice; reuse experiment 05 results in the mechanism-isolation table.
+Experiment 11 has the same architecture as experiment 05 and normally should
+reuse experiment 05 results rather than retraining.

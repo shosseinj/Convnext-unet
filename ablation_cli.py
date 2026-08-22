@@ -1,0 +1,28 @@
+"""Lightweight CLI contract shared by main_torch and ablation launchers."""
+
+
+def parse_bool(value):
+    if isinstance(value, bool):
+        return value
+    normalized = value.strip().lower()
+    if normalized in {"true", "1", "yes", "on"}:
+        return True
+    if normalized in {"false", "0", "no", "off"}:
+        return False
+    raise ValueError(f"Expected a boolean value, got: {value}")
+
+
+def add_ablation_arguments(parser):
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--encoder_weights", default="./convnext_tiny_22k_1k_384.pth")
+    parser.add_argument("--enable_msc", type=parse_bool, default=True)
+    parser.add_argument("--skip_mode", choices=("normal", "attention_gate", "bsei"), default="normal")
+    parser.add_argument("--detail_channels", type=int, choices=(0, 16, 32, 64), default=0)
+    parser.add_argument("--enable_gdf", type=parse_bool, default=False)
+    parser.add_argument(
+        "--detail_fusion_mode",
+        choices=("none", "addition", "concatenation", "attention_fusion", "gdf"),
+        default="none",
+    )
+    parser.add_argument("--deep_supervision_heads", type=int, choices=(0, 1, 2, 3), default=0)
+    return parser
