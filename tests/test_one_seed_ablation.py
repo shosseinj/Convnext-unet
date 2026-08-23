@@ -32,6 +32,7 @@ class OneSeedAblationTests(unittest.TestCase):
                  config.enable_ugbr, config.upsample_mode), values
             )
             self.assertEqual(config.backbone, "convnext_tiny")
+            self.assertEqual(config.training_precision, "amp_fp16")
 
     def test_dysample_doubles_spatial_resolution(self):
         layer = DySample(32, scale=2, groups=4)
@@ -76,7 +77,21 @@ class OneSeedAblationTests(unittest.TestCase):
             self.assertEqual(train[train.index("--seed") + 1], "42")
             self.assertIn("one_seed_results", payload["seed_dir"])
             self.assertEqual(train[train.index("--batch_size") + 1], "24")
+            self.assertEqual(train[train.index("--amp") + 1], "True")
             self.assertEqual(train[train.index("--focal_tversky_after_warmup") + 1], "False")
+
+    def test_run_all_batch_override_is_applied_to_every_experiment(self):
+        completed = subprocess.run(
+            ["powershell", "-NoProfile", "-File",
+             str(ROOT / "ps_one_seed_ablation" / "Run-All.ps1"),
+             "-BatchSize", "20", "-DryRun"],
+            cwd=ROOT, check=True, capture_output=True, text=True,
+        )
+        payloads = [json.loads(line) for line in completed.stdout.splitlines() if line.startswith("{")]
+        self.assertEqual(len(payloads), 5)
+        for payload in payloads:
+            train = payload["train"]
+            self.assertEqual(train[train.index("--batch_size") + 1], "20")
 
     def test_comparison_is_written_only_when_every_evaluation_is_valid(self):
         with tempfile.TemporaryDirectory() as directory:

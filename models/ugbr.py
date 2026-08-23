@@ -46,15 +46,27 @@ class UGBR(nn.Module):
 
     def forward(self, decoder_feature: torch.Tensor, shallow_encoder_feature: torch.Tensor,
                 initial_logits: torch.Tensor) -> Dict[str, torch.Tensor]:
-        target_size = initial_logits.shape[-2:]
+        target_size = shallow_encoder_feature.shape[-2:]
         decoder = F.interpolate(self.decoder_projection(decoder_feature), target_size,
                                 mode="bilinear", align_corners=False)
-        shallow = F.interpolate(self.shallow_projection(shallow_encoder_feature), target_size,
-                                mode="bilinear", align_corners=False)
+        shallow = self.shallow_projection(shallow_encoder_feature)
+        initial_low_resolution = F.interpolate(
+            initial_logits, target_size, mode="bilinear", align_corners=False
+        )
+        uncertainty_low_resolution = self.uncertainty(initial_low_resolution)
+        fused = torch.cat((decoder, shallow, uncertainty_low_resolution), dim=1)
+        boundary_low_resolution = self.boundary_head(fused)
+        refinement_low_resolution = self.refinement_head(
+            torch.cat((fused, boundary_low_resolution), dim=1)
+        )
+        full_size = initial_logits.shape[-2:]
+        boundary_logits = F.interpolate(
+            boundary_low_resolution, full_size, mode="bilinear", align_corners=False
+        )
+        refinement_logits = F.interpolate(
+            refinement_low_resolution, full_size, mode="bilinear", align_corners=False
+        )
         uncertainty = self.uncertainty(initial_logits)
-        fused = torch.cat((decoder, shallow, uncertainty), dim=1)
-        boundary_logits = self.boundary_head(fused)
-        refinement_logits = self.refinement_head(torch.cat((fused, boundary_logits), dim=1))
         final_logits = initial_logits + refinement_logits
         return {
             "initial_logits": initial_logits,

@@ -32,6 +32,8 @@ class DiceBCEBoundaryLoss(nn.Module):
         self.label_smoothing = label_smoothing
 
     def forward(self, logits, target):
+        logits = logits.float()
+        target = target.float()
         probability = torch.sigmoid(logits)
         dims = (1, 2, 3)
         intersection = (probability * target).sum(dims)
@@ -61,6 +63,8 @@ class DiceBCELoss(nn.Module):
         self.label_smoothing = label_smoothing
 
     def forward(self, logits, target):
+        logits = logits.float()
+        target = target.float()
         probability = torch.sigmoid(logits)
         dims = (1, 2, 3)
         intersection = (probability * target).sum(dims)
@@ -91,12 +95,14 @@ def ugbr_composite_loss(outputs, target, segmentation_criterion,
     final_seg = segmentation_criterion(outputs["final_logits"], target)
     initial_seg = segmentation_criterion(outputs["initial_logits"], target)
     boundary_target = morphological_gradient_target(target)
-    boundary = F.binary_cross_entropy_with_logits(outputs["boundary_logits"], boundary_target)
+    boundary = F.binary_cross_entropy_with_logits(
+        outputs["boundary_logits"].float(), boundary_target.float()
+    )
 
     confident_mask = (outputs["uncertainty"].detach() < uncertainty_threshold).to(target.dtype)
     probability_change = (
-        torch.sigmoid(outputs["final_logits"]) -
-        torch.sigmoid(outputs["initial_logits"])
+        torch.sigmoid(outputs["final_logits"].float()) -
+        torch.sigmoid(outputs["initial_logits"].float())
     ).square()
     consistency = (probability_change * confident_mask).sum() / confident_mask.sum().clamp_min(1.0)
     total = final_seg + 0.4 * initial_seg + boundary_coefficient * boundary + 0.1 * consistency

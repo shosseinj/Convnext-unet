@@ -13,7 +13,14 @@ class UGBRTests(unittest.TestCase):
         shallow = torch.randn(2, 7, 22, 22, requires_grad=True)
         initial = torch.randn(2, 1, 44, 44, requires_grad=True)
 
+        boundary_input_sizes = []
+        hook = module.boundary_head.register_forward_pre_hook(
+            lambda _module, inputs: boundary_input_sizes.append(inputs[0].shape[-2:])
+        )
         output = module(decoder, shallow, initial)
+        hook.remove()
+
+        self.assertEqual(boundary_input_sizes, [shallow.shape[-2:]])
 
         for key in ("initial_logits", "boundary_logits", "refinement_logits",
                     "final_logits", "uncertainty"):

@@ -1,7 +1,7 @@
-param([switch] $DryRun)
+param([ValidateSet(16, 20, 24)][int] $BatchSize = 24, [switch] $DryRun)
 $ErrorActionPreference = "Stop"
 foreach ($runner in @("01_baseline.ps1", "02_add_ugbr.ps1", "03_gated_skips.ps1", "04_deep_supervision.ps1", "05_dysample.ps1")) {
-    & (Join-Path $PSScriptRoot $runner) -DryRun:$DryRun
+    & (Join-Path $PSScriptRoot $runner) -BatchSize $BatchSize -DryRun:$DryRun
 }
 if (-not $DryRun) {
     $repoRoot = Split-Path -Parent $PSScriptRoot

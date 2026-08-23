@@ -3,6 +3,7 @@ param(
     [Parameter(Mandatory = $true)][string] $OutputName,
     [Parameter(Mandatory = $true)][ValidateSet("normal", "attention_gate")][string] $SkipMode,
     [Parameter(Mandatory = $true)][ValidateSet(0, 2)][int] $DeepSupervisionHeads,
+    [ValidateSet(16, 20, 24)][int] $BatchSize = 24,
     [switch] $DryRun
 )
 
@@ -31,7 +32,8 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_msc", "False", "--skip_mode", $SkipMode, "--detail_channels", "0",
     "--enable_gdf", "False", "--detail_fusion_mode", "none",
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
-    "--epochs", "150", "--batch_size", "24", "--decoder_warmup_epochs", "10",
+    "--epochs", "150", "--batch_size", [string]$BatchSize, "--decoder_warmup_epochs", "10",
+    "--amp", "True",
     "--focal_tversky_after_warmup", "False", "--focal_tversky_w", "0",
     "--lr", "1e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
     "--training", "True", "--testing", "False", "--tta_check", "False",

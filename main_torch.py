@@ -23,6 +23,10 @@ import glob
 import cv2
 from ablation_cli import add_ablation_arguments
 from ablation_registry import get_experiment
+from amp_training import (
+    add_scaler_state, autocast_context, create_grad_scaler,
+    finish_optimizer_step, restore_scaler_state,
+)
 from checkpoint_management import (
     atomic_save_best, atomic_save_checkpoint, load_checkpoint_file,
     mark_training_complete, prepare_best_checkpoint, prepare_checkpoint,
@@ -519,7 +523,9 @@ def train_epoch_segmentation(
     device,
     scheduler,
     threshold,
-    ema=None
+    ema=None,
+    amp_enabled=False,
+    scaler=None,
 ):
     import random
     import numpy as np
@@ -582,14 +588,15 @@ def train_epoch_segmentation(
         # ----------------------------
         # Forward
         # ----------------------------
-        outputs = model(data)
+        with autocast_context(amp_enabled, device.type):
+            outputs = model(data)
 
-        if not _outputs_are_finite(outputs):
-            skipped_batches += 1
-            optimizer.zero_grad(set_to_none=True)
-            continue
+            if not _outputs_are_finite(outputs):
+                skipped_batches += 1
+                optimizer.zero_grad(set_to_none=True)
+                continue
 
-        output, loss = deep_supervision_loss(outputs, target, criterion)
+            output, loss = deep_supervision_loss(outputs, target, criterion)
 
         if not torch.isfinite(loss):
             skipped_batches += 1
@@ -600,7 +607,11 @@ def train_epoch_segmentation(
         # Backward
         # ----------------------------
         try:
-            loss.backward()
+            if amp_enabled:
+                scaler.scale(loss).backward()
+                scaler.unscale_(optimizer)
+            else:
+                loss.backward()
         except RuntimeError:
             skipped_batches += 1
             optimizer.zero_grad(set_to_none=True)
@@ -616,7 +627,9 @@ def train_epoch_segmentation(
 
         if bad_grad:
             skipped_batches += 1
-            optimizer.zero_grad(set_to_none=True)
+            finish_optimizer_step(
+                optimizer, scaler, amp_enabled, gradients_are_finite=False
+            )
             continue
 
         # ----------------------------
@@ -637,7 +650,9 @@ def train_epoch_segmentation(
             max_norm=3.5
         )
 
-        optimizer.step()
+        finish_optimizer_step(
+            optimizer, scaler, amp_enabled, gradients_are_finite=True
+        )
         if ema is not None:
             ema.update(model)
 
@@ -898,7 +913,8 @@ import torch.nn.functional as F
 from tqdm import tqdm
 import py_sod_metrics  # Make sure this is imported
 
-def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_tta=False):
+def test_segmentation(model, test_loader, criterion, device, threshold=0.3,
+                      use_tta=False, amp_enabled=False):
     """Testing function with optional TTA and advanced SOD metrics"""
     model.eval()
     test_loss = 0
@@ -930,7 +946,8 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
                 ).float()
                 
                 # For loss calculation, use original forward pass
-                output = model(data)
+                with autocast_context(amp_enabled, device.type):
+                    output = model(data)
                 if isinstance(output, dict):
                     output = output["final_logits"]
                 elif isinstance(output, (tuple, list)):
@@ -940,7 +957,8 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
                 test_loss += criterion(output, target).item()
             else:
                 # Regular prediction
-                output = model(data)
+                with autocast_context(amp_enabled, device.type):
+                    output = model(data)
                 if isinstance(output, dict):
                     output = output["final_logits"]
                 elif isinstance(output, (tuple, list)):
@@ -2437,6 +2455,8 @@ if __name__ == "__main__":
             return 1 - dice.mean()
 
         def forward(self, logits, targets):
+            logits = logits.float()
+            targets = targets.float()
             bce_targets = targets.float()
             if self.label_smoothing > 0:
                 bce_targets = bce_targets * (1.0 - self.label_smoothing) + 0.5 * self.label_smoothing
@@ -2546,6 +2566,16 @@ if __name__ == "__main__":
         T_max=total_epochs_remaining,
         eta_min=eta_min
     )  
+    amp_enabled = bool(args.amp and device.type == "cuda")
+    scaler = create_grad_scaler(amp_enabled, device.type)
+    if args.experiment_name and args.experiment_name.startswith("one_seed_"):
+        expected_precision = get_experiment(args.experiment_name).training_precision
+        if expected_precision == "amp_fp16" and not args.amp:
+            raise ValueError(f"{args.experiment_name} requires --amp True")
+    logging.info(
+        f"Training precision: {'amp_fp16' if amp_enabled else 'fp32'} | "
+        f"GradScaler enabled={scaler.is_enabled()}"
+    )
 
     logging.info(
         f"Optimizer: AdamW | refine_lr={refine_lr:.2e}, "
@@ -2702,6 +2732,7 @@ if __name__ == "__main__":
                         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
                     if 'scheduler_state_dict' in checkpoint:
                         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+                    restore_scaler_state(checkpoint, scaler, amp_enabled)
                     logging.info("Optimizer/scheduler state resumed from checkpoint.")
                 except (ValueError, KeyError, RuntimeError) as exc:
                     logging.warning(
@@ -2879,11 +2910,18 @@ if __name__ == "__main__":
                 #     
                 #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
                 if 'Kvasir' in args.data_name:
-                    train_loss = train_epoch_segmentation(model, train_loader, optimizer, criterion, device,scheduler,threshold=best_threshold, ema=ema)
+                    train_loss = train_epoch_segmentation(
+                        model, train_loader, optimizer, criterion, device, scheduler,
+                        threshold=best_threshold, ema=ema, amp_enabled=amp_enabled,
+                        scaler=scaler,
+                    )
                     if ema is not None:
                         ema.store(model)
                         ema.copy_to(model)
-                    test_loss, test_dice, test_iou = test_segmentation(model, test_loader, criterion, device, threshold=best_threshold)
+                    test_loss, test_dice, test_iou = test_segmentation(
+                        model, test_loader, criterion, device,
+                        threshold=best_threshold, amp_enabled=amp_enabled,
+                    )
                     if ema is not None:
                         ema.restore(model)
                     if epoch >= full_train_start_epoch:
@@ -2950,7 +2988,9 @@ if __name__ == "__main__":
                             'training_time_seconds': elapsed_seconds_total,
                             'training_complete': False,
                             'completion_reason': None,
+                            'training_precision': 'amp_fp16' if amp_enabled else 'fp32',
                         }
+                    add_scaler_state(checkpoint_dict, scaler, amp_enabled)
                     if ema is not None:
                         checkpoint_dict['ema_state_dict'] = ema.state_dict()
                         checkpoint_dict['raw_model_state_dict'] = snapshot_state_dict(model)
@@ -3010,6 +3050,7 @@ if __name__ == "__main__":
                         "best_checkpoint_path": str(canonical_checkpoint_path.resolve()),
                         "training_complete": True,
                         "completion_reason": completion_reason,
+                        "training_precision": 'amp_fp16' if amp_enabled else 'fp32',
                     })
             logging.info(f"Training stopped after epoch {last_epoch + 1}; best checkpoint retained.")
             for handler in logging.root.handlers:

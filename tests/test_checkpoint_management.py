@@ -72,6 +72,25 @@ class CheckpointManagementTests(unittest.TestCase):
             )
             self.assertEqual(decision.action, "resume")
 
+    def test_one_seed_fp32_checkpoint_is_rejected_by_amp_campaign(self):
+        with tempfile.TemporaryDirectory() as directory:
+            seed_dir = Path(directory)
+            config = get_experiment("one_seed_01_baseline")
+            old_architecture = config.to_dict().copy()
+            old_architecture["training_precision"] = "fp32"
+            checkpoint = self.checkpoint(10, 0.8)
+            checkpoint.update({
+                "experiment_name": config.name,
+                "seed": 42,
+                "architecture": old_architecture,
+                "training_precision": "fp32",
+                "training_complete": False,
+            })
+            torch.save(checkpoint, seed_dir / "best_checkpoint.pth")
+            decision = prepare_checkpoint(seed_dir, config, 42, 150, seed_dir / "log.txt")
+            self.assertEqual(decision.action, "error")
+            self.assertIn("architecture metadata", decision.reason)
+
     def test_completed_legacy_checkpoint_is_migrated_to_canonical_path(self):
         with tempfile.TemporaryDirectory() as directory:
             seed_dir = Path(directory)
