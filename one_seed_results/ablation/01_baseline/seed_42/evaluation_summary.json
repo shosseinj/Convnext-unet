@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "396d9c1faf58d3bfa416bcd99c49cac1f4d10cec1cac6ca47c5574f55d722c1e",
+  "experiment_name": "one_seed_01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8542626684364591,
+      "MAE": 0.007348872181629737,
+      "S_alpha": 0.9274468385378825,
+      "mDice": 0.877541084587574,
+      "mE_phi": 0.9483993879705139,
+      "mIoU": 0.8033783155182997,
+      "maxE_phi": 0.9554407026207915,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.8883861546266331,
+      "MAE": 0.016223824756329813,
+      "S_alpha": 0.9289199958104296,
+      "mDice": 0.9088944309361039,
+      "mE_phi": 0.9632959386554867,
+      "mIoU": 0.847606735754638,
+      "maxE_phi": 0.9702106692441785,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7345303468944286,
+      "MAE": 0.03659963175227094,
+      "S_alpha": 0.8426628448870989,
+      "mDice": 0.7635160285955237,
+      "mE_phi": 0.8719521498439228,
+      "mIoU": 0.6767687266766281,
+      "maxE_phi": 0.8786308898695544,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7166399915973661,
+      "MAE": 0.012643613544767776,
+      "S_alpha": 0.8565904549793317,
+      "mDice": 0.7459900691065225,
+      "mE_phi": 0.8627632044763022,
+      "mIoU": 0.6672596539147931,
+      "maxE_phi": 0.870564353556971,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8774469097372151,
+      "MAE": 0.03226557860899167,
+      "S_alpha": 0.9132328735334981,
+      "mDice": 0.907005677819252,
+      "mE_phi": 0.9408643747752674,
+      "mIoU": 0.8463498120009899,
+      "maxE_phi": 0.952389454467812,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}
