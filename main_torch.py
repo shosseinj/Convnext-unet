@@ -1,6 +1,7 @@
 import os
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 import argparse
+import math
 import random
 from pathlib import Path
 import pickle as pkl
@@ -2520,7 +2521,7 @@ if __name__ == "__main__":
 
  
     decoder_lr = args.lr
-    encoder_lr = args.lr * 0.1
+    encoder_lr = args.lr * 0.05
     refine_lr = args.lr * 1.5
     eta_min = min(args.min_lr, encoder_lr, decoder_lr, refine_lr)
     # optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
@@ -2732,6 +2733,29 @@ if __name__ == "__main__":
                         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
                     if 'scheduler_state_dict' in checkpoint:
                         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+                    for group_index, param_group in enumerate(optimizer.param_groups):
+                        if param_group.get("name") != "encoder":
+                            continue
+                        scheduler.base_lrs[group_index] = encoder_lr
+                        param_group["initial_lr"] = encoder_lr
+                        cosine_factor = 0.5 * (
+                            1.0
+                            + math.cos(
+                                math.pi * scheduler.last_epoch / scheduler.T_max
+                            )
+                        )
+                        resumed_encoder_lr = scheduler.eta_min + (
+                            encoder_lr - scheduler.eta_min
+                        ) * cosine_factor
+                        param_group["lr"] = resumed_encoder_lr
+                        if hasattr(scheduler, "_last_lr"):
+                            scheduler._last_lr[group_index] = resumed_encoder_lr
+                        logging.info(
+                            "Resume encoder LR override: "
+                            f"encoder_lr={resumed_encoder_lr:.2e}, "
+                            f"base_lr={encoder_lr:.2e}"
+                        )
+                        break
                     restore_scaler_state(checkpoint, scaler, amp_enabled)
                     logging.info("Optimizer/scheduler state resumed from checkpoint.")
                 except (ValueError, KeyError, RuntimeError) as exc:
