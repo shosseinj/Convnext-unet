@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\04_add_db\\seed_6543\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "24a91e1bc85bdc1de9d3b2b0f58c2ce3f9eaabc4692424d2b007fe9d5e83953f",
+  "experiment_name": "04_add_db",
+  "flops": 28738526080,
+  "gflops": 28.73852608,
+  "gmacs": 14.36926304,
+  "macs": 14369263040,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8505119054661832,
+      "MAE": 0.007433262509727285,
+      "S_alpha": 0.9242627357588298,
+      "mDice": 0.8751722986499468,
+      "mE_phi": 0.9472748278247229,
+      "mIoU": 0.7983172660072645,
+      "maxE_phi": 0.9566587441022233,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9039027110920487,
+      "MAE": 0.014037005561735524,
+      "S_alpha": 0.9394239066632638,
+      "mDice": 0.9254452884197235,
+      "mE_phi": 0.9696775443002748,
+      "mIoU": 0.868790112676159,
+      "maxE_phi": 0.97691315339459,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.736679729586933,
+      "MAE": 0.03814300302555882,
+      "S_alpha": 0.8442214340211942,
+      "mDice": 0.7658034056889553,
+      "mE_phi": 0.8747880635422822,
+      "mIoU": 0.6804612656524059,
+      "maxE_phi": 0.8860269610314234,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7187800396282191,
+      "MAE": 0.013519497047571015,
+      "S_alpha": 0.8621109461505451,
+      "mDice": 0.7548797241262161,
+      "mE_phi": 0.8710530582266287,
+      "mIoU": 0.6754170921975386,
+      "maxE_phi": 0.8823998614572697,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8808462601911828,
+      "MAE": 0.03135049944686666,
+      "S_alpha": 0.9181136943947118,
+      "mDice": 0.9123493552207946,
+      "mE_phi": 0.9450001014245331,
+      "mIoU": 0.8536770933866501,
+      "maxE_phi": 0.9583877238349239,
+      "samples": 100
+    }
+  },
+  "seed": 6543,
+  "total_parameters": 29215154,
+  "trainable_parameters": 29215154
+}

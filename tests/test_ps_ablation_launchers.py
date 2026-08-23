@@ -78,6 +78,19 @@ class PowerShellAblationLauncherTests(unittest.TestCase):
         for option, value in expected.items():
             self.assertEqual(invocation[invocation.index(option) + 1], value)
 
+    def test_gdf_runner_adds_gdf_without_msc_or_bsei(self):
+        invocation = self.dry_run("05_add_gdf.ps1")["train"]
+        expected = {
+            "--enable_msc": "False",
+            "--skip_mode": "normal",
+            "--detail_channels": "32",
+            "--enable_gdf": "True",
+            "--detail_fusion_mode": "gdf",
+            "--deep_supervision_heads": "0",
+        }
+        for option, value in expected.items():
+            self.assertEqual(invocation[invocation.index(option) + 1], value)
+
     def test_launcher_enables_automatic_best_checkpoint_resume(self):
         invocation = self.dry_run("01_baseline.ps1")["train"]
         self.assertEqual(invocation[invocation.index("--auto_resume") + 1], "True")

@@ -1,0 +1,11 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\04_add_db\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 147,
+  "best_validation_metric": 0.840104843888964,
+  "completion_reason": "max_epochs",
+  "experiment_name": "04_add_db",
+  "final_epoch": 149,
+  "seed": 42,
+  "training_complete": true,
+  "training_time_seconds": 4392.031394004822
+}

@@ -28,6 +28,14 @@ class AblationRegistryTests(unittest.TestCase):
             (False, "normal", 32, False, "concatenation", 0),
         )
 
+    def test_gdf_configuration_adds_gdf_to_detail_branch_only(self):
+        cfg = get_experiment("05_add_gdf")
+        self.assertEqual(
+            (cfg.enable_msc, cfg.skip_mode, cfg.detail_channels,
+             cfg.enable_gdf, cfg.detail_fusion_mode, cfg.deep_supervision_heads),
+            (False, "normal", 32, True, "gdf", 0),
+        )
+
     def test_unknown_experiment_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "Unknown ablation experiment"):
             get_experiment("missing")
