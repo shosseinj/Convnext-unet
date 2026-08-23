@@ -13,6 +13,9 @@ from models.convnext_pretrain import ConvNeXtUNet
 
 
 def build_model(config, encoder_weights, device):
+    if config.name.startswith("one_seed_"):
+        from one_seed_models import build_experiment_model
+        return build_experiment_model(config, encoder_weights, device)
     return ConvNeXtUNet(
         weights_path=encoder_weights,
         num_classes=1,

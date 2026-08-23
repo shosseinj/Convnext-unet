@@ -12,9 +12,16 @@ class ExperimentConfig:
     enable_gdf: bool
     detail_fusion_mode: str
     deep_supervision_heads: int
+    enable_ugbr: bool = False
+    upsample_mode: str = "bilinear"
+    backbone: str = "convnext_tiny"
 
     def to_dict(self):
-        return asdict(self)
+        values = asdict(self)
+        if not self.name.startswith("one_seed_"):
+            for key in ("enable_ugbr", "upsample_mode", "backbone"):
+                values.pop(key)
+        return values
 
 
 _EXPERIMENTS = {
@@ -31,6 +38,11 @@ _EXPERIMENTS = {
         ("09_gdf_concat", True, "bsei", 32, False, "concatenation", 3),
         ("10_gdf_addition", True, "bsei", 32, False, "addition", 3),
         ("11_full_without_ds", True, "bsei", 32, True, "gdf", 0),
+        ("one_seed_01_baseline", False, "normal", 0, False, "none", 0),
+        ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True),
+        ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0),
+        ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2),
+        ("one_seed_05_dysample", False, "normal", 0, False, "none", 0, False, "dysample"),
     )
 }
 

@@ -337,6 +337,8 @@ DEEP_SUPERVISION_WEIGHTS = (1.0, 0.1, 0.05, 0.02)
 
 
 def _output_list(outputs):
+    if isinstance(outputs, dict):
+        return list(outputs.values())
     if isinstance(outputs, (list, tuple)):
         return list(outputs)
     return [outputs]
@@ -358,6 +360,10 @@ def _outputs_are_finite(outputs):
 
 
 def deep_supervision_loss(outputs, target, criterion, weights=DEEP_SUPERVISION_WEIGHTS):
+    if isinstance(outputs, dict):
+        from research_pipeline.losses import ugbr_composite_loss
+        components = ugbr_composite_loss(outputs, target, criterion)
+        return _resize_to_target(outputs["final_logits"], target), components["total"]
     outputs = _output_list(outputs)
     main_output = _resize_to_target(outputs[0], target)
     total_loss = criterion(main_output, target)
@@ -394,6 +400,7 @@ def set_training_stage(model, stage):
             "aux",
             "bottleneck.",
             "context.",
+            "ugbr.",
         )
     elif stage == "all":
         trainable_prefixes = None
@@ -535,6 +542,8 @@ def train_epoch_segmentation(
     # ----------------------------
     enc_grad_sum = 0.0
     dec_grad_sum = 0.0
+    enc_grad_rms_sum = 0.0
+    dec_grad_rms_sum = 0.0
     prob_mean_sum = 0.0
     prob_std_sum = 0.0
     mask_area_sum = 0.0
@@ -616,6 +625,12 @@ def train_epoch_segmentation(
 
         enc_grad = grad_norm(model.encoder)
         dec_grad = grad_norm_except_encoder(model)
+        from one_seed_models import gradient_rms
+        enc_grad_rms = gradient_rms(model.encoder.parameters())
+        encoder_ids = {id(parameter) for parameter in model.encoder.parameters()}
+        dec_grad_rms = gradient_rms(
+            parameter for parameter in model.parameters() if id(parameter) not in encoder_ids
+        )
 
         grad_norm_total = torch.nn.utils.clip_grad_norm_(
             model.parameters(),
@@ -651,6 +666,8 @@ def train_epoch_segmentation(
 
         enc_grad_sum += enc_grad
         dec_grad_sum += dec_grad
+        enc_grad_rms_sum += enc_grad_rms
+        dec_grad_rms_sum += dec_grad_rms
 
         prob_mean_sum += prob_mean
         prob_std_sum += prob_std
@@ -675,6 +692,10 @@ def train_epoch_segmentation(
             EncGrad=f"{enc_grad:.2f}",
 
             DecGrad=f"{dec_grad:.2f}",
+
+            EncRMS=f"{enc_grad_rms:.2e}",
+
+            DecRMS=f"{dec_grad_rms:.2e}",
 
             Prob=f"{prob_mean:.3f}",
 
@@ -910,12 +931,20 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3, use_
                 
                 # For loss calculation, use original forward pass
                 output = model(data)
+                if isinstance(output, dict):
+                    output = output["final_logits"]
+                elif isinstance(output, (tuple, list)):
+                    output = output[0]
                 if output.shape != target.shape:
                     output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
                 test_loss += criterion(output, target).item()
             else:
                 # Regular prediction
                 output = model(data)
+                if isinstance(output, dict):
+                    output = output["final_logits"]
+                elif isinstance(output, (tuple, list)):
+                    output = output[0]
                 if output.shape != target.shape:
                     output = F.interpolate(output, size=target.shape[2:], mode='bilinear', align_corners=False)
                 test_loss += criterion(output, target).item()
@@ -2348,18 +2377,24 @@ if __name__ == "__main__":
                 )
             else:
                 logging.info(f"Loading ConvNeXt-Tiny ImageNet encoder weights from {encoder_weights}.")
-            model = ConvNeXtUNet(
-                weights_path=encoder_weights,
-                drop_path_rate=0.25,
-                dropout_rate=0.2,
-                encoder_depth=[3, 3, 9, 3],
-                enable_msc=args.enable_msc,
-                skip_mode=args.skip_mode,
-                detail_channels=args.detail_channels,
-                enable_gdf=args.enable_gdf,
-                deep_supervision_heads=args.deep_supervision_heads,
-                detail_fusion_mode=args.detail_fusion_mode,
-            )
+            if args.experiment_name and args.experiment_name.startswith("one_seed_"):
+                from one_seed_models import build_experiment_model
+                model = build_experiment_model(
+                    get_experiment(args.experiment_name), encoder_weights
+                )
+            else:
+                model = ConvNeXtUNet(
+                    weights_path=encoder_weights,
+                    drop_path_rate=0.25,
+                    dropout_rate=0.2,
+                    encoder_depth=[3, 3, 9, 3],
+                    enable_msc=args.enable_msc,
+                    skip_mode=args.skip_mode,
+                    detail_channels=args.detail_channels,
+                    enable_gdf=args.enable_gdf,
+                    deep_supervision_heads=args.deep_supervision_heads,
+                    detail_fusion_mode=args.detail_fusion_mode,
+                )
 
             print('loaded lightweight ConvNeXt-Tiny U-Net')
     
@@ -2416,13 +2451,16 @@ if __name__ == "__main__":
     if 'Kvasir' in args.data_name:
 
         # criterion = BoundaryAwareLoss(kappa=10)
-        criterion = DiceBCEBoundaryLoss(
-    dice_w=0.3,
-    bce_w=0.3,
-    boundary_w=0.40,
-    focal_tversky_w=0.01,
-    label_smoothing=0.02
-)
+        if args.experiment_name and args.experiment_name.startswith("one_seed_"):
+            criterion = DiceBCEBoundaryLoss(
+                dice_w=0.55, bce_w=0.25, boundary_w=0.20,
+                focal_tversky_w=0.0, label_smoothing=0.02,
+            )
+        else:
+            criterion = DiceBCEBoundaryLoss(
+                dice_w=0.3, bce_w=0.3, boundary_w=0.40,
+                focal_tversky_w=0.01, label_smoothing=0.02,
+            )
         # criterion = BoundaryDiceLoss(
         #         kappa=10,
         #         boundary_weight=0.3,
@@ -2442,7 +2480,13 @@ if __name__ == "__main__":
     from torch.optim.lr_scheduler import CyclicLR
  
 
-    total_epochs_remaining = 200  # train for 200 more epochs then evaluate
+    if args.experiment_name and args.experiment_name.startswith("one_seed_"):
+        from one_seed_models import cosine_schedule_epochs
+        total_epochs_remaining = cosine_schedule_epochs(
+            args.epochs, args.detail_warmup_epochs, args.decoder_warmup_epochs
+        )
+    else:
+        total_epochs_remaining = 200
 
 
 

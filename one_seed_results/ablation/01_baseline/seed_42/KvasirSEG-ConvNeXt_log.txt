@@ -1,0 +1,1 @@
+2026-08-23 07:49:57 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\01_baseline\seed_42\KvasirSEG-ConvNeXt_log.txt

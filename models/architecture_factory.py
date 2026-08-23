@@ -86,13 +86,13 @@ class UGBRVariant(nn.Module):
 
     def named_parameters(self, prefix: str = "", recurse: bool = True,
                          remove_duplicate: bool = True):
-        """Present base encoder names as ``encoder.*`` to existing optimizers."""
+        """Present wrapped base-model names through the existing public contract."""
         for name, parameter in super().named_parameters(
                 prefix=prefix, recurse=recurse, remove_duplicate=remove_duplicate):
-            base_encoder_prefix = f"{prefix}.base_model.encoder." if prefix else "base_model.encoder."
-            public_encoder_prefix = f"{prefix}.encoder." if prefix else "encoder."
-            if name.startswith(base_encoder_prefix):
-                name = public_encoder_prefix + name[len(base_encoder_prefix):]
+            base_prefix = f"{prefix}.base_model." if prefix else "base_model."
+            public_prefix = f"{prefix}." if prefix else ""
+            if name.startswith(base_prefix):
+                name = public_prefix + name[len(base_prefix):]
             yield name, parameter
 
     def _capture_decoder(self, _module, inputs) -> None:

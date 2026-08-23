@@ -1,0 +1,2 @@
+epoch,train_loss,validation_dice,validation_iou,encoder_lr,decoder_lr,elapsed_seconds,is_best
+1,1.004225414307391,0.23939843050071172,0.1362206573997225,1e-05,0.0001,36.74160385131836,True
