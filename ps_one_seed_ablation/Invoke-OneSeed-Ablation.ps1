@@ -35,7 +35,7 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--epochs", "350", "--batch_size", [string]$BatchSize, "--decoder_warmup_epochs", "80",
     "--amp", "True",
     "--focal_tversky_after_warmup", "False", "--focal_tversky_w", "0",
-    "--lr", "1e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
+    "--lr", "4e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
     "--training", "True", "--testing", "False", "--tta_check", "False",
     "--load", "False", "--save", "True", "--auto_resume", "True",
     "--resume_optimizer", "True")

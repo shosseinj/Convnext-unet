@@ -422,6 +422,10 @@ def create_plateau_scheduler(optimizer, min_lr):
     )
 
 
+def grad_clip_norm_for_epoch(epoch, encoder_frozen_epochs):
+    return 5.0 if epoch < encoder_frozen_epochs else 3.5
+
+
 def set_training_stage(model, stage):
     decoder_prefixes = (
         "detail.",
@@ -585,6 +589,7 @@ def train_epoch_segmentation(
     ema=None,
     amp_enabled=False,
     scaler=None,
+    max_grad_norm=3.5,
 ):
     import random
     import numpy as np
@@ -706,7 +711,7 @@ def train_epoch_segmentation(
 
         grad_norm_total = torch.nn.utils.clip_grad_norm_(
             model.parameters(),
-            max_norm=3.5
+            max_norm=max_grad_norm
         )
 
         finish_optimizer_step(
@@ -766,6 +771,8 @@ def train_epoch_segmentation(
             EncGrad=f"{enc_grad:.2f}",
 
             DecGrad=f"{dec_grad:.2f}",
+
+            GradClip=f"{max_grad_norm:.1f}",
 
             EncRMS=f"{enc_grad_rms:.2e}",
 
@@ -3021,6 +3028,9 @@ if __name__ == "__main__":
                         model, train_loader, optimizer, criterion, device, scheduler,
                         threshold=best_threshold, ema=ema, amp_enabled=amp_enabled,
                         scaler=scaler,
+                        max_grad_norm=grad_clip_norm_for_epoch(
+                            epoch, full_train_start_epoch
+                        ),
                     )
                     if ema is not None:
                         ema.store(model)

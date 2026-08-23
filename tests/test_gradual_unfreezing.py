@@ -4,7 +4,7 @@ import torch
 
 from main_torch import (
     advance_encoder_unfreezing, create_plateau_scheduler, encoder_stage_name,
-    set_frozen_modules_eval, set_training_stage,
+    grad_clip_norm_for_epoch, set_frozen_modules_eval, set_training_stage,
 )
 
 
@@ -28,6 +28,11 @@ class TinyModel(torch.nn.Module):
 
 
 class GradualEncoderUnfreezingTests(unittest.TestCase):
+    def test_gradient_clipping_is_relaxed_only_during_frozen_encoder_epochs(self):
+        self.assertEqual(grad_clip_norm_for_epoch(0, 80), 5.0)
+        self.assertEqual(grad_clip_norm_for_epoch(79, 80), 5.0)
+        self.assertEqual(grad_clip_norm_for_epoch(80, 80), 3.5)
+
     def test_plateau_unfreezes_one_encoder_stage_after_ten_epochs(self):
         depth = 0
         plateau = 0

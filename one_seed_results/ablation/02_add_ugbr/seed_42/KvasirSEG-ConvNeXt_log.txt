@@ -1,9 +1,0 @@
-2026-08-23 13:58:05 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\02_add_ugbr\seed_42\KvasirSEG-ConvNeXt_log.txt
-2026-08-23 13:58:13 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
-2026-08-23 13:58:14 - INFO - Parameter count: total=29.28M, encoder=27.82M, decoder_head=1.47M, trainable=29.28M
-2026-08-23 13:58:14 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
-2026-08-23 13:58:14 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=ReduceLROnPlateau(mode=max,factor=0.5,patience=5)
-2026-08-23 13:58:14 - INFO - EMA enabled with decay=0.995.
-2026-08-23 13:58:14 - INFO - Training stage 'decoder' starts at epoch 1 (1,465,444/29,284,036 parameters trainable).
-2026-08-23 13:58:14 - INFO - #### Training ####
-2026-08-23 13:58:14 - INFO - initial LR: refine=0.000150, encoder=0.000010, decoder=0.000100
