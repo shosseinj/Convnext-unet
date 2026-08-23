@@ -33,6 +33,8 @@ class OneSeedAblationTests(unittest.TestCase):
             )
             self.assertEqual(config.backbone, "convnext_tiny")
             self.assertEqual(config.training_precision, "amp_fp16")
+            self.assertEqual(config.max_epochs, 200)
+            self.assertEqual(config.encoder_freeze_epochs, 20)
 
     def test_dysample_doubles_spatial_resolution(self):
         layer = DySample(32, scale=2, groups=4)
@@ -62,6 +64,7 @@ class OneSeedAblationTests(unittest.TestCase):
 
     def test_cosine_schedule_covers_only_epochs_after_warmup(self):
         self.assertEqual(cosine_schedule_epochs(150, 0, 10), 140)
+        self.assertEqual(cosine_schedule_epochs(200, 0, 20), 180)
         self.assertEqual(cosine_schedule_epochs(5, 3, 3), 1)
 
     def test_all_runner_dry_run_uses_seed_42_and_isolated_results(self):
@@ -78,6 +81,8 @@ class OneSeedAblationTests(unittest.TestCase):
             self.assertIn("one_seed_results", payload["seed_dir"])
             self.assertEqual(train[train.index("--batch_size") + 1], "24")
             self.assertEqual(train[train.index("--amp") + 1], "True")
+            self.assertEqual(train[train.index("--epochs") + 1], "200")
+            self.assertEqual(train[train.index("--decoder_warmup_epochs") + 1], "20")
             self.assertEqual(train[train.index("--focal_tversky_after_warmup") + 1], "False")
 
     def test_run_all_batch_override_is_applied_to_every_experiment(self):

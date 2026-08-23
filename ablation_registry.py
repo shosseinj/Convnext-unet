@@ -16,11 +16,16 @@ class ExperimentConfig:
     upsample_mode: str = "bilinear"
     backbone: str = "convnext_tiny"
     training_precision: str = "fp32"
+    max_epochs: int = 150
+    encoder_freeze_epochs: int = 10
 
     def to_dict(self):
         values = asdict(self)
         if not self.name.startswith("one_seed_"):
-            for key in ("enable_ugbr", "upsample_mode", "backbone", "training_precision"):
+            for key in (
+                "enable_ugbr", "upsample_mode", "backbone", "training_precision",
+                "max_epochs", "encoder_freeze_epochs",
+            ):
                 values.pop(key)
         return values
 
@@ -39,11 +44,11 @@ _EXPERIMENTS = {
         ("09_gdf_concat", True, "bsei", 32, False, "concatenation", 3),
         ("10_gdf_addition", True, "bsei", 32, False, "addition", 3),
         ("11_full_without_ds", True, "bsei", 32, True, "gdf", 0),
-        ("one_seed_01_baseline", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16"),
-        ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16"),
-        ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16"),
-        ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16"),
-        ("one_seed_05_dysample", False, "normal", 0, False, "none", 0, False, "dysample", "convnext_tiny", "amp_fp16"),
+        ("one_seed_01_baseline", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
+        ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
+        ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
+        ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
+        ("one_seed_05_dysample", False, "normal", 0, False, "none", 0, False, "dysample", "convnext_tiny", "amp_fp16", 200, 20),
     )
 }
 
