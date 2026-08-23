@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\results\\ablation\\05_add_gdf\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "dc55d55c7d1d6c5a5fbb3a8a2669f20dda4b279179b1bf9f1927e757f82eee43",
+  "experiment_name": "05_add_gdf",
+  "flops": 28520455040,
+  "gflops": 28.52045504,
+  "gmacs": 14.26022752,
+  "macs": 14260227520,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8462564246871683,
+      "MAE": 0.007749348915967116,
+      "S_alpha": 0.9229225333479946,
+      "mDice": 0.8710544914007187,
+      "mE_phi": 0.9449800360927798,
+      "mIoU": 0.7955585986375808,
+      "maxE_phi": 0.9512932457894028,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.8956054212769297,
+      "MAE": 0.01585781357622389,
+      "S_alpha": 0.9367191676921945,
+      "mDice": 0.9199145989071938,
+      "mE_phi": 0.9672604988114551,
+      "mIoU": 0.8595962509993584,
+      "maxE_phi": 0.9757490738322873,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7405888660549836,
+      "MAE": 0.03566510859503297,
+      "S_alpha": 0.8469972312031814,
+      "mDice": 0.771530234528761,
+      "mE_phi": 0.8770986416323144,
+      "mIoU": 0.6845784130524419,
+      "maxE_phi": 0.8879525634883488,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7073497233062941,
+      "MAE": 0.014483967249578017,
+      "S_alpha": 0.856820414530308,
+      "mDice": 0.7498033869186082,
+      "mE_phi": 0.8691104011850601,
+      "mIoU": 0.663458179858434,
+      "maxE_phi": 0.8779972089089063,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8825203730429259,
+      "MAE": 0.031924608192982526,
+      "S_alpha": 0.9189687688558367,
+      "mDice": 0.9125486153364182,
+      "mE_phi": 0.9441357273119969,
+      "mIoU": 0.855149536728859,
+      "maxE_phi": 0.9555541768949394,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "total_parameters": 29211442,
+  "trainable_parameters": 29211442
+}
