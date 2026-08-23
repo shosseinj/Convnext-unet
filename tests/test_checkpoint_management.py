@@ -72,6 +72,30 @@ class CheckpointManagementTests(unittest.TestCase):
             )
             self.assertEqual(decision.action, "resume")
 
+    def test_incomplete_training_prefers_newer_latest_resume_checkpoint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            seed_dir = Path(directory)
+            config = get_experiment("01_baseline")
+            metadata = {
+                "experiment_name": config.name,
+                "seed": 42,
+                "architecture": config.to_dict(),
+                "training_complete": False,
+            }
+            best = self.checkpoint(10, 0.8)
+            best.update(metadata)
+            latest = self.checkpoint(18, 0.75)
+            latest.update(metadata)
+            torch.save(best, seed_dir / "best_checkpoint.pth")
+            torch.save(latest, seed_dir / "latest_checkpoint.pth")
+
+            decision = prepare_checkpoint(
+                seed_dir, config, 42, 150, seed_dir / "log.txt"
+            )
+
+            self.assertEqual(decision.action, "resume")
+            self.assertEqual(decision.checkpoint_path, seed_dir / "latest_checkpoint.pth")
+
     def test_one_seed_fp32_checkpoint_is_rejected_by_amp_campaign(self):
         with tempfile.TemporaryDirectory() as directory:
             seed_dir = Path(directory)

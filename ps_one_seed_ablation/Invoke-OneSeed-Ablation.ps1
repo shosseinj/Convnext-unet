@@ -22,7 +22,7 @@ $evaluationSummary = Join-Path $seedDir "evaluation_summary.json"
 $encoderWeights = Join-Path $repoRoot "convnext_tiny_22k_1k_384.pth"
 $stateCommand = @($python, (Join-Path $repoRoot "ablation_state.py"),
     "--experiment_name", $Experiment, "--seed", "42", "--seed_dir", $seedDir,
-    "--max_epochs", "200", "--log_path", (Join-Path $seedDir "KvasirSEG-ConvNeXt_log.txt"))
+    "--max_epochs", "350", "--log_path", (Join-Path $seedDir "KvasirSEG-ConvNeXt_log.txt"))
 $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--experiment_name", $Experiment, "--seed", "42", "--seed_dir", $seedDir,
     "--best_checkpoint_path", $bestCheckpoint,
@@ -32,7 +32,7 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_msc", "False", "--skip_mode", $SkipMode, "--detail_channels", "0",
     "--enable_gdf", "False", "--detail_fusion_mode", "none",
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
-    "--epochs", "200", "--batch_size", [string]$BatchSize, "--decoder_warmup_epochs", "80",
+    "--epochs", "350", "--batch_size", [string]$BatchSize, "--decoder_warmup_epochs", "80",
     "--amp", "True",
     "--focal_tversky_after_warmup", "False", "--focal_tversky_w", "0",
     "--lr", "1e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",

@@ -1,4 +1,4 @@
-"""Safe single-best checkpoint persistence, validation, and resume decisions."""
+"""Safe best/latest checkpoint persistence, validation, and resume decisions."""
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -97,6 +97,26 @@ def prepare_checkpoint(seed_dir, experiment, seed, max_epochs, log_path):
         return CheckpointDecision("error", "Checkpoint architecture metadata does not match")
     if checkpoint.get("training_complete") is True:
         return CheckpointDecision("skip", "Training is complete", path)
+    latest_path = seed_dir / "latest_checkpoint.pth"
+    if latest_path.is_file():
+        latest = _load_valid(latest_path)
+        if latest is not None:
+            if latest.get("experiment_name") != experiment.name:
+                return CheckpointDecision(
+                    "error", "Latest checkpoint experiment metadata does not match"
+                )
+            if latest.get("seed") != seed:
+                return CheckpointDecision(
+                    "error", "Latest checkpoint seed metadata does not match"
+                )
+            if latest.get("architecture") != experiment.to_dict():
+                return CheckpointDecision(
+                    "error", "Latest checkpoint architecture metadata does not match"
+                )
+            if int(latest.get("epoch", -1)) >= int(checkpoint.get("epoch", -1)):
+                return CheckpointDecision(
+                    "resume", "Training is incomplete", latest_path
+                )
     return CheckpointDecision("resume", "Training is incomplete", path)
 
 
