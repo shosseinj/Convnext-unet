@@ -440,6 +440,7 @@ def set_training_stage(model, stage):
         "context.",
         "ugbr.",
         "csaf.",
+        "fafem.",
     )
     if stage == "detail":
         trainable_prefixes = ("detail.", "detail_conv.", "detail_fusion.", "final_refine.")
@@ -2474,6 +2475,10 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_csaf does not match the registered experiment"
                     )
+                if bool(args.enable_fafem) != experiment_config.enable_fafem:
+                    raise ValueError(
+                        "--enable_fafem does not match the registered experiment"
+                    )
                 model = build_experiment_model(
                     experiment_config, encoder_weights
                 )
@@ -2641,6 +2646,13 @@ if __name__ == "__main__":
     scheduler = create_plateau_scheduler(
         optimizer, min_lr=args.min_lr, patience=args.lr_plateau_patience
     )
+    if getattr(model, "fafem", None) is not None:
+        fafem_params = sum(parameter.numel() for parameter in model.fafem.parameters())
+        logging.info(
+            "FAFEM placement: bottleneck / encoder stage 4 output | "
+            f"baseline={total_params - fafem_params:,} | "
+            f"fafem={fafem_params:,} | total={total_params:,}"
+        )
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
     if args.experiment_name and args.experiment_name.startswith("one_seed_"):

@@ -8,6 +8,7 @@ param(
     [int] $UnfreezePlateauPatience = 10,
     [int] $LrPlateauPatience = 5,
     [bool] $EnableCSAF = $false,
+    [bool] $EnableFAFEM = $false,
     [switch] $ContinueTraining,
     [switch] $DryRun
 )
@@ -39,6 +40,7 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_msc", "False", "--skip_mode", $SkipMode, "--detail_channels", "0",
     "--enable_gdf", "False", "--detail_fusion_mode", "none",
     "--enable_csaf", ([string]$EnableCSAF),
+    "--enable_fafem", ([string]$EnableFAFEM),
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
     "--epochs", "350", "--batch_size", [string]$BatchSize,
     "--decoder_warmup_epochs", [string]$DecoderWarmupEpochs,
@@ -63,7 +65,10 @@ if ($DryRun) {
 }
 
 New-Item -ItemType Directory -Force -Path $seedDir | Out-Null
-Write-Host "[seed 42][$OutputName] Experiment: $Experiment | CSAF: $($EnableCSAF.ToString().ToLowerInvariant())"
+Write-Host "[seed 42][$OutputName] Experiment: $OutputName | Seed: 42 | CSAF: $($EnableCSAF.ToString().ToLowerInvariant()) | FAFEM: $($EnableFAFEM.ToString().ToLowerInvariant())"
+if ($EnableFAFEM) {
+    Write-Host "[seed 42][$OutputName] FAFEM placement: bottleneck / encoder stage 4 output"
+}
 if ($ContinueTraining) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $backupDir = Join-Path $seedDir "continuation_backups\$timestamp"

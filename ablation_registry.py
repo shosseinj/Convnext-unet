@@ -19,6 +19,7 @@ class ExperimentConfig:
     max_epochs: int = 150
     encoder_freeze_epochs: int = 10
     enable_csaf: bool = False
+    enable_fafem: bool = False
 
     def to_dict(self):
         values = asdict(self)
@@ -30,6 +31,8 @@ class ExperimentConfig:
                 values.pop(key)
         if not self.enable_csaf:
             values.pop("enable_csaf")
+        if not self.enable_fafem:
+            values.pop("enable_fafem")
         return values
 
 
@@ -49,6 +52,7 @@ _EXPERIMENTS = {
         ("11_full_without_ds", True, "bsei", 32, True, "gdf", 0),
         ("one_seed_01_baseline", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_02_baseline_plus_csaf", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, True),
+        ("one_seed_03_baseline_plus_fafem", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

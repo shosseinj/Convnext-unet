@@ -100,6 +100,7 @@ def build_experiment_model(config, encoder_weights, device=None):
         deep_supervision_heads=config.deep_supervision_heads,
         backbone=config.backbone,
         enable_csaf=config.enable_csaf,
+        enable_fafem=config.enable_fafem,
     )
     if config.upsample_mode == "dysample":
         for decoder in (model.decoder4, model.decoder3, model.decoder2, model.decoder1):

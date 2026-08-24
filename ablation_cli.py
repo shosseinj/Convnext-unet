@@ -25,6 +25,7 @@ def add_ablation_arguments(parser):
     parser.add_argument("--detail_channels", type=int, choices=(0, 16, 32, 64), default=0)
     parser.add_argument("--enable_gdf", type=parse_bool, default=False)
     parser.add_argument("--enable_csaf", type=parse_bool, default=False)
+    parser.add_argument("--enable_fafem", type=parse_bool, default=False)
     parser.add_argument(
         "--detail_fusion_mode",
         choices=("none", "addition", "concatenation", "attention_fusion", "gdf"),

@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .csaf import CrossScaleAttentionFusion
+from .fafem import FrequencyAwareFeatureEnhancement
 from pathlib import Path
 try:
     from timm.models.layers import trunc_normal_, DropPath
@@ -541,7 +542,7 @@ class ConvNeXtUNet(nn.Module):
                  skip_mode="normal", detail_channels=0, enable_gdf=False,
                  deep_supervision_heads=0, msc_dilations=(1, 3, 5),
                  detail_fusion_mode=None, backbone="convnext_tiny",
-                 enable_csaf=False):
+                 enable_csaf=False, enable_fafem=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -569,6 +570,7 @@ class ConvNeXtUNet(nn.Module):
             "detail_fusion_mode": detail_fusion_mode,
             "backbone": backbone,
             "enable_csaf": bool(enable_csaf),
+            "enable_fafem": bool(enable_fafem),
         }
         
         # Encoder
@@ -657,6 +659,15 @@ class ConvNeXtUNet(nn.Module):
             nn.GELU(),
             nn.Conv2d(48, num_classes, 1)
         )
+
+        # Keep common baseline initialization reproducible: constructing this
+        # optional module must not advance the RNG used by existing modules.
+        rng_state = torch.get_rng_state()
+        self.fafem = (
+            FrequencyAwareFeatureEnhancement(encoder_channels[3])
+            if enable_fafem else None
+        )
+        torch.set_rng_state(rng_state)
         
         # Initialize decoder
         self._init_decoder()
@@ -683,6 +694,8 @@ class ConvNeXtUNet(nn.Module):
             f1, f2, f3 = (
                 fusion(encoder_features) for fusion in self.csaf
             )
+        if self.fafem is not None:
+            f4 = self.fafem(f4)
         
         # Bottleneck
         b = self.bottleneck(f4)
