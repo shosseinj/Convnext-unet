@@ -4,6 +4,9 @@ param(
     [Parameter(Mandatory = $true)][ValidateSet("normal", "attention_gate")][string] $SkipMode,
     [Parameter(Mandatory = $true)][ValidateSet(0, 2)][int] $DeepSupervisionHeads,
     [ValidateSet(16, 20, 24)][int] $BatchSize = 24,
+    [int] $DecoderWarmupEpochs = 80,
+    [int] $UnfreezePlateauPatience = 10,
+    [int] $LrPlateauPatience = 5,
     [switch] $ContinueTraining,
     [switch] $DryRun
 )
@@ -35,7 +38,10 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_msc", "False", "--skip_mode", $SkipMode, "--detail_channels", "0",
     "--enable_gdf", "False", "--detail_fusion_mode", "none",
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
-    "--epochs", "350", "--batch_size", [string]$BatchSize, "--decoder_warmup_epochs", "80",
+    "--epochs", "350", "--batch_size", [string]$BatchSize,
+    "--decoder_warmup_epochs", [string]$DecoderWarmupEpochs,
+    "--unfreeze_plateau_patience", [string]$UnfreezePlateauPatience,
+    "--lr_plateau_patience", [string]$LrPlateauPatience,
     "--amp", "True",
     "--focal_tversky_after_warmup", "False", "--focal_tversky_w", "0",
     "--lr", "4e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
@@ -76,8 +82,7 @@ if ($state.training_action -eq "error") { throw $state.training_reason }
 if ($state.training_action -in @("train", "resume")) {
     Write-Host "[seed 42][$OutputName] Training incomplete - starting/resuming training."
     $ErrorActionPreference = "Continue"
-    & $trainCommand[0] $trainCommand[1..($trainCommand.Count - 1)] 2>&1 |
-        ForEach-Object { Write-Output $_ }
+    & $trainCommand[0] $trainCommand[1..($trainCommand.Count - 1)]
     $trainExitCode = $LASTEXITCODE
     $ErrorActionPreference = "Stop"
     if ($trainExitCode -ne 0) { throw "Training failed with exit code $trainExitCode" }
@@ -92,8 +97,7 @@ Write-Host "[seed 42][$OutputName] Checking evaluation state..."
 if (-not $state.evaluation_valid) {
     Write-Host "[seed 42][$OutputName] Evaluation missing or invalid - running evaluate.py."
     $ErrorActionPreference = "Continue"
-    & $evaluateCommand[0] $evaluateCommand[1..($evaluateCommand.Count - 1)] 2>&1 |
-        ForEach-Object { Write-Output $_ }
+    & $evaluateCommand[0] $evaluateCommand[1..($evaluateCommand.Count - 1)]
     $evaluateExitCode = $LASTEXITCODE
     $ErrorActionPreference = "Stop"
     if ($evaluateExitCode -ne 0) { throw "Evaluation failed with exit code $evaluateExitCode" }

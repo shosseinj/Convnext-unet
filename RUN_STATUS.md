@@ -1,13 +1,12 @@
-Status: RUNNING
-Experiment: one_seed_02_add_ugbr
+Status: STOPPED - code updated, training not started
+Experiment: one_seed_01_baseline
 Seed: 42
-Mode: explicit continuation from completed best checkpoint
-Resume checkpoint epoch: 157 (next epoch 158)
-Previous best validation IoU: 0.8408974239
-Previous stop: epoch 217, early stopping
+Schedule: decoder epochs 1-15; encoder_last_1 at epoch 16
+Unfreeze plateau patience: 8 validation epochs
+LR plateau patience: 12 validation epochs
+Encoder weights: convnext_tiny_22k_1k_384.pth
+Encoder load: verified, missing keys 0
 Batch size: 24
 Maximum epoch: 350
 Early-stop patience: 30
-Console: CAMPAIGN_CONSOLE.log
-Artifacts: one_seed_results/ablation/02_add_ugbr/seed_42
-GPU worker PID: 23960 (venv launcher PID: 31436)
+Artifacts: one_seed_results/ablation/01_baseline/seed_42

@@ -2,6 +2,7 @@ import os
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 import argparse
 import random
+import sys
 from pathlib import Path
 import pickle as pkl
 import numpy as np
@@ -411,12 +412,12 @@ def advance_encoder_unfreezing(
     return stages_unfrozen + 1, 0, True
 
 
-def create_plateau_scheduler(optimizer, min_lr):
+def create_plateau_scheduler(optimizer, min_lr, patience=5):
     return ReduceLROnPlateau(
         optimizer,
         mode="max",
         factor=0.9,
-        patience=5,
+        patience=patience,
         threshold=1e-4,
         min_lr=min_lr,
     )
@@ -627,7 +628,7 @@ def train_epoch_segmentation(
                 total += p.grad.detach().norm(2).item() ** 2
         return total ** 0.5
 
-    pbar = tqdm(train_loader, desc="Training")
+    pbar = tqdm(train_loader, desc="Training", file=sys.stdout, dynamic_ncols=True)
 
     for batch_idx, (data, target) in enumerate(pbar):
 
@@ -2307,7 +2308,8 @@ if __name__ == "__main__":
     # Create model
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        stream=sys.stdout,
     )
     logging.info("#### Creating the model ####")
     model = None
@@ -2345,6 +2347,8 @@ if __name__ == "__main__":
     parser.add_argument('--warmup_epochs', type=int, default=12, help='Epochs. 0 -skip training')
     parser.add_argument('--detail_warmup_epochs', type=int, default=0, help='Baseline disables detail warmup')
     parser.add_argument('--decoder_warmup_epochs', type=int, default=24, help='Train baseline decoder while keeping encoder frozen for this many epochs')
+    parser.add_argument('--unfreeze_plateau_patience', type=int, default=10, help='Validation-IoU plateau epochs before exposing the next encoder level')
+    parser.add_argument('--lr_plateau_patience', type=int, default=5, help='Validation-IoU plateau epochs before reducing learning rates')
     parser.add_argument('--focal_tversky_after_warmup', type=strtobool, default=True, help='Enable Focal Tversky loss after detail warmup')
     parser.add_argument('--focal_tversky_w', type=float, default=0.05, help='Focal Tversky loss weight after detail warmup')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Decoder weight decay')
@@ -2628,7 +2632,9 @@ if __name__ == "__main__":
         betas=(0.9, 0.999),
     )
 
-    scheduler = create_plateau_scheduler(optimizer, min_lr=args.min_lr)
+    scheduler = create_plateau_scheduler(
+        optimizer, min_lr=args.min_lr, patience=args.lr_plateau_patience
+    )
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
     if args.experiment_name and args.experiment_name.startswith("one_seed_"):
@@ -2646,7 +2652,8 @@ if __name__ == "__main__":
         f"decoder_lr={decoder_lr:.2e}, eta_min={eta_min:.2e}, "
         f"weight_decay={args.weight_decay:.2e}, "
         f"new_layer_weight_decay={args.new_layer_weight_decay:.2e}, "
-        "scheduler=ReduceLROnPlateau(mode=max,factor=0.5,patience=5)"
+        "scheduler=ReduceLROnPlateau("
+        f"mode=max,factor={scheduler.factor},patience={scheduler.patience})"
     )
 
 
@@ -2801,8 +2808,10 @@ if __name__ == "__main__":
                         and 'scheduler_state_dict' in checkpoint
                     ):
                         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+                        scheduler.patience = args.lr_plateau_patience
                         logging.info(
-                            "ReduceLROnPlateau state resumed from checkpoint."
+                            "ReduceLROnPlateau state resumed from checkpoint "
+                            f"with configured patience={scheduler.patience}."
                         )
                     else:
                         configured_lrs = {
@@ -2985,10 +2994,28 @@ if __name__ == "__main__":
 
         FREEZE_EPOCHS = start_epoch + 200
         if args.training:
-
-
+            gradual_unfreezing = bool(
+                args.experiment_name
+                and args.experiment_name.startswith("one_seed_")
+            )
 
             for epoch in range(start_epoch, args.epochs):
+                if (
+                    gradual_unfreezing
+                    and epoch == full_train_start_epoch
+                    and encoder_stages_unfrozen == 0
+                ):
+                    encoder_stages_unfrozen = 1
+                    stage_plateau_epochs = 0
+                    next_stage = encoder_stage_name(encoder_stages_unfrozen)
+                    trainable_params, total_params = set_training_stage(
+                        model, stage=next_stage
+                    )
+                    logging.info(
+                        f"Epoch {epoch + 1}: decoder-only warmup finished; "
+                        f"stage '{next_stage}' active "
+                        f"({trainable_params:,}/{total_params:,} parameters trainable)."
+                    )
                 if detail_warmup_epochs > 0 and epoch == detail_warmup_end_epoch:
                     next_stage = "decoder" if decoder_warmup_epochs > 0 else "all"
                     trainable_params, total_params = set_training_stage(model, stage=next_stage)
@@ -3003,10 +3030,6 @@ if __name__ == "__main__":
                             f"Focal Tversky enabled with weight {criterion.focal_tversky_w:.3f}."
                         )
 
-                gradual_unfreezing = bool(
-                    args.experiment_name
-                    and args.experiment_name.startswith("one_seed_")
-                )
                 legacy_transition = (
                     not gradual_unfreezing and epoch == full_train_start_epoch
                 )
@@ -3082,7 +3105,7 @@ if __name__ == "__main__":
                         encoder_stages_unfrozen,
                         stage_plateau_epochs,
                         improved=is_best,
-                        patience=10,
+                        patience=args.unfreeze_plateau_patience,
                     )
                     if stage_changed:
                         next_stage = encoder_stage_name(encoder_stages_unfrozen)
@@ -3091,7 +3114,8 @@ if __name__ == "__main__":
                         )
                         logging.info(
                             f"Epoch {epoch + 1}: validation IoU did not improve "
-                            f"for 10 epochs; stage '{next_stage}' active "
+                            f"for {args.unfreeze_plateau_patience} epochs; "
+                            f"stage '{next_stage}' active "
                             f"({trainable_params:,}/{total_params:,} parameters trainable)."
                         )
                 elapsed_seconds_total = elapsed_seconds_before_resume + (time.time() - start_time)
