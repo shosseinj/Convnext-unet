@@ -54,7 +54,10 @@ def atomic_save_checkpoint(checkpoint, path):
     return path
 
 
-def prepare_checkpoint(seed_dir, experiment, seed, max_epochs, log_path):
+def prepare_checkpoint(
+    seed_dir, experiment, seed, max_epochs, log_path,
+    allow_completed_resume=False,
+):
     seed_dir = Path(seed_dir)
     path = seed_dir / "best_checkpoint.pth"
     if not path.exists():
@@ -95,6 +98,10 @@ def prepare_checkpoint(seed_dir, experiment, seed, max_epochs, log_path):
         return CheckpointDecision("error", "Checkpoint seed metadata does not match")
     if checkpoint.get("architecture") != experiment.to_dict():
         return CheckpointDecision("error", "Checkpoint architecture metadata does not match")
+    if checkpoint.get("training_complete") is True and allow_completed_resume:
+        return CheckpointDecision(
+            "resume", "Explicit continuation requested", path
+        )
     if checkpoint.get("training_complete") is True:
         return CheckpointDecision("skip", "Training is complete", path)
     latest_path = seed_dir / "latest_checkpoint.pth"

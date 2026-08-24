@@ -1,12 +1,13 @@
-Stage: EXPERIMENT
-Campaign status: RUNNING
-Active run: baseline_msc_bsei_detail_gdf / seed 2026
-Latest epoch: Starting
-Completed runs: 0/18
-Last completed run: None
-Last result: Run started
-Process status: Visible terminal active
-Last error: None
-Next action: Train and validate the active run
-Console log: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\CAMPAIGN_CONSOLE.log
-Last update: 2026-08-02T11:36:30+03:30
+Status: RUNNING
+Experiment: one_seed_02_add_ugbr
+Seed: 42
+Mode: explicit continuation from completed best checkpoint
+Resume checkpoint epoch: 157 (next epoch 158)
+Previous best validation IoU: 0.8408974239
+Previous stop: epoch 217, early stopping
+Batch size: 24
+Maximum epoch: 350
+Early-stop patience: 30
+Console: CAMPAIGN_CONSOLE.log
+Artifacts: one_seed_results/ablation/02_add_ugbr/seed_42
+GPU worker PID: 23960 (venv launcher PID: 31436)

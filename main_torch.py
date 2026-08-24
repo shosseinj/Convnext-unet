@@ -2357,6 +2357,7 @@ if __name__ == "__main__":
     parser.add_argument('--training', type=strtobool, default=False, help='Execute training.')
     parser.add_argument('--load', type=strtobool, default=True, help='Load checkpoint before training.')
     parser.add_argument('--resume_optimizer', type=strtobool, default=False, help='Resume optimizer and scheduler states when compatible')
+    parser.add_argument('--allow_completed_resume', type=strtobool, default=False, help='Explicitly continue a run whose checkpoint is marked complete')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
     parser.add_argument('--time_bits', type=int, default=0, help='number of bits to represent time. 0 -disabled')
@@ -2705,6 +2706,7 @@ if __name__ == "__main__":
         decision = prepare_checkpoint(
             Path(args.seed_dir), experiment_config, args.seed, args.epochs,
             Path(args.logging_dir) / f"{args.model_name}_log.txt",
+            allow_completed_resume=args.allow_completed_resume,
         )
         if decision.action == "error":
             raise RuntimeError(decision.reason)
