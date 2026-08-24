@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from .csaf import CrossScaleAttentionFusion
 from pathlib import Path
 try:
     from timm.models.layers import trunc_normal_, DropPath
@@ -539,7 +540,8 @@ class ConvNeXtUNet(nn.Module):
                  drop_path_rate=0.1, dropout_rate=0.1, enable_msc=True,
                  skip_mode="normal", detail_channels=0, enable_gdf=False,
                  deep_supervision_heads=0, msc_dilations=(1, 3, 5),
-                 detail_fusion_mode=None, backbone="convnext_tiny"):
+                 detail_fusion_mode=None, backbone="convnext_tiny",
+                 enable_csaf=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -566,6 +568,7 @@ class ConvNeXtUNet(nn.Module):
             "msc_dilations": tuple(msc_dilations),
             "detail_fusion_mode": detail_fusion_mode,
             "backbone": backbone,
+            "enable_csaf": bool(enable_csaf),
         }
         
         # Encoder
@@ -592,6 +595,14 @@ class ConvNeXtUNet(nn.Module):
         )
         
         dims = [96, 192, 384, encoder_channels[3]]
+
+        self.csaf = (
+            nn.ModuleList(
+                CrossScaleAttentionFusion(encoder_channels, index, encoder_channels[index])
+                for index in range(3)
+            )
+            if enable_csaf else None
+        )
         
         self.bottleneck = LiteBottleneck(dims[3], hidden_dim=dims[1], dropout_rate=dropout_rate)
         self.context = (MultiScaleContext(dims[3], dropout_rate=dropout_rate,
@@ -667,6 +678,11 @@ class ConvNeXtUNet(nn.Module):
         # Encoder
         encoder_x = (x - self.encoder_mean) / self.encoder_std
         f1, f2, f3, f4 = self.encoder(encoder_x)
+        if self.csaf is not None:
+            encoder_features = (f1, f2, f3, f4)
+            f1, f2, f3 = (
+                fusion(encoder_features) for fusion in self.csaf
+            )
         
         # Bottleneck
         b = self.bottleneck(f4)

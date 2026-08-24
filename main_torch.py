@@ -439,6 +439,7 @@ def set_training_stage(model, stage):
         "bottleneck.",
         "context.",
         "ugbr.",
+        "csaf.",
     )
     if stage == "detail":
         trainable_prefixes = ("detail.", "detail_conv.", "detail_fusion.", "final_refine.")
@@ -2468,8 +2469,13 @@ if __name__ == "__main__":
                 logging.info(f"Loading ConvNeXt-Tiny ImageNet encoder weights from {encoder_weights}.")
             if args.experiment_name and args.experiment_name.startswith("one_seed_"):
                 from one_seed_models import build_experiment_model
+                experiment_config = get_experiment(args.experiment_name)
+                if bool(args.enable_csaf) != experiment_config.enable_csaf:
+                    raise ValueError(
+                        "--enable_csaf does not match the registered experiment"
+                    )
                 model = build_experiment_model(
-                    get_experiment(args.experiment_name), encoder_weights
+                    experiment_config, encoder_weights
                 )
             else:
                 model = ConvNeXtUNet(

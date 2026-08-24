@@ -99,6 +99,7 @@ def build_experiment_model(config, encoder_weights, device=None):
         detail_fusion_mode=config.detail_fusion_mode,
         deep_supervision_heads=config.deep_supervision_heads,
         backbone=config.backbone,
+        enable_csaf=config.enable_csaf,
     )
     if config.upsample_mode == "dysample":
         for decoder in (model.decoder4, model.decoder3, model.decoder2, model.decoder1):
