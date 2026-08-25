@@ -20,3 +20,6 @@
 2026-08-25 05:51:23 - INFO - Epoch 4/350: Train Loss: 0.3780, Test Loss: 0.4999, Test Dice: 0.7029, Test IoU: 0.5436, EMA: True
 2026-08-25 05:51:24 - INFO - New best model saved with accuracy: 0.54%
 2026-08-25 05:51:24 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\01_baseline\seed_7777\best_checkpoint.pth
+2026-08-25 05:51:44 - INFO - Epoch 5/350: Train Loss: 0.3619, Test Loss: 0.3856, Test Dice: 0.7715, Test IoU: 0.6292, EMA: True
+2026-08-25 05:51:45 - INFO - New best model saved with accuracy: 0.63%
+2026-08-25 05:51:45 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\01_baseline\seed_7777\best_checkpoint.pth
