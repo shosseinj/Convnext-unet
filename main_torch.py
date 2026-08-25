@@ -867,7 +867,9 @@ def evaluate_with_tta(model, test_loader, device, threshold=0.40):
     MAE = py_sod_metrics.MAE()
     
     with torch.no_grad():
-        for data, target in tqdm(test_loader, desc='TTA'):
+        for data, target in tqdm(
+            test_loader, desc='TTA', file=sys.stdout, dynamic_ncols=True
+        ):
             data = data.to(device)
             
             # Original
@@ -997,7 +999,9 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3,
     MAE = py_sod_metrics.MAE()
     
     with torch.no_grad():
-        for data, target in tqdm(test_loader, desc='Testing'):
+        for data, target in tqdm(
+            test_loader, desc='Testing', file=sys.stdout, dynamic_ncols=True
+        ):
             data, target = data.to(device), target.to(device)
             
             if target.dim() == 3:
@@ -1237,7 +1241,9 @@ def evaluate_model(
 
     with torch.no_grad():
 
-        for data, target in tqdm(loader, desc="Evaluating"):
+        for data, target in tqdm(
+            loader, desc="Evaluating", file=sys.stdout, dynamic_ncols=True
+        ):
 
             data = data.to(device)
             target = target.to(device)
