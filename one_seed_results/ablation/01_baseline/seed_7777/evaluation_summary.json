@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_7777\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "20e9386277089c84d69e9f4b96cad6941c8a17c406b31d9a3c7d169c9c744d47",
+  "experiment_name": "one_seed_01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8522452100035983,
+      "MAE": 0.007863586244400882,
+      "S_alpha": 0.9287019369060349,
+      "mDice": 0.8746557978292306,
+      "mE_phi": 0.9456351398690416,
+      "mIoU": 0.8038810362418493,
+      "maxE_phi": 0.9534921111550063,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.934836069409587,
+      "MAE": 0.010043961312580422,
+      "S_alpha": 0.9528141731379741,
+      "mDice": 0.9438033844194105,
+      "mE_phi": 0.9828254630192261,
+      "mIoU": 0.8954261214502396,
+      "maxE_phi": 0.987528630002479,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7198279825139815,
+      "MAE": 0.035678350565175404,
+      "S_alpha": 0.8269097481378355,
+      "mDice": 0.7338539947582762,
+      "mE_phi": 0.8530300027223015,
+      "mIoU": 0.6522707908045364,
+      "maxE_phi": 0.8632223354833967,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.6909803186066379,
+      "MAE": 0.013285049569489126,
+      "S_alpha": 0.8386259890673494,
+      "mDice": 0.7089224442623117,
+      "mE_phi": 0.8340855105409267,
+      "mIoU": 0.6413695083220412,
+      "maxE_phi": 0.8451465326259295,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8866688849688509,
+      "MAE": 0.02776149308634167,
+      "S_alpha": 0.9224160667628035,
+      "mDice": 0.9113805758953094,
+      "mE_phi": 0.948503799432129,
+      "mIoU": 0.8550602027773857,
+      "maxE_phi": 0.9580716877080208,
+      "samples": 100
+    }
+  },
+  "seed": 7777,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}

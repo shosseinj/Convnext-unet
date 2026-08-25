@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_7777\\best_checkpoint.pth",
+  "best_epoch": 142,
+  "best_validation_metric": 0.859189144202641,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_01_baseline",
+  "final_epoch": 187,
+  "seed": 7777,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4204.38339805603
+}
