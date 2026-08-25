@@ -10,6 +10,9 @@ param(
     [int] $LrPlateauPatience = 5,
     [bool] $EnableCSAF = $false,
     [bool] $EnableFAFEM = $false,
+    [bool] $FAFEMStage1 = $false,
+    [bool] $FAFEMStage2 = $false,
+    [bool] $FAFEMStage3 = $false,
     [ValidateSet("v1", "v2")][string] $CSAFVersion = "v1",
     [switch] $ContinueTraining,
     [switch] $DryRun
@@ -42,6 +45,9 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_gdf", "False", "--detail_fusion_mode", "none",
     "--enable_csaf", ([string]$EnableCSAF),
     "--enable_fafem", ([string]$EnableFAFEM),
+    "--fafem_stage1", ([string]$FAFEMStage1),
+    "--fafem_stage2", ([string]$FAFEMStage2),
+    "--fafem_stage3", ([string]$FAFEMStage3),
     "--csaf_version", $CSAFVersion,
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
     "--epochs", "350", "--batch_size", [string]$BatchSize,
@@ -74,6 +80,11 @@ if ($EnableCSAF) {
 if ($EnableFAFEM) {
     Write-Host "[seed $Seed][$OutputName] FAFEM placement: bottleneck / encoder stage 4 output"
 }
+Write-Host "[seed $Seed][$OutputName] FAFEM bottleneck: $(if ($EnableFAFEM) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] FAFEM Stage 3: $(if ($FAFEMStage3) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] FAFEM Stage 2: $(if ($FAFEMStage2) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] FAFEM Stage 1: $(if ($FAFEMStage1) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] Output directory: $seedDir"
 if ($ContinueTraining) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $backupDir = Join-Path $seedDir "continuation_backups\$timestamp"

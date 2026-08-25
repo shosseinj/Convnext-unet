@@ -1,0 +1,18 @@
+2026-08-25 09:15:33 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\02_fafem_bottleneck_stage3\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-25 09:15:47 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-25 09:15:48 - INFO - Parameter count: total=29.41M, encoder=27.82M, decoder_head=1.59M, trainable=29.41M
+2026-08-25 09:15:48 - INFO - Experiment name: one_seed_02_fafem_bottleneck_stage3
+2026-08-25 09:15:48 - INFO - Seed: 42
+2026-08-25 09:15:48 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-25 09:15:48 - INFO - FAFEM Stage 3: ON | parameters=48,025
+2026-08-25 09:15:48 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-25 09:15:48 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-25 09:15:48 - INFO - FAFEM parameter count: 217,802
+2026-08-25 09:15:48 - INFO - Total parameter count: 29,407,900
+2026-08-25 09:15:48 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\02_fafem_bottleneck_stage3\seed_42
+2026-08-25 09:15:48 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-25 09:15:48 - INFO - Optimizer: AdamW | refine_lr=6.00e-04, encoder_lr=4.00e-05, decoder_lr=4.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=ReduceLROnPlateau(mode=max,factor=0.9,patience=12)
+2026-08-25 09:15:48 - INFO - EMA enabled with decay=0.995.
+2026-08-25 09:15:48 - INFO - Training stage 'decoder' starts at epoch 1 (1,589,308/29,407,900 parameters trainable).
+2026-08-25 09:15:48 - INFO - #### Training ####
+2026-08-25 09:15:48 - INFO - initial LR: refine=0.000600, encoder=0.000040, decoder=0.000400

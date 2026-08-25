@@ -542,7 +542,8 @@ class ConvNeXtUNet(nn.Module):
                  skip_mode="normal", detail_channels=0, enable_gdf=False,
                  deep_supervision_heads=0, msc_dilations=(1, 3, 5),
                  detail_fusion_mode=None, backbone="convnext_tiny",
-                 enable_csaf=False, enable_fafem=False, csaf_version="v1"):
+                 enable_csaf=False, enable_fafem=False, csaf_version="v1",
+                 fafem_stage1=False, fafem_stage2=False, fafem_stage3=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -574,6 +575,9 @@ class ConvNeXtUNet(nn.Module):
             "enable_csaf": bool(enable_csaf),
             "enable_fafem": bool(enable_fafem),
             "csaf_version": csaf_version,
+            "fafem_stage1": bool(fafem_stage1),
+            "fafem_stage2": bool(fafem_stage2),
+            "fafem_stage3": bool(fafem_stage3),
         }
         
         # Encoder
@@ -688,6 +692,18 @@ class ConvNeXtUNet(nn.Module):
             FrequencyAwareFeatureEnhancement(encoder_channels[3])
             if enable_fafem else None
         )
+        self.fafem_stage1 = (
+            FrequencyAwareFeatureEnhancement(encoder_channels[0])
+            if fafem_stage1 else None
+        )
+        self.fafem_stage2 = (
+            FrequencyAwareFeatureEnhancement(encoder_channels[1])
+            if fafem_stage2 else None
+        )
+        self.fafem_stage3 = (
+            FrequencyAwareFeatureEnhancement(encoder_channels[2])
+            if fafem_stage3 else None
+        )
         torch.set_rng_state(rng_state)
         
         # Initialize decoder
@@ -712,6 +728,12 @@ class ConvNeXtUNet(nn.Module):
         # Encoder
         encoder_x = (x - self.encoder_mean) / self.encoder_std
         f1, f2, f3, f4 = self.encoder(encoder_x)
+        if self.fafem_stage1 is not None:
+            f1 = self.fafem_stage1(f1)
+        if self.fafem_stage2 is not None:
+            f2 = self.fafem_stage2(f2)
+        if self.fafem_stage3 is not None:
+            f3 = self.fafem_stage3(f3)
         fafem_applied = False
         if self.fafem is not None and self.variant_config["csaf_version"] == "v2":
             f4 = self.fafem(f4)

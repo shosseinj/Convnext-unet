@@ -441,6 +441,9 @@ def set_training_stage(model, stage):
         "ugbr.",
         "csaf.",
         "fafem.",
+        "fafem_stage1.",
+        "fafem_stage2.",
+        "fafem_stage3.",
     )
     if stage == "detail":
         trainable_prefixes = ("detail.", "detail_conv.", "detail_fusion.", "final_refine.")
@@ -2485,6 +2488,13 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_fafem does not match the registered experiment"
                     )
+                for stage_index in (1, 2, 3):
+                    argument_value = bool(getattr(args, f"fafem_stage{stage_index}"))
+                    config_value = getattr(experiment_config, f"fafem_stage{stage_index}")
+                    if argument_value != config_value:
+                        raise ValueError(
+                            f"--fafem_stage{stage_index} does not match the registered experiment"
+                        )
                 if args.csaf_version != experiment_config.csaf_version:
                     raise ValueError(
                         "--csaf_version does not match the registered experiment"
@@ -2504,6 +2514,10 @@ if __name__ == "__main__":
                     enable_gdf=args.enable_gdf,
                     deep_supervision_heads=args.deep_supervision_heads,
                     detail_fusion_mode=args.detail_fusion_mode,
+                    enable_fafem=args.enable_fafem,
+                    fafem_stage1=args.fafem_stage1,
+                    fafem_stage2=args.fafem_stage2,
+                    fafem_stage3=args.fafem_stage3,
                 )
 
             print('loaded lightweight ConvNeXt-Tiny U-Net')
@@ -2656,13 +2670,29 @@ if __name__ == "__main__":
     scheduler = create_plateau_scheduler(
         optimizer, min_lr=args.min_lr, patience=args.lr_plateau_patience
     )
-    if getattr(model, "fafem", None) is not None:
-        fafem_params = sum(parameter.numel() for parameter in model.fafem.parameters())
-        logging.info(
-            "FAFEM placement: bottleneck / encoder stage 4 output | "
-            f"baseline={total_params - fafem_params:,} | "
-            f"fafem={fafem_params:,} | total={total_params:,}"
-        )
+    fafem_modules = (
+        ("Bottleneck", getattr(model, "fafem", None)),
+        ("Stage 3", getattr(model, "fafem_stage3", None)),
+        ("Stage 2", getattr(model, "fafem_stage2", None)),
+        ("Stage 1", getattr(model, "fafem_stage1", None)),
+    )
+    if any(module is not None for _, module in fafem_modules):
+        per_module_params = {
+            name: (sum(parameter.numel() for parameter in module.parameters())
+                   if module is not None else 0)
+            for name, module in fafem_modules
+        }
+        fafem_params = sum(per_module_params.values())
+        logging.info(f"Experiment name: {args.experiment_name}")
+        logging.info(f"Seed: {args.seed}")
+        for name, module in fafem_modules:
+            logging.info(
+                f"FAFEM {name}: {'ON' if module is not None else 'OFF'} | "
+                f"parameters={per_module_params[name]:,}"
+            )
+        logging.info(f"FAFEM parameter count: {fafem_params:,}")
+        logging.info(f"Total parameter count: {total_params:,}")
+        logging.info(f"Output directory: {args.seed_dir or args.logging_dir}")
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
     if args.experiment_name and args.experiment_name.startswith("one_seed_"):
