@@ -424,3 +424,33 @@
 2026-08-24 23:10:45 - INFO - Epoch 205/350: Train Loss: 0.1273, Test Loss: 0.1455, Test Dice: 0.9344, Test IoU: 0.8774, EMA: True
 2026-08-24 23:11:10 - INFO - Epoch 206/350: Train Loss: 0.1318, Test Loss: 0.1473, Test Dice: 0.9331, Test IoU: 0.8751, EMA: True
 2026-08-24 23:11:37 - INFO - Epoch 207/350: Train Loss: 0.1276, Test Loss: 0.1486, Test Dice: 0.9321, Test IoU: 0.8734, EMA: True
+2026-08-24 23:12:04 - INFO - Epoch 208/350: Train Loss: 0.1301, Test Loss: 0.1486, Test Dice: 0.9319, Test IoU: 0.8731, EMA: True
+2026-08-24 23:12:31 - INFO - Epoch 209/350: Train Loss: 0.1274, Test Loss: 0.1482, Test Dice: 0.9322, Test IoU: 0.8737, EMA: True
+2026-08-24 23:12:57 - INFO - Epoch 210/350: Train Loss: 0.1293, Test Loss: 0.1487, Test Dice: 0.9308, Test IoU: 0.8713, EMA: True
+2026-08-24 23:13:24 - INFO - Epoch 211/350: Train Loss: 0.1289, Test Loss: 0.1491, Test Dice: 0.9299, Test IoU: 0.8697, EMA: True
+2026-08-24 23:13:50 - INFO - Epoch 212/350: Train Loss: 0.1272, Test Loss: 0.1496, Test Dice: 0.9289, Test IoU: 0.8681, EMA: True
+2026-08-24 23:14:18 - INFO - Epoch 213/350: Train Loss: 0.1255, Test Loss: 0.1488, Test Dice: 0.9299, Test IoU: 0.8700, EMA: True
+2026-08-24 23:14:45 - INFO - Epoch 214/350: Train Loss: 0.1303, Test Loss: 0.1482, Test Dice: 0.9324, Test IoU: 0.8740, EMA: True
+2026-08-24 23:15:13 - INFO - Epoch 215/350: Train Loss: 0.1278, Test Loss: 0.1505, Test Dice: 0.9312, Test IoU: 0.8721, EMA: True
+2026-08-24 23:15:39 - INFO - Epoch 216/350: Train Loss: 0.1309, Test Loss: 0.1515, Test Dice: 0.9313, Test IoU: 0.8721, EMA: True
+2026-08-24 23:16:03 - WARNING - Skipped 1/61 batches.
+2026-08-24 23:16:06 - INFO - Epoch 217/350: Train Loss: 0.1250, Test Loss: 0.1522, Test Dice: 0.9303, Test IoU: 0.8704, EMA: True
+2026-08-24 23:16:32 - INFO - Epoch 218/350: Train Loss: 0.1301, Test Loss: 0.1524, Test Dice: 0.9292, Test IoU: 0.8686, EMA: True
+2026-08-24 23:16:58 - INFO - Epoch 219/350: Train Loss: 0.1288, Test Loss: 0.1525, Test Dice: 0.9285, Test IoU: 0.8675, EMA: True
+2026-08-24 23:17:24 - INFO - Epoch 220/350: Train Loss: 0.1288, Test Loss: 0.1525, Test Dice: 0.9283, Test IoU: 0.8673, EMA: True
+2026-08-24 23:17:49 - INFO - Epoch 221/350: Train Loss: 0.1274, Test Loss: 0.1519, Test Dice: 0.9290, Test IoU: 0.8685, EMA: True
+2026-08-24 23:18:13 - INFO - Epoch 222/350: Train Loss: 0.1270, Test Loss: 0.1526, Test Dice: 0.9283, Test IoU: 0.8673, EMA: True
+2026-08-24 23:18:38 - INFO - Epoch 223/350: Train Loss: 0.1279, Test Loss: 0.1513, Test Dice: 0.9300, Test IoU: 0.8701, EMA: True
+2026-08-24 23:19:02 - INFO - Epoch 224/350: Train Loss: 0.1269, Test Loss: 0.1495, Test Dice: 0.9316, Test IoU: 0.8728, EMA: True
+2026-08-24 23:19:27 - INFO - Epoch 225/350: Train Loss: 0.1261, Test Loss: 0.1508, Test Dice: 0.9297, Test IoU: 0.8695, EMA: True
+2026-08-24 23:19:52 - INFO - Epoch 226/350: Train Loss: 0.1299, Test Loss: 0.1513, Test Dice: 0.9284, Test IoU: 0.8674, EMA: True
+2026-08-24 23:20:16 - INFO - Epoch 227/350: Train Loss: 0.1229, Test Loss: 0.1518, Test Dice: 0.9282, Test IoU: 0.8671, EMA: True
+2026-08-24 23:20:41 - INFO - Epoch 228/350: Train Loss: 0.1277, Test Loss: 0.1523, Test Dice: 0.9277, Test IoU: 0.8663, EMA: True
+2026-08-24 23:21:06 - INFO - Epoch 229/350: Train Loss: 0.1240, Test Loss: 0.1522, Test Dice: 0.9277, Test IoU: 0.8662, EMA: True
+2026-08-24 23:21:30 - INFO - Epoch 230/350: Train Loss: 0.1239, Test Loss: 0.1516, Test Dice: 0.9282, Test IoU: 0.8669, EMA: True
+2026-08-24 23:21:55 - INFO - Epoch 231/350: Train Loss: 0.1281, Test Loss: 0.1515, Test Dice: 0.9285, Test IoU: 0.8675, EMA: True
+2026-08-24 23:22:19 - INFO - Epoch 232/350: Train Loss: 0.1278, Test Loss: 0.1510, Test Dice: 0.9293, Test IoU: 0.8688, EMA: True
+2026-08-24 23:22:44 - INFO - Epoch 233/350: Train Loss: 0.1242, Test Loss: 0.1492, Test Dice: 0.9305, Test IoU: 0.8708, EMA: True
+2026-08-24 23:23:08 - INFO - Epoch 234/350: Train Loss: 0.1229, Test Loss: 0.1480, Test Dice: 0.9317, Test IoU: 0.8729, EMA: True
+2026-08-24 23:23:08 - INFO - Early stopping at epoch 234: no validation IoU improvement for 30 epochs.
+2026-08-24 23:23:10 - INFO - Training stopped after epoch 234; best checkpoint retained.
