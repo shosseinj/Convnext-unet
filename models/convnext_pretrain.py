@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .csaf import CrossScaleAttentionFusion, CrossScaleAttentionFusionV2
+from .cross_level_fusion import CrossLevelFusion
 from .fafem import FrequencyAwareFeatureEnhancement
 from pathlib import Path
 try:
@@ -543,7 +544,8 @@ class ConvNeXtUNet(nn.Module):
                  deep_supervision_heads=0, msc_dilations=(1, 3, 5),
                  detail_fusion_mode=None, backbone="convnext_tiny",
                  enable_csaf=False, enable_fafem=False, csaf_version="v1",
-                 fafem_stage1=False, fafem_stage2=False, fafem_stage3=False):
+                 fafem_stage1=False, fafem_stage2=False, fafem_stage3=False,
+                 enable_cross_level_fusion=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -578,6 +580,7 @@ class ConvNeXtUNet(nn.Module):
             "fafem_stage1": bool(fafem_stage1),
             "fafem_stage2": bool(fafem_stage2),
             "fafem_stage3": bool(fafem_stage3),
+            "enable_cross_level_fusion": bool(enable_cross_level_fusion),
         }
         
         # Encoder
@@ -704,6 +707,10 @@ class ConvNeXtUNet(nn.Module):
             FrequencyAwareFeatureEnhancement(encoder_channels[2])
             if fafem_stage3 else None
         )
+        self.cross_level_fusion = (
+            CrossLevelFusion(encoder_channels[:3], fusion_channels=encoder_channels[0])
+            if enable_cross_level_fusion else None
+        )
         torch.set_rng_state(rng_state)
         
         # Initialize decoder
@@ -743,6 +750,8 @@ class ConvNeXtUNet(nn.Module):
             f1, f2, f3 = (
                 fusion(encoder_features) for fusion in self.csaf
             )
+        if self.cross_level_fusion is not None:
+            f1, f2, f3 = self.cross_level_fusion(f1, f2, f3)
         if self.fafem is not None and not fafem_applied:
             f4 = self.fafem(f4)
         

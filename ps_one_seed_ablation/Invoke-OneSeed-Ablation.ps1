@@ -13,6 +13,7 @@ param(
     [bool] $FAFEMStage1 = $false,
     [bool] $FAFEMStage2 = $false,
     [bool] $FAFEMStage3 = $false,
+    [bool] $EnableCrossLevelFusion = $false,
     [ValidateSet("v1", "v2")][string] $CSAFVersion = "v1",
     [switch] $ContinueTraining,
     [switch] $DryRun
@@ -48,6 +49,7 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--fafem_stage1", ([string]$FAFEMStage1),
     "--fafem_stage2", ([string]$FAFEMStage2),
     "--fafem_stage3", ([string]$FAFEMStage3),
+    "--enable_cross_level_fusion", ([string]$EnableCrossLevelFusion),
     "--csaf_version", $CSAFVersion,
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
     "--epochs", "350", "--batch_size", [string]$BatchSize,
@@ -84,6 +86,7 @@ Write-Host "[seed $Seed][$OutputName] FAFEM bottleneck: $(if ($EnableFAFEM) { 'O
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 3: $(if ($FAFEMStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 2: $(if ($FAFEMStage2) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 1: $(if ($FAFEMStage1) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] Cross-Level Fusion: $(if ($EnableCrossLevelFusion) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Output directory: $seedDir"
 if ($ContinueTraining) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"

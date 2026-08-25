@@ -444,6 +444,7 @@ def set_training_stage(model, stage):
         "fafem_stage1.",
         "fafem_stage2.",
         "fafem_stage3.",
+        "cross_level_fusion.",
     )
     if stage == "detail":
         trainable_prefixes = ("detail.", "detail_conv.", "detail_fusion.", "final_refine.")
@@ -2495,6 +2496,11 @@ if __name__ == "__main__":
                         raise ValueError(
                             f"--fafem_stage{stage_index} does not match the registered experiment"
                         )
+                if (bool(args.enable_cross_level_fusion) !=
+                        experiment_config.enable_cross_level_fusion):
+                    raise ValueError(
+                        "--enable_cross_level_fusion does not match the registered experiment"
+                    )
                 if args.csaf_version != experiment_config.csaf_version:
                     raise ValueError(
                         "--csaf_version does not match the registered experiment"
@@ -2518,6 +2524,7 @@ if __name__ == "__main__":
                     fafem_stage1=args.fafem_stage1,
                     fafem_stage2=args.fafem_stage2,
                     fafem_stage3=args.fafem_stage3,
+                    enable_cross_level_fusion=args.enable_cross_level_fusion,
                 )
 
             print('loaded lightweight ConvNeXt-Tiny U-Net')
@@ -2693,6 +2700,15 @@ if __name__ == "__main__":
         logging.info(f"FAFEM parameter count: {fafem_params:,}")
         logging.info(f"Total parameter count: {total_params:,}")
         logging.info(f"Output directory: {args.seed_dir or args.logging_dir}")
+    cross_level_fusion = getattr(model, "cross_level_fusion", None)
+    if cross_level_fusion is not None:
+        cross_level_params = sum(
+            parameter.numel() for parameter in cross_level_fusion.parameters()
+        )
+        logging.info("Cross-Level Fusion: ON")
+        logging.info("Skip inputs: Stage 1, Stage 2, Stage 3")
+        logging.info("Cross-Level Fusion outputs: Refined Stage 1, Refined Stage 2, Refined Stage 3")
+        logging.info(f"Cross-Level Fusion parameters: {cross_level_params:,}")
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
     if args.experiment_name and args.experiment_name.startswith("one_seed_"):

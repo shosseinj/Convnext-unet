@@ -141,7 +141,8 @@ class FAFEMPlacementAblationTests(unittest.TestCase):
             completed = subprocess.run(
                 [
                     "powershell", "-NoProfile", "-File",
-                    str(ROOT / "ps_one_seed_ablation" / f"{runner}.ps1"),
+                    str(ROOT / "ps_one_seed_ablation" / "FAFEM_ablation" /
+                        f"{runner}.ps1"),
                     "-DryRun",
                 ],
                 cwd=ROOT,

@@ -1,0 +1,1 @@
+2026-08-25 16:44:35 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\05_fafem_plus_cross_level_fusion\seed_42\KvasirSEG-ConvNeXt_log.txt

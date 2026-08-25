@@ -29,6 +29,7 @@ def add_ablation_arguments(parser):
     parser.add_argument("--fafem_stage1", type=parse_bool, default=False)
     parser.add_argument("--fafem_stage2", type=parse_bool, default=False)
     parser.add_argument("--fafem_stage3", type=parse_bool, default=False)
+    parser.add_argument("--enable_cross_level_fusion", type=parse_bool, default=False)
     parser.add_argument("--csaf_version", choices=("v1", "v2"), default="v1")
     parser.add_argument(
         "--detail_fusion_mode",
