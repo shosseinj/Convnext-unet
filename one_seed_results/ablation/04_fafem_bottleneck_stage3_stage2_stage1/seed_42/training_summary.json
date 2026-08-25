@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\04_fafem_bottleneck_stage3_stage2_stage1\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 194,
+  "best_validation_metric": 0.8695375152996608,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_04_fafem_bottleneck_stage3_stage2_stage1",
+  "final_epoch": 224,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 6584.603118896484
+}
