@@ -2479,6 +2479,10 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_fafem does not match the registered experiment"
                     )
+                if args.csaf_version != experiment_config.csaf_version:
+                    raise ValueError(
+                        "--csaf_version does not match the registered experiment"
+                    )
                 model = build_experiment_model(
                     experiment_config, encoder_weights
                 )

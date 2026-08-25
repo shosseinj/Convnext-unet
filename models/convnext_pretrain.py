@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from .csaf import CrossScaleAttentionFusion
+from .csaf import CrossScaleAttentionFusion, CrossScaleAttentionFusionV2
 from .fafem import FrequencyAwareFeatureEnhancement
 from pathlib import Path
 try:
@@ -542,7 +542,7 @@ class ConvNeXtUNet(nn.Module):
                  skip_mode="normal", detail_channels=0, enable_gdf=False,
                  deep_supervision_heads=0, msc_dilations=(1, 3, 5),
                  detail_fusion_mode=None, backbone="convnext_tiny",
-                 enable_csaf=False, enable_fafem=False):
+                 enable_csaf=False, enable_fafem=False, csaf_version="v1"):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -560,6 +560,8 @@ class ConvNeXtUNet(nn.Module):
             raise ValueError("deep_supervision_heads must be between 0 and 3")
         if backbone not in {"resnet34", "efficientnet_b0", "convnext_tiny"}:
             raise ValueError(f"Unsupported backbone: {backbone}")
+        if csaf_version not in {"v1", "v2"}:
+            raise ValueError(f"Unsupported CSAF version: {csaf_version}")
         self.variant_config = {
             "enable_msc": bool(enable_msc),
             "skip_mode": skip_mode,
@@ -571,6 +573,7 @@ class ConvNeXtUNet(nn.Module):
             "backbone": backbone,
             "enable_csaf": bool(enable_csaf),
             "enable_fafem": bool(enable_fafem),
+            "csaf_version": csaf_version,
         }
         
         # Encoder
@@ -598,13 +601,31 @@ class ConvNeXtUNet(nn.Module):
         
         dims = [96, 192, 384, encoder_channels[3]]
 
-        self.csaf = (
-            nn.ModuleList(
-                CrossScaleAttentionFusion(encoder_channels, index, encoder_channels[index])
+        if enable_csaf and csaf_version == "v2":
+            rng_state = torch.get_rng_state()
+            self.csaf = nn.ModuleList(
+                (
+                    CrossScaleAttentionFusionV2(
+                        encoder_channels, (0, 1), 0, encoder_channels[0]
+                    ),
+                    CrossScaleAttentionFusionV2(
+                        encoder_channels, (0, 1, 2), 1, encoder_channels[1]
+                    ),
+                    CrossScaleAttentionFusionV2(
+                        encoder_channels, (1, 2, 3), 2, encoder_channels[2]
+                    ),
+                )
+            )
+            torch.set_rng_state(rng_state)
+        elif enable_csaf:
+            self.csaf = nn.ModuleList(
+                CrossScaleAttentionFusion(
+                    encoder_channels, index, encoder_channels[index]
+                )
                 for index in range(3)
             )
-            if enable_csaf else None
-        )
+        else:
+            self.csaf = None
         
         self.bottleneck = LiteBottleneck(dims[3], hidden_dim=dims[1], dropout_rate=dropout_rate)
         self.context = (MultiScaleContext(dims[3], dropout_rate=dropout_rate,
@@ -676,6 +697,8 @@ class ConvNeXtUNet(nn.Module):
         for name, module in self.named_modules():
             if 'encoder' in name:
                 continue
+            if self.variant_config["csaf_version"] == "v2" and name.startswith("csaf."):
+                continue
             if isinstance(module, nn.Conv2d):
                 nn.init.kaiming_normal_(module.weight, mode='fan_out', nonlinearity='relu')
                 if module.bias is not None:
@@ -689,12 +712,16 @@ class ConvNeXtUNet(nn.Module):
         # Encoder
         encoder_x = (x - self.encoder_mean) / self.encoder_std
         f1, f2, f3, f4 = self.encoder(encoder_x)
+        fafem_applied = False
+        if self.fafem is not None and self.variant_config["csaf_version"] == "v2":
+            f4 = self.fafem(f4)
+            fafem_applied = True
         if self.csaf is not None:
             encoder_features = (f1, f2, f3, f4)
             f1, f2, f3 = (
                 fusion(encoder_features) for fusion in self.csaf
             )
-        if self.fafem is not None:
+        if self.fafem is not None and not fafem_applied:
             f4 = self.fafem(f4)
         
         # Bottleneck

@@ -26,6 +26,7 @@ def add_ablation_arguments(parser):
     parser.add_argument("--enable_gdf", type=parse_bool, default=False)
     parser.add_argument("--enable_csaf", type=parse_bool, default=False)
     parser.add_argument("--enable_fafem", type=parse_bool, default=False)
+    parser.add_argument("--csaf_version", choices=("v1", "v2"), default="v1")
     parser.add_argument(
         "--detail_fusion_mode",
         choices=("none", "addition", "concatenation", "attention_fusion", "gdf"),
