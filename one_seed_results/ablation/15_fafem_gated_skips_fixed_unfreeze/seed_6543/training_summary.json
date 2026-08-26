@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\15_fafem_gated_skips_fixed_unfreeze\\seed_6543\\best_checkpoint.pth",
+  "best_epoch": 135,
+  "best_validation_metric": 0.8652331829071045,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_15_fafem_gated_skips_fixed_unfreeze",
+  "final_epoch": 165,
+  "seed": 6543,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4600.578068733215
+}
