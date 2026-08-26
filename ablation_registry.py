@@ -25,6 +25,8 @@ class ExperimentConfig:
     fafem_stage2: bool = False
     fafem_stage3: bool = False
     enable_cross_level_fusion: bool = False
+    cross_level_fusion_version: str = "v1"
+    unfreeze_schedule: str = "plateau"
 
     def to_dict(self):
         values = asdict(self)
@@ -45,6 +47,10 @@ class ExperimentConfig:
                 values.pop(key)
         if not self.enable_cross_level_fusion:
             values.pop("enable_cross_level_fusion")
+        if self.cross_level_fusion_version == "v1":
+            values.pop("cross_level_fusion_version")
+        if self.unfreeze_schedule == "plateau":
+            values.pop("unfreeze_schedule")
         return values
 
 
@@ -71,6 +77,18 @@ _EXPERIMENTS = {
         ("one_seed_03_fafem_bottleneck_stage3_stage2", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, True, True),
         ("one_seed_04_fafem_bottleneck_stage3_stage2_stage1", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", True, True, True),
         ("one_seed_05_fafem_plus_cross_level_fusion", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, True),
+        ("one_seed_06_fafem_plus_cross_level_fusion_v2", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, True, "v2"),
+        ("one_seed_07_fafem_plus_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True),
+        ("one_seed_08_fafem_plus_dysample", False, "normal", 0, False, "none", 0, False, "dysample", "convnext_tiny", "amp_fp16", 200, 20, False, True),
+        ("one_seed_09_fafem_plus_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True),
+        ("one_seed_10_fafem_plus_detail_branch", False, "normal", 32, False, "concatenation", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True),
+        ("one_seed_11_fafem_plus_msc", True, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True),
+        ("one_seed_12_fafem_fixed_unfreeze", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "fixed"),
+        ("one_seed_13_fafem_ugbr_fixed_unfreeze", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "fixed"),
+        ("one_seed_14_fafem_dysample_fixed_unfreeze", False, "normal", 0, False, "none", 0, False, "dysample", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "fixed"),
+        ("one_seed_15_fafem_gated_skips_fixed_unfreeze", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "fixed"),
+        ("one_seed_16_fafem_detail_branch_fixed_unfreeze", False, "normal", 32, False, "concatenation", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "fixed"),
+        ("one_seed_17_fafem_msc_fixed_unfreeze", True, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "fixed"),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

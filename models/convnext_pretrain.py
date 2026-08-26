@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .csaf import CrossScaleAttentionFusion, CrossScaleAttentionFusionV2
-from .cross_level_fusion import CrossLevelFusion
+from .cross_level_fusion import CrossLevelFusion, CrossLevelFusionV2
 from .fafem import FrequencyAwareFeatureEnhancement
 from pathlib import Path
 try:
@@ -545,7 +545,8 @@ class ConvNeXtUNet(nn.Module):
                  detail_fusion_mode=None, backbone="convnext_tiny",
                  enable_csaf=False, enable_fafem=False, csaf_version="v1",
                  fafem_stage1=False, fafem_stage2=False, fafem_stage3=False,
-                 enable_cross_level_fusion=False):
+                 enable_cross_level_fusion=False,
+                 cross_level_fusion_version="v1"):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -565,6 +566,10 @@ class ConvNeXtUNet(nn.Module):
             raise ValueError(f"Unsupported backbone: {backbone}")
         if csaf_version not in {"v1", "v2"}:
             raise ValueError(f"Unsupported CSAF version: {csaf_version}")
+        if cross_level_fusion_version not in {"v1", "v2"}:
+            raise ValueError(
+                f"Unsupported Cross-Level Fusion version: {cross_level_fusion_version}"
+            )
         self.variant_config = {
             "enable_msc": bool(enable_msc),
             "skip_mode": skip_mode,
@@ -581,6 +586,7 @@ class ConvNeXtUNet(nn.Module):
             "fafem_stage2": bool(fafem_stage2),
             "fafem_stage3": bool(fafem_stage3),
             "enable_cross_level_fusion": bool(enable_cross_level_fusion),
+            "cross_level_fusion_version": cross_level_fusion_version,
         }
         
         # Encoder
@@ -708,7 +714,9 @@ class ConvNeXtUNet(nn.Module):
             if fafem_stage3 else None
         )
         self.cross_level_fusion = (
-            CrossLevelFusion(encoder_channels[:3], fusion_channels=encoder_channels[0])
+            (CrossLevelFusionV2(encoder_channels[:3], fusion_channels=64)
+             if cross_level_fusion_version == "v2" else
+             CrossLevelFusion(encoder_channels[:3], fusion_channels=encoder_channels[0]))
             if enable_cross_level_fusion else None
         )
         torch.set_rng_state(rng_state)

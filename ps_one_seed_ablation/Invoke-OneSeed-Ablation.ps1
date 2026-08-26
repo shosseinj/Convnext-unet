@@ -8,12 +8,19 @@ param(
     [int] $DecoderWarmupEpochs = 80,
     [int] $UnfreezePlateauPatience = 10,
     [int] $LrPlateauPatience = 5,
+    [ValidateSet("plateau", "fixed")][string] $UnfreezeSchedule = "plateau",
+    [bool] $EnableMSC = $false,
+    [bool] $EnableUGBR = $false,
+    [ValidateSet("bilinear", "dysample")][string] $UpsampleMode = "bilinear",
+    [ValidateSet(0, 32)][int] $DetailChannels = 0,
+    [ValidateSet("none", "concatenation")][string] $DetailFusionMode = "none",
     [bool] $EnableCSAF = $false,
     [bool] $EnableFAFEM = $false,
     [bool] $FAFEMStage1 = $false,
     [bool] $FAFEMStage2 = $false,
     [bool] $FAFEMStage3 = $false,
     [bool] $EnableCrossLevelFusion = $false,
+    [ValidateSet("v1", "v2")][string] $CrossLevelFusionVersion = "v1",
     [ValidateSet("v1", "v2")][string] $CSAFVersion = "v1",
     [switch] $ContinueTraining,
     [switch] $DryRun
@@ -42,14 +49,18 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--training_history_path", (Join-Path $seedDir "training_history.csv"),
     "--training_summary_path", (Join-Path $seedDir "training_summary.json"),
     "--encoder_weights", $encoderWeights, "--logging_dir", $loggingDir,
-    "--enable_msc", "False", "--skip_mode", $SkipMode, "--detail_channels", "0",
-    "--enable_gdf", "False", "--detail_fusion_mode", "none",
+    "--enable_msc", ([string]$EnableMSC), "--skip_mode", $SkipMode,
+    "--unfreeze_schedule", $UnfreezeSchedule,
+    "--detail_channels", [string]$DetailChannels,
+    "--enable_gdf", "False", "--detail_fusion_mode", $DetailFusionMode,
+    "--enable_ugbr", ([string]$EnableUGBR), "--upsample_mode", $UpsampleMode,
     "--enable_csaf", ([string]$EnableCSAF),
     "--enable_fafem", ([string]$EnableFAFEM),
     "--fafem_stage1", ([string]$FAFEMStage1),
     "--fafem_stage2", ([string]$FAFEMStage2),
     "--fafem_stage3", ([string]$FAFEMStage3),
     "--enable_cross_level_fusion", ([string]$EnableCrossLevelFusion),
+    "--cross_level_fusion_version", $CrossLevelFusionVersion,
     "--csaf_version", $CSAFVersion,
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
     "--epochs", "350", "--batch_size", [string]$BatchSize,
@@ -87,6 +98,11 @@ Write-Host "[seed $Seed][$OutputName] FAFEM Stage 3: $(if ($FAFEMStage3) { 'ON' 
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 2: $(if ($FAFEMStage2) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 1: $(if ($FAFEMStage1) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Cross-Level Fusion: $(if ($EnableCrossLevelFusion) { 'ON' } else { 'OFF' })"
+if ($EnableCrossLevelFusion) {
+    Write-Host "[seed $Seed][$OutputName] Cross-Level Fusion version: $CrossLevelFusionVersion"
+}
+Write-Host "[seed $Seed][$OutputName] MSC: $(if ($EnableMSC) { 'ON' } else { 'OFF' }) | UGBR: $(if ($EnableUGBR) { 'ON' } else { 'OFF' }) | Upsampling: $UpsampleMode | Detail channels: $DetailChannels"
+Write-Host "[seed $Seed][$OutputName] Encoder unfreeze schedule: $UnfreezeSchedule$(if ($UnfreezeSchedule -eq 'fixed') { ' (epochs 16,46,76,106,136)' } else { '' })"
 Write-Host "[seed $Seed][$OutputName] Output directory: $seedDir"
 if ($ContinueTraining) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"

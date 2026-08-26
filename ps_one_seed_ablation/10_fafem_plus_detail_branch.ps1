@@ -1,0 +1,2 @@
+param([ValidateSet(16, 20, 24)][int] $BatchSize = 24, [int] $Seed = 42, [switch] $DryRun)
+& (Join-Path $PSScriptRoot "Invoke-OneSeed-Ablation.ps1") -Experiment "one_seed_10_fafem_plus_detail_branch" -OutputName "10_fafem_plus_detail_branch" -SkipMode normal -DeepSupervisionHeads 0 -BatchSize $BatchSize -Seed $Seed -DecoderWarmupEpochs 15 -UnfreezePlateauPatience 8 -LrPlateauPatience 12 -EnableFAFEM $true -DetailChannels 32 -DetailFusionMode concatenation -DryRun:$DryRun

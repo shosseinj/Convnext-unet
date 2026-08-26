@@ -412,6 +412,14 @@ def advance_encoder_unfreezing(
     return stages_unfrozen + 1, 0, True
 
 
+FIXED_UNFREEZE_EPOCHS = (16, 46, 76, 106, 136)
+
+
+def fixed_encoder_stages_for_epoch(epoch_number):
+    """Return cumulative encoder exposure for a one-based epoch number."""
+    return sum(epoch_number >= milestone for milestone in FIXED_UNFREEZE_EPOCHS)
+
+
 def create_plateau_scheduler(optimizer, min_lr, patience=5):
     return ReduceLROnPlateau(
         optimizer,
@@ -430,6 +438,7 @@ def grad_clip_norm_for_epoch(epoch, encoder_frozen_epochs):
 def set_training_stage(model, stage):
     decoder_prefixes = (
         "detail.",
+        "detail_branch.",
         "detail_conv.",
         "detail_fusion.",
         "final_refine.",
@@ -447,7 +456,8 @@ def set_training_stage(model, stage):
         "cross_level_fusion.",
     )
     if stage == "detail":
-        trainable_prefixes = ("detail.", "detail_conv.", "detail_fusion.", "final_refine.")
+        trainable_prefixes = ("detail.", "detail_branch.", "detail_conv.",
+                              "detail_fusion.", "final_refine.")
     elif stage == "decoder":
         trainable_prefixes = decoder_prefixes
     elif stage.startswith("encoder_last_"):
@@ -2501,9 +2511,18 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_cross_level_fusion does not match the registered experiment"
                     )
+                if (args.cross_level_fusion_version !=
+                        experiment_config.cross_level_fusion_version):
+                    raise ValueError(
+                        "--cross_level_fusion_version does not match the registered experiment"
+                    )
                 if args.csaf_version != experiment_config.csaf_version:
                     raise ValueError(
                         "--csaf_version does not match the registered experiment"
+                    )
+                if args.unfreeze_schedule != experiment_config.unfreeze_schedule:
+                    raise ValueError(
+                        "--unfreeze_schedule does not match the registered experiment"
                     )
                 model = build_experiment_model(
                     experiment_config, encoder_weights
@@ -2525,6 +2544,7 @@ if __name__ == "__main__":
                     fafem_stage2=args.fafem_stage2,
                     fafem_stage3=args.fafem_stage3,
                     enable_cross_level_fusion=args.enable_cross_level_fusion,
+                    cross_level_fusion_version=args.cross_level_fusion_version,
                 )
 
             print('loaded lightweight ConvNeXt-Tiny U-Net')
@@ -2706,6 +2726,9 @@ if __name__ == "__main__":
             parameter.numel() for parameter in cross_level_fusion.parameters()
         )
         logging.info("Cross-Level Fusion: ON")
+        logging.info(
+            f"Cross-Level Fusion version: {args.cross_level_fusion_version}"
+        )
         logging.info("Skip inputs: Stage 1, Stage 2, Stage 3")
         logging.info("Cross-Level Fusion outputs: Refined Stage 1, Refined Stage 2, Refined Stage 3")
         logging.info(f"Cross-Level Fusion parameters: {cross_level_params:,}")
@@ -3072,21 +3095,39 @@ if __name__ == "__main__":
                 args.experiment_name
                 and args.experiment_name.startswith("one_seed_")
             )
+            fixed_unfreezing = (
+                gradual_unfreezing and args.unfreeze_schedule == "fixed"
+            )
+            if fixed_unfreezing:
+                logging.info(
+                    "Encoder unfreeze schedule: fixed cumulative milestones "
+                    f"{FIXED_UNFREEZE_EPOCHS}; LR plateau scheduling remains enabled."
+                )
 
             for epoch in range(start_epoch, args.epochs):
                 if (
                     gradual_unfreezing
-                    and epoch == full_train_start_epoch
-                    and encoder_stages_unfrozen == 0
+                    and (
+                        (fixed_unfreezing and
+                         fixed_encoder_stages_for_epoch(epoch + 1) >
+                         encoder_stages_unfrozen)
+                        or (not fixed_unfreezing and
+                            epoch == full_train_start_epoch and
+                            encoder_stages_unfrozen == 0)
+                    )
                 ):
-                    encoder_stages_unfrozen = 1
+                    encoder_stages_unfrozen = (
+                        fixed_encoder_stages_for_epoch(epoch + 1)
+                        if fixed_unfreezing else 1
+                    )
                     stage_plateau_epochs = 0
                     next_stage = encoder_stage_name(encoder_stages_unfrozen)
                     trainable_params, total_params = set_training_stage(
                         model, stage=next_stage
                     )
                     logging.info(
-                        f"Epoch {epoch + 1}: decoder-only warmup finished; "
+                        f"Epoch {epoch + 1}: "
+                        f"{'fixed unfreeze milestone reached' if fixed_unfreezing else 'decoder-only warmup finished'}; "
                         f"stage '{next_stage}' active "
                         f"({trainable_params:,}/{total_params:,} parameters trainable)."
                     )
@@ -3170,7 +3211,8 @@ if __name__ == "__main__":
                 # Save best model
                 is_best = test_acc > best_acc
                 stage_changed = False
-                if gradual_unfreezing and epoch >= full_train_start_epoch:
+                if (gradual_unfreezing and not fixed_unfreezing and
+                        epoch >= full_train_start_epoch):
                     (
                         encoder_stages_unfrozen,
                         stage_plateau_epochs,

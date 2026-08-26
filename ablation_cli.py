@@ -21,6 +21,13 @@ def add_ablation_arguments(parser):
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--encoder_weights", default="./convnext_tiny_22k_1k_384.pth")
     parser.add_argument("--enable_msc", type=parse_bool, default=True)
+    parser.add_argument(
+        "--unfreeze_schedule", choices=("plateau", "fixed"), default="plateau"
+    )
+    parser.add_argument("--enable_ugbr", type=parse_bool, default=False)
+    parser.add_argument(
+        "--upsample_mode", choices=("bilinear", "dysample"), default="bilinear"
+    )
     parser.add_argument("--skip_mode", choices=("normal", "attention_gate", "bsei"), default="normal")
     parser.add_argument("--detail_channels", type=int, choices=(0, 16, 32, 64), default=0)
     parser.add_argument("--enable_gdf", type=parse_bool, default=False)
@@ -30,6 +37,9 @@ def add_ablation_arguments(parser):
     parser.add_argument("--fafem_stage2", type=parse_bool, default=False)
     parser.add_argument("--fafem_stage3", type=parse_bool, default=False)
     parser.add_argument("--enable_cross_level_fusion", type=parse_bool, default=False)
+    parser.add_argument(
+        "--cross_level_fusion_version", choices=("v1", "v2"), default="v1"
+    )
     parser.add_argument("--csaf_version", choices=("v1", "v2"), default="v1")
     parser.add_argument(
         "--detail_fusion_mode",

@@ -106,6 +106,7 @@ def build_experiment_model(config, encoder_weights, device=None):
         fafem_stage2=config.fafem_stage2,
         fafem_stage3=config.fafem_stage3,
         enable_cross_level_fusion=config.enable_cross_level_fusion,
+        cross_level_fusion_version=config.cross_level_fusion_version,
     )
     if config.upsample_mode == "dysample":
         for decoder in (model.decoder4, model.decoder3, model.decoder2, model.decoder1):

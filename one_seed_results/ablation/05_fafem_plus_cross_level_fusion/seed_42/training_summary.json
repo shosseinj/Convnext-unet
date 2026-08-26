@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\05_fafem_plus_cross_level_fusion\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 144,
+  "best_validation_metric": 0.8621913024357387,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_05_fafem_plus_cross_level_fusion",
+  "final_epoch": 181,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4130.392689466476
+}

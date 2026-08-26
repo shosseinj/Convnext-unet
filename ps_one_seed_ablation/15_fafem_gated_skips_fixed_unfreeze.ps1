@@ -1,0 +1,2 @@
+param([ValidateSet(16, 20, 24)][int] $BatchSize = 24, [int] $Seed = 6543, [switch] $DryRun)
+& (Join-Path $PSScriptRoot "Invoke-OneSeed-Ablation.ps1") -Experiment "one_seed_15_fafem_gated_skips_fixed_unfreeze" -OutputName "15_fafem_gated_skips_fixed_unfreeze" -SkipMode attention_gate -DeepSupervisionHeads 0 -BatchSize $BatchSize -Seed $Seed -DecoderWarmupEpochs 15 -UnfreezePlateauPatience 8 -LrPlateauPatience 12 -UnfreezeSchedule fixed -EnableFAFEM $true -DryRun:$DryRun
