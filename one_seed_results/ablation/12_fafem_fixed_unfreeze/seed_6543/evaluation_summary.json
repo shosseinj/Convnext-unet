@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\12_fafem_fixed_unfreeze\\seed_6543\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "e9662404f5c6e5041b85f8c6e23bf60b82e4e47743595f99367294f12ebc7d45",
+  "experiment_name": "one_seed_12_fafem_fixed_unfreeze",
+  "flops": 27207990144,
+  "gflops": 27.207990144,
+  "gmacs": 13.603995072,
+  "macs": 13603995072,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8354197965882691,
+      "MAE": 0.009772393003269993,
+      "S_alpha": 0.9189149991853456,
+      "mDice": 0.8620712930957476,
+      "mE_phi": 0.9360101366814081,
+      "mIoU": 0.7918514899909497,
+      "maxE_phi": 0.9481197038039082,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9359947488863907,
+      "MAE": 0.009530788201394325,
+      "S_alpha": 0.9528078314154388,
+      "mDice": 0.9447906094212686,
+      "mE_phi": 0.983843315956695,
+      "mIoU": 0.896868247178293,
+      "maxE_phi": 0.988713166524078,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7383364591110922,
+      "MAE": 0.03409759432400158,
+      "S_alpha": 0.8413394053871543,
+      "mDice": 0.7614153601595087,
+      "mE_phi": 0.8722936846309264,
+      "mIoU": 0.6778329098737702,
+      "maxE_phi": 0.8788644745426855,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7116154001177578,
+      "MAE": 0.016349620953053978,
+      "S_alpha": 0.8500439355187236,
+      "mDice": 0.7386851202754049,
+      "mE_phi": 0.8545820748583276,
+      "mIoU": 0.665651722104877,
+      "maxE_phi": 0.8601130279656287,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8905755316251891,
+      "MAE": 0.026435014331644108,
+      "S_alpha": 0.9251313741038295,
+      "mDice": 0.9148214852809906,
+      "mE_phi": 0.9485286310174571,
+      "mIoU": 0.8609647835791111,
+      "maxE_phi": 0.9576771098031294,
+      "samples": 100
+    }
+  },
+  "seed": 6543,
+  "total_parameters": 29359875,
+  "trainable_parameters": 29359875
+}

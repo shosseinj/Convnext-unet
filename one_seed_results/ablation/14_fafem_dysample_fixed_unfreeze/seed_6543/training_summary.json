@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\14_fafem_dysample_fixed_unfreeze\\seed_6543\\best_checkpoint.pth",
+  "best_epoch": 164,
+  "best_validation_metric": 0.8732634271894183,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_14_fafem_dysample_fixed_unfreeze",
+  "final_epoch": 194,
+  "seed": 6543,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 5347.625311613083
+}
