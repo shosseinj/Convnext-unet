@@ -1,0 +1,1 @@
+2026-08-26 15:02:17 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\18_fafem_dysample_detail_fixed_unfreeze\seed_6543\KvasirSEG-ConvNeXt_log.txt
