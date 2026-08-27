@@ -22,7 +22,7 @@ def add_ablation_arguments(parser):
     parser.add_argument("--encoder_weights", default="./convnext_tiny_22k_1k_384.pth")
     parser.add_argument("--enable_msc", type=parse_bool, default=True)
     parser.add_argument(
-        "--unfreeze_schedule", choices=("plateau", "fixed"), default="plateau"
+        "--unfreeze_schedule", choices=("plateau", "fixed", "none"), default="plateau"
     )
     parser.add_argument("--enable_ugbr", type=parse_bool, default=False)
     parser.add_argument(

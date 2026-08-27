@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\16_fafem_detail_branch_fixed_unfreeze_cosine_refinement\\seed_6543\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "a7da9378ca62723bc114ee85464ae8e174ac7698d1dbdd85c58b711b1f21e81e",
+  "experiment_name": "one_seed_16_fafem_detail_branch_fixed_unfreeze",
+  "flops": 28744399744,
+  "gflops": 28.744399744,
+  "gmacs": 14.372199872,
+  "macs": 14372199872,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8483993821905094,
+      "MAE": 0.007560469196539934,
+      "S_alpha": 0.9251611512181143,
+      "mDice": 0.8760326782862345,
+      "mE_phi": 0.9492827838204747,
+      "mIoU": 0.8014038808643817,
+      "maxE_phi": 0.9637238990307693,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9408242129777593,
+      "MAE": 0.00881421573341597,
+      "S_alpha": 0.9558311062669678,
+      "mDice": 0.9482641383524864,
+      "mE_phi": 0.9851898825325762,
+      "mIoU": 0.9027984151917119,
+      "maxE_phi": 0.9896465662854241,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7431115537255503,
+      "MAE": 0.03499689561478989,
+      "S_alpha": 0.8458983166521764,
+      "mDice": 0.7636063586561396,
+      "mE_phi": 0.8762110997719222,
+      "mIoU": 0.6838646951713889,
+      "maxE_phi": 0.8833157910341854,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7607625386690109,
+      "MAE": 0.015029349271297135,
+      "S_alpha": 0.8753977348158345,
+      "mDice": 0.7875327585072767,
+      "mE_phi": 0.8980340917947566,
+      "mIoU": 0.7095982845630475,
+      "maxE_phi": 0.9050205760666996,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.9056266751660711,
+      "MAE": 0.024222221699705542,
+      "S_alpha": 0.9325366415272321,
+      "mDice": 0.9239456260204315,
+      "mE_phi": 0.9590018014064849,
+      "mIoU": 0.8734892067313195,
+      "maxE_phi": 0.964381114913201,
+      "samples": 100
+    }
+  },
+  "seed": 6543,
+  "total_parameters": 29384931,
+  "trainable_parameters": 29384931
+}

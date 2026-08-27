@@ -17,6 +17,12 @@ import logging
 from utils_torch import *  # You'll need to adapt utils for PyTorch
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.lr_scheduler import (
+    CosineAnnealingLR,
+    CosineAnnealingWarmRestarts,
+    LinearLR,
+    SequentialLR,
+)
 
 from PIL import Image
 from sklearn.model_selection import train_test_split
@@ -415,16 +421,25 @@ def advance_encoder_unfreezing(
 FIXED_UNFREEZE_EPOCHS = (16, 46, 76, 106, 136)
 
 
-def fixed_encoder_stages_for_epoch(epoch_number):
+def fixed_encoder_stages_for_epoch(epoch_number, milestones=FIXED_UNFREEZE_EPOCHS):
     """Return cumulative encoder exposure for a one-based epoch number."""
-    return sum(epoch_number >= milestone for milestone in FIXED_UNFREEZE_EPOCHS)
+    return sum(epoch_number >= milestone for milestone in milestones)
 
 
-def create_plateau_scheduler(optimizer, min_lr, patience=5):
+def parse_fixed_unfreeze_epochs(value):
+    milestones = tuple(int(item.strip()) for item in value.split(',') if item.strip())
+    if len(milestones) != 5 or any(epoch <= 0 for epoch in milestones):
+        raise ValueError("--fixed_unfreeze_epochs requires five positive epochs")
+    if tuple(sorted(set(milestones))) != milestones:
+        raise ValueError("--fixed_unfreeze_epochs must be strictly increasing")
+    return milestones
+
+
+def create_plateau_scheduler(optimizer, min_lr, patience=5, factor=0.9):
     return ReduceLROnPlateau(
         optimizer,
         mode="max",
-        factor=0.9,
+        factor=factor,
         patience=patience,
         threshold=1e-4,
         min_lr=min_lr,
@@ -516,6 +531,104 @@ def optimizer_lr(optimizer, group_name, fallback_idx=0):
         if group.get("name") == group_name:
             return group["lr"]
     return optimizer.param_groups[fallback_idx]["lr"]
+
+
+def encoder_optimizer_lr(optimizer):
+    """Return the highest encoder LR for either optimizer profile."""
+    for group_name in ("encoder_stage4", "encoder"):
+        for group in optimizer.param_groups:
+            if group.get("name") == group_name:
+                return group["lr"]
+    return optimizer.param_groups[0]["lr"]
+
+
+def build_optimizer_param_groups(
+    model, decoder_lr, encoder_lr, refine_lr, decoder_weight_decay,
+    encoder_weight_decay, refine_weight_decay, profile="standard",
+    encoder_layer_decay=0.8,
+):
+    """Build exhaustive, non-overlapping AdamW groups for the selected recipe."""
+    if profile not in {"standard", "layerwise_convnext"}:
+        raise ValueError(f"Unsupported optimizer profile: {profile}")
+    if not 0 < encoder_layer_decay <= 1:
+        raise ValueError("encoder_layer_decay must be in (0, 1]")
+
+    grouped = {}
+    group_settings = {
+        "refine": (refine_lr, refine_weight_decay),
+        "decoder": (decoder_lr, decoder_weight_decay),
+    }
+    if profile == "standard":
+        group_settings["encoder"] = (encoder_lr, encoder_weight_decay)
+    else:
+        group_settings.update({
+            "encoder_stage4": (encoder_lr, encoder_weight_decay),
+            "encoder_stage3": (encoder_lr * encoder_layer_decay, encoder_weight_decay),
+            "encoder_stage2": (encoder_lr * encoder_layer_decay ** 2, encoder_weight_decay),
+            "encoder_stage1_stem": (
+                encoder_lr * encoder_layer_decay ** 3, encoder_weight_decay
+            ),
+        })
+
+    for name, parameter in model.named_parameters():
+        if name.startswith("final_refine."):
+            group_name = "refine"
+        elif not name.startswith("encoder."):
+            group_name = "decoder"
+        elif profile == "standard":
+            group_name = "encoder"
+        else:
+            group_name = None
+            for stage_index, candidate in (
+                (3, "encoder_stage4"), (2, "encoder_stage3"),
+                (1, "encoder_stage2"), (0, "encoder_stage1_stem"),
+            ):
+                if name.startswith((
+                    f"encoder.stages.{stage_index}.",
+                    f"encoder.downsample_layers.{stage_index}.",
+                )):
+                    group_name = candidate
+                    break
+            if group_name is None:
+                raise ValueError(f"Unmapped ConvNeXt encoder parameter: {name}")
+        grouped.setdefault(group_name, []).append(parameter)
+
+    missing = [name for name in group_settings if not grouped.get(name)]
+    if missing:
+        raise ValueError(f"Optimizer groups contain no parameters: {missing}")
+    groups = []
+    for name, (learning_rate, weight_decay) in group_settings.items():
+        groups.append({
+            "name": name,
+            "params": grouped[name],
+            "lr": learning_rate,
+            "weight_decay": weight_decay,
+        })
+    parameter_ids = [id(parameter) for group in groups for parameter in group["params"]]
+    if len(parameter_ids) != len(set(parameter_ids)):
+        raise ValueError("A parameter was assigned to more than one optimizer group")
+    if len(parameter_ids) != sum(1 for _ in model.parameters()):
+        raise ValueError("Optimizer grouping did not cover every model parameter")
+    return groups
+
+
+def create_warmup_cosine_scheduler(optimizer, warmup_epochs, total_epochs, min_lr):
+    if warmup_epochs <= 0 or warmup_epochs >= total_epochs:
+        raise ValueError("warmup_cosine requires 0 < warmup_epochs < epochs")
+    return SequentialLR(
+        optimizer,
+        schedulers=[
+            LinearLR(
+                optimizer, start_factor=0.1, end_factor=1.0,
+                total_iters=warmup_epochs,
+            ),
+            CosineAnnealingLR(
+                optimizer, T_max=max(total_epochs - warmup_epochs, 1),
+                eta_min=min_lr,
+            ),
+        ],
+        milestones=[warmup_epochs],
+    )
 
 
 def count_parameters(model):
@@ -2370,11 +2483,20 @@ if __name__ == "__main__":
     parser.add_argument('--detail_warmup_epochs', type=int, default=0, help='Baseline disables detail warmup')
     parser.add_argument('--decoder_warmup_epochs', type=int, default=24, help='Train baseline decoder while keeping encoder frozen for this many epochs')
     parser.add_argument('--unfreeze_plateau_patience', type=int, default=10, help='Validation-IoU plateau epochs before exposing the next encoder level')
+    parser.add_argument('--fixed_unfreeze_epochs', type=str, default='16,46,76,106,136', help='Five cumulative fixed-unfreeze milestones')
     parser.add_argument('--lr_plateau_patience', type=int, default=5, help='Validation-IoU plateau epochs before reducing learning rates')
+    parser.add_argument('--lr_plateau_factor', type=float, default=0.9, help='ReduceLROnPlateau multiplicative LR reduction factor')
+    parser.add_argument('--lr_scheduler', choices=['plateau', 'cosine_warm_restarts', 'warmup_cosine'], default='plateau', help='Learning-rate scheduler; plateau preserves the standard training protocol')
+    parser.add_argument('--cosine_t0', type=int, default=8, help='First CosineAnnealingWarmRestarts cycle length')
+    parser.add_argument('--cosine_t_mult', type=int, default=2, help='CosineAnnealingWarmRestarts cycle-length multiplier')
     parser.add_argument('--focal_tversky_after_warmup', type=strtobool, default=True, help='Enable Focal Tversky loss after detail warmup')
     parser.add_argument('--focal_tversky_w', type=float, default=0.05, help='Focal Tversky loss weight after detail warmup')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Decoder weight decay')
+    parser.add_argument('--encoder_weight_decay', type=float, default=-1, help='Encoder weight decay; negative preserves the legacy ratio')
     parser.add_argument('--new_layer_weight_decay', type=float, default=1e-3, help='Weight decay for final_refine')
+    parser.add_argument('--optimizer_profile', choices=['standard', 'layerwise_convnext'], default='standard', help='Optimizer parameter grouping profile')
+    parser.add_argument('--encoder_layer_decay', type=float, default=0.8, help='Deep-to-shallow ConvNeXt LR decay')
+    parser.add_argument('--max_grad_norm', type=float, default=0, help='Fixed gradient clipping norm; non-positive preserves staged defaults')
     parser.add_argument('--early_stop_patience', type=int, default=40, help='Stop training after this many epochs without validation IoU improvement. 0 disables it')
     parser.add_argument('--use_ema', type=strtobool, default=True, help='Evaluate and save an exponential moving average of model weights')
     parser.add_argument('--ema_decay', type=float, default=0.995, help='EMA decay for model weights')
@@ -2383,6 +2505,10 @@ if __name__ == "__main__":
     parser.add_argument('--training', type=strtobool, default=False, help='Execute training.')
     parser.add_argument('--load', type=strtobool, default=True, help='Load checkpoint before training.')
     parser.add_argument('--resume_optimizer', type=strtobool, default=False, help='Resume optimizer and scheduler states when compatible')
+    parser.add_argument('--refinement_checkpoint_path', type=str, default=None, help='Checkpoint used to initialize a fresh, isolated refinement run')
+    parser.add_argument('--resume_lr_override', type=strtobool, default=False, help='Replace resumed optimizer LRs with the configured refinement LRs')
+    parser.add_argument('--reset_plateau_scheduler', type=strtobool, default=False, help='Keep optimizer moments but start a fresh ReduceLROnPlateau state')
+    parser.add_argument('--refinement_force_all_trainable', type=strtobool, default=False, help='Keep the entire encoder trainable when initializing refinement')
     parser.add_argument('--allow_completed_resume', type=strtobool, default=False, help='Explicitly continue a run whose checkpoint is marked complete')
     parser.add_argument('--save', type=strtobool, default=False, help='Store after training.')
     parser.add_argument('--noise', type=float, default=0.0, help='Noise std.dev.')
@@ -2393,6 +2519,7 @@ if __name__ == "__main__":
     parser.add_argument('--latency_quantiles', type=float, default=0.0, help='Number of quantiles for t_max. 0 -disabled')
     add_ablation_arguments(parser)
     args = parser.parse_args()
+    fixed_unfreeze_epochs = parse_fixed_unfreeze_epochs(args.fixed_unfreeze_epochs)
 
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -2656,47 +2783,48 @@ if __name__ == "__main__":
     encoder_lr = args.lr * 0.1
     refine_lr = args.lr * 1.5
     eta_min = min(args.min_lr, encoder_lr, decoder_lr, refine_lr)
-    # optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-2)
-    refine_params = []
-    encoder_params = []
-    decoder_params = []
-
-    for name, param in model.named_parameters():
-        if name.startswith("final_refine."):
-            refine_params.append(param)
-        elif name.startswith("encoder."):
-            encoder_params.append(param)
-        else:
-            decoder_params.append(param)
-
-
-    optimizer = torch.optim.AdamW(
-        [
-            {
-                "name": "refine",
-                "params": refine_params,
-                "lr": refine_lr,
-                "weight_decay": args.new_layer_weight_decay,
-            },
-            {
-                "name": "encoder",
-                "params": encoder_params,
-                "lr": encoder_lr,
-                "weight_decay": args.weight_decay * 0.2,
-            },
-            {
-                "name": "decoder",
-                "params": decoder_params,
-                "lr": decoder_lr,
-                "weight_decay": args.weight_decay,
-            },
-        ],
-        betas=(0.9, 0.999),
+    encoder_weight_decay = (
+        args.encoder_weight_decay
+        if args.encoder_weight_decay >= 0
+        else args.weight_decay * 0.2
     )
-
-    scheduler = create_plateau_scheduler(
-        optimizer, min_lr=args.min_lr, patience=args.lr_plateau_patience
+    optimizer_groups = build_optimizer_param_groups(
+        model,
+        decoder_lr=decoder_lr,
+        encoder_lr=encoder_lr,
+        refine_lr=refine_lr,
+        decoder_weight_decay=args.weight_decay,
+        encoder_weight_decay=encoder_weight_decay,
+        refine_weight_decay=args.new_layer_weight_decay,
+        profile=args.optimizer_profile,
+        encoder_layer_decay=args.encoder_layer_decay,
     )
+    configured_group_lrs = {
+        group["name"]: group["lr"] for group in optimizer_groups
+    }
+    optimizer = torch.optim.AdamW(optimizer_groups, betas=(0.9, 0.999))
+
+    if args.lr_scheduler == 'warmup_cosine':
+        scheduler = create_warmup_cosine_scheduler(
+            optimizer, args.warmup_epochs, args.epochs, args.min_lr
+        )
+        scheduler_type = 'warmup_cosine'
+    elif args.lr_scheduler == 'cosine_warm_restarts':
+        if args.cosine_t0 <= 0 or args.cosine_t_mult < 1:
+            raise ValueError("Cosine warm-restart periods must satisfy T_0 > 0 and T_mult >= 1")
+        scheduler = CosineAnnealingWarmRestarts(
+            optimizer,
+            T_0=args.cosine_t0,
+            T_mult=args.cosine_t_mult,
+            eta_min=args.min_lr,
+        )
+        scheduler_type = 'cosine_warm_restarts'
+    else:
+        scheduler = create_plateau_scheduler(
+            optimizer, min_lr=args.min_lr, patience=args.lr_plateau_patience,
+            factor=args.lr_plateau_factor,
+        )
+        scheduler_type = 'reduce_on_plateau'
     fafem_modules = (
         ("Bottleneck", getattr(model, "fafem", None)),
         ("Stage 3", getattr(model, "fafem_stage3", None)),
@@ -2748,9 +2876,31 @@ if __name__ == "__main__":
         f"encoder_lr={encoder_lr:.2e}, "
         f"decoder_lr={decoder_lr:.2e}, eta_min={eta_min:.2e}, "
         f"weight_decay={args.weight_decay:.2e}, "
+        f"encoder_weight_decay={encoder_weight_decay:.2e}, "
         f"new_layer_weight_decay={args.new_layer_weight_decay:.2e}, "
-        "scheduler=ReduceLROnPlateau("
-        f"mode=max,factor={scheduler.factor},patience={scheduler.patience})"
+        f"optimizer_profile={args.optimizer_profile}, "
+        f"scheduler={scheduler_type}("
+        + (
+            f"T_0={args.cosine_t0},T_mult={args.cosine_t_mult},eta_min={args.min_lr:.2e})"
+            if scheduler_type == 'cosine_warm_restarts'
+            else (
+                f"warmup_epochs={args.warmup_epochs},eta_min={args.min_lr:.2e})"
+                if scheduler_type == 'warmup_cosine'
+                else f"mode=max,factor={scheduler.factor},patience={scheduler.patience})"
+            )
+        )
+    )
+    for group in optimizer.param_groups:
+        logging.info(
+            f"Optimizer group {group.get('name')}: "
+            f"parameters={sum(parameter.numel() for parameter in group['params']):,}, "
+            f"max_lr={configured_group_lrs[group.get('name')]:.6e}, "
+            f"weight_decay={group['weight_decay']:.2e}"
+        )
+    logging.info(
+        "Gradient clipping: "
+        + (f"fixed max_grad_norm={args.max_grad_norm:.2f}"
+           if args.max_grad_norm > 0 else "staged legacy policy")
     )
 
 
@@ -2798,6 +2948,7 @@ if __name__ == "__main__":
     resumed_best_epoch = -1
     elapsed_seconds_before_resume = 0.0
     restart_stage_schedule = False
+    initializing_refinement = False
     new_arch_prefixes = ("context.", "detail_fusion.")
     checkpoint_dir = Path(args.logging_dir) / f"checkpoints_{args.model_name}"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
@@ -2819,7 +2970,21 @@ if __name__ == "__main__":
             args.checkpoint_path = str(decision.checkpoint_path)
             logging.info(f"Checkpoint decision: {decision.action} - {decision.reason}")
         else:
-            args.load = False
+            if args.refinement_checkpoint_path:
+                refinement_checkpoint = Path(args.refinement_checkpoint_path)
+                if not refinement_checkpoint.is_file():
+                    raise FileNotFoundError(
+                        f"Refinement checkpoint not found: {refinement_checkpoint}"
+                    )
+                args.load = True
+                args.checkpoint_path = str(refinement_checkpoint)
+                initializing_refinement = True
+                logging.info(
+                    "Initializing isolated refinement run from checkpoint: "
+                    f"{refinement_checkpoint}"
+                )
+            else:
+                args.load = False
     elif args.auto_resume:
         resume_path = prepare_best_checkpoint(checkpoint_dir)
         if resume_path is not None:
@@ -2833,6 +2998,19 @@ if __name__ == "__main__":
             if not args.checkpoint_path:
                 raise ValueError("--load True requires --checkpoint_path")
             checkpoint = torch.load(args.checkpoint_path, map_location=device, weights_only=False)
+            if initializing_refinement:
+                expected_architecture = get_experiment(args.experiment_name).to_dict()
+                source_architecture = dict(checkpoint.get('architecture') or {})
+                expected_architecture.pop('name', None)
+                source_architecture.pop('name', None)
+                if source_architecture != expected_architecture:
+                    raise ValueError(
+                        "Refinement checkpoint architecture does not match the target "
+                        f"experiment: source={source_architecture}, "
+                        f"target={expected_architecture}"
+                    )
+                if int(checkpoint.get('seed', args.seed)) != args.seed:
+                    raise ValueError("Refinement checkpoint seed does not match --seed")
             
             # Load model and optimizer states
 
@@ -2896,21 +3074,31 @@ if __name__ == "__main__":
                 )
             # model.encoder._load_weights(weights_path="./convnext_tiny_22k_1k_384.pth")
 
+            checkpoint_optimizer_profile = checkpoint.get(
+                'optimizer_profile', 'standard'
+            )
+            if checkpoint_optimizer_profile != args.optimizer_profile:
+                raise ValueError(
+                    "Checkpoint optimizer profile does not match the run: "
+                    f"{checkpoint_optimizer_profile} != {args.optimizer_profile}"
+                )
             if args.resume_optimizer:
                 try:
                     if 'optimizer_state_dict' in checkpoint:
                         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
                     if (
-                        checkpoint.get('scheduler_type') == 'reduce_on_plateau'
+                        not (initializing_refinement and args.reset_plateau_scheduler)
+                        and checkpoint.get('scheduler_type') == scheduler_type
                         and 'scheduler_state_dict' in checkpoint
                     ):
                         scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-                        scheduler.patience = args.lr_plateau_patience
+                        if scheduler_type == 'reduce_on_plateau':
+                            scheduler.patience = args.lr_plateau_patience
+                            scheduler.factor = args.lr_plateau_factor
                         logging.info(
-                            "ReduceLROnPlateau state resumed from checkpoint "
-                            f"with configured patience={scheduler.patience}."
+                            f"{scheduler_type} state resumed from checkpoint."
                         )
-                    else:
+                    elif not (initializing_refinement and args.reset_plateau_scheduler):
                         configured_lrs = {
                             "refine": refine_lr,
                             "encoder": encoder_lr,
@@ -2922,9 +3110,29 @@ if __name__ == "__main__":
                                 param_group["lr"] = configured_lrs[group_name]
                                 param_group["initial_lr"] = configured_lrs[group_name]
                         logging.info(
-                            "Previous scheduler is not ReduceLROnPlateau; "
+                            "Previous scheduler type is incompatible; "
                             "optimizer moments retained and configured learning "
                             "rates restored."
+                        )
+                    if initializing_refinement and args.resume_lr_override:
+                        configured_lrs = {
+                            "refine": refine_lr,
+                            "encoder": encoder_lr,
+                            "decoder": decoder_lr,
+                        }
+                        for param_group in optimizer.param_groups:
+                            group_name = param_group.get("name")
+                            if group_name in configured_lrs:
+                                param_group["lr"] = configured_lrs[group_name]
+                                param_group["initial_lr"] = configured_lrs[group_name]
+                        logging.info(
+                            "Resumed optimizer moments with refinement LR override: "
+                            f"refine={refine_lr:.2e}, encoder={encoder_lr:.2e}, "
+                            f"decoder={decoder_lr:.2e}."
+                        )
+                    if initializing_refinement and args.reset_plateau_scheduler:
+                        logging.info(
+                            f"{scheduler_type} state reset for isolated refinement."
                         )
                     restore_scaler_state(checkpoint, scaler, amp_enabled)
                     logging.info("Optimizer/scheduler state resumed from checkpoint.")
@@ -2950,6 +3158,8 @@ if __name__ == "__main__":
             resumed_encoder_stages_unfrozen = int(
                 checkpoint.get('encoder_stages_unfrozen', 0)
             )
+            if initializing_refinement and args.refinement_force_all_trainable:
+                resumed_encoder_stages_unfrozen = 5
             resumed_stage_plateau_epochs = int(
                 checkpoint.get('stage_plateau_epochs', 0)
             )
@@ -2959,6 +3169,8 @@ if __name__ == "__main__":
             elapsed_seconds_before_resume = float(
                 checkpoint.get('training_time_seconds', 0.0)
             )
+            if initializing_refinement:
+                elapsed_seconds_before_resume = 0.0
             
             logging.info(f"Resumed from epoch {checkpoint['epoch']}")
             logging.info(f"Previous best IoU: {best_acc:.4f}")
@@ -2982,6 +3194,46 @@ if __name__ == "__main__":
             )
         logging.info(f"EMA enabled with decay={args.ema_decay}.")
 
+    if initializing_refinement:
+        initial_refinement_checkpoint = {
+            'epoch': int(checkpoint['epoch']),
+            'model_state_dict': scored_model_state_dict(model, ema),
+            'raw_model_state_dict': snapshot_state_dict(model),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'scheduler_state_dict': scheduler.state_dict(),
+            'scheduler_type': scheduler_type,
+            'best_acc': best_acc,
+            'test_dice': float(checkpoint.get('test_dice', 0.0)),
+            'test_iou': float(checkpoint.get('test_iou', best_acc)),
+            'epochs_without_improvement': 0,
+            'encoder_stages_unfrozen': resumed_encoder_stages_unfrozen,
+            'stage_plateau_epochs': 0,
+            'experiment_name': args.experiment_name,
+            'seed': args.seed,
+            'architecture': get_experiment(args.experiment_name).to_dict(),
+            'best_epoch': int(checkpoint.get('best_epoch', checkpoint['epoch'])),
+            'best_validation_metric': best_acc,
+            'final_epoch': None,
+            'training_time_seconds': 0.0,
+            'training_complete': False,
+            'completion_reason': None,
+            'training_precision': 'amp_fp16' if amp_enabled else 'fp32',
+            'refinement_source_checkpoint': str(args.refinement_checkpoint_path),
+            'lr_scheduler': args.lr_scheduler,
+            'cosine_t0': args.cosine_t0,
+            'cosine_t_mult': args.cosine_t_mult,
+            'optimizer_profile': args.optimizer_profile,
+            'encoder_layer_decay': args.encoder_layer_decay,
+            'optimizer_max_lrs': configured_group_lrs,
+        }
+        add_scaler_state(initial_refinement_checkpoint, scaler, amp_enabled)
+        if ema is not None:
+            initial_refinement_checkpoint['ema_state_dict'] = ema.state_dict()
+        atomic_save_checkpoint(initial_refinement_checkpoint, canonical_checkpoint_path)
+        logging.info(
+            "Seeded isolated refinement output with the source best checkpoint."
+        )
+
     detail_warmup_epochs = max(args.detail_warmup_epochs, 0)
     decoder_warmup_epochs = max(args.decoder_warmup_epochs, 0)
     stage_schedule_start_epoch = start_epoch if restart_stage_schedule else 0
@@ -2998,6 +3250,7 @@ if __name__ == "__main__":
                 encoder_stage_name(resumed_encoder_stages_unfrozen)
                 if args.experiment_name
                 and args.experiment_name.startswith("one_seed_")
+                and args.unfreeze_schedule != "none"
                 else "all"
             )
 
@@ -3068,7 +3321,7 @@ if __name__ == "__main__":
 
         # Log the actual starting LR
         refine_start_lr = optimizer_lr(optimizer, "refine")
-        enc_start_lr = optimizer_lr(optimizer, "encoder")
+        enc_start_lr = encoder_optimizer_lr(optimizer)
         dec_start_lr = optimizer_lr(optimizer, "decoder", fallback_idx=-1)
         logging.info(
             f"initial LR: refine={refine_start_lr:.6f}, "
@@ -3094,6 +3347,7 @@ if __name__ == "__main__":
             gradual_unfreezing = bool(
                 args.experiment_name
                 and args.experiment_name.startswith("one_seed_")
+                and args.unfreeze_schedule != "none"
             )
             fixed_unfreezing = (
                 gradual_unfreezing and args.unfreeze_schedule == "fixed"
@@ -3101,7 +3355,7 @@ if __name__ == "__main__":
             if fixed_unfreezing:
                 logging.info(
                     "Encoder unfreeze schedule: fixed cumulative milestones "
-                    f"{FIXED_UNFREEZE_EPOCHS}; LR plateau scheduling remains enabled."
+                    f"{fixed_unfreeze_epochs}; LR plateau scheduling remains enabled."
                 )
 
             for epoch in range(start_epoch, args.epochs):
@@ -3109,7 +3363,7 @@ if __name__ == "__main__":
                     gradual_unfreezing
                     and (
                         (fixed_unfreezing and
-                         fixed_encoder_stages_for_epoch(epoch + 1) >
+                         fixed_encoder_stages_for_epoch(epoch + 1, fixed_unfreeze_epochs) >
                          encoder_stages_unfrozen)
                         or (not fixed_unfreezing and
                             epoch == full_train_start_epoch and
@@ -3117,7 +3371,7 @@ if __name__ == "__main__":
                     )
                 ):
                     encoder_stages_unfrozen = (
-                        fixed_encoder_stages_for_epoch(epoch + 1)
+                        fixed_encoder_stages_for_epoch(epoch + 1, fixed_unfreeze_epochs)
                         if fixed_unfreezing else 1
                     )
                     stage_plateau_epochs = 0
@@ -3168,8 +3422,11 @@ if __name__ == "__main__":
                         model, train_loader, optimizer, criterion, device, scheduler,
                         threshold=best_threshold, ema=ema, amp_enabled=amp_enabled,
                         scaler=scaler,
-                        max_grad_norm=grad_clip_norm_for_epoch(
-                            epoch, full_train_start_epoch
+                        max_grad_norm=(
+                            args.max_grad_norm if args.max_grad_norm > 0
+                            else grad_clip_norm_for_epoch(
+                                epoch, full_train_start_epoch
+                            )
                         ),
                     )
                     if ema is not None:
@@ -3181,7 +3438,9 @@ if __name__ == "__main__":
                     )
                     if ema is not None:
                         ema.restore(model)
-                    if epoch >= full_train_start_epoch:
+                    if scheduler_type in {'cosine_warm_restarts', 'warmup_cosine'}:
+                        scheduler.step()
+                    elif epoch >= full_train_start_epoch:
                         scheduler.step(test_iou)
 
                     logging.info(f"Epoch {epoch+1}/{args.epochs}: "
@@ -3241,7 +3500,7 @@ if __name__ == "__main__":
                         "train_loss": train_loss,
                         "validation_dice": test_dice,
                         "validation_iou": test_iou,
-                        "encoder_lr": optimizer_lr(optimizer, "encoder"),
+                        "encoder_lr": encoder_optimizer_lr(optimizer),
                         "decoder_lr": optimizer_lr(optimizer, "decoder", fallback_idx=-1),
                         "elapsed_seconds": elapsed_seconds_total,
                         "is_best": is_best,
@@ -3254,7 +3513,7 @@ if __name__ == "__main__":
                             'model_state_dict': scored_model_state_dict(model, ema),
                             'optimizer_state_dict': optimizer.state_dict(),
                             'scheduler_state_dict': scheduler.state_dict(),  # Now saving full state!
-                            'scheduler_type': 'reduce_on_plateau',
+                            'scheduler_type': scheduler_type,
                             'best_acc': best_acc,
                             'test_dice': test_dice,
                             'test_iou': test_iou,
@@ -3274,6 +3533,13 @@ if __name__ == "__main__":
                             'training_complete': False,
                             'completion_reason': None,
                             'training_precision': 'amp_fp16' if amp_enabled else 'fp32',
+                            'refinement_source_checkpoint': args.refinement_checkpoint_path,
+                            'lr_scheduler': args.lr_scheduler,
+                            'cosine_t0': args.cosine_t0,
+                            'cosine_t_mult': args.cosine_t_mult,
+                            'optimizer_profile': args.optimizer_profile,
+                            'encoder_layer_decay': args.encoder_layer_decay,
+                            'optimizer_max_lrs': configured_group_lrs,
                         }
                     add_scaler_state(checkpoint_dict, scaler, amp_enabled)
                     if ema is not None:
@@ -3332,7 +3598,7 @@ if __name__ == "__main__":
                         'raw_model_state_dict': latest_model_state,
                         'optimizer_state_dict': optimizer.state_dict(),
                         'scheduler_state_dict': scheduler.state_dict(),
-                        'scheduler_type': 'reduce_on_plateau',
+                        'scheduler_type': scheduler_type,
                         'best_acc': best_acc,
                         'test_dice': test_dice,
                         'test_iou': test_iou,
@@ -3349,6 +3615,13 @@ if __name__ == "__main__":
                         'training_complete': False,
                         'completion_reason': None,
                         'training_precision': 'amp_fp16' if amp_enabled else 'fp32',
+                        'refinement_source_checkpoint': args.refinement_checkpoint_path,
+                        'lr_scheduler': args.lr_scheduler,
+                        'cosine_t0': args.cosine_t0,
+                        'cosine_t_mult': args.cosine_t_mult,
+                        'optimizer_profile': args.optimizer_profile,
+                        'encoder_layer_decay': args.encoder_layer_decay,
+                        'optimizer_max_lrs': configured_group_lrs,
                     }
                     add_scaler_state(latest_checkpoint, scaler, amp_enabled)
                     if ema is not None:

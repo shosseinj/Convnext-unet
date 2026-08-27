@@ -1,0 +1,30 @@
+2026-08-27 07:33:09 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\27_fafem_detail_clfv2_deep_supervision_layerwise_cosine\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-27 07:33:17 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-27 07:33:18 - INFO - Parameter count: total=29.48M, encoder=27.82M, decoder_head=1.66M, trainable=29.48M
+2026-08-27 07:33:18 - INFO - Experiment name: one_seed_27_fafem_detail_clfv2_deep_supervision_layerwise_cosine
+2026-08-27 07:33:18 - INFO - Seed: 42
+2026-08-27 07:33:18 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-27 07:33:18 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-27 07:33:18 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-27 07:33:18 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-27 07:33:18 - INFO - FAFEM parameter count: 169,777
+2026-08-27 07:33:18 - INFO - Total parameter count: 29,478,377
+2026-08-27 07:33:18 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\27_fafem_detail_clfv2_deep_supervision_layerwise_cosine\seed_42
+2026-08-27 07:33:18 - INFO - Cross-Level Fusion: ON
+2026-08-27 07:33:18 - INFO - Cross-Level Fusion version: v2
+2026-08-27 07:33:18 - INFO - Skip inputs: Stage 1, Stage 2, Stage 3
+2026-08-27 07:33:18 - INFO - Cross-Level Fusion outputs: Refined Stage 1, Refined Stage 2, Refined Stage 3
+2026-08-27 07:33:18 - INFO - Cross-Level Fusion parameters: 93,156
+2026-08-27 07:33:18 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-27 07:33:18 - INFO - Optimizer: AdamW | refine_lr=4.50e-04, encoder_lr=3.00e-05, decoder_lr=3.00e-04, eta_min=1.00e-06, weight_decay=1.00e-02, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=warmup_cosine(warmup_epochs=5,eta_min=1.00e-06)
+2026-08-27 07:33:18 - INFO - Optimizer group refine: parameters=15,889, max_lr=4.500000e-04, weight_decay=1.00e-02
+2026-08-27 07:33:18 - INFO - Optimizer group decoder: parameters=1,643,896, max_lr=3.000000e-04, weight_decay=1.00e-02
+2026-08-27 07:33:18 - INFO - Optimizer group encoder_stage4: parameters=15,470,592, max_lr=3.000000e-05, weight_decay=5.00e-02
+2026-08-27 07:33:18 - INFO - Optimizer group encoder_stage3: parameters=11,112,960, max_lr=2.400000e-05, weight_decay=5.00e-02
+2026-08-27 07:33:18 - INFO - Optimizer group encoder_stage2: parameters=992,256, max_lr=1.920000e-05, weight_decay=5.00e-02
+2026-08-27 07:33:18 - INFO - Optimizer group encoder_stage1_stem: parameters=242,784, max_lr=1.536000e-05, weight_decay=5.00e-02
+2026-08-27 07:33:18 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-27 07:33:18 - INFO - EMA enabled with decay=0.995.
+2026-08-27 07:33:18 - INFO - Training stage 'all' starts at epoch 1 (29,478,377/29,478,377 parameters trainable).
+2026-08-27 07:33:18 - INFO - #### Training ####
+2026-08-27 07:33:18 - INFO - initial LR: refine=0.000045, encoder=0.000003, decoder=0.000030

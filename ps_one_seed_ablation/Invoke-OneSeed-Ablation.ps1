@@ -8,7 +8,17 @@ param(
     [int] $DecoderWarmupEpochs = 80,
     [int] $UnfreezePlateauPatience = 10,
     [int] $LrPlateauPatience = 5,
-    [ValidateSet("plateau", "fixed")][string] $UnfreezeSchedule = "plateau",
+    [double] $LrPlateauFactor = 0.9,
+    [int] $Epochs = 350,
+    [double] $LearningRate = 4e-4,
+    [double] $MinimumLearningRate = 1e-6,
+    [ValidateSet("plateau", "cosine_warm_restarts", "warmup_cosine")][string] $LrScheduler = "plateau",
+    [int] $LrWarmupEpochs = 12,
+    [int] $CosineT0 = 8,
+    [int] $CosineTMult = 2,
+    [int] $EarlyStopPatience = 30,
+    [ValidateSet("plateau", "fixed", "none")][string] $UnfreezeSchedule = "plateau",
+    [int[]] $FixedUnfreezeEpochs = @(16, 46, 76, 106, 136),
     [bool] $EnableMSC = $false,
     [bool] $EnableUGBR = $false,
     [ValidateSet("bilinear", "dysample")][string] $UpsampleMode = "bilinear",
@@ -22,7 +32,17 @@ param(
     [bool] $EnableCrossLevelFusion = $false,
     [ValidateSet("v1", "v2")][string] $CrossLevelFusionVersion = "v1",
     [ValidateSet("v1", "v2")][string] $CSAFVersion = "v1",
+    [ValidateSet("standard", "layerwise_convnext")][string] $OptimizerProfile = "standard",
+    [double] $EncoderLayerDecay = 0.8,
+    [double] $WeightDecay = 1e-4,
+    [double] $EncoderWeightDecay = -1,
+    [double] $NewLayerWeightDecay = 1e-3,
+    [double] $MaxGradNorm = 0,
     [switch] $ContinueTraining,
+    [string] $RefinementCheckpointPath = "",
+    [switch] $ResumeLrOverride,
+    [switch] $ResetPlateauScheduler,
+    [switch] $RefinementForceAllTrainable,
     [switch] $DryRun
 )
 
@@ -40,7 +60,7 @@ $evaluationSummary = Join-Path $seedDir "evaluation_summary.json"
 $encoderWeights = Join-Path $repoRoot "convnext_tiny_22k_1k_384.pth"
 $stateCommand = @($python, (Join-Path $repoRoot "ablation_state.py"),
     "--experiment_name", $Experiment, "--seed", [string]$Seed, "--seed_dir", $seedDir,
-    "--max_epochs", "350", "--log_path", (Join-Path $seedDir "KvasirSEG-ConvNeXt_log.txt"))
+    "--max_epochs", [string]$Epochs, "--log_path", (Join-Path $seedDir "KvasirSEG-ConvNeXt_log.txt"))
 $initialStateCommand = @($stateCommand)
 if ($ContinueTraining) { $initialStateCommand += "--allow_completed_resume" }
 $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
@@ -51,6 +71,7 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--encoder_weights", $encoderWeights, "--logging_dir", $loggingDir,
     "--enable_msc", ([string]$EnableMSC), "--skip_mode", $SkipMode,
     "--unfreeze_schedule", $UnfreezeSchedule,
+    "--fixed_unfreeze_epochs", ($FixedUnfreezeEpochs -join ","),
     "--detail_channels", [string]$DetailChannels,
     "--enable_gdf", "False", "--detail_fusion_mode", $DetailFusionMode,
     "--enable_ugbr", ([string]$EnableUGBR), "--upsample_mode", $UpsampleMode,
@@ -63,17 +84,35 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--cross_level_fusion_version", $CrossLevelFusionVersion,
     "--csaf_version", $CSAFVersion,
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
-    "--epochs", "350", "--batch_size", [string]$BatchSize,
+    "--epochs", [string]$Epochs, "--batch_size", [string]$BatchSize,
     "--decoder_warmup_epochs", [string]$DecoderWarmupEpochs,
     "--unfreeze_plateau_patience", [string]$UnfreezePlateauPatience,
     "--lr_plateau_patience", [string]$LrPlateauPatience,
+    "--lr_plateau_factor", [string]$LrPlateauFactor,
+    "--lr_scheduler", $LrScheduler,
+    "--warmup_epochs", [string]$LrWarmupEpochs,
+    "--cosine_t0", [string]$CosineT0,
+    "--cosine_t_mult", [string]$CosineTMult,
+    "--optimizer_profile", $OptimizerProfile,
+    "--encoder_layer_decay", [string]$EncoderLayerDecay,
+    "--encoder_weight_decay", [string]$EncoderWeightDecay,
+    "--max_grad_norm", [string]$MaxGradNorm,
     "--amp", "True",
     "--focal_tversky_after_warmup", "False", "--focal_tversky_w", "0",
-    "--lr", "4e-4", "--weight_decay", "1e-4", "--early_stop_patience", "30",
+    "--lr", [string]$LearningRate, "--min_lr", [string]$MinimumLearningRate,
+    "--weight_decay", [string]$WeightDecay,
+    "--new_layer_weight_decay", [string]$NewLayerWeightDecay,
+    "--early_stop_patience", [string]$EarlyStopPatience,
     "--training", "True", "--testing", "False", "--tta_check", "False",
     "--load", "False", "--save", "True", "--auto_resume", "True",
     "--resume_optimizer", "True",
+    "--resume_lr_override", ([string][bool]$ResumeLrOverride),
+    "--reset_plateau_scheduler", ([string][bool]$ResetPlateauScheduler),
+    "--refinement_force_all_trainable", ([string][bool]$RefinementForceAllTrainable),
     "--allow_completed_resume", ([string][bool]$ContinueTraining))
+if ($RefinementCheckpointPath) {
+    $trainCommand += @("--refinement_checkpoint_path", $RefinementCheckpointPath)
+}
 $evaluateCommand = @($python, (Join-Path $repoRoot "evaluate.py"),
     "--experiment_name", $Experiment, "--seed", [string]$Seed, "--seed_dir", $seedDir,
     "--data_path", (Join-Path $repoRoot "data"), "--encoder_weights", $encoderWeights,
@@ -102,7 +141,7 @@ if ($EnableCrossLevelFusion) {
     Write-Host "[seed $Seed][$OutputName] Cross-Level Fusion version: $CrossLevelFusionVersion"
 }
 Write-Host "[seed $Seed][$OutputName] MSC: $(if ($EnableMSC) { 'ON' } else { 'OFF' }) | UGBR: $(if ($EnableUGBR) { 'ON' } else { 'OFF' }) | Upsampling: $UpsampleMode | Detail channels: $DetailChannels"
-Write-Host "[seed $Seed][$OutputName] Encoder unfreeze schedule: $UnfreezeSchedule$(if ($UnfreezeSchedule -eq 'fixed') { ' (epochs 16,46,76,106,136)' } else { '' })"
+Write-Host "[seed $Seed][$OutputName] Encoder unfreeze schedule: $UnfreezeSchedule$(if ($UnfreezeSchedule -eq 'fixed') { ' (epochs ' + ($FixedUnfreezeEpochs -join ',') + ')' } else { '' })"
 Write-Host "[seed $Seed][$OutputName] Output directory: $seedDir"
 if ($ContinueTraining) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"

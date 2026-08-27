@@ -1,0 +1,92 @@
+2026-08-26 19:14:36 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\19_fafem_clfv2_fixed_unfreeze_cosine_refinement\seed_6543\KvasirSEG-ConvNeXt_log.txt
+2026-08-26 19:14:43 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-26 19:14:43 - INFO - Parameter count: total=29.45M, encoder=27.82M, decoder_head=1.63M, trainable=29.45M
+2026-08-26 19:14:43 - INFO - Experiment name: one_seed_19_fafem_clfv2_fixed_unfreeze
+2026-08-26 19:14:43 - INFO - Seed: 6543
+2026-08-26 19:14:43 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-26 19:14:43 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-26 19:14:43 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-26 19:14:43 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-26 19:14:43 - INFO - FAFEM parameter count: 169,777
+2026-08-26 19:14:43 - INFO - Total parameter count: 29,453,031
+2026-08-26 19:14:43 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\19_fafem_clfv2_fixed_unfreeze_cosine_refinement\seed_6543
+2026-08-26 19:14:43 - INFO - Cross-Level Fusion: ON
+2026-08-26 19:14:43 - INFO - Cross-Level Fusion version: v2
+2026-08-26 19:14:43 - INFO - Skip inputs: Stage 1, Stage 2, Stage 3
+2026-08-26 19:14:43 - INFO - Cross-Level Fusion outputs: Refined Stage 1, Refined Stage 2, Refined Stage 3
+2026-08-26 19:14:43 - INFO - Cross-Level Fusion parameters: 93,156
+2026-08-26 19:14:43 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-26 19:14:43 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=cosine_warm_restarts(T_0=8,T_mult=2,eta_min=1.00e-06)
+2026-08-26 19:14:43 - INFO - Initializing isolated refinement run from checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\19_fafem_clfv2_fixed_unfreeze\seed_6543\best_checkpoint.pth
+2026-08-26 19:14:44 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-26 19:14:44 - INFO - Loaded 291/291 compatible model tensors from checkpoint.
+2026-08-26 19:14:44 - INFO - Resumed optimizer moments with refinement LR override: refine=1.50e-04, encoder=1.00e-05, decoder=1.00e-04.
+2026-08-26 19:14:44 - INFO - cosine_warm_restarts state reset for isolated refinement.
+2026-08-26 19:14:44 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-26 19:14:44 - INFO - Resumed from epoch 167
+2026-08-26 19:14:44 - INFO - Previous best IoU: 0.8737
+2026-08-26 19:14:44 - INFO - Loaded 291 compatible EMA tensors from checkpoint.
+2026-08-26 19:14:44 - INFO - EMA enabled with decay=0.995.
+2026-08-26 19:14:45 - INFO - Seeded isolated refinement output with the source best checkpoint.
+2026-08-26 19:14:45 - INFO - Training stage 'all' starts at epoch 169 (29,453,031/29,453,031 parameters trainable).
+2026-08-26 19:14:45 - INFO - #### Training ####
+2026-08-26 19:14:45 - INFO - initial LR: refine=0.000150, encoder=0.000010, decoder=0.000100
+2026-08-26 19:14:45 - INFO - Encoder unfreeze schedule: fixed cumulative milestones (16, 46, 76, 106, 136); LR plateau scheduling remains enabled.
+2026-08-26 19:15:20 - INFO - Epoch 169/224: Train Loss: 0.1374, Test Loss: 0.1462, Test Dice: 0.9311, Test IoU: 0.8713, EMA: True
+2026-08-26 19:15:53 - INFO - Epoch 170/224: Train Loss: 0.1344, Test Loss: 0.1473, Test Dice: 0.9298, Test IoU: 0.8691, EMA: True
+2026-08-26 19:16:25 - INFO - Epoch 171/224: Train Loss: 0.1430, Test Loss: 0.1480, Test Dice: 0.9284, Test IoU: 0.8667, EMA: True
+2026-08-26 19:16:56 - INFO - Epoch 172/224: Train Loss: 0.1363, Test Loss: 0.1483, Test Dice: 0.9273, Test IoU: 0.8648, EMA: True
+2026-08-26 19:17:23 - INFO - Epoch 173/224: Train Loss: 0.1282, Test Loss: 0.1485, Test Dice: 0.9274, Test IoU: 0.8650, EMA: True
+2026-08-26 19:17:49 - INFO - Epoch 174/224: Train Loss: 0.1326, Test Loss: 0.1488, Test Dice: 0.9269, Test IoU: 0.8640, EMA: True
+2026-08-26 19:18:15 - INFO - Epoch 175/224: Train Loss: 0.1295, Test Loss: 0.1488, Test Dice: 0.9268, Test IoU: 0.8639, EMA: True
+2026-08-26 19:18:41 - INFO - Epoch 176/224: Train Loss: 0.1348, Test Loss: 0.1490, Test Dice: 0.9267, Test IoU: 0.8637, EMA: True
+2026-08-26 19:19:07 - INFO - Epoch 177/224: Train Loss: 0.1370, Test Loss: 0.1488, Test Dice: 0.9271, Test IoU: 0.8644, EMA: True
+2026-08-26 19:19:33 - INFO - Epoch 178/224: Train Loss: 0.1335, Test Loss: 0.1483, Test Dice: 0.9276, Test IoU: 0.8652, EMA: True
+2026-08-26 19:19:59 - INFO - Epoch 179/224: Train Loss: 0.1379, Test Loss: 0.1473, Test Dice: 0.9282, Test IoU: 0.8662, EMA: True
+2026-08-26 19:20:25 - INFO - Epoch 180/224: Train Loss: 0.1319, Test Loss: 0.1468, Test Dice: 0.9288, Test IoU: 0.8673, EMA: True
+2026-08-26 19:20:51 - INFO - Epoch 181/224: Train Loss: 0.1376, Test Loss: 0.1470, Test Dice: 0.9287, Test IoU: 0.8671, EMA: True
+2026-08-26 19:21:17 - INFO - Epoch 182/224: Train Loss: 0.1312, Test Loss: 0.1472, Test Dice: 0.9289, Test IoU: 0.8675, EMA: True
+2026-08-26 19:21:43 - INFO - Epoch 183/224: Train Loss: 0.1334, Test Loss: 0.1479, Test Dice: 0.9288, Test IoU: 0.8673, EMA: True
+2026-08-26 19:22:09 - INFO - Epoch 184/224: Train Loss: 0.1341, Test Loss: 0.1496, Test Dice: 0.9280, Test IoU: 0.8659, EMA: True
+2026-08-26 19:22:35 - INFO - Epoch 185/224: Train Loss: 0.1292, Test Loss: 0.1499, Test Dice: 0.9278, Test IoU: 0.8655, EMA: True
+2026-08-26 19:23:01 - INFO - Epoch 186/224: Train Loss: 0.1338, Test Loss: 0.1501, Test Dice: 0.9277, Test IoU: 0.8653, EMA: True
+2026-08-26 19:23:27 - INFO - Epoch 187/224: Train Loss: 0.1291, Test Loss: 0.1502, Test Dice: 0.9278, Test IoU: 0.8654, EMA: True
+2026-08-26 19:23:52 - INFO - Epoch 188/224: Train Loss: 0.1257, Test Loss: 0.1505, Test Dice: 0.9277, Test IoU: 0.8652, EMA: True
+2026-08-26 19:24:18 - INFO - Epoch 189/224: Train Loss: 0.1328, Test Loss: 0.1506, Test Dice: 0.9275, Test IoU: 0.8649, EMA: True
+2026-08-26 19:24:44 - INFO - Epoch 190/224: Train Loss: 0.1345, Test Loss: 0.1507, Test Dice: 0.9273, Test IoU: 0.8645, EMA: True
+2026-08-26 19:25:10 - INFO - Epoch 191/224: Train Loss: 0.1280, Test Loss: 0.1506, Test Dice: 0.9274, Test IoU: 0.8648, EMA: True
+2026-08-26 19:25:36 - INFO - Epoch 192/224: Train Loss: 0.1294, Test Loss: 0.1505, Test Dice: 0.9276, Test IoU: 0.8652, EMA: True
+2026-08-26 19:26:00 - WARNING - Skipped 1/61 batches.
+2026-08-26 19:26:02 - INFO - Epoch 193/224: Train Loss: 0.1284, Test Loss: 0.1505, Test Dice: 0.9279, Test IoU: 0.8656, EMA: True
+2026-08-26 19:26:28 - INFO - Epoch 194/224: Train Loss: 0.1297, Test Loss: 0.1509, Test Dice: 0.9274, Test IoU: 0.8648, EMA: True
+2026-08-26 19:26:54 - INFO - Epoch 195/224: Train Loss: 0.1355, Test Loss: 0.1512, Test Dice: 0.9272, Test IoU: 0.8645, EMA: True
+2026-08-26 19:27:20 - INFO - Epoch 196/224: Train Loss: 0.1322, Test Loss: 0.1509, Test Dice: 0.9274, Test IoU: 0.8648, EMA: True
+2026-08-26 19:27:45 - INFO - Epoch 197/224: Train Loss: 0.1297, Test Loss: 0.1507, Test Dice: 0.9277, Test IoU: 0.8653, EMA: True
+2026-08-26 19:28:11 - INFO - Epoch 198/224: Train Loss: 0.1301, Test Loss: 0.1514, Test Dice: 0.9265, Test IoU: 0.8632, EMA: True
+2026-08-26 19:28:37 - INFO - Epoch 199/224: Train Loss: 0.1303, Test Loss: 0.1516, Test Dice: 0.9266, Test IoU: 0.8635, EMA: True
+2026-08-26 19:29:03 - INFO - Epoch 200/224: Train Loss: 0.1278, Test Loss: 0.1518, Test Dice: 0.9269, Test IoU: 0.8639, EMA: True
+2026-08-26 19:29:29 - INFO - Epoch 201/224: Train Loss: 0.1335, Test Loss: 0.1522, Test Dice: 0.9263, Test IoU: 0.8629, EMA: True
+2026-08-26 19:29:55 - INFO - Epoch 202/224: Train Loss: 0.1332, Test Loss: 0.1529, Test Dice: 0.9252, Test IoU: 0.8609, EMA: True
+2026-08-26 19:30:21 - INFO - Epoch 203/224: Train Loss: 0.1311, Test Loss: 0.1530, Test Dice: 0.9249, Test IoU: 0.8605, EMA: True
+2026-08-26 19:30:47 - INFO - Epoch 204/224: Train Loss: 0.1277, Test Loss: 0.1529, Test Dice: 0.9251, Test IoU: 0.8608, EMA: True
+2026-08-26 19:31:13 - INFO - Epoch 205/224: Train Loss: 0.1318, Test Loss: 0.1517, Test Dice: 0.9259, Test IoU: 0.8622, EMA: True
+2026-08-26 19:31:39 - INFO - Epoch 206/224: Train Loss: 0.1294, Test Loss: 0.1494, Test Dice: 0.9272, Test IoU: 0.8646, EMA: True
+2026-08-26 19:32:05 - INFO - Epoch 207/224: Train Loss: 0.1264, Test Loss: 0.1486, Test Dice: 0.9278, Test IoU: 0.8656, EMA: True
+2026-08-26 19:32:31 - INFO - Epoch 208/224: Train Loss: 0.1303, Test Loss: 0.1484, Test Dice: 0.9280, Test IoU: 0.8659, EMA: True
+2026-08-26 19:32:57 - INFO - Epoch 209/224: Train Loss: 0.1272, Test Loss: 0.1487, Test Dice: 0.9275, Test IoU: 0.8651, EMA: True
+2026-08-26 19:33:25 - INFO - Epoch 210/224: Train Loss: 0.1314, Test Loss: 0.1488, Test Dice: 0.9271, Test IoU: 0.8644, EMA: True
+2026-08-26 19:33:53 - INFO - Epoch 211/224: Train Loss: 0.1268, Test Loss: 0.1489, Test Dice: 0.9272, Test IoU: 0.8645, EMA: True
+2026-08-26 19:34:20 - INFO - Epoch 212/224: Train Loss: 0.1254, Test Loss: 0.1495, Test Dice: 0.9271, Test IoU: 0.8643, EMA: True
+2026-08-26 19:34:45 - INFO - Epoch 213/224: Train Loss: 0.1309, Test Loss: 0.1502, Test Dice: 0.9270, Test IoU: 0.8642, EMA: True
+2026-08-26 19:35:12 - INFO - Epoch 214/224: Train Loss: 0.1275, Test Loss: 0.1509, Test Dice: 0.9262, Test IoU: 0.8628, EMA: True
+2026-08-26 19:35:38 - INFO - Epoch 215/224: Train Loss: 0.1253, Test Loss: 0.1514, Test Dice: 0.9256, Test IoU: 0.8618, EMA: True
+2026-08-26 19:36:04 - INFO - Epoch 216/224: Train Loss: 0.1249, Test Loss: 0.1513, Test Dice: 0.9261, Test IoU: 0.8626, EMA: True
+2026-08-26 19:36:30 - INFO - Epoch 217/224: Train Loss: 0.1317, Test Loss: 0.1508, Test Dice: 0.9265, Test IoU: 0.8633, EMA: True
+2026-08-26 19:36:55 - INFO - Epoch 218/224: Train Loss: 0.1275, Test Loss: 0.1507, Test Dice: 0.9265, Test IoU: 0.8634, EMA: True
+2026-08-26 19:37:21 - INFO - Epoch 219/224: Train Loss: 0.1268, Test Loss: 0.1503, Test Dice: 0.9267, Test IoU: 0.8637, EMA: True
+2026-08-26 19:37:47 - INFO - Epoch 220/224: Train Loss: 0.1275, Test Loss: 0.1499, Test Dice: 0.9267, Test IoU: 0.8637, EMA: True
+2026-08-26 19:38:13 - INFO - Epoch 221/224: Train Loss: 0.1336, Test Loss: 0.1498, Test Dice: 0.9266, Test IoU: 0.8636, EMA: True
+2026-08-26 19:38:39 - INFO - Epoch 222/224: Train Loss: 0.1257, Test Loss: 0.1498, Test Dice: 0.9267, Test IoU: 0.8637, EMA: True
+2026-08-26 19:39:05 - INFO - Epoch 223/224: Train Loss: 0.1239, Test Loss: 0.1499, Test Dice: 0.9266, Test IoU: 0.8635, EMA: True
+2026-08-26 19:39:31 - INFO - Epoch 224/224: Train Loss: 0.1249, Test Loss: 0.1501, Test Dice: 0.9263, Test IoU: 0.8630, EMA: True
+2026-08-26 19:39:33 - INFO - Training stopped after epoch 224; best checkpoint retained.

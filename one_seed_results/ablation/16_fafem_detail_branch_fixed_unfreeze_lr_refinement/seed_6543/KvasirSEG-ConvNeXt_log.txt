@@ -1,0 +1,64 @@
+2026-08-26 18:50:56 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\16_fafem_detail_branch_fixed_unfreeze_lr_refinement\seed_6543\KvasirSEG-ConvNeXt_log.txt
+2026-08-26 18:51:04 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-26 18:51:04 - INFO - Parameter count: total=29.38M, encoder=27.82M, decoder_head=1.57M, trainable=29.38M
+2026-08-26 18:51:04 - INFO - Experiment name: one_seed_16_fafem_detail_branch_fixed_unfreeze
+2026-08-26 18:51:04 - INFO - Seed: 6543
+2026-08-26 18:51:04 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-26 18:51:04 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-26 18:51:04 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-26 18:51:04 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-26 18:51:04 - INFO - FAFEM parameter count: 169,777
+2026-08-26 18:51:04 - INFO - Total parameter count: 29,384,931
+2026-08-26 18:51:04 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\16_fafem_detail_branch_fixed_unfreeze_lr_refinement\seed_6543
+2026-08-26 18:51:04 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-26 18:51:04 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, new_layer_weight_decay=1.00e-03, scheduler=ReduceLROnPlateau(mode=max,factor=0.5,patience=8)
+2026-08-26 18:51:04 - INFO - Initializing isolated refinement run from checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\16_fafem_detail_branch_fixed_unfreeze\seed_6543\best_checkpoint.pth
+2026-08-26 18:51:04 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-26 18:51:04 - INFO - Loaded 271/271 compatible model tensors from checkpoint.
+2026-08-26 18:51:04 - INFO - Resumed optimizer moments with refinement LR override: refine=1.50e-04, encoder=1.00e-05, decoder=1.00e-04.
+2026-08-26 18:51:04 - INFO - ReduceLROnPlateau state reset for isolated refinement.
+2026-08-26 18:51:04 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-26 18:51:04 - INFO - Resumed from epoch 197
+2026-08-26 18:51:04 - INFO - Previous best IoU: 0.8789
+2026-08-26 18:51:04 - INFO - Loaded 269 compatible EMA tensors from checkpoint.
+2026-08-26 18:51:04 - INFO - EMA enabled with decay=0.995.
+2026-08-26 18:51:04 - INFO - Training stage 'all' starts at epoch 199 (29,384,931/29,384,931 parameters trainable).
+2026-08-26 18:51:04 - INFO - #### Training ####
+2026-08-26 18:51:04 - INFO - initial LR: refine=0.000150, encoder=0.000010, decoder=0.000100
+2026-08-26 18:51:04 - INFO - Encoder unfreeze schedule: fixed cumulative milestones (16, 46, 76, 106, 136); LR plateau scheduling remains enabled.
+2026-08-26 18:51:42 - INFO - Epoch 199/260: Train Loss: 0.1320, Test Loss: 0.1433, Test Dice: 0.9349, Test IoU: 0.8780, EMA: True
+2026-08-26 18:52:21 - INFO - Epoch 200/260: Train Loss: 0.1277, Test Loss: 0.1438, Test Dice: 0.9344, Test IoU: 0.8770, EMA: True
+2026-08-26 18:52:58 - INFO - Epoch 201/260: Train Loss: 0.1306, Test Loss: 0.1439, Test Dice: 0.9344, Test IoU: 0.8770, EMA: True
+2026-08-26 18:53:37 - INFO - Epoch 202/260: Train Loss: 0.1275, Test Loss: 0.1433, Test Dice: 0.9349, Test IoU: 0.8780, EMA: True
+2026-08-26 18:54:15 - INFO - Epoch 203/260: Train Loss: 0.1322, Test Loss: 0.1423, Test Dice: 0.9355, Test IoU: 0.8790, EMA: True
+2026-08-26 18:54:16 - INFO - New best model saved with accuracy: 0.88%
+2026-08-26 18:54:16 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\16_fafem_detail_branch_fixed_unfreeze_lr_refinement\seed_6543\best_checkpoint.pth
+2026-08-26 18:54:54 - INFO - Epoch 204/260: Train Loss: 0.1272, Test Loss: 0.1424, Test Dice: 0.9356, Test IoU: 0.8793, EMA: True
+2026-08-26 18:54:55 - INFO - New best model saved with accuracy: 0.88%
+2026-08-26 18:54:55 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\16_fafem_detail_branch_fixed_unfreeze_lr_refinement\seed_6543\best_checkpoint.pth
+2026-08-26 18:55:33 - INFO - Epoch 205/260: Train Loss: 0.1293, Test Loss: 0.1423, Test Dice: 0.9358, Test IoU: 0.8795, EMA: True
+2026-08-26 18:55:34 - INFO - New best model saved with accuracy: 0.88%
+2026-08-26 18:55:34 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\16_fafem_detail_branch_fixed_unfreeze_lr_refinement\seed_6543\best_checkpoint.pth
+2026-08-26 18:56:12 - INFO - Epoch 206/260: Train Loss: 0.1287, Test Loss: 0.1427, Test Dice: 0.9356, Test IoU: 0.8793, EMA: True
+2026-08-26 18:56:51 - INFO - Epoch 207/260: Train Loss: 0.1274, Test Loss: 0.1426, Test Dice: 0.9356, Test IoU: 0.8792, EMA: True
+2026-08-26 18:57:29 - INFO - Epoch 208/260: Train Loss: 0.1284, Test Loss: 0.1423, Test Dice: 0.9357, Test IoU: 0.8794, EMA: True
+2026-08-26 18:58:08 - INFO - Epoch 209/260: Train Loss: 0.1265, Test Loss: 0.1423, Test Dice: 0.9355, Test IoU: 0.8791, EMA: True
+2026-08-26 18:58:47 - INFO - Epoch 210/260: Train Loss: 0.1238, Test Loss: 0.1428, Test Dice: 0.9355, Test IoU: 0.8791, EMA: True
+2026-08-26 18:59:25 - INFO - Epoch 211/260: Train Loss: 0.1256, Test Loss: 0.1432, Test Dice: 0.9354, Test IoU: 0.8789, EMA: True
+2026-08-26 19:00:04 - INFO - Epoch 212/260: Train Loss: 0.1211, Test Loss: 0.1439, Test Dice: 0.9351, Test IoU: 0.8784, EMA: True
+2026-08-26 19:00:42 - INFO - Epoch 213/260: Train Loss: 0.1244, Test Loss: 0.1437, Test Dice: 0.9352, Test IoU: 0.8785, EMA: True
+2026-08-26 19:01:21 - INFO - Epoch 214/260: Train Loss: 0.1257, Test Loss: 0.1436, Test Dice: 0.9351, Test IoU: 0.8784, EMA: True
+2026-08-26 19:01:59 - INFO - Epoch 215/260: Train Loss: 0.1228, Test Loss: 0.1440, Test Dice: 0.9347, Test IoU: 0.8777, EMA: True
+2026-08-26 19:02:37 - INFO - Epoch 216/260: Train Loss: 0.1289, Test Loss: 0.1441, Test Dice: 0.9346, Test IoU: 0.8774, EMA: True
+2026-08-26 19:03:16 - INFO - Epoch 217/260: Train Loss: 0.1284, Test Loss: 0.1443, Test Dice: 0.9343, Test IoU: 0.8769, EMA: True
+2026-08-26 19:03:55 - INFO - Epoch 218/260: Train Loss: 0.1248, Test Loss: 0.1444, Test Dice: 0.9342, Test IoU: 0.8767, EMA: True
+2026-08-26 19:04:33 - INFO - Epoch 219/260: Train Loss: 0.1274, Test Loss: 0.1445, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-26 19:05:12 - INFO - Epoch 220/260: Train Loss: 0.1224, Test Loss: 0.1443, Test Dice: 0.9341, Test IoU: 0.8766, EMA: True
+2026-08-26 19:05:51 - INFO - Epoch 221/260: Train Loss: 0.1252, Test Loss: 0.1443, Test Dice: 0.9341, Test IoU: 0.8766, EMA: True
+2026-08-26 19:06:27 - INFO - Epoch 222/260: Train Loss: 0.1240, Test Loss: 0.1443, Test Dice: 0.9340, Test IoU: 0.8763, EMA: True
+2026-08-26 19:07:04 - INFO - Epoch 223/260: Train Loss: 0.1218, Test Loss: 0.1443, Test Dice: 0.9340, Test IoU: 0.8765, EMA: True
+2026-08-26 19:07:40 - INFO - Epoch 224/260: Train Loss: 0.1269, Test Loss: 0.1447, Test Dice: 0.9339, Test IoU: 0.8762, EMA: True
+2026-08-26 19:08:19 - INFO - Epoch 225/260: Train Loss: 0.1265, Test Loss: 0.1447, Test Dice: 0.9339, Test IoU: 0.8762, EMA: True
+2026-08-26 19:08:57 - INFO - Epoch 226/260: Train Loss: 0.1259, Test Loss: 0.1448, Test Dice: 0.9340, Test IoU: 0.8764, EMA: True
+2026-08-26 19:09:35 - INFO - Epoch 227/260: Train Loss: 0.1238, Test Loss: 0.1445, Test Dice: 0.9341, Test IoU: 0.8767, EMA: True
+2026-08-26 19:10:14 - INFO - Epoch 228/260: Train Loss: 0.1244, Test Loss: 0.1444, Test Dice: 0.9342, Test IoU: 0.8767, EMA: True
