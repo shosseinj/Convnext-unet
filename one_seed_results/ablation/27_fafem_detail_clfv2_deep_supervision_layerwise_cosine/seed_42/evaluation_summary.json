@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\27_fafem_detail_clfv2_deep_supervision_layerwise_cosine\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "f5f9b2b78e2046707c64c5db3fc94bbecf8fe08df9684de5286c1b8d433e2078",
+  "experiment_name": "one_seed_27_fafem_detail_clfv2_deep_supervision_layerwise_cosine",
+  "flops": 29085848880,
+  "gflops": 29.08584888,
+  "gmacs": 14.54292444,
+  "macs": 14542924440,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8432114637423034,
+      "MAE": 0.007471386117312655,
+      "S_alpha": 0.9156241825695812,
+      "mDice": 0.8605409324223271,
+      "mE_phi": 0.9422732705034125,
+      "mIoU": 0.7916759647483101,
+      "maxE_phi": 0.947383135094952,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9333065941441063,
+      "MAE": 0.010018229985291324,
+      "S_alpha": 0.9528002163244059,
+      "mDice": 0.9449176615284335,
+      "mE_phi": 0.9836419526847786,
+      "mIoU": 0.8968271305484157,
+      "maxE_phi": 0.9891819429019432,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7643860841344841,
+      "MAE": 0.035345575016395896,
+      "S_alpha": 0.8573666378774617,
+      "mDice": 0.7848749939974832,
+      "mE_phi": 0.8884691211398621,
+      "mIoU": 0.7058065854978643,
+      "maxE_phi": 0.8945522455905202,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7550635594217886,
+      "MAE": 0.013541832651077307,
+      "S_alpha": 0.875906514547382,
+      "mDice": 0.7887664226464237,
+      "mE_phi": 0.888117563925628,
+      "mIoU": 0.707041798877054,
+      "maxE_phi": 0.8999384835883067,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.9087411575149129,
+      "MAE": 0.02504797052683917,
+      "S_alpha": 0.9313067515557216,
+      "mDice": 0.9287319672107697,
+      "mE_phi": 0.9592783319533656,
+      "mIoU": 0.8793113252520561,
+      "maxE_phi": 0.9659592858947424,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "total_parameters": 29478377,
+  "trainable_parameters": 29478377
+}

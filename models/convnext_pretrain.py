@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from .csaf import CrossScaleAttentionFusion, CrossScaleAttentionFusionV2
 from .cross_level_fusion import CrossLevelFusion, CrossLevelFusionV2
 from .fafem import FrequencyAwareFeatureEnhancement
+from .geometry_conv import GeometryDeformableConv
 from pathlib import Path
 try:
     from timm.models.layers import trunc_normal_, DropPath
@@ -546,7 +547,8 @@ class ConvNeXtUNet(nn.Module):
                  enable_csaf=False, enable_fafem=False, csaf_version="v1",
                  fafem_stage1=False, fafem_stage2=False, fafem_stage3=False,
                  enable_cross_level_fusion=False,
-                 cross_level_fusion_version="v1"):
+                 cross_level_fusion_version="v1",
+                 enable_geometry_conv_stage3=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -587,6 +589,7 @@ class ConvNeXtUNet(nn.Module):
             "fafem_stage3": bool(fafem_stage3),
             "enable_cross_level_fusion": bool(enable_cross_level_fusion),
             "cross_level_fusion_version": cross_level_fusion_version,
+            "enable_geometry_conv_stage3": bool(enable_geometry_conv_stage3),
         }
         
         # Encoder
@@ -719,6 +722,10 @@ class ConvNeXtUNet(nn.Module):
              CrossLevelFusion(encoder_channels[:3], fusion_channels=encoder_channels[0]))
             if enable_cross_level_fusion else None
         )
+        self.geometry_conv_stage3 = (
+            GeometryDeformableConv(encoder_channels[2])
+            if enable_geometry_conv_stage3 else None
+        )
         torch.set_rng_state(rng_state)
         
         # Initialize decoder
@@ -760,6 +767,8 @@ class ConvNeXtUNet(nn.Module):
             )
         if self.cross_level_fusion is not None:
             f1, f2, f3 = self.cross_level_fusion(f1, f2, f3)
+        if self.geometry_conv_stage3 is not None:
+            f3 = self.geometry_conv_stage3(f3)
         if self.fafem is not None and not fafem_applied:
             f4 = self.fafem(f4)
         

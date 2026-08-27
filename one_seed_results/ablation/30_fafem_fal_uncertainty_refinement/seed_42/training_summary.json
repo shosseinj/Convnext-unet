@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\30_fafem_fal_uncertainty_refinement\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 136,
+  "best_validation_metric": 0.8657256364822388,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_30_fafem_fal_uncertainty_refinement",
+  "final_epoch": 178,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4412.194211006165
+}

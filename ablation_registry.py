@@ -27,6 +27,9 @@ class ExperimentConfig:
     enable_cross_level_fusion: bool = False
     cross_level_fusion_version: str = "v1"
     unfreeze_schedule: str = "plateau"
+    enable_frequency_augmentation: bool = False
+    uncertainty_refinement_version: str = "none"
+    enable_geometry_conv_stage3: bool = False
 
     def to_dict(self):
         values = asdict(self)
@@ -51,6 +54,12 @@ class ExperimentConfig:
             values.pop("cross_level_fusion_version")
         if self.unfreeze_schedule == "plateau":
             values.pop("unfreeze_schedule")
+        if not self.enable_frequency_augmentation:
+            values.pop("enable_frequency_augmentation")
+        if self.uncertainty_refinement_version == "none":
+            values.pop("uncertainty_refinement_version")
+        if not self.enable_geometry_conv_stage3:
+            values.pop("enable_geometry_conv_stage3")
         return values
 
 
@@ -99,6 +108,13 @@ _EXPERIMENTS = {
         ("one_seed_25_fafem_detail_clfv2_warmup_cosine", False, "normal", 32, False, "concatenation", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, True, "v2", "fixed"),
         ("one_seed_26_fafem_detail_clfv2_layerwise_cosine", False, "normal", 32, False, "concatenation", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 160, 0, False, True, "v1", False, False, False, True, "v2", "none"),
         ("one_seed_27_fafem_detail_clfv2_deep_supervision_layerwise_cosine", False, "normal", 32, False, "concatenation", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 220, 0, False, True, "v1", False, False, False, True, "v2", "none"),
+        ("one_seed_28_fafem_detail_clfv2_ds_anneal_layerwise_cosine", False, "normal", 32, False, "concatenation", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 160, 0, False, True, "v1", False, False, False, True, "v2", "none"),
+        ("one_seed_29_fafem_detail_clfv2_ds_anneal_weighted", False, "normal", 32, False, "concatenation", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 160, 0, False, True, "v1", False, False, False, True, "v2", "none"),
+        ("one_seed_30_fafem_fal_uncertainty_refinement", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 180, 5, False, True, "v1", False, False, False, False, "v1", "none", True, "v2"),
+        ("one_seed_31_fafem_mild_fal", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "plateau", True, "none"),
+        ("one_seed_fafem_plus_geometry_conv_stage3", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 120, 0, False, True, "v1", False, False, False, False, "v1", "none", False, "none", True),
+        ("one_seed_32_fafem_layerwise_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 160, 0, False, True, "v1", False, False, False, False, "v1", "none", False, "none"),
+        ("one_seed_33_fafem_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, "v1", "none", False, "none"),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

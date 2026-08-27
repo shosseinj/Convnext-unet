@@ -1,0 +1,508 @@
+2026-08-27 11:38:27 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-27 11:38:33 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-27 11:38:33 - INFO - Parameter count: total=29.48M, encoder=27.82M, decoder_head=1.66M, trainable=29.48M
+2026-08-27 11:38:33 - INFO - Experiment name: one_seed_28_fafem_detail_clfv2_ds_anneal_layerwise_cosine
+2026-08-27 11:38:33 - INFO - Seed: 42
+2026-08-27 11:38:33 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-27 11:38:33 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-27 11:38:33 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-27 11:38:33 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-27 11:38:33 - INFO - FAFEM parameter count: 169,777
+2026-08-27 11:38:33 - INFO - Total parameter count: 29,478,377
+2026-08-27 11:38:33 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42
+2026-08-27 11:38:33 - INFO - Cross-Level Fusion: ON
+2026-08-27 11:38:33 - INFO - Cross-Level Fusion version: v2
+2026-08-27 11:38:33 - INFO - Skip inputs: Stage 1, Stage 2, Stage 3
+2026-08-27 11:38:33 - INFO - Cross-Level Fusion outputs: Refined Stage 1, Refined Stage 2, Refined Stage 3
+2026-08-27 11:38:33 - INFO - Cross-Level Fusion parameters: 93,156
+2026-08-27 11:38:33 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-27 11:38:33 - INFO - Optimizer: AdamW | refine_lr=4.50e-04, encoder_lr=3.00e-05, decoder_lr=3.00e-04, eta_min=1.00e-06, weight_decay=1.00e-02, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=warmup_cosine(warmup_epochs=5,eta_min=1.00e-06)
+2026-08-27 11:38:33 - INFO - Optimizer group refine: parameters=15,889, max_lr=4.500000e-04, weight_decay=1.00e-02
+2026-08-27 11:38:33 - INFO - Optimizer group decoder: parameters=1,643,896, max_lr=3.000000e-04, weight_decay=1.00e-02
+2026-08-27 11:38:33 - INFO - Optimizer group encoder_stage4: parameters=15,470,592, max_lr=3.000000e-05, weight_decay=5.00e-02
+2026-08-27 11:38:33 - INFO - Optimizer group encoder_stage3: parameters=11,112,960, max_lr=2.400000e-05, weight_decay=5.00e-02
+2026-08-27 11:38:33 - INFO - Optimizer group encoder_stage2: parameters=992,256, max_lr=1.920000e-05, weight_decay=5.00e-02
+2026-08-27 11:38:33 - INFO - Optimizer group encoder_stage1_stem: parameters=242,784, max_lr=1.536000e-05, weight_decay=5.00e-02
+2026-08-27 11:38:33 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-27 11:38:33 - INFO - Deep supervision: heads=2, schedule=anneal, anneal=96-128 | sampling=uniform
+2026-08-27 11:38:34 - INFO - Checkpoint decision: resume - Training is incomplete
+2026-08-27 11:38:34 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-27 11:38:34 - INFO - Loaded 315/315 compatible model tensors from checkpoint.
+2026-08-27 11:38:34 - INFO - warmup_cosine state resumed from checkpoint.
+2026-08-27 11:38:34 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-27 11:38:34 - INFO - Resumed from epoch 0
+2026-08-27 11:38:34 - INFO - Previous best IoU: 0.1248
+2026-08-27 11:38:34 - INFO - Training sampler generator state resumed from checkpoint.
+2026-08-27 11:38:34 - INFO - Loaded 313 compatible EMA tensors from checkpoint.
+2026-08-27 11:38:34 - INFO - EMA enabled with decay=0.995.
+2026-08-27 11:38:34 - INFO - Training stage 'all' starts at epoch 2 (29,478,377/29,478,377 parameters trainable).
+2026-08-27 11:38:34 - INFO - #### Training ####
+2026-08-27 11:38:34 - INFO - initial LR: refine=0.000126, encoder=0.000008, decoder=0.000084
+2026-08-27 11:38:34 - INFO - Epoch 2: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:39:02 - INFO - Epoch 2/160: Train Loss: 1.0314, Test Loss: 0.8843, Test Dice: 0.1089, Test IoU: 0.0576, EMA: True
+2026-08-27 11:39:03 - INFO - Epoch 3: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:39:30 - INFO - Epoch 3/160: Train Loss: 0.9583, Test Loss: 0.8578, Test Dice: 0.0203, Test IoU: 0.0102, EMA: True
+2026-08-27 11:39:30 - INFO - Epoch 4: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:39:58 - INFO - Epoch 4/160: Train Loss: 0.9134, Test Loss: 0.8412, Test Dice: 0.0034, Test IoU: 0.0017, EMA: True
+2026-08-27 11:39:58 - INFO - Epoch 5: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:40:25 - INFO - Epoch 5/160: Train Loss: 0.7851, Test Loss: 0.8196, Test Dice: 0.0026, Test IoU: 0.0013, EMA: True
+2026-08-27 11:40:26 - INFO - Epoch 6: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:40:51 - WARNING - Skipped 1/46 batches.
+2026-08-27 11:40:53 - INFO - Epoch 6/160: Train Loss: 0.5670, Test Loss: 0.7652, Test Dice: 0.0787, Test IoU: 0.0412, EMA: True
+2026-08-27 11:40:54 - INFO - Epoch 7: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:41:21 - INFO - Epoch 7/160: Train Loss: 0.5169, Test Loss: 0.6104, Test Dice: 0.5272, Test IoU: 0.3627, EMA: True
+2026-08-27 11:41:22 - INFO - New best model saved with accuracy: 0.36%
+2026-08-27 11:41:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:41:22 - INFO - Epoch 8: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:41:50 - INFO - Epoch 8/160: Train Loss: 0.4662, Test Loss: 0.4201, Test Dice: 0.7545, Test IoU: 0.6076, EMA: True
+2026-08-27 11:41:51 - INFO - New best model saved with accuracy: 0.61%
+2026-08-27 11:41:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:41:51 - INFO - Epoch 9: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:42:19 - INFO - Epoch 9/160: Train Loss: 0.4524, Test Loss: 0.3354, Test Dice: 0.8059, Test IoU: 0.6763, EMA: True
+2026-08-27 11:42:20 - INFO - New best model saved with accuracy: 0.68%
+2026-08-27 11:42:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:42:20 - INFO - Epoch 10: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:42:48 - INFO - Epoch 10/160: Train Loss: 0.4316, Test Loss: 0.3021, Test Dice: 0.8261, Test IoU: 0.7047, EMA: True
+2026-08-27 11:42:49 - INFO - New best model saved with accuracy: 0.70%
+2026-08-27 11:42:49 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:42:49 - INFO - Epoch 11: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:43:17 - INFO - Epoch 11/160: Train Loss: 0.4162, Test Loss: 0.2845, Test Dice: 0.8386, Test IoU: 0.7228, EMA: True
+2026-08-27 11:43:18 - INFO - New best model saved with accuracy: 0.72%
+2026-08-27 11:43:18 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:43:18 - INFO - Epoch 12: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:43:46 - INFO - Epoch 12/160: Train Loss: 0.4177, Test Loss: 0.2724, Test Dice: 0.8477, Test IoU: 0.7363, EMA: True
+2026-08-27 11:43:47 - INFO - New best model saved with accuracy: 0.74%
+2026-08-27 11:43:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:43:47 - INFO - Epoch 13: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:44:15 - INFO - Epoch 13/160: Train Loss: 0.3994, Test Loss: 0.2637, Test Dice: 0.8544, Test IoU: 0.7464, EMA: True
+2026-08-27 11:44:15 - INFO - New best model saved with accuracy: 0.75%
+2026-08-27 11:44:15 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:44:16 - INFO - Epoch 14: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:44:44 - INFO - Epoch 14/160: Train Loss: 0.3782, Test Loss: 0.2550, Test Dice: 0.8606, Test IoU: 0.7559, EMA: True
+2026-08-27 11:44:45 - INFO - New best model saved with accuracy: 0.76%
+2026-08-27 11:44:45 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:44:45 - INFO - Epoch 15: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:45:13 - INFO - Epoch 15/160: Train Loss: 0.3759, Test Loss: 0.2467, Test Dice: 0.8664, Test IoU: 0.7650, EMA: True
+2026-08-27 11:45:14 - INFO - New best model saved with accuracy: 0.76%
+2026-08-27 11:45:14 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:45:14 - INFO - Epoch 16: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:45:42 - INFO - Epoch 16/160: Train Loss: 0.3764, Test Loss: 0.2388, Test Dice: 0.8722, Test IoU: 0.7740, EMA: True
+2026-08-27 11:45:43 - INFO - New best model saved with accuracy: 0.77%
+2026-08-27 11:45:43 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:45:44 - INFO - Epoch 17: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:46:11 - INFO - Epoch 17/160: Train Loss: 0.3620, Test Loss: 0.2321, Test Dice: 0.8770, Test IoU: 0.7817, EMA: True
+2026-08-27 11:46:12 - INFO - New best model saved with accuracy: 0.78%
+2026-08-27 11:46:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:46:13 - INFO - Epoch 18: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:46:40 - INFO - Epoch 18/160: Train Loss: 0.3505, Test Loss: 0.2257, Test Dice: 0.8811, Test IoU: 0.7882, EMA: True
+2026-08-27 11:46:41 - INFO - New best model saved with accuracy: 0.79%
+2026-08-27 11:46:41 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:46:42 - INFO - Epoch 19: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:47:09 - INFO - Epoch 19/160: Train Loss: 0.3384, Test Loss: 0.2206, Test Dice: 0.8844, Test IoU: 0.7935, EMA: True
+2026-08-27 11:47:10 - INFO - New best model saved with accuracy: 0.79%
+2026-08-27 11:47:10 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:47:11 - INFO - Epoch 20: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:47:38 - INFO - Epoch 20/160: Train Loss: 0.3318, Test Loss: 0.2152, Test Dice: 0.8877, Test IoU: 0.7988, EMA: True
+2026-08-27 11:47:39 - INFO - New best model saved with accuracy: 0.80%
+2026-08-27 11:47:39 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:47:40 - INFO - Epoch 21: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:48:07 - INFO - Epoch 21/160: Train Loss: 0.3260, Test Loss: 0.2108, Test Dice: 0.8905, Test IoU: 0.8034, EMA: True
+2026-08-27 11:48:08 - INFO - New best model saved with accuracy: 0.80%
+2026-08-27 11:48:08 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:48:08 - INFO - Epoch 22: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:48:36 - INFO - Epoch 22/160: Train Loss: 0.3231, Test Loss: 0.2063, Test Dice: 0.8930, Test IoU: 0.8075, EMA: True
+2026-08-27 11:48:37 - INFO - New best model saved with accuracy: 0.81%
+2026-08-27 11:48:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:48:37 - INFO - Epoch 23: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:49:05 - INFO - Epoch 23/160: Train Loss: 0.3240, Test Loss: 0.2023, Test Dice: 0.8953, Test IoU: 0.8112, EMA: True
+2026-08-27 11:49:06 - INFO - New best model saved with accuracy: 0.81%
+2026-08-27 11:49:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:49:06 - INFO - Epoch 24: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:49:34 - INFO - Epoch 24/160: Train Loss: 0.3169, Test Loss: 0.1993, Test Dice: 0.8970, Test IoU: 0.8140, EMA: True
+2026-08-27 11:49:34 - INFO - New best model saved with accuracy: 0.81%
+2026-08-27 11:49:34 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:49:35 - INFO - Epoch 25: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:50:02 - INFO - Epoch 25/160: Train Loss: 0.3087, Test Loss: 0.1969, Test Dice: 0.8985, Test IoU: 0.8164, EMA: True
+2026-08-27 11:50:03 - INFO - New best model saved with accuracy: 0.82%
+2026-08-27 11:50:03 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:50:04 - INFO - Epoch 26: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:50:31 - INFO - Epoch 26/160: Train Loss: 0.3022, Test Loss: 0.1946, Test Dice: 0.9000, Test IoU: 0.8189, EMA: True
+2026-08-27 11:50:32 - INFO - New best model saved with accuracy: 0.82%
+2026-08-27 11:50:32 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:50:33 - INFO - Epoch 27: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:51:00 - INFO - Epoch 27/160: Train Loss: 0.3035, Test Loss: 0.1922, Test Dice: 0.9016, Test IoU: 0.8215, EMA: True
+2026-08-27 11:51:01 - INFO - New best model saved with accuracy: 0.82%
+2026-08-27 11:51:01 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:51:02 - INFO - Epoch 28: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:51:29 - INFO - Epoch 28/160: Train Loss: 0.3085, Test Loss: 0.1900, Test Dice: 0.9028, Test IoU: 0.8235, EMA: True
+2026-08-27 11:51:30 - INFO - New best model saved with accuracy: 0.82%
+2026-08-27 11:51:30 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:51:30 - INFO - Epoch 29: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:51:58 - INFO - Epoch 29/160: Train Loss: 0.2933, Test Loss: 0.1873, Test Dice: 0.9037, Test IoU: 0.8251, EMA: True
+2026-08-27 11:51:59 - INFO - New best model saved with accuracy: 0.83%
+2026-08-27 11:51:59 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:51:59 - INFO - Epoch 30: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:52:27 - INFO - Epoch 30/160: Train Loss: 0.2923, Test Loss: 0.1850, Test Dice: 0.9049, Test IoU: 0.8270, EMA: True
+2026-08-27 11:52:28 - INFO - New best model saved with accuracy: 0.83%
+2026-08-27 11:52:28 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:52:28 - INFO - Epoch 31: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:52:56 - INFO - Epoch 31/160: Train Loss: 0.2873, Test Loss: 0.1824, Test Dice: 0.9062, Test IoU: 0.8293, EMA: True
+2026-08-27 11:52:56 - INFO - New best model saved with accuracy: 0.83%
+2026-08-27 11:52:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:52:57 - INFO - Epoch 32: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:53:24 - INFO - Epoch 32/160: Train Loss: 0.2914, Test Loss: 0.1801, Test Dice: 0.9069, Test IoU: 0.8305, EMA: True
+2026-08-27 11:53:25 - INFO - New best model saved with accuracy: 0.83%
+2026-08-27 11:53:25 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:53:26 - INFO - Epoch 33: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:53:53 - INFO - Epoch 33/160: Train Loss: 0.2717, Test Loss: 0.1779, Test Dice: 0.9084, Test IoU: 0.8329, EMA: True
+2026-08-27 11:53:54 - INFO - New best model saved with accuracy: 0.83%
+2026-08-27 11:53:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:53:54 - INFO - Epoch 34: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:54:22 - INFO - Epoch 34/160: Train Loss: 0.2737, Test Loss: 0.1759, Test Dice: 0.9093, Test IoU: 0.8346, EMA: True
+2026-08-27 11:54:22 - INFO - New best model saved with accuracy: 0.83%
+2026-08-27 11:54:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:54:23 - INFO - Epoch 35: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:54:50 - INFO - Epoch 35/160: Train Loss: 0.2748, Test Loss: 0.1746, Test Dice: 0.9107, Test IoU: 0.8367, EMA: True
+2026-08-27 11:54:51 - INFO - New best model saved with accuracy: 0.84%
+2026-08-27 11:54:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:54:52 - INFO - Epoch 36: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:55:19 - INFO - Epoch 36/160: Train Loss: 0.2656, Test Loss: 0.1739, Test Dice: 0.9108, Test IoU: 0.8370, EMA: True
+2026-08-27 11:55:20 - INFO - New best model saved with accuracy: 0.84%
+2026-08-27 11:55:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:55:21 - INFO - Epoch 37: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:55:48 - INFO - Epoch 37/160: Train Loss: 0.2685, Test Loss: 0.1731, Test Dice: 0.9103, Test IoU: 0.8362, EMA: True
+2026-08-27 11:55:49 - INFO - Epoch 38: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:56:16 - INFO - Epoch 38/160: Train Loss: 0.2606, Test Loss: 0.1710, Test Dice: 0.9122, Test IoU: 0.8393, EMA: True
+2026-08-27 11:56:17 - INFO - New best model saved with accuracy: 0.84%
+2026-08-27 11:56:17 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:56:18 - INFO - Epoch 39: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:56:45 - INFO - Epoch 39/160: Train Loss: 0.2693, Test Loss: 0.1686, Test Dice: 0.9139, Test IoU: 0.8423, EMA: True
+2026-08-27 11:56:46 - INFO - New best model saved with accuracy: 0.84%
+2026-08-27 11:56:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:56:46 - INFO - Epoch 40: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:57:15 - INFO - Epoch 40/160: Train Loss: 0.2628, Test Loss: 0.1665, Test Dice: 0.9148, Test IoU: 0.8437, EMA: True
+2026-08-27 11:57:16 - INFO - New best model saved with accuracy: 0.84%
+2026-08-27 11:57:16 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:57:16 - INFO - Epoch 41: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:57:45 - INFO - Epoch 41/160: Train Loss: 0.2585, Test Loss: 0.1651, Test Dice: 0.9152, Test IoU: 0.8444, EMA: True
+2026-08-27 11:57:46 - INFO - New best model saved with accuracy: 0.84%
+2026-08-27 11:57:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:57:47 - INFO - Epoch 42: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:58:15 - INFO - Epoch 42/160: Train Loss: 0.2513, Test Loss: 0.1635, Test Dice: 0.9163, Test IoU: 0.8462, EMA: True
+2026-08-27 11:58:16 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 11:58:16 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:58:17 - INFO - Epoch 43: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:58:46 - INFO - Epoch 43/160: Train Loss: 0.2480, Test Loss: 0.1624, Test Dice: 0.9170, Test IoU: 0.8474, EMA: True
+2026-08-27 11:58:47 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 11:58:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:58:48 - INFO - Epoch 44: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:59:18 - INFO - Epoch 44/160: Train Loss: 0.2461, Test Loss: 0.1606, Test Dice: 0.9179, Test IoU: 0.8489, EMA: True
+2026-08-27 11:59:19 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 11:59:19 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:59:19 - INFO - Epoch 45: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 11:59:49 - INFO - Epoch 45/160: Train Loss: 0.2489, Test Loss: 0.1596, Test Dice: 0.9185, Test IoU: 0.8499, EMA: True
+2026-08-27 11:59:50 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 11:59:50 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 11:59:51 - INFO - Epoch 46: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:00:21 - INFO - Epoch 46/160: Train Loss: 0.2502, Test Loss: 0.1589, Test Dice: 0.9190, Test IoU: 0.8507, EMA: True
+2026-08-27 12:00:21 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 12:00:21 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:00:22 - INFO - Epoch 47: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:00:51 - INFO - Epoch 47/160: Train Loss: 0.2538, Test Loss: 0.1578, Test Dice: 0.9197, Test IoU: 0.8519, EMA: True
+2026-08-27 12:00:52 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 12:00:52 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:00:53 - INFO - Epoch 48: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:01:22 - INFO - Epoch 48/160: Train Loss: 0.2533, Test Loss: 0.1567, Test Dice: 0.9204, Test IoU: 0.8531, EMA: True
+2026-08-27 12:01:23 - INFO - New best model saved with accuracy: 0.85%
+2026-08-27 12:01:23 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:01:23 - INFO - Epoch 49: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:01:52 - INFO - Epoch 49/160: Train Loss: 0.2442, Test Loss: 0.1551, Test Dice: 0.9216, Test IoU: 0.8551, EMA: True
+2026-08-27 12:01:53 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:01:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:01:54 - INFO - Epoch 50: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:02:22 - INFO - Epoch 50/160: Train Loss: 0.2439, Test Loss: 0.1536, Test Dice: 0.9225, Test IoU: 0.8566, EMA: True
+2026-08-27 12:02:23 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:02:23 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:02:24 - INFO - Epoch 51: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:02:50 - WARNING - Skipped 1/46 batches.
+2026-08-27 12:02:52 - INFO - Epoch 51/160: Train Loss: 0.2374, Test Loss: 0.1526, Test Dice: 0.9231, Test IoU: 0.8576, EMA: True
+2026-08-27 12:02:53 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:02:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:02:54 - INFO - Epoch 52: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:03:21 - INFO - Epoch 52/160: Train Loss: 0.2417, Test Loss: 0.1527, Test Dice: 0.9229, Test IoU: 0.8573, EMA: True
+2026-08-27 12:03:22 - INFO - Epoch 53: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:03:51 - INFO - Epoch 53/160: Train Loss: 0.2454, Test Loss: 0.1525, Test Dice: 0.9231, Test IoU: 0.8576, EMA: True
+2026-08-27 12:03:52 - INFO - Epoch 54: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:04:21 - INFO - Epoch 54/160: Train Loss: 0.2436, Test Loss: 0.1526, Test Dice: 0.9230, Test IoU: 0.8575, EMA: True
+2026-08-27 12:04:22 - INFO - Epoch 55: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:04:52 - INFO - Epoch 55/160: Train Loss: 0.2287, Test Loss: 0.1524, Test Dice: 0.9229, Test IoU: 0.8572, EMA: True
+2026-08-27 12:04:52 - INFO - Epoch 56: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:05:22 - INFO - Epoch 56/160: Train Loss: 0.2310, Test Loss: 0.1523, Test Dice: 0.9231, Test IoU: 0.8577, EMA: True
+2026-08-27 12:05:23 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:05:23 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:05:23 - INFO - Epoch 57: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:05:52 - INFO - Epoch 57/160: Train Loss: 0.2393, Test Loss: 0.1515, Test Dice: 0.9234, Test IoU: 0.8583, EMA: True
+2026-08-27 12:05:53 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:05:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:05:54 - INFO - Epoch 58: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:06:22 - INFO - Epoch 58/160: Train Loss: 0.2286, Test Loss: 0.1509, Test Dice: 0.9240, Test IoU: 0.8593, EMA: True
+2026-08-27 12:06:23 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:06:23 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:06:24 - INFO - Epoch 59: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:06:52 - INFO - Epoch 59/160: Train Loss: 0.2272, Test Loss: 0.1502, Test Dice: 0.9245, Test IoU: 0.8601, EMA: True
+2026-08-27 12:06:53 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:06:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:06:54 - INFO - Epoch 60: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:07:22 - INFO - Epoch 60/160: Train Loss: 0.2260, Test Loss: 0.1505, Test Dice: 0.9234, Test IoU: 0.8583, EMA: True
+2026-08-27 12:07:23 - INFO - Epoch 61: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:07:51 - INFO - Epoch 61/160: Train Loss: 0.2213, Test Loss: 0.1507, Test Dice: 0.9230, Test IoU: 0.8576, EMA: True
+2026-08-27 12:07:52 - INFO - Epoch 62: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:08:20 - INFO - Epoch 62/160: Train Loss: 0.2233, Test Loss: 0.1506, Test Dice: 0.9229, Test IoU: 0.8575, EMA: True
+2026-08-27 12:08:21 - INFO - Epoch 63: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:08:49 - INFO - Epoch 63/160: Train Loss: 0.2253, Test Loss: 0.1509, Test Dice: 0.9228, Test IoU: 0.8573, EMA: True
+2026-08-27 12:08:50 - INFO - Epoch 64: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:09:19 - INFO - Epoch 64/160: Train Loss: 0.2257, Test Loss: 0.1508, Test Dice: 0.9228, Test IoU: 0.8573, EMA: True
+2026-08-27 12:09:19 - INFO - Epoch 65: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:09:47 - INFO - Epoch 65/160: Train Loss: 0.2162, Test Loss: 0.1501, Test Dice: 0.9230, Test IoU: 0.8576, EMA: True
+2026-08-27 12:09:48 - INFO - Epoch 66: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:10:16 - INFO - Epoch 66/160: Train Loss: 0.2176, Test Loss: 0.1501, Test Dice: 0.9231, Test IoU: 0.8579, EMA: True
+2026-08-27 12:10:17 - INFO - Epoch 67: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:10:44 - INFO - Epoch 67/160: Train Loss: 0.2233, Test Loss: 0.1509, Test Dice: 0.9228, Test IoU: 0.8573, EMA: True
+2026-08-27 12:10:45 - INFO - Epoch 68: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:11:12 - INFO - Epoch 68/160: Train Loss: 0.2223, Test Loss: 0.1502, Test Dice: 0.9232, Test IoU: 0.8580, EMA: True
+2026-08-27 12:11:13 - INFO - Epoch 69: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:11:40 - INFO - Epoch 69/160: Train Loss: 0.2157, Test Loss: 0.1497, Test Dice: 0.9238, Test IoU: 0.8589, EMA: True
+2026-08-27 12:11:41 - INFO - Epoch 70: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:12:08 - INFO - Epoch 70/160: Train Loss: 0.2138, Test Loss: 0.1490, Test Dice: 0.9246, Test IoU: 0.8602, EMA: True
+2026-08-27 12:12:09 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:12:09 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:12:09 - INFO - Epoch 71: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:12:37 - INFO - Epoch 71/160: Train Loss: 0.2095, Test Loss: 0.1488, Test Dice: 0.9252, Test IoU: 0.8612, EMA: True
+2026-08-27 12:12:38 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:12:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:12:38 - INFO - Epoch 72: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:13:06 - INFO - Epoch 72/160: Train Loss: 0.2189, Test Loss: 0.1492, Test Dice: 0.9248, Test IoU: 0.8605, EMA: True
+2026-08-27 12:13:06 - INFO - Epoch 73: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:13:34 - INFO - Epoch 73/160: Train Loss: 0.2147, Test Loss: 0.1494, Test Dice: 0.9249, Test IoU: 0.8606, EMA: True
+2026-08-27 12:13:34 - INFO - Epoch 74: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:14:02 - INFO - Epoch 74/160: Train Loss: 0.2154, Test Loss: 0.1495, Test Dice: 0.9247, Test IoU: 0.8603, EMA: True
+2026-08-27 12:14:03 - INFO - Epoch 75: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:14:30 - INFO - Epoch 75/160: Train Loss: 0.2090, Test Loss: 0.1499, Test Dice: 0.9236, Test IoU: 0.8586, EMA: True
+2026-08-27 12:14:31 - INFO - Epoch 76: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:14:58 - INFO - Epoch 76/160: Train Loss: 0.2105, Test Loss: 0.1496, Test Dice: 0.9238, Test IoU: 0.8590, EMA: True
+2026-08-27 12:14:59 - INFO - Epoch 77: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:15:26 - INFO - Epoch 77/160: Train Loss: 0.2089, Test Loss: 0.1496, Test Dice: 0.9239, Test IoU: 0.8592, EMA: True
+2026-08-27 12:15:27 - INFO - Epoch 78: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:15:55 - INFO - Epoch 78/160: Train Loss: 0.2111, Test Loss: 0.1499, Test Dice: 0.9239, Test IoU: 0.8591, EMA: True
+2026-08-27 12:15:55 - INFO - Epoch 79: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:16:23 - INFO - Epoch 79/160: Train Loss: 0.2099, Test Loss: 0.1501, Test Dice: 0.9232, Test IoU: 0.8579, EMA: True
+2026-08-27 12:16:23 - INFO - Epoch 80: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:16:51 - INFO - Epoch 80/160: Train Loss: 0.1993, Test Loss: 0.1501, Test Dice: 0.9226, Test IoU: 0.8570, EMA: True
+2026-08-27 12:16:51 - INFO - Epoch 81: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:17:19 - INFO - Epoch 81/160: Train Loss: 0.2118, Test Loss: 0.1498, Test Dice: 0.9225, Test IoU: 0.8567, EMA: True
+2026-08-27 12:17:19 - INFO - Epoch 82: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:17:47 - INFO - Epoch 82/160: Train Loss: 0.2027, Test Loss: 0.1497, Test Dice: 0.9225, Test IoU: 0.8567, EMA: True
+2026-08-27 12:17:47 - INFO - Epoch 83: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:18:15 - INFO - Epoch 83/160: Train Loss: 0.2170, Test Loss: 0.1490, Test Dice: 0.9229, Test IoU: 0.8575, EMA: True
+2026-08-27 12:18:15 - INFO - Epoch 84: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:18:43 - INFO - Epoch 84/160: Train Loss: 0.2033, Test Loss: 0.1489, Test Dice: 0.9234, Test IoU: 0.8582, EMA: True
+2026-08-27 12:18:44 - INFO - Epoch 85: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:19:11 - INFO - Epoch 85/160: Train Loss: 0.2087, Test Loss: 0.1487, Test Dice: 0.9240, Test IoU: 0.8593, EMA: True
+2026-08-27 12:19:12 - INFO - Epoch 86: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:19:39 - INFO - Epoch 86/160: Train Loss: 0.1962, Test Loss: 0.1480, Test Dice: 0.9252, Test IoU: 0.8613, EMA: True
+2026-08-27 12:19:40 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:19:40 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:19:40 - INFO - Epoch 87: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:20:08 - INFO - Epoch 87/160: Train Loss: 0.2027, Test Loss: 0.1475, Test Dice: 0.9254, Test IoU: 0.8616, EMA: True
+2026-08-27 12:20:09 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:20:09 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:20:09 - INFO - Epoch 88: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:20:37 - INFO - Epoch 88/160: Train Loss: 0.2050, Test Loss: 0.1469, Test Dice: 0.9255, Test IoU: 0.8619, EMA: True
+2026-08-27 12:20:38 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:20:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:20:38 - INFO - Epoch 89: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:21:06 - INFO - Epoch 89/160: Train Loss: 0.2047, Test Loss: 0.1462, Test Dice: 0.9264, Test IoU: 0.8634, EMA: True
+2026-08-27 12:21:07 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:21:07 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:21:07 - INFO - Epoch 90: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:21:35 - INFO - Epoch 90/160: Train Loss: 0.2014, Test Loss: 0.1463, Test Dice: 0.9265, Test IoU: 0.8635, EMA: True
+2026-08-27 12:21:35 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:21:35 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:21:36 - INFO - Epoch 91: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:22:03 - INFO - Epoch 91/160: Train Loss: 0.2009, Test Loss: 0.1462, Test Dice: 0.9266, Test IoU: 0.8636, EMA: True
+2026-08-27 12:22:04 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:22:04 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:22:05 - INFO - Epoch 92: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:22:33 - INFO - Epoch 92/160: Train Loss: 0.1995, Test Loss: 0.1466, Test Dice: 0.9264, Test IoU: 0.8633, EMA: True
+2026-08-27 12:22:33 - INFO - Epoch 93: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:23:01 - INFO - Epoch 93/160: Train Loss: 0.2044, Test Loss: 0.1468, Test Dice: 0.9262, Test IoU: 0.8631, EMA: True
+2026-08-27 12:23:01 - INFO - Epoch 94: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:23:29 - INFO - Epoch 94/160: Train Loss: 0.2028, Test Loss: 0.1463, Test Dice: 0.9267, Test IoU: 0.8638, EMA: True
+2026-08-27 12:23:29 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:23:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:23:30 - INFO - Epoch 95: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:23:57 - INFO - Epoch 95/160: Train Loss: 0.1961, Test Loss: 0.1463, Test Dice: 0.9266, Test IoU: 0.8638, EMA: True
+2026-08-27 12:23:58 - INFO - Epoch 96: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-27 12:24:25 - INFO - Epoch 96/160: Train Loss: 0.2039, Test Loss: 0.1462, Test Dice: 0.9266, Test IoU: 0.8637, EMA: True
+2026-08-27 12:24:26 - INFO - Epoch 97: deep-supervision weights main=1.0000, d2=0.0969, d3=0.0484
+2026-08-27 12:24:53 - INFO - Epoch 97/160: Train Loss: 0.1961, Test Loss: 0.1460, Test Dice: 0.9268, Test IoU: 0.8641, EMA: True
+2026-08-27 12:24:54 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:24:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:24:55 - INFO - Epoch 98: deep-supervision weights main=1.0000, d2=0.0938, d3=0.0469
+2026-08-27 12:25:22 - INFO - Epoch 98/160: Train Loss: 0.1908, Test Loss: 0.1457, Test Dice: 0.9272, Test IoU: 0.8648, EMA: True
+2026-08-27 12:25:23 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:25:23 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:25:24 - INFO - Epoch 99: deep-supervision weights main=1.0000, d2=0.0906, d3=0.0453
+2026-08-27 12:25:51 - INFO - Epoch 99/160: Train Loss: 0.1926, Test Loss: 0.1457, Test Dice: 0.9273, Test IoU: 0.8650, EMA: True
+2026-08-27 12:25:52 - INFO - New best model saved with accuracy: 0.86%
+2026-08-27 12:25:52 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:25:52 - INFO - Epoch 100: deep-supervision weights main=1.0000, d2=0.0875, d3=0.0438
+2026-08-27 12:26:20 - INFO - Epoch 100/160: Train Loss: 0.1912, Test Loss: 0.1456, Test Dice: 0.9273, Test IoU: 0.8648, EMA: True
+2026-08-27 12:26:21 - INFO - Epoch 101: deep-supervision weights main=1.0000, d2=0.0844, d3=0.0422
+2026-08-27 12:26:48 - INFO - Epoch 101/160: Train Loss: 0.1918, Test Loss: 0.1451, Test Dice: 0.9273, Test IoU: 0.8648, EMA: True
+2026-08-27 12:26:49 - INFO - Epoch 102: deep-supervision weights main=1.0000, d2=0.0813, d3=0.0406
+2026-08-27 12:27:16 - INFO - Epoch 102/160: Train Loss: 0.1917, Test Loss: 0.1449, Test Dice: 0.9274, Test IoU: 0.8651, EMA: True
+2026-08-27 12:27:17 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:27:17 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:27:18 - INFO - Epoch 103: deep-supervision weights main=1.0000, d2=0.0781, d3=0.0391
+2026-08-27 12:27:45 - INFO - Epoch 103/160: Train Loss: 0.1975, Test Loss: 0.1444, Test Dice: 0.9277, Test IoU: 0.8655, EMA: True
+2026-08-27 12:27:46 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:27:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:27:47 - INFO - Epoch 104: deep-supervision weights main=1.0000, d2=0.0750, d3=0.0375
+2026-08-27 12:28:14 - INFO - Epoch 104/160: Train Loss: 0.1895, Test Loss: 0.1441, Test Dice: 0.9280, Test IoU: 0.8661, EMA: True
+2026-08-27 12:28:15 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:28:15 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:28:15 - INFO - Epoch 105: deep-supervision weights main=1.0000, d2=0.0719, d3=0.0359
+2026-08-27 12:28:43 - INFO - Epoch 105/160: Train Loss: 0.1879, Test Loss: 0.1436, Test Dice: 0.9285, Test IoU: 0.8669, EMA: True
+2026-08-27 12:28:44 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:28:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:28:44 - INFO - Epoch 106: deep-supervision weights main=1.0000, d2=0.0688, d3=0.0344
+2026-08-27 12:29:12 - INFO - Epoch 106/160: Train Loss: 0.1837, Test Loss: 0.1436, Test Dice: 0.9286, Test IoU: 0.8672, EMA: True
+2026-08-27 12:29:12 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:29:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:29:13 - INFO - Epoch 107: deep-supervision weights main=1.0000, d2=0.0656, d3=0.0328
+2026-08-27 12:29:42 - INFO - Epoch 107/160: Train Loss: 0.1831, Test Loss: 0.1438, Test Dice: 0.9286, Test IoU: 0.8672, EMA: True
+2026-08-27 12:29:42 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:29:42 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:29:43 - INFO - Epoch 108: deep-supervision weights main=1.0000, d2=0.0625, d3=0.0312
+2026-08-27 12:30:13 - INFO - Epoch 108/160: Train Loss: 0.1827, Test Loss: 0.1437, Test Dice: 0.9288, Test IoU: 0.8675, EMA: True
+2026-08-27 12:30:14 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:30:14 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:30:14 - INFO - Epoch 109: deep-supervision weights main=1.0000, d2=0.0594, d3=0.0297
+2026-08-27 12:30:44 - INFO - Epoch 109/160: Train Loss: 0.1779, Test Loss: 0.1434, Test Dice: 0.9292, Test IoU: 0.8683, EMA: True
+2026-08-27 12:30:45 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:30:45 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:30:46 - INFO - Epoch 110: deep-supervision weights main=1.0000, d2=0.0563, d3=0.0281
+2026-08-27 12:31:15 - INFO - Epoch 110/160: Train Loss: 0.1799, Test Loss: 0.1435, Test Dice: 0.9292, Test IoU: 0.8682, EMA: True
+2026-08-27 12:31:16 - INFO - Epoch 111: deep-supervision weights main=1.0000, d2=0.0531, d3=0.0266
+2026-08-27 12:31:46 - INFO - Epoch 111/160: Train Loss: 0.1825, Test Loss: 0.1434, Test Dice: 0.9293, Test IoU: 0.8684, EMA: True
+2026-08-27 12:31:47 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:31:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:31:47 - INFO - Epoch 112: deep-supervision weights main=1.0000, d2=0.0500, d3=0.0250
+2026-08-27 12:32:18 - INFO - Epoch 112/160: Train Loss: 0.1774, Test Loss: 0.1433, Test Dice: 0.9294, Test IoU: 0.8685, EMA: True
+2026-08-27 12:32:19 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:32:19 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:32:20 - INFO - Epoch 113: deep-supervision weights main=1.0000, d2=0.0469, d3=0.0234
+2026-08-27 12:32:47 - WARNING - Skipped 1/46 batches.
+2026-08-27 12:32:50 - INFO - Epoch 113/160: Train Loss: 0.1697, Test Loss: 0.1431, Test Dice: 0.9295, Test IoU: 0.8688, EMA: True
+2026-08-27 12:32:51 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:32:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:32:51 - INFO - Epoch 114: deep-supervision weights main=1.0000, d2=0.0438, d3=0.0219
+2026-08-27 12:33:21 - INFO - Epoch 114/160: Train Loss: 0.1763, Test Loss: 0.1428, Test Dice: 0.9297, Test IoU: 0.8692, EMA: True
+2026-08-27 12:33:22 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:33:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:33:22 - INFO - Epoch 115: deep-supervision weights main=1.0000, d2=0.0406, d3=0.0203
+2026-08-27 12:33:52 - INFO - Epoch 115/160: Train Loss: 0.1817, Test Loss: 0.1427, Test Dice: 0.9298, Test IoU: 0.8693, EMA: True
+2026-08-27 12:33:53 - INFO - New best model saved with accuracy: 0.87%
+2026-08-27 12:33:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\seed_42\best_checkpoint.pth
+2026-08-27 12:33:54 - INFO - Epoch 116: deep-supervision weights main=1.0000, d2=0.0375, d3=0.0188
+2026-08-27 12:34:24 - INFO - Epoch 116/160: Train Loss: 0.1753, Test Loss: 0.1430, Test Dice: 0.9295, Test IoU: 0.8688, EMA: True
+2026-08-27 12:34:24 - INFO - Epoch 117: deep-supervision weights main=1.0000, d2=0.0344, d3=0.0172
+2026-08-27 12:34:54 - INFO - Epoch 117/160: Train Loss: 0.1728, Test Loss: 0.1431, Test Dice: 0.9292, Test IoU: 0.8682, EMA: True
+2026-08-27 12:34:55 - INFO - Epoch 118: deep-supervision weights main=1.0000, d2=0.0312, d3=0.0156
+2026-08-27 12:35:24 - INFO - Epoch 118/160: Train Loss: 0.1687, Test Loss: 0.1429, Test Dice: 0.9291, Test IoU: 0.8681, EMA: True
+2026-08-27 12:35:25 - INFO - Epoch 119: deep-supervision weights main=1.0000, d2=0.0281, d3=0.0141
+2026-08-27 12:35:55 - INFO - Epoch 119/160: Train Loss: 0.1696, Test Loss: 0.1428, Test Dice: 0.9289, Test IoU: 0.8678, EMA: True
+2026-08-27 12:35:55 - INFO - Epoch 120: deep-supervision weights main=1.0000, d2=0.0250, d3=0.0125
+2026-08-27 12:36:25 - INFO - Epoch 120/160: Train Loss: 0.1621, Test Loss: 0.1426, Test Dice: 0.9291, Test IoU: 0.8681, EMA: True
+2026-08-27 12:36:26 - INFO - Epoch 121: deep-supervision weights main=1.0000, d2=0.0219, d3=0.0109
+2026-08-27 12:36:55 - INFO - Epoch 121/160: Train Loss: 0.1700, Test Loss: 0.1422, Test Dice: 0.9293, Test IoU: 0.8684, EMA: True
+2026-08-27 12:36:56 - INFO - Epoch 122: deep-supervision weights main=1.0000, d2=0.0188, d3=0.0094
+2026-08-27 12:37:25 - INFO - Epoch 122/160: Train Loss: 0.1631, Test Loss: 0.1421, Test Dice: 0.9294, Test IoU: 0.8685, EMA: True
+2026-08-27 12:37:26 - INFO - Epoch 123: deep-supervision weights main=1.0000, d2=0.0156, d3=0.0078
+2026-08-27 12:37:55 - INFO - Epoch 123/160: Train Loss: 0.1679, Test Loss: 0.1424, Test Dice: 0.9291, Test IoU: 0.8681, EMA: True
+2026-08-27 12:37:56 - INFO - Epoch 124: deep-supervision weights main=1.0000, d2=0.0125, d3=0.0063
+2026-08-27 12:38:23 - INFO - Epoch 124/160: Train Loss: 0.1645, Test Loss: 0.1424, Test Dice: 0.9291, Test IoU: 0.8681, EMA: True
+2026-08-27 12:38:24 - INFO - Epoch 125: deep-supervision weights main=1.0000, d2=0.0094, d3=0.0047
+2026-08-27 12:38:51 - INFO - Epoch 125/160: Train Loss: 0.1652, Test Loss: 0.1425, Test Dice: 0.9291, Test IoU: 0.8682, EMA: True
+2026-08-27 12:38:52 - INFO - Epoch 126: deep-supervision weights main=1.0000, d2=0.0063, d3=0.0031
+2026-08-27 12:39:20 - INFO - Epoch 126/160: Train Loss: 0.1680, Test Loss: 0.1426, Test Dice: 0.9292, Test IoU: 0.8682, EMA: True
+2026-08-27 12:39:20 - INFO - Epoch 127: deep-supervision weights main=1.0000, d2=0.0031, d3=0.0016
+2026-08-27 12:39:48 - INFO - Epoch 127/160: Train Loss: 0.1624, Test Loss: 0.1430, Test Dice: 0.9289, Test IoU: 0.8677, EMA: True
+2026-08-27 12:39:48 - INFO - Epoch 128: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:40:16 - INFO - Epoch 128/160: Train Loss: 0.1633, Test Loss: 0.1430, Test Dice: 0.9289, Test IoU: 0.8678, EMA: True
+2026-08-27 12:40:16 - INFO - Epoch 129: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:40:44 - INFO - Epoch 129/160: Train Loss: 0.1648, Test Loss: 0.1428, Test Dice: 0.9291, Test IoU: 0.8681, EMA: True
+2026-08-27 12:40:44 - INFO - Epoch 130: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:41:12 - INFO - Epoch 130/160: Train Loss: 0.1603, Test Loss: 0.1426, Test Dice: 0.9293, Test IoU: 0.8684, EMA: True
+2026-08-27 12:41:12 - INFO - Epoch 131: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:41:40 - INFO - Epoch 131/160: Train Loss: 0.1576, Test Loss: 0.1428, Test Dice: 0.9291, Test IoU: 0.8682, EMA: True
+2026-08-27 12:41:40 - INFO - Epoch 132: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:42:08 - INFO - Epoch 132/160: Train Loss: 0.1590, Test Loss: 0.1429, Test Dice: 0.9290, Test IoU: 0.8679, EMA: True
+2026-08-27 12:42:09 - INFO - Epoch 133: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:42:36 - INFO - Epoch 133/160: Train Loss: 0.1637, Test Loss: 0.1430, Test Dice: 0.9288, Test IoU: 0.8675, EMA: True
+2026-08-27 12:42:37 - INFO - Epoch 134: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:43:04 - INFO - Epoch 134/160: Train Loss: 0.1625, Test Loss: 0.1433, Test Dice: 0.9286, Test IoU: 0.8672, EMA: True
+2026-08-27 12:43:05 - INFO - Epoch 135: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:43:32 - INFO - Epoch 135/160: Train Loss: 0.1619, Test Loss: 0.1433, Test Dice: 0.9284, Test IoU: 0.8669, EMA: True
+2026-08-27 12:43:33 - INFO - Epoch 136: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:44:00 - INFO - Epoch 136/160: Train Loss: 0.1644, Test Loss: 0.1433, Test Dice: 0.9284, Test IoU: 0.8669, EMA: True
+2026-08-27 12:44:01 - INFO - Epoch 137: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:44:29 - INFO - Epoch 137/160: Train Loss: 0.1613, Test Loss: 0.1432, Test Dice: 0.9284, Test IoU: 0.8669, EMA: True
+2026-08-27 12:44:29 - INFO - Epoch 138: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:44:56 - INFO - Epoch 138/160: Train Loss: 0.1666, Test Loss: 0.1431, Test Dice: 0.9285, Test IoU: 0.8670, EMA: True
+2026-08-27 12:44:57 - INFO - Epoch 139: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:45:25 - INFO - Epoch 139/160: Train Loss: 0.1590, Test Loss: 0.1431, Test Dice: 0.9285, Test IoU: 0.8671, EMA: True
+2026-08-27 12:45:25 - INFO - Epoch 140: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:45:53 - INFO - Epoch 140/160: Train Loss: 0.1588, Test Loss: 0.1433, Test Dice: 0.9285, Test IoU: 0.8671, EMA: True
+2026-08-27 12:45:53 - INFO - Epoch 141: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:46:21 - INFO - Epoch 141/160: Train Loss: 0.1585, Test Loss: 0.1434, Test Dice: 0.9285, Test IoU: 0.8670, EMA: True
+2026-08-27 12:46:21 - INFO - Epoch 142: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:46:49 - INFO - Epoch 142/160: Train Loss: 0.1532, Test Loss: 0.1434, Test Dice: 0.9284, Test IoU: 0.8668, EMA: True
+2026-08-27 12:46:50 - INFO - Epoch 143: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:47:17 - INFO - Epoch 143/160: Train Loss: 0.1610, Test Loss: 0.1433, Test Dice: 0.9285, Test IoU: 0.8670, EMA: True
+2026-08-27 12:47:17 - INFO - Epoch 144: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:47:45 - INFO - Epoch 144/160: Train Loss: 0.1588, Test Loss: 0.1432, Test Dice: 0.9286, Test IoU: 0.8672, EMA: True
+2026-08-27 12:47:46 - INFO - Epoch 145: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:48:13 - INFO - Epoch 145/160: Train Loss: 0.1598, Test Loss: 0.1431, Test Dice: 0.9288, Test IoU: 0.8674, EMA: True
+2026-08-27 12:48:14 - INFO - Epoch 146: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:48:41 - INFO - Epoch 146/160: Train Loss: 0.1549, Test Loss: 0.1428, Test Dice: 0.9290, Test IoU: 0.8679, EMA: True
+2026-08-27 12:48:42 - INFO - Epoch 147: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:49:10 - INFO - Epoch 147/160: Train Loss: 0.1618, Test Loss: 0.1428, Test Dice: 0.9291, Test IoU: 0.8680, EMA: True
+2026-08-27 12:49:11 - INFO - Epoch 148: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:49:38 - INFO - Epoch 148/160: Train Loss: 0.1572, Test Loss: 0.1428, Test Dice: 0.9290, Test IoU: 0.8679, EMA: True
+2026-08-27 12:49:39 - INFO - Epoch 149: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:50:06 - INFO - Epoch 149/160: Train Loss: 0.1647, Test Loss: 0.1428, Test Dice: 0.9290, Test IoU: 0.8679, EMA: True
+2026-08-27 12:50:07 - INFO - Epoch 150: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:50:35 - INFO - Epoch 150/160: Train Loss: 0.1593, Test Loss: 0.1427, Test Dice: 0.9291, Test IoU: 0.8680, EMA: True
+2026-08-27 12:50:35 - INFO - Epoch 151: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:51:03 - INFO - Epoch 151/160: Train Loss: 0.1594, Test Loss: 0.1425, Test Dice: 0.9293, Test IoU: 0.8683, EMA: True
+2026-08-27 12:51:03 - INFO - Epoch 152: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:51:31 - INFO - Epoch 152/160: Train Loss: 0.1618, Test Loss: 0.1423, Test Dice: 0.9293, Test IoU: 0.8684, EMA: True
+2026-08-27 12:51:31 - INFO - Epoch 153: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:51:59 - INFO - Epoch 153/160: Train Loss: 0.1591, Test Loss: 0.1422, Test Dice: 0.9294, Test IoU: 0.8686, EMA: True
+2026-08-27 12:51:59 - INFO - Epoch 154: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:52:27 - INFO - Epoch 154/160: Train Loss: 0.1620, Test Loss: 0.1421, Test Dice: 0.9295, Test IoU: 0.8687, EMA: True
+2026-08-27 12:52:27 - INFO - Epoch 155: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:52:55 - INFO - Epoch 155/160: Train Loss: 0.1592, Test Loss: 0.1420, Test Dice: 0.9296, Test IoU: 0.8689, EMA: True
+2026-08-27 12:52:55 - INFO - Epoch 156: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:53:23 - INFO - Epoch 156/160: Train Loss: 0.1576, Test Loss: 0.1420, Test Dice: 0.9296, Test IoU: 0.8689, EMA: True
+2026-08-27 12:53:24 - INFO - Epoch 157: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:53:51 - INFO - Epoch 157/160: Train Loss: 0.1572, Test Loss: 0.1419, Test Dice: 0.9297, Test IoU: 0.8691, EMA: True
+2026-08-27 12:53:51 - INFO - Epoch 158: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:54:19 - INFO - Epoch 158/160: Train Loss: 0.1614, Test Loss: 0.1419, Test Dice: 0.9297, Test IoU: 0.8692, EMA: True
+2026-08-27 12:54:20 - INFO - Epoch 159: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:54:48 - INFO - Epoch 159/160: Train Loss: 0.1622, Test Loss: 0.1419, Test Dice: 0.9297, Test IoU: 0.8691, EMA: True
+2026-08-27 12:54:48 - INFO - Epoch 160: deep-supervision weights main=1.0000, d2=0.0000, d3=0.0000
+2026-08-27 12:55:17 - INFO - Epoch 160/160: Train Loss: 0.1591, Test Loss: 0.1419, Test Dice: 0.9297, Test IoU: 0.8692, EMA: True
+2026-08-27 12:55:18 - INFO - Training stopped after epoch 160; best checkpoint retained.

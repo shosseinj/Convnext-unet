@@ -11,6 +11,7 @@ import yaml
 
 from .convnext_pretrain import ConvNeXtUNet
 from .ugbr import UGBR
+from .uncertainty_refinement_v2 import UncertaintyBoundaryRefinementV2
 
 
 @dataclass(frozen=True)
@@ -84,6 +85,10 @@ class UGBRVariant(nn.Module):
     def variant_config(self):
         return self.base_model.variant_config
 
+    @property
+    def fafem(self):
+        return self.base_model.fafem
+
     def named_parameters(self, prefix: str = "", recurse: bool = True,
                          remove_duplicate: bool = True):
         """Present wrapped base-model names through the existing public contract."""
@@ -107,6 +112,70 @@ class UGBRVariant(nn.Module):
         if self._decoder_feature is None or self._shallow_feature is None:
             raise RuntimeError("UGBR feature hooks did not capture required tensors")
         return self.ugbr(self._decoder_feature, self._shallow_feature, initial_logits)
+
+    def freeze_encoder(self):
+        return self.base_model.freeze_encoder()
+
+    def unfreeze_encoder(self):
+        return self.base_model.unfreeze_encoder()
+
+    def get_encoder_params(self):
+        return self.base_model.get_encoder_params()
+
+    def get_decoder_params(self):
+        return (parameter for name, parameter in self.named_parameters()
+                if not name.startswith("encoder."))
+
+
+class UncertaintyRefinementV2Variant(nn.Module):
+    """Identity-safe refinement adapter without changing the base U-Net."""
+
+    def __init__(self, base_model: ConvNeXtUNet) -> None:
+        super().__init__()
+        self.base_model = base_model
+        self.uncertainty_refinement = UncertaintyBoundaryRefinementV2()
+        self._decoder_feature = None
+        self._shallow_feature = None
+        self.base_model.final_refine.register_forward_pre_hook(self._capture_decoder)
+        self.base_model.encoder.register_forward_hook(self._capture_encoder)
+        self.experiment_variant = base_model.experiment_variant
+
+    @property
+    def encoder(self):
+        return self.base_model.encoder
+
+    @property
+    def variant_config(self):
+        return self.base_model.variant_config
+
+    @property
+    def fafem(self):
+        return self.base_model.fafem
+
+    def named_parameters(self, prefix="", recurse=True, remove_duplicate=True):
+        for name, parameter in super().named_parameters(
+                prefix=prefix, recurse=recurse, remove_duplicate=remove_duplicate):
+            base_prefix = f"{prefix}.base_model." if prefix else "base_model."
+            public_prefix = f"{prefix}." if prefix else ""
+            if name.startswith(base_prefix):
+                name = public_prefix + name[len(base_prefix):]
+            yield name, parameter
+
+    def _capture_decoder(self, _module, inputs):
+        self._decoder_feature = inputs[0]
+
+    def _capture_encoder(self, _module, _inputs, output):
+        self._shallow_feature = output[0]
+
+    def forward(self, x):
+        initial_logits = self.base_model(x)
+        if isinstance(initial_logits, (tuple, list)):
+            initial_logits = initial_logits[0]
+        if self._decoder_feature is None or self._shallow_feature is None:
+            raise RuntimeError("Refinement hooks did not capture required tensors")
+        return self.uncertainty_refinement(
+            self._decoder_feature, self._shallow_feature, initial_logits
+        )
 
     def freeze_encoder(self):
         return self.base_model.freeze_encoder()

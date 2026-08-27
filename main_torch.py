@@ -386,6 +386,92 @@ def deep_supervision_loss(outputs, target, criterion, weights=DEEP_SUPERVISION_W
     return main_output, total_loss
 
 
+def deep_supervision_weights_for_epoch(
+    epoch_number, schedule="constant", anneal_start=96, anneal_end=128
+):
+    """Return main/d2/d3 weights for a one-based training epoch."""
+    if schedule == "constant":
+        return DEEP_SUPERVISION_WEIGHTS
+    if anneal_start <= 0 or anneal_end <= anneal_start:
+        raise ValueError("Deep-supervision annealing requires 0 < start < end")
+    if epoch_number <= anneal_start:
+        scale = 1.0
+    elif epoch_number >= anneal_end:
+        scale = 0.0
+    else:
+        scale = (anneal_end - epoch_number) / (anneal_end - anneal_start)
+    return (1.0, 0.1 * scale, 0.05 * scale, 0.02 * scale)
+
+
+def lesion_size_sampling_weights(masks):
+    """Assign sampling weights based on foreground area ratios."""
+    ratios = np.asarray(masks, dtype=np.float32).reshape(len(masks), -1).mean(axis=1)
+    weights = np.ones(len(ratios), dtype=np.float64)
+    weights[(ratios < 0.10) & (ratios >= 0.02)] = 2.0
+    weights[ratios < 0.02] = 4.0
+    return torch.as_tensor(weights, dtype=torch.double), ratios
+
+
+def frequency_augmentation_probability(
+    epoch_number, total_epochs, maximum=0.5,
+    constant_fraction=0.70, anneal_end_fraction=0.80,
+):
+    if not 0 <= maximum <= 1:
+        raise ValueError("Frequency augmentation probability must be in [0, 1]")
+    if not 0 < constant_fraction < anneal_end_fraction <= 1:
+        raise ValueError("Frequency schedule requires 0 < constant < anneal_end <= 1")
+    constant_end = int(round(total_epochs * constant_fraction))
+    anneal_end = int(round(total_epochs * anneal_end_fraction))
+    if epoch_number <= constant_end:
+        return maximum
+    if epoch_number >= anneal_end:
+        return 0.0
+    return maximum * (anneal_end - epoch_number) / (anneal_end - constant_end)
+
+
+def frequency_style_augment(
+    images, probability, generator, max_mix=0.5,
+    region_min=0.01, region_max=0.05,
+):
+    """Mix only low-frequency amplitudes while preserving source phase."""
+    if not 0 <= max_mix <= 1:
+        raise ValueError("Frequency amplitude mixing must be in [0, 1]")
+    if not 0 < region_min <= region_max <= 0.5:
+        raise ValueError("Frequency region requires 0 < min <= max <= 0.5")
+    if probability <= 0 or images.shape[0] < 2:
+        return images
+    if torch.rand((), generator=generator).item() >= probability:
+        return images
+    batch, _, height, width = images.shape
+    permutation = torch.randperm(batch, generator=generator).to(images.device)
+    region_ratio = region_min + (region_max - region_min) * torch.rand(
+        (), generator=generator
+    ).item()
+    mix = max_mix * torch.rand((), generator=generator).item()
+    spectrum = torch.fft.fftshift(
+        torch.fft.fft2(images.float(), dim=(-2, -1)), dim=(-2, -1)
+    )
+    amplitude = spectrum.abs()
+    phase = torch.angle(spectrum)
+    mixed_amplitude = amplitude.clone()
+    radius_h = max(1, int(height * region_ratio))
+    radius_w = max(1, int(width * region_ratio))
+    center_h, center_w = height // 2, width // 2
+    region = (
+        slice(None), slice(None),
+        slice(center_h - radius_h, center_h + radius_h + 1),
+        slice(center_w - radius_w, center_w + radius_w + 1),
+    )
+    mixed_amplitude[region] = (
+        (1.0 - mix) * amplitude[region] + mix * amplitude[permutation][region]
+    )
+    mixed_spectrum = torch.polar(mixed_amplitude, phase)
+    augmented = torch.fft.ifft2(
+        torch.fft.ifftshift(mixed_spectrum, dim=(-2, -1)), dim=(-2, -1)
+    ).real
+    return augmented.to(images.dtype).clamp_(0.0, 1.0)
+
+
 def soft_dice_coefficient(logits, target, smooth=1.0):
     probs = torch.sigmoid(logits)
     probs = probs.view(probs.size(0), -1)
@@ -469,6 +555,8 @@ def set_training_stage(model, stage):
         "fafem_stage2.",
         "fafem_stage3.",
         "cross_level_fusion.",
+        "geometry_conv_stage3.",
+        "uncertainty_refinement.",
     )
     if stage == "detail":
         trainable_prefixes = ("detail.", "detail_branch.", "detail_conv.",
@@ -697,6 +785,30 @@ def snapshot_state_dict(model):
     }
 
 
+def snapshot_rng_state():
+    state = {
+        "python_rng_state": random.getstate(),
+        "numpy_rng_state": np.random.get_state(),
+        "torch_rng_state": torch.get_rng_state(),
+    }
+    if torch.cuda.is_available():
+        state["cuda_rng_state_all"] = torch.cuda.get_rng_state_all()
+    return state
+
+
+def restore_rng_state(checkpoint):
+    if "python_rng_state" in checkpoint:
+        random.setstate(checkpoint["python_rng_state"])
+    if "numpy_rng_state" in checkpoint:
+        np.random.set_state(checkpoint["numpy_rng_state"])
+    if "torch_rng_state" in checkpoint:
+        torch.set_rng_state(checkpoint["torch_rng_state"].cpu())
+    if torch.cuda.is_available() and "cuda_rng_state_all" in checkpoint:
+        torch.cuda.set_rng_state_all(
+            [state.cpu() for state in checkpoint["cuda_rng_state_all"]]
+        )
+
+
 def scored_model_state_dict(model, ema=None):
     if ema is None:
         return snapshot_state_dict(model)
@@ -720,6 +832,12 @@ def train_epoch_segmentation(
     amp_enabled=False,
     scaler=None,
     max_grad_norm=3.5,
+    deep_supervision_weights=DEEP_SUPERVISION_WEIGHTS,
+    frequency_augmentation_probability_value=0.0,
+    frequency_generator=None,
+    frequency_max_mix=0.5,
+    frequency_region_min=0.01,
+    frequency_region_max=0.05,
 ):
     import random
     import numpy as np
@@ -742,8 +860,10 @@ def train_epoch_segmentation(
     # ----------------------------
     enc_grad_sum = 0.0
     dec_grad_sum = 0.0
+    geometry_grad_sum = 0.0
     enc_grad_rms_sum = 0.0
     dec_grad_rms_sum = 0.0
+    geometry_grad_rms_sum = 0.0
     prob_mean_sum = 0.0
     prob_std_sum = 0.0
     mask_area_sum = 0.0
@@ -765,6 +885,15 @@ def train_epoch_segmentation(
         target = target.to(device)
 
         data = torch.clamp(data, 0.0, 1.0)
+        if frequency_augmentation_probability_value > 0:
+            data = frequency_style_augment(
+                data,
+                frequency_augmentation_probability_value,
+                frequency_generator,
+                max_mix=frequency_max_mix,
+                region_min=frequency_region_min,
+                region_max=frequency_region_max,
+            )
 
         if target.dim() == 3:
             target = target.unsqueeze(1)
@@ -790,7 +919,9 @@ def train_epoch_segmentation(
                 optimizer.zero_grad(set_to_none=True)
                 continue
 
-            output, loss = deep_supervision_loss(outputs, target, criterion)
+            output, loss = deep_supervision_loss(
+                outputs, target, criterion, weights=deep_supervision_weights
+            )
 
         if not torch.isfinite(loss):
             skipped_batches += 1
@@ -832,11 +963,17 @@ def train_epoch_segmentation(
 
         enc_grad = grad_norm(model.encoder)
         dec_grad = grad_norm_except_encoder(model)
+        geometry_module = getattr(model, "geometry_conv_stage3", None)
+        geometry_grad = grad_norm(geometry_module) if geometry_module is not None else 0.0
         from one_seed_models import gradient_rms
         enc_grad_rms = gradient_rms(model.encoder.parameters())
         encoder_ids = {id(parameter) for parameter in model.encoder.parameters()}
         dec_grad_rms = gradient_rms(
             parameter for parameter in model.parameters() if id(parameter) not in encoder_ids
+        )
+        geometry_grad_rms = (
+            gradient_rms(geometry_module.parameters())
+            if geometry_module is not None else 0.0
         )
 
         grad_norm_total = torch.nn.utils.clip_grad_norm_(
@@ -875,8 +1012,10 @@ def train_epoch_segmentation(
 
         enc_grad_sum += enc_grad
         dec_grad_sum += dec_grad
+        geometry_grad_sum += geometry_grad
         enc_grad_rms_sum += enc_grad_rms
         dec_grad_rms_sum += dec_grad_rms
+        geometry_grad_rms_sum += geometry_grad_rms
 
         prob_mean_sum += prob_mean
         prob_std_sum += prob_std
@@ -887,7 +1026,7 @@ def train_epoch_segmentation(
         # Current learning rates
 
         refine_lr = optimizer_lr(optimizer, "refine", fallback_idx=0)
-        enc_lr = optimizer_lr(optimizer, "encoder", fallback_idx=0)
+        enc_lr = encoder_optimizer_lr(optimizer)
         dec_lr = optimizer_lr(optimizer, "decoder", fallback_idx=-1)
 
         pbar.set_postfix(
@@ -902,11 +1041,15 @@ def train_epoch_segmentation(
 
             DecGrad=f"{dec_grad:.2f}",
 
+            GeoGrad=f"{geometry_grad:.2f}",
+
             GradClip=f"{max_grad_norm:.1f}",
 
             EncRMS=f"{enc_grad_rms:.2e}",
 
             DecRMS=f"{dec_grad_rms:.2e}",
+
+            GeoRMS=f"{geometry_grad_rms:.2e}",
 
             Prob=f"{prob_mean:.3f}",
 
@@ -2498,6 +2641,7 @@ if __name__ == "__main__":
     parser.add_argument('--encoder_layer_decay', type=float, default=0.8, help='Deep-to-shallow ConvNeXt LR decay')
     parser.add_argument('--max_grad_norm', type=float, default=0, help='Fixed gradient clipping norm; non-positive preserves staged defaults')
     parser.add_argument('--early_stop_patience', type=int, default=40, help='Stop training after this many epochs without validation IoU improvement. 0 disables it')
+    parser.add_argument('--early_stop_start_epoch', type=int, default=0, help='One-based epoch after which early stopping may trigger')
     parser.add_argument('--use_ema', type=strtobool, default=True, help='Evaluate and save an exponential moving average of model weights')
     parser.add_argument('--ema_decay', type=float, default=0.995, help='EMA decay for model weights')
     parser.add_argument('--testing', type=strtobool, default=True, help='Execute testing.')
@@ -2520,6 +2664,17 @@ if __name__ == "__main__":
     add_ablation_arguments(parser)
     args = parser.parse_args()
     fixed_unfreeze_epochs = parse_fixed_unfreeze_epochs(args.fixed_unfreeze_epochs)
+    if args.deep_supervision_schedule == "anneal":
+        if args.deep_supervision_heads == 0:
+            raise ValueError("Deep-supervision annealing requires auxiliary heads")
+        if not (
+            0 < args.deep_supervision_anneal_start
+            < args.deep_supervision_anneal_end
+            <= args.epochs
+        ):
+            raise ValueError(
+                "Deep-supervision annealing requires 0 < start < end <= epochs"
+            )
 
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -2558,7 +2713,31 @@ if __name__ == "__main__":
     train_dataset = KvasirSEGDataset(data.x_train, data.y_train, is_train=True, target_size=args.input_size[0])  # Pass target size to dataset
     test_dataset = KvasirSEGDataset(data.x_test, data.y_test, is_train=False, target_size=args.input_size[0])  # Pass target size to dataset
 
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    train_sampler_generator = torch.Generator()
+    train_sampler_generator.manual_seed(args.seed)
+    frequency_generator = torch.Generator()
+    frequency_generator.manual_seed(args.seed + 30030)
+    if args.sampling_mode == "lesion_size_weighted":
+        sample_weights, foreground_ratios = lesion_size_sampling_weights(data.y_train)
+        train_sampler = torch.utils.data.WeightedRandomSampler(
+            sample_weights,
+            num_samples=len(sample_weights),
+            replacement=True,
+            generator=train_sampler_generator,
+        )
+        logging.info(
+            "Lesion-size weighted sampling: "
+            f"<2%={(foreground_ratios < 0.02).sum()}, "
+            f"2-10%={((foreground_ratios >= 0.02) & (foreground_ratios < 0.10)).sum()}, "
+            f">=10%={(foreground_ratios >= 0.10).sum()}"
+        )
+    else:
+        train_sampler = torch.utils.data.RandomSampler(
+            train_dataset, generator=train_sampler_generator
+        )
+    train_loader = DataLoader(
+        train_dataset, batch_size=args.batch_size, sampler=train_sampler
+    )
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
     best_acc = 0.0
 
@@ -2643,6 +2822,11 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--cross_level_fusion_version does not match the registered experiment"
                     )
+                if (bool(args.enable_geometry_conv_stage3) !=
+                        bool(getattr(experiment_config, "enable_geometry_conv_stage3", False))):
+                    raise ValueError(
+                        "--enable_geometry_conv_stage3 does not match the registered experiment"
+                    )
                 if args.csaf_version != experiment_config.csaf_version:
                     raise ValueError(
                         "--csaf_version does not match the registered experiment"
@@ -2650,6 +2834,16 @@ if __name__ == "__main__":
                 if args.unfreeze_schedule != experiment_config.unfreeze_schedule:
                     raise ValueError(
                         "--unfreeze_schedule does not match the registered experiment"
+                    )
+                if (bool(args.enable_frequency_augmentation) !=
+                        experiment_config.enable_frequency_augmentation):
+                    raise ValueError(
+                        "--enable_frequency_augmentation does not match the registered experiment"
+                    )
+                if (args.uncertainty_refinement_version !=
+                        experiment_config.uncertainty_refinement_version):
+                    raise ValueError(
+                        "--uncertainty_refinement_version does not match the registered experiment"
                     )
                 model = build_experiment_model(
                     experiment_config, encoder_weights
@@ -2860,6 +3054,11 @@ if __name__ == "__main__":
         logging.info("Skip inputs: Stage 1, Stage 2, Stage 3")
         logging.info("Cross-Level Fusion outputs: Refined Stage 1, Refined Stage 2, Refined Stage 3")
         logging.info(f"Cross-Level Fusion parameters: {cross_level_params:,}")
+    geometry_module = getattr(model, "geometry_conv_stage3", None)
+    if geometry_module is not None:
+        geometry_params = sum(parameter.numel() for parameter in geometry_module.parameters())
+        logging.info("Geometry Conv Stage3: ON")
+        logging.info(f"Geometry Conv Stage3 parameters: {geometry_params:,}")
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
     if args.experiment_name and args.experiment_name.startswith("one_seed_"):
@@ -2902,6 +3101,34 @@ if __name__ == "__main__":
         + (f"fixed max_grad_norm={args.max_grad_norm:.2f}"
            if args.max_grad_norm > 0 else "staged legacy policy")
     )
+    logging.info(
+        "Deep supervision: "
+        f"heads={args.deep_supervision_heads}, "
+        f"schedule={args.deep_supervision_schedule}, "
+        f"anneal={args.deep_supervision_anneal_start}-"
+        f"{args.deep_supervision_anneal_end} | "
+        f"sampling={args.sampling_mode}"
+    )
+    logging.info(
+        "Frequency augmentation: "
+        f"{'ON' if args.enable_frequency_augmentation else 'OFF'} | "
+        f"max_probability={args.frequency_max_probability:g}, "
+        f"region={100 * args.frequency_region_min:g}-"
+        f"{100 * args.frequency_region_max:g}%, "
+        f"max_mix={args.frequency_max_mix:g}, "
+        f"anneal={100 * args.frequency_constant_fraction:g}-"
+        f"{100 * args.frequency_anneal_end_fraction:g}%"
+    )
+    logging.info(
+        "Uncertainty refinement: "
+        f"{args.uncertainty_refinement_version}"
+    )
+    uncertainty_module = getattr(model, "uncertainty_refinement", None)
+    if uncertainty_module is not None:
+        logging.info(
+            "Uncertainty refinement parameters: "
+            f"{sum(parameter.numel() for parameter in uncertainty_module.parameters()):,}"
+        )
 
 
     # for name, param in model.named_parameters():
@@ -2949,7 +3176,9 @@ if __name__ == "__main__":
     elapsed_seconds_before_resume = 0.0
     restart_stage_schedule = False
     initializing_refinement = False
-    new_arch_prefixes = ("context.", "detail_fusion.")
+    new_arch_prefixes = (
+        "context.", "detail_fusion.", "uncertainty_refinement."
+    )
     checkpoint_dir = Path(args.logging_dir) / f"checkpoints_{args.model_name}"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     canonical_checkpoint_path = (
@@ -3178,6 +3407,48 @@ if __name__ == "__main__":
             # for param_group in optimizer.param_groups:
             #     param_group['lr'] = args.escape_lr
 
+    if checkpoint is not None:
+        checkpoint_sampling_mode = checkpoint.get("sampling_mode", "uniform")
+        if checkpoint_sampling_mode != args.sampling_mode:
+            raise ValueError(
+                "Checkpoint sampling mode does not match the run: "
+                f"{checkpoint_sampling_mode} != {args.sampling_mode}"
+            )
+        checkpoint_ds_schedule = checkpoint.get(
+            "deep_supervision_schedule", "constant"
+        )
+        if checkpoint_ds_schedule != args.deep_supervision_schedule:
+            raise ValueError(
+                "Checkpoint deep-supervision schedule does not match the run: "
+                f"{checkpoint_ds_schedule} != {args.deep_supervision_schedule}"
+            )
+        sampler_state = checkpoint.get("train_sampler_generator_state")
+        if sampler_state is not None:
+            train_sampler_generator.set_state(sampler_state.cpu())
+            logging.info("Training sampler generator state resumed from checkpoint.")
+        checkpoint_frequency_enabled = checkpoint.get(
+            "enable_frequency_augmentation", False
+        )
+        if checkpoint_frequency_enabled != bool(args.enable_frequency_augmentation):
+            raise ValueError("Checkpoint frequency-augmentation mode does not match the run")
+        frequency_config = {
+            "max_probability": args.frequency_max_probability,
+            "max_mix": args.frequency_max_mix,
+            "region_min": args.frequency_region_min,
+            "region_max": args.frequency_region_max,
+            "constant_fraction": args.frequency_constant_fraction,
+            "anneal_end_fraction": args.frequency_anneal_end_fraction,
+        }
+        checkpoint_frequency_config = checkpoint.get("frequency_augmentation_config")
+        if checkpoint_frequency_config is not None and checkpoint_frequency_config != frequency_config:
+            raise ValueError("Checkpoint frequency-augmentation configuration does not match the run")
+        frequency_state = checkpoint.get("frequency_generator_state")
+        if frequency_state is not None:
+            frequency_generator.set_state(frequency_state.cpu())
+            logging.info("Frequency augmentation generator state resumed from checkpoint.")
+        restore_rng_state(checkpoint)
+        logging.info("Python, NumPy, Torch and CUDA RNG states resumed from checkpoint.")
+
     ema = None
     if args.use_ema:
         ema = ModelEMA(model, decay=args.ema_decay)
@@ -3359,6 +3630,31 @@ if __name__ == "__main__":
                 )
 
             for epoch in range(start_epoch, args.epochs):
+                current_ds_weights = deep_supervision_weights_for_epoch(
+                    epoch + 1,
+                    args.deep_supervision_schedule,
+                    args.deep_supervision_anneal_start,
+                    args.deep_supervision_anneal_end,
+                )
+                logging.info(
+                    f"Epoch {epoch + 1}: deep-supervision weights "
+                    f"main={current_ds_weights[0]:.4f}, "
+                    f"d2={current_ds_weights[1]:.4f}, "
+                    f"d3={current_ds_weights[2]:.4f}"
+                )
+                frequency_probability = (
+                    frequency_augmentation_probability(
+                        epoch + 1, args.epochs,
+                        maximum=args.frequency_max_probability,
+                        constant_fraction=args.frequency_constant_fraction,
+                        anneal_end_fraction=args.frequency_anneal_end_fraction,
+                    )
+                    if args.enable_frequency_augmentation else 0.0
+                )
+                logging.info(
+                    f"Epoch {epoch + 1}: frequency augmentation "
+                    f"probability={frequency_probability:.4f}"
+                )
                 if (
                     gradual_unfreezing
                     and (
@@ -3428,6 +3724,12 @@ if __name__ == "__main__":
                                 epoch, full_train_start_epoch
                             )
                         ),
+                        deep_supervision_weights=current_ds_weights,
+                        frequency_augmentation_probability_value=frequency_probability,
+                        frequency_generator=frequency_generator,
+                        frequency_max_mix=args.frequency_max_mix,
+                        frequency_region_min=args.frequency_region_min,
+                        frequency_region_max=args.frequency_region_max,
                     )
                     if ema is not None:
                         ema.store(model)
@@ -3540,6 +3842,23 @@ if __name__ == "__main__":
                             'optimizer_profile': args.optimizer_profile,
                             'encoder_layer_decay': args.encoder_layer_decay,
                             'optimizer_max_lrs': configured_group_lrs,
+                            'deep_supervision_schedule': args.deep_supervision_schedule,
+                            'deep_supervision_anneal_start': args.deep_supervision_anneal_start,
+                            'deep_supervision_anneal_end': args.deep_supervision_anneal_end,
+                            'sampling_mode': args.sampling_mode,
+                            'train_sampler_generator_state': train_sampler_generator.get_state(),
+                            'enable_frequency_augmentation': bool(args.enable_frequency_augmentation),
+                            'frequency_augmentation_config': {
+                                'max_probability': args.frequency_max_probability,
+                                'max_mix': args.frequency_max_mix,
+                                'region_min': args.frequency_region_min,
+                                'region_max': args.frequency_region_max,
+                                'constant_fraction': args.frequency_constant_fraction,
+                                'anneal_end_fraction': args.frequency_anneal_end_fraction,
+                            },
+                            'frequency_generator_state': frequency_generator.get_state(),
+                            'frequency_augmentation_probability': frequency_probability,
+                            **snapshot_rng_state(),
                         }
                     add_scaler_state(checkpoint_dict, scaler, amp_enabled)
                     if ema is not None:
@@ -3570,6 +3889,7 @@ if __name__ == "__main__":
                 else:
                     early_stopping_ready = (
                         epoch >= full_train_start_epoch
+                        and (epoch + 1) > args.early_stop_start_epoch
                         and (
                             not gradual_unfreezing
                             or encoder_stages_unfrozen >= 5
@@ -3622,6 +3942,23 @@ if __name__ == "__main__":
                         'optimizer_profile': args.optimizer_profile,
                         'encoder_layer_decay': args.encoder_layer_decay,
                         'optimizer_max_lrs': configured_group_lrs,
+                        'deep_supervision_schedule': args.deep_supervision_schedule,
+                        'deep_supervision_anneal_start': args.deep_supervision_anneal_start,
+                        'deep_supervision_anneal_end': args.deep_supervision_anneal_end,
+                        'sampling_mode': args.sampling_mode,
+                        'train_sampler_generator_state': train_sampler_generator.get_state(),
+                        'enable_frequency_augmentation': bool(args.enable_frequency_augmentation),
+                        'frequency_augmentation_config': {
+                            'max_probability': args.frequency_max_probability,
+                            'max_mix': args.frequency_max_mix,
+                            'region_min': args.frequency_region_min,
+                            'region_max': args.frequency_region_max,
+                            'constant_fraction': args.frequency_constant_fraction,
+                            'anneal_end_fraction': args.frequency_anneal_end_fraction,
+                        },
+                        'frequency_generator_state': frequency_generator.get_state(),
+                        'frequency_augmentation_probability': frequency_probability,
+                        **snapshot_rng_state(),
                     }
                     add_scaler_state(latest_checkpoint, scaler, amp_enabled)
                     if ema is not None:

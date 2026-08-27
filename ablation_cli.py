@@ -40,6 +40,7 @@ def add_ablation_arguments(parser):
     parser.add_argument(
         "--cross_level_fusion_version", choices=("v1", "v2"), default="v1"
     )
+    parser.add_argument("--enable_geometry_conv_stage3", type=parse_bool, default=False)
     parser.add_argument("--csaf_version", choices=("v1", "v2"), default="v1")
     parser.add_argument(
         "--detail_fusion_mode",
@@ -47,6 +48,18 @@ def add_ablation_arguments(parser):
         default="none",
     )
     parser.add_argument("--deep_supervision_heads", type=int, choices=(0, 1, 2, 3), default=0)
+    parser.add_argument("--deep_supervision_schedule", choices=("constant", "anneal"), default="constant")
+    parser.add_argument("--deep_supervision_anneal_start", type=int, default=96)
+    parser.add_argument("--deep_supervision_anneal_end", type=int, default=128)
+    parser.add_argument("--sampling_mode", choices=("uniform", "lesion_size_weighted"), default="uniform")
+    parser.add_argument("--enable_frequency_augmentation", type=parse_bool, default=False)
+    parser.add_argument("--frequency_max_probability", type=float, default=0.5)
+    parser.add_argument("--frequency_max_mix", type=float, default=0.5)
+    parser.add_argument("--frequency_region_min", type=float, default=0.01)
+    parser.add_argument("--frequency_region_max", type=float, default=0.05)
+    parser.add_argument("--frequency_constant_fraction", type=float, default=0.70)
+    parser.add_argument("--frequency_anneal_end_fraction", type=float, default=0.80)
+    parser.add_argument("--uncertainty_refinement_version", choices=("none", "v2"), default="none")
     parser.add_argument("--auto_resume", type=parse_bool, default=False)
     parser.add_argument("--amp", type=parse_bool, default=False)
     return parser

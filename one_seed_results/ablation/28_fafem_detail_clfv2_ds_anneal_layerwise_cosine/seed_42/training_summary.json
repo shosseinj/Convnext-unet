@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\28_fafem_detail_clfv2_ds_anneal_layerwise_cosine\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 114,
+  "best_validation_metric": 0.869254489739736,
+  "completion_reason": "max_epochs",
+  "experiment_name": "one_seed_28_fafem_detail_clfv2_ds_anneal_layerwise_cosine",
+  "final_epoch": 159,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4646.772405862808
+}

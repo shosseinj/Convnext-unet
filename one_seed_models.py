@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models.architecture_factory import UGBRVariant
+from models.architecture_factory import UGBRVariant, UncertaintyRefinementV2Variant
 from models.convnext_pretrain import ConvNeXtUNet
 
 
@@ -107,6 +107,7 @@ def build_experiment_model(config, encoder_weights, device=None):
         fafem_stage3=config.fafem_stage3,
         enable_cross_level_fusion=config.enable_cross_level_fusion,
         cross_level_fusion_version=config.cross_level_fusion_version,
+        enable_geometry_conv_stage3=getattr(config, "enable_geometry_conv_stage3", False),
     )
     if config.upsample_mode == "dysample":
         for decoder in (model.decoder4, model.decoder3, model.decoder2, model.decoder1):
@@ -115,6 +116,13 @@ def build_experiment_model(config, encoder_weights, device=None):
         raise ValueError(f"Unsupported upsample mode: {config.upsample_mode}")
     model.experiment_variant = config.to_dict()
     model = UGBRVariant(model) if config.enable_ugbr else model
+    if config.uncertainty_refinement_version == "v2":
+        model = UncertaintyRefinementV2Variant(model)
+    elif config.uncertainty_refinement_version != "none":
+        raise ValueError(
+            "Unsupported uncertainty refinement version: "
+            f"{config.uncertainty_refinement_version}"
+        )
     model.experiment_variant = config.to_dict()
     if device is not None:
         model = model.to(device)
