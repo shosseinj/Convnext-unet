@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\34_fafem_gated_skip_stage3\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 162,
+  "best_validation_metric": 0.8711430515561785,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_34_fafem_gated_skip_stage3",
+  "final_epoch": 192,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4886.300634860992
+}

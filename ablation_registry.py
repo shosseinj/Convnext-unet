@@ -24,12 +24,14 @@ class ExperimentConfig:
     fafem_stage1: bool = False
     fafem_stage2: bool = False
     fafem_stage3: bool = False
+    enable_gated_skip_stage3: bool = False
     enable_cross_level_fusion: bool = False
     cross_level_fusion_version: str = "v1"
     unfreeze_schedule: str = "plateau"
     enable_frequency_augmentation: bool = False
     uncertainty_refinement_version: str = "none"
     enable_geometry_conv_stage3: bool = False
+    decoder_highres_width: int = 96
 
     def to_dict(self):
         values = asdict(self)
@@ -48,6 +50,8 @@ class ExperimentConfig:
         for key in ("fafem_stage1", "fafem_stage2", "fafem_stage3"):
             if not values[key]:
                 values.pop(key)
+        if not self.enable_gated_skip_stage3:
+            values.pop("enable_gated_skip_stage3")
         if not self.enable_cross_level_fusion:
             values.pop("enable_cross_level_fusion")
         if self.cross_level_fusion_version == "v1":
@@ -60,6 +64,8 @@ class ExperimentConfig:
             values.pop("uncertainty_refinement_version")
         if not self.enable_geometry_conv_stage3:
             values.pop("enable_geometry_conv_stage3")
+        if self.decoder_highres_width == 96:
+            values.pop("decoder_highres_width")
         return values
 
 
@@ -114,7 +120,10 @@ _EXPERIMENTS = {
         ("one_seed_31_fafem_mild_fal", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20, False, True, "v1", False, False, False, False, "v1", "plateau", True, "none"),
         ("one_seed_fafem_plus_geometry_conv_stage3", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 120, 0, False, True, "v1", False, False, False, False, "v1", "none", False, "none", True),
         ("one_seed_32_fafem_layerwise_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 160, 0, False, True, "v1", False, False, False, False, "v1", "none", False, "none"),
-        ("one_seed_33_fafem_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, "v1", "none", False, "none"),
+        ("one_seed_33_fafem_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False),
+        ("one_seed_34_fafem_gated_skip_stage3", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, True, False, "v1", "none", False, "none", False),
+        ("one_seed_35_fafem_decoder_highres_wide", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 120),
+        ("one_seed_36_fafem_bsei_warmup_cosine", False, "bsei", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

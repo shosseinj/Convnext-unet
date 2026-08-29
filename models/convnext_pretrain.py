@@ -322,6 +322,23 @@ class AttentionGateSkip(nn.Module):
         return self.fuse(torch.cat([decoder, skip * gate], dim=1))
 
 
+class Stage3GatedSkipFusion(nn.Module):
+    """Lightweight gate for stage-3 skip before the existing skip fusion."""
+    def __init__(self, decoder_channels, skip_channels):
+        super().__init__()
+        self.decoder_proj = nn.Conv2d(decoder_channels, skip_channels, 1, bias=True)
+        self.skip_proj = nn.Conv2d(skip_channels, skip_channels, 1, bias=True)
+        nn.init.zeros_(self.decoder_proj.weight)
+        nn.init.zeros_(self.decoder_proj.bias)
+        nn.init.zeros_(self.skip_proj.weight)
+        nn.init.zeros_(self.skip_proj.bias)
+
+    def forward(self, decoder, skip):
+        decoder = resize_like(decoder, skip)
+        gate = torch.sigmoid(self.decoder_proj(decoder) + self.skip_proj(skip))
+        return skip * gate
+
+
 # ============================================================================
 # DECODER BLOCK (LayerNorm + GELU)
 # ============================================================================
@@ -546,9 +563,11 @@ class ConvNeXtUNet(nn.Module):
                  detail_fusion_mode=None, backbone="convnext_tiny",
                  enable_csaf=False, enable_fafem=False, csaf_version="v1",
                  fafem_stage1=False, fafem_stage2=False, fafem_stage3=False,
+                 enable_gated_skip_stage3=False,
                  enable_cross_level_fusion=False,
                  cross_level_fusion_version="v1",
-                 enable_geometry_conv_stage3=False):
+                 enable_geometry_conv_stage3=False,
+                 decoder_highres_width=96):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -572,6 +591,8 @@ class ConvNeXtUNet(nn.Module):
             raise ValueError(
                 f"Unsupported Cross-Level Fusion version: {cross_level_fusion_version}"
             )
+        if decoder_highres_width < 96:
+            raise ValueError("decoder_highres_width must be at least 96")
         self.variant_config = {
             "enable_msc": bool(enable_msc),
             "skip_mode": skip_mode,
@@ -587,9 +608,11 @@ class ConvNeXtUNet(nn.Module):
             "fafem_stage1": bool(fafem_stage1),
             "fafem_stage2": bool(fafem_stage2),
             "fafem_stage3": bool(fafem_stage3),
+            "enable_gated_skip_stage3": bool(enable_gated_skip_stage3),
             "enable_cross_level_fusion": bool(enable_cross_level_fusion),
             "cross_level_fusion_version": cross_level_fusion_version,
             "enable_geometry_conv_stage3": bool(enable_geometry_conv_stage3),
+            "decoder_highres_width": int(decoder_highres_width),
         }
         
         # Encoder
@@ -665,9 +688,9 @@ class ConvNeXtUNet(nn.Module):
                       if skip_mode == "attention_gate" else
                       fusion(dims[0] + encoder_channels[0], dims[0], dropout_rate))
         
-        self.decoder1 = DecoderBlock(dims[0], dims[0], dropout_rate)
-        self.bsei1 = (SimpleFusion(dims[0], dims[0], dropout_rate)
-                      if skip_mode == "attention_gate" else fusion(dims[0], dims[0], dropout_rate))
+        self.decoder1 = DecoderBlock(dims[0], decoder_highres_width, dropout_rate)
+        self.bsei1 = (SimpleFusion(decoder_highres_width, decoder_highres_width, dropout_rate)
+                      if skip_mode == "attention_gate" else fusion(decoder_highres_width, decoder_highres_width, dropout_rate))
 
         self.detail_branch = DetailBranch(detail_channels, dropout_rate) if detail_channels else None
         if detail_fusion_mode == "gdf":
@@ -687,14 +710,15 @@ class ConvNeXtUNet(nn.Module):
              for index in range(deep_supervision_heads)]
         )
         
+        final_refine_hidden = max(48, decoder_highres_width // 2)
         self.final_refine = nn.Sequential(
-            SeparableConv2d(96, 96, 3, padding=1, bias=False),
-            LayerNorm(96, eps=1e-6, data_format="channels_first"),
+            SeparableConv2d(decoder_highres_width, decoder_highres_width, 3, padding=1, bias=False),
+            LayerNorm(decoder_highres_width, eps=1e-6, data_format="channels_first"),
             nn.GELU(),
-            SeparableConv2d(96, 48, 3, padding=1, bias=False),
-            LayerNorm(48, eps=1e-6, data_format="channels_first"),
+            SeparableConv2d(decoder_highres_width, final_refine_hidden, 3, padding=1, bias=False),
+            LayerNorm(final_refine_hidden, eps=1e-6, data_format="channels_first"),
             nn.GELU(),
-            nn.Conv2d(48, num_classes, 1)
+            nn.Conv2d(final_refine_hidden, num_classes, 1)
         )
 
         # Keep common baseline initialization reproducible: constructing this
@@ -715,6 +739,10 @@ class ConvNeXtUNet(nn.Module):
         self.fafem_stage3 = (
             FrequencyAwareFeatureEnhancement(encoder_channels[2])
             if fafem_stage3 else None
+        )
+        self.gated_skip_stage3 = (
+            Stage3GatedSkipFusion(dims[2], encoder_channels[2])
+            if enable_gated_skip_stage3 else None
         )
         self.cross_level_fusion = (
             (CrossLevelFusionV2(encoder_channels[:3], fusion_channels=64)
@@ -779,6 +807,8 @@ class ConvNeXtUNet(nn.Module):
         # Decoder with skip connections
         d4 = self.decoder4(b)
         d4 = resize_like(d4, f3)
+        if self.gated_skip_stage3 is not None:
+            f3 = self.gated_skip_stage3(d4, f3)
         d4 = (self.bsei4(d4, f3) if self.variant_config["skip_mode"] == "attention_gate"
               else self.bsei4(torch.cat([d4, f3], dim=1)))
         

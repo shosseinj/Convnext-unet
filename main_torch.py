@@ -2812,6 +2812,11 @@ if __name__ == "__main__":
                         raise ValueError(
                             f"--fafem_stage{stage_index} does not match the registered experiment"
                         )
+                if (bool(args.enable_gated_skip_stage3) !=
+                        bool(getattr(experiment_config, "enable_gated_skip_stage3", False))):
+                    raise ValueError(
+                        "--enable_gated_skip_stage3 does not match the registered experiment"
+                    )
                 if (bool(args.enable_cross_level_fusion) !=
                         experiment_config.enable_cross_level_fusion):
                     raise ValueError(
@@ -2826,6 +2831,10 @@ if __name__ == "__main__":
                         bool(getattr(experiment_config, "enable_geometry_conv_stage3", False))):
                     raise ValueError(
                         "--enable_geometry_conv_stage3 does not match the registered experiment"
+                    )
+                if args.decoder_highres_width != getattr(experiment_config, "decoder_highres_width", 96):
+                    raise ValueError(
+                        "--decoder_highres_width does not match the registered experiment"
                     )
                 if args.csaf_version != experiment_config.csaf_version:
                     raise ValueError(
@@ -2864,6 +2873,7 @@ if __name__ == "__main__":
                     fafem_stage1=args.fafem_stage1,
                     fafem_stage2=args.fafem_stage2,
                     fafem_stage3=args.fafem_stage3,
+                    enable_gated_skip_stage3=args.enable_gated_skip_stage3,
                     enable_cross_level_fusion=args.enable_cross_level_fusion,
                     cross_level_fusion_version=args.cross_level_fusion_version,
                 )
