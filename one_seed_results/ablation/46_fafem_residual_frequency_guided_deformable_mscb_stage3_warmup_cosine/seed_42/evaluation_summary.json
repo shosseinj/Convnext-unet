@@ -1,0 +1,66 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "20424b54ed133e4d02f2efb15bde2382cdec6f45839bac057bb530470fee2162",
+  "experiment_name": "one_seed_46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine",
+  "flops": 28260826272,
+  "gflops": 28.260826272,
+  "gmacs": 14.130413136,
+  "macs": 14130413136,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8584627595965012,
+      "MAE": 0.0068502620477660465,
+      "S_alpha": 0.9288471984406274,
+      "mDice": 0.8833456625541051,
+      "mE_phi": 0.9568567962066776,
+      "mIoU": 0.8091534569859504,
+      "maxE_phi": 0.9637304685486715,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9222347486061221,
+      "MAE": 0.010768270398563007,
+      "S_alpha": 0.9479936064695725,
+      "mDice": 0.9373313265462075,
+      "mE_phi": 0.9805336818378603,
+      "mIoU": 0.8845452079849858,
+      "maxE_phi": 0.9878615117434625,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7626668956833709,
+      "MAE": 0.036565303652999114,
+      "S_alpha": 0.8554774558758834,
+      "mDice": 0.7899600748028214,
+      "mE_phi": 0.8920801031607939,
+      "mIoU": 0.7060700292935276,
+      "maxE_phi": 0.898928006023484,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7596127175526614,
+      "MAE": 0.013439772595245758,
+      "S_alpha": 0.8808953003506875,
+      "mDice": 0.7965288732553588,
+      "mE_phi": 0.8984716172252348,
+      "mIoU": 0.7150534220088466,
+      "maxE_phi": 0.9164878906047634,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.9032689735264837,
+      "MAE": 0.02529377741517945,
+      "S_alpha": 0.9292781799419225,
+      "mDice": 0.9252356880903244,
+      "mE_phi": 0.9555124527582755,
+      "mIoU": 0.8741671749949456,
+      "maxE_phi": 0.9623951654853096,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "threshold": 0.45,
+  "total_parameters": 30541325,
+  "trainable_parameters": 30541325,
+  "tta": false
+}

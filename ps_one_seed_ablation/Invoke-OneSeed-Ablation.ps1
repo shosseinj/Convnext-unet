@@ -53,6 +53,7 @@ param(
     [double] $ResidualFGMSCBGuidanceInitStd = 1e-3,
     [bool] $ResidualFGMSCBSignedStrength = $false,
     [double] $ResidualFGMSCBInitialStrength = 0.0,
+    [bool] $EnableDeformableResidualFGMSCBLiteStage3 = $false,
     [bool] $EnableMSCBLiteStage2 = $false,
     [bool] $EnableMSCBLiteStage1 = $false,
     [bool] $EnableLKALiteStage3 = $false,
@@ -116,6 +117,7 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--residual_fg_mscb_guidance_init_std", [string]$ResidualFGMSCBGuidanceInitStd,
     "--residual_fg_mscb_signed_strength", ([string]$ResidualFGMSCBSignedStrength),
     "--residual_fg_mscb_initial_strength", [string]$ResidualFGMSCBInitialStrength,
+    "--enable_deformable_residual_fg_mscb_lite_stage3", ([string]$EnableDeformableResidualFGMSCBLiteStage3),
     "--enable_mscb_lite_stage2", ([string]$EnableMSCBLiteStage2),
     "--enable_mscb_lite_stage1", ([string]$EnableMSCBLiteStage1),
     "--enable_lka_lite_stage3", ([string]$EnableLKALiteStage3),
@@ -189,6 +191,7 @@ Write-Host "[seed $Seed][$OutputName] Decoder high-resolution width: $DecoderHig
 Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-3 fusion: $(if ($EnableMSCBLiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Frequency-guided MSCB-lite after Stage-3 fusion: $(if ($EnableFGMSCBLiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Residual frequency-guided MSCB-lite after Stage-3 fusion: $(if ($EnableResidualFGMSCBLiteStage3) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] Deformable residual FG-MSCB-lite after Stage-3 fusion: $(if ($EnableDeformableResidualFGMSCBLiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-2 fusion: $(if ($EnableMSCBLiteStage2) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-1 fusion: $(if ($EnableMSCBLiteStage1) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] LKA-lite on Stage-3 encoder skip: $(if ($EnableLKALiteStage3) { 'ON' } else { 'OFF' })"

@@ -955,6 +955,7 @@ def train_epoch_segmentation(
             fg_mscb = (
                 getattr(model, "fg_mscb_lite_stage3", None)
                 or getattr(model, "residual_fg_mscb_lite_stage3", None)
+                or getattr(model, "deformable_residual_fg_mscb_lite_stage3", None)
             )
             alpha = None if fg_mscb is None else fg_mscb.last_alpha
             if alpha is None:
@@ -1110,7 +1111,10 @@ def train_epoch_segmentation(
     if not fg_alpha_samples:
         raise RuntimeError("FG-MSCB alpha was not collected during training")
     alpha_statistics = summarize_fg_mscb_alpha(torch.cat(fg_alpha_samples, dim=0))
-    residual_fg_mscb = getattr(model, "residual_fg_mscb_lite_stage3", None)
+    residual_fg_mscb = (
+        getattr(model, "residual_fg_mscb_lite_stage3", None) or
+        getattr(model, "deformable_residual_fg_mscb_lite_stage3", None)
+    )
     if residual_fg_mscb is not None:
         alpha_statistics["guidance_strength"] = residual_fg_mscb.effective_guidance_strength().detach().item()
     logging.info(
@@ -2921,6 +2925,11 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--residual_fg_mscb_initial_strength does not match the registered experiment"
                     )
+                if (bool(args.enable_deformable_residual_fg_mscb_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_deformable_residual_fg_mscb_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_deformable_residual_fg_mscb_lite_stage3 does not match the registered experiment"
+                    )
                 if (bool(args.enable_mscb_lite_stage2) !=
                         bool(getattr(experiment_config, "enable_mscb_lite_stage2", False))):
                     raise ValueError(
@@ -2984,6 +2993,7 @@ if __name__ == "__main__":
                     residual_fg_mscb_guidance_init_std=args.residual_fg_mscb_guidance_init_std,
                     residual_fg_mscb_signed_strength=args.residual_fg_mscb_signed_strength,
                     residual_fg_mscb_initial_strength=args.residual_fg_mscb_initial_strength,
+                    enable_deformable_residual_fg_mscb_lite_stage3=args.enable_deformable_residual_fg_mscb_lite_stage3,
                     enable_mscb_lite_stage2=args.enable_mscb_lite_stage2,
                     enable_mscb_lite_stage1=args.enable_mscb_lite_stage1,
                     enable_lka_lite_stage3=args.enable_lka_lite_stage3,
@@ -3873,11 +3883,13 @@ if __name__ == "__main__":
                         frequency_region_max=args.frequency_region_max,
                         collect_fg_mscb_alpha=bool(
                             args.enable_fg_mscb_lite_stage3 or
-                            args.enable_residual_fg_mscb_lite_stage3
+                            args.enable_residual_fg_mscb_lite_stage3 or
+                            args.enable_deformable_residual_fg_mscb_lite_stage3
                         ),
                     )
                     if (args.enable_fg_mscb_lite_stage3 or
-                            args.enable_residual_fg_mscb_lite_stage3):
+                            args.enable_residual_fg_mscb_lite_stage3 or
+                            args.enable_deformable_residual_fg_mscb_lite_stage3):
                         train_loss, fg_alpha_statistics = train_result
                     else:
                         train_loss = train_result

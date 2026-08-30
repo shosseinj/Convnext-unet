@@ -122,6 +122,9 @@ def build_experiment_model(config, encoder_weights, device=None):
         residual_fg_mscb_initial_strength=getattr(
             config, "residual_fg_mscb_initial_strength", 0.0
         ),
+        enable_deformable_residual_fg_mscb_lite_stage3=getattr(
+            config, "enable_deformable_residual_fg_mscb_lite_stage3", False
+        ),
         enable_mscb_lite_stage2=getattr(config, "enable_mscb_lite_stage2", False),
         enable_mscb_lite_stage1=getattr(config, "enable_mscb_lite_stage1", False),
         enable_lka_lite_stage3=getattr(config, "enable_lka_lite_stage3", False),

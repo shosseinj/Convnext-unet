@@ -1,0 +1,743 @@
+2026-08-30 14:48:06 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-30 14:48:13 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-30 14:48:13 - INFO - Parameter count: total=30.54M, encoder=27.82M, decoder_head=2.72M, trainable=30.54M
+2026-08-30 14:48:13 - INFO - Experiment name: one_seed_46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine
+2026-08-30 14:48:13 - INFO - Seed: 42
+2026-08-30 14:48:13 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-30 14:48:13 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-30 14:48:13 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-30 14:48:13 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-30 14:48:13 - INFO - FAFEM parameter count: 169,777
+2026-08-30 14:48:13 - INFO - Total parameter count: 30,541,325
+2026-08-30 14:48:13 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42
+2026-08-30 14:48:13 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-30 14:48:13 - INFO - Optimizer: AdamW | refine_lr=4.50e-04, encoder_lr=3.00e-05, decoder_lr=3.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=warmup_cosine(warmup_epochs=5,eta_min=1.00e-06)
+2026-08-30 14:48:13 - INFO - Optimizer group refine: parameters=15,889, max_lr=4.500000e-04, weight_decay=1.00e-02
+2026-08-30 14:48:13 - INFO - Optimizer group decoder: parameters=2,706,844, max_lr=3.000000e-04, weight_decay=1.00e-04
+2026-08-30 14:48:13 - INFO - Optimizer group encoder_stage4: parameters=15,470,592, max_lr=3.000000e-05, weight_decay=5.00e-02
+2026-08-30 14:48:13 - INFO - Optimizer group encoder_stage3: parameters=11,112,960, max_lr=2.400000e-05, weight_decay=5.00e-02
+2026-08-30 14:48:13 - INFO - Optimizer group encoder_stage2: parameters=992,256, max_lr=1.920000e-05, weight_decay=5.00e-02
+2026-08-30 14:48:13 - INFO - Optimizer group encoder_stage1_stem: parameters=242,784, max_lr=1.536000e-05, weight_decay=5.00e-02
+2026-08-30 14:48:13 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-30 14:48:13 - INFO - Deep supervision: heads=0, schedule=constant, anneal=96-128 | sampling=uniform
+2026-08-30 14:48:13 - INFO - Frequency augmentation: OFF | max_probability=0.5, region=1-5%, max_mix=0.5, anneal=70-80%
+2026-08-30 14:48:13 - INFO - Uncertainty refinement: none
+2026-08-30 14:48:13 - INFO - EMA enabled with decay=0.995.
+2026-08-30 14:48:13 - INFO - Training stage 'all' starts at epoch 1 (30,541,325/30,541,325 parameters trainable).
+2026-08-30 14:48:13 - INFO - #### Training ####
+2026-08-30 14:48:13 - INFO - initial LR: refine=0.000045, encoder=0.000003, decoder=0.000030
+2026-08-30 14:48:13 - INFO - Epoch 1: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:48:13 - INFO - Epoch 1: frequency augmentation probability=0.0000
+2026-08-30 14:48:46 - WARNING - Skipped 3/61 batches.
+2026-08-30 14:48:46 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.999717 +/- 0.000152 | a3=0.999959 +/- 0.000070 | a5=1.000325 +/- 0.000214
+2026-08-30 14:48:46 - INFO - Residual FG-MSCB guidance strength=0.050486 (bounded to [0, 0.5])
+2026-08-30 14:48:49 - INFO - Epoch 1/200: Train Loss: 1.2497, Test Loss: 1.3159, Test Dice: 0.2384, Test IoU: 0.1356, EMA: True
+2026-08-30 14:48:50 - INFO - New best model saved with accuracy: 0.14%
+2026-08-30 14:48:50 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:48:51 - INFO - Epoch 2: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:48:51 - INFO - Epoch 2: frequency augmentation probability=0.0000
+2026-08-30 14:49:24 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.998984 +/- 0.000371 | a3=1.000469 +/- 0.000463 | a5=1.000547 +/- 0.000169
+2026-08-30 14:49:24 - INFO - Residual FG-MSCB guidance strength=0.051096 (bounded to [0, 0.5])
+2026-08-30 14:49:26 - INFO - Epoch 2/200: Train Loss: 0.8899, Test Loss: 0.9752, Test Dice: 0.2544, Test IoU: 0.1460, EMA: True
+2026-08-30 14:49:27 - INFO - New best model saved with accuracy: 0.15%
+2026-08-30 14:49:27 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:49:28 - INFO - Epoch 3: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:49:28 - INFO - Epoch 3: frequency augmentation probability=0.0000
+2026-08-30 14:50:01 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.994949 +/- 0.002234 | a3=1.002069 +/- 0.000449 | a5=1.002982 +/- 0.002298
+2026-08-30 14:50:01 - INFO - Residual FG-MSCB guidance strength=0.062273 (bounded to [0, 0.5])
+2026-08-30 14:50:04 - INFO - Epoch 3/200: Train Loss: 0.8079, Test Loss: 0.8565, Test Dice: 0.3092, Test IoU: 0.1833, EMA: True
+2026-08-30 14:50:04 - INFO - New best model saved with accuracy: 0.18%
+2026-08-30 14:50:04 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:50:05 - INFO - Epoch 4: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:50:05 - INFO - Epoch 4: frequency augmentation probability=0.0000
+2026-08-30 14:50:38 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.964535 +/- 0.028913 | a3=0.999119 +/- 0.004230 | a5=1.036346 +/- 0.027747
+2026-08-30 14:50:38 - INFO - Residual FG-MSCB guidance strength=0.082048 (bounded to [0, 0.5])
+2026-08-30 14:50:41 - INFO - Epoch 4/200: Train Loss: 0.7323, Test Loss: 0.7930, Test Dice: 0.3821, Test IoU: 0.2369, EMA: True
+2026-08-30 14:50:42 - INFO - New best model saved with accuracy: 0.24%
+2026-08-30 14:50:42 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:50:42 - INFO - Epoch 5: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:50:42 - INFO - Epoch 5: frequency augmentation probability=0.0000
+2026-08-30 14:51:16 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.904607 +/- 0.049827 | a3=1.016353 +/- 0.015017 | a5=1.079040 +/- 0.038421
+2026-08-30 14:51:16 - INFO - Residual FG-MSCB guidance strength=0.087349 (bounded to [0, 0.5])
+2026-08-30 14:51:18 - INFO - Epoch 5/200: Train Loss: 0.5523, Test Loss: 0.7302, Test Dice: 0.4300, Test IoU: 0.2750, EMA: True
+2026-08-30 14:51:19 - INFO - New best model saved with accuracy: 0.28%
+2026-08-30 14:51:19 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:51:20 - INFO - Epoch 6: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:51:20 - INFO - Epoch 6: frequency augmentation probability=0.0000
+2026-08-30 14:51:54 - WARNING - Skipped 1/61 batches.
+2026-08-30 14:51:54 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.942411 +/- 0.040376 | a3=1.001279 +/- 0.003027 | a5=1.056309 +/- 0.039878
+2026-08-30 14:51:54 - INFO - Residual FG-MSCB guidance strength=0.081897 (bounded to [0, 0.5])
+2026-08-30 14:51:56 - INFO - Epoch 6/200: Train Loss: 0.4616, Test Loss: 0.7330, Test Dice: 0.3356, Test IoU: 0.2032, EMA: True
+2026-08-30 14:51:57 - INFO - Epoch 7: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:51:57 - INFO - Epoch 7: frequency augmentation probability=0.0000
+2026-08-30 14:52:30 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.960085 +/- 0.039318 | a3=0.999893 +/- 0.002475 | a5=1.040022 +/- 0.039366
+2026-08-30 14:52:30 - INFO - Residual FG-MSCB guidance strength=0.082849 (bounded to [0, 0.5])
+2026-08-30 14:52:33 - INFO - Epoch 7/200: Train Loss: 0.4247, Test Loss: 0.7885, Test Dice: 0.2470, Test IoU: 0.1417, EMA: True
+2026-08-30 14:52:33 - INFO - Epoch 8: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:52:33 - INFO - Epoch 8: frequency augmentation probability=0.0000
+2026-08-30 14:53:07 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.996976 +/- 0.030933 | a3=0.995765 +/- 0.006213 | a5=1.007259 +/- 0.025639
+2026-08-30 14:53:07 - INFO - Residual FG-MSCB guidance strength=0.081858 (bounded to [0, 0.5])
+2026-08-30 14:53:09 - INFO - Epoch 8/200: Train Loss: 0.3942, Test Loss: 0.7202, Test Dice: 0.3799, Test IoU: 0.2351, EMA: True
+2026-08-30 14:53:10 - INFO - Epoch 9: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:53:10 - INFO - Epoch 9: frequency augmentation probability=0.0000
+2026-08-30 14:53:43 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.999406 +/- 0.043472 | a3=0.996108 +/- 0.007755 | a5=1.004486 +/- 0.038079
+2026-08-30 14:53:43 - INFO - Residual FG-MSCB guidance strength=0.083923 (bounded to [0, 0.5])
+2026-08-30 14:53:46 - INFO - Epoch 9/200: Train Loss: 0.3707, Test Loss: 0.5731, Test Dice: 0.5663, Test IoU: 0.3963, EMA: True
+2026-08-30 14:53:47 - INFO - New best model saved with accuracy: 0.40%
+2026-08-30 14:53:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:53:47 - INFO - Epoch 10: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:53:47 - INFO - Epoch 10: frequency augmentation probability=0.0000
+2026-08-30 14:54:20 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.098969 +/- 0.088433 | a3=0.986115 +/- 0.015983 | a5=0.914916 +/- 0.079510
+2026-08-30 14:54:20 - INFO - Residual FG-MSCB guidance strength=0.085127 (bounded to [0, 0.5])
+2026-08-30 14:54:23 - INFO - Epoch 10/200: Train Loss: 0.3508, Test Loss: 0.4431, Test Dice: 0.7046, Test IoU: 0.5453, EMA: True
+2026-08-30 14:54:24 - INFO - New best model saved with accuracy: 0.55%
+2026-08-30 14:54:24 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:54:24 - INFO - Epoch 11: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:54:24 - INFO - Epoch 11: frequency augmentation probability=0.0000
+2026-08-30 14:54:58 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.074360 +/- 0.076326 | a3=1.035948 +/- 0.029155 | a5=0.889692 +/- 0.087413
+2026-08-30 14:54:58 - INFO - Residual FG-MSCB guidance strength=0.082648 (bounded to [0, 0.5])
+2026-08-30 14:55:00 - INFO - Epoch 11/200: Train Loss: 0.3407, Test Loss: 0.3703, Test Dice: 0.7704, Test IoU: 0.6274, EMA: True
+2026-08-30 14:55:01 - INFO - New best model saved with accuracy: 0.63%
+2026-08-30 14:55:01 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:55:02 - INFO - Epoch 12: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:55:02 - INFO - Epoch 12: frequency augmentation probability=0.0000
+2026-08-30 14:55:35 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.027749 +/- 0.031192 | a3=1.048898 +/- 0.031384 | a5=0.923353 +/- 0.060923
+2026-08-30 14:55:35 - INFO - Residual FG-MSCB guidance strength=0.079957 (bounded to [0, 0.5])
+2026-08-30 14:55:37 - INFO - Epoch 12/200: Train Loss: 0.3287, Test Loss: 0.3300, Test Dice: 0.8041, Test IoU: 0.6733, EMA: True
+2026-08-30 14:55:38 - INFO - New best model saved with accuracy: 0.67%
+2026-08-30 14:55:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:55:38 - INFO - Epoch 13: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:55:38 - INFO - Epoch 13: frequency augmentation probability=0.0000
+2026-08-30 14:56:12 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.008232 +/- 0.023437 | a3=1.047855 +/- 0.034420 | a5=0.943912 +/- 0.057143
+2026-08-30 14:56:12 - INFO - Residual FG-MSCB guidance strength=0.079459 (bounded to [0, 0.5])
+2026-08-30 14:56:14 - INFO - Epoch 13/200: Train Loss: 0.3204, Test Loss: 0.3042, Test Dice: 0.8244, Test IoU: 0.7021, EMA: True
+2026-08-30 14:56:15 - INFO - New best model saved with accuracy: 0.70%
+2026-08-30 14:56:15 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:56:15 - INFO - Epoch 14: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:56:15 - INFO - Epoch 14: frequency augmentation probability=0.0000
+2026-08-30 14:56:49 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.993912 +/- 0.028253 | a3=1.031036 +/- 0.036573 | a5=0.975052 +/- 0.063847
+2026-08-30 14:56:49 - INFO - Residual FG-MSCB guidance strength=0.085427 (bounded to [0, 0.5])
+2026-08-30 14:56:51 - INFO - Epoch 14/200: Train Loss: 0.3181, Test Loss: 0.2858, Test Dice: 0.8377, Test IoU: 0.7215, EMA: True
+2026-08-30 14:56:52 - INFO - New best model saved with accuracy: 0.72%
+2026-08-30 14:56:52 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:56:53 - INFO - Epoch 15: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:56:53 - INFO - Epoch 15: frequency augmentation probability=0.0000
+2026-08-30 14:57:26 - INFO - FG-MSCB alpha over 1450 training samples: a1=0.995057 +/- 0.043228 | a3=1.040236 +/- 0.047721 | a5=0.964707 +/- 0.089891
+2026-08-30 14:57:26 - INFO - Residual FG-MSCB guidance strength=0.086214 (bounded to [0, 0.5])
+2026-08-30 14:57:29 - INFO - Epoch 15/200: Train Loss: 0.3026, Test Loss: 0.2692, Test Dice: 0.8496, Test IoU: 0.7392, EMA: True
+2026-08-30 14:57:29 - INFO - New best model saved with accuracy: 0.74%
+2026-08-30 14:57:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:57:30 - INFO - Epoch 16: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:57:30 - INFO - Epoch 16: frequency augmentation probability=0.0000
+2026-08-30 14:58:03 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.000493 +/- 0.044170 | a3=1.037734 +/- 0.049695 | a5=0.961773 +/- 0.092057
+2026-08-30 14:58:03 - INFO - Residual FG-MSCB guidance strength=0.090602 (bounded to [0, 0.5])
+2026-08-30 14:58:05 - INFO - Epoch 16/200: Train Loss: 0.2949, Test Loss: 0.2516, Test Dice: 0.8609, Test IoU: 0.7564, EMA: True
+2026-08-30 14:58:06 - INFO - New best model saved with accuracy: 0.76%
+2026-08-30 14:58:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:58:07 - INFO - Epoch 17: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:58:07 - INFO - Epoch 17: frequency augmentation probability=0.0000
+2026-08-30 14:58:40 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.004399 +/- 0.074771 | a3=1.009696 +/- 0.033708 | a5=0.985905 +/- 0.107359
+2026-08-30 14:58:40 - INFO - Residual FG-MSCB guidance strength=0.090832 (bounded to [0, 0.5])
+2026-08-30 14:58:42 - INFO - Epoch 17/200: Train Loss: 0.2987, Test Loss: 0.2372, Test Dice: 0.8698, Test IoU: 0.7701, EMA: True
+2026-08-30 14:58:43 - INFO - New best model saved with accuracy: 0.77%
+2026-08-30 14:58:43 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:58:44 - INFO - Epoch 18: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:58:44 - INFO - Epoch 18: frequency augmentation probability=0.0000
+2026-08-30 14:59:17 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.043661 +/- 0.143398 | a3=1.009248 +/- 0.040586 | a5=0.947091 +/- 0.181637
+2026-08-30 14:59:17 - INFO - Residual FG-MSCB guidance strength=0.100897 (bounded to [0, 0.5])
+2026-08-30 14:59:19 - INFO - Epoch 18/200: Train Loss: 0.2813, Test Loss: 0.2256, Test Dice: 0.8780, Test IoU: 0.7829, EMA: True
+2026-08-30 14:59:20 - INFO - New best model saved with accuracy: 0.78%
+2026-08-30 14:59:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:59:21 - INFO - Epoch 19: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:59:21 - INFO - Epoch 19: frequency augmentation probability=0.0000
+2026-08-30 14:59:54 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.111049 +/- 0.164820 | a3=1.034506 +/- 0.045279 | a5=0.854446 +/- 0.208016
+2026-08-30 14:59:54 - INFO - Residual FG-MSCB guidance strength=0.100306 (bounded to [0, 0.5])
+2026-08-30 14:59:56 - INFO - Epoch 19/200: Train Loss: 0.2683, Test Loss: 0.2179, Test Dice: 0.8834, Test IoU: 0.7915, EMA: True
+2026-08-30 14:59:57 - INFO - New best model saved with accuracy: 0.79%
+2026-08-30 14:59:57 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 14:59:58 - INFO - Epoch 20: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 14:59:58 - INFO - Epoch 20: frequency augmentation probability=0.0000
+2026-08-30 15:00:31 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.112994 +/- 0.168721 | a3=1.071922 +/- 0.078756 | a5=0.815083 +/- 0.246358
+2026-08-30 15:00:31 - INFO - Residual FG-MSCB guidance strength=0.103718 (bounded to [0, 0.5])
+2026-08-30 15:00:34 - INFO - Epoch 20/200: Train Loss: 0.2700, Test Loss: 0.2098, Test Dice: 0.8883, Test IoU: 0.7995, EMA: True
+2026-08-30 15:00:34 - INFO - New best model saved with accuracy: 0.80%
+2026-08-30 15:00:34 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:00:35 - INFO - Epoch 21: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:00:35 - INFO - Epoch 21: frequency augmentation probability=0.0000
+2026-08-30 15:01:09 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.080385 +/- 0.197279 | a3=1.034514 +/- 0.070005 | a5=0.885101 +/- 0.265525
+2026-08-30 15:01:09 - INFO - Residual FG-MSCB guidance strength=0.102058 (bounded to [0, 0.5])
+2026-08-30 15:01:11 - INFO - Epoch 21/200: Train Loss: 0.2624, Test Loss: 0.2025, Test Dice: 0.8934, Test IoU: 0.8079, EMA: True
+2026-08-30 15:01:12 - INFO - New best model saved with accuracy: 0.81%
+2026-08-30 15:01:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:01:13 - INFO - Epoch 22: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:01:13 - INFO - Epoch 22: frequency augmentation probability=0.0000
+2026-08-30 15:01:45 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.000345 +/- 0.232758 | a3=1.000597 +/- 0.077355 | a5=0.999057 +/- 0.307617
+2026-08-30 15:01:45 - INFO - Residual FG-MSCB guidance strength=0.111004 (bounded to [0, 0.5])
+2026-08-30 15:01:48 - INFO - Epoch 22/200: Train Loss: 0.2716, Test Loss: 0.1978, Test Dice: 0.8975, Test IoU: 0.8145, EMA: True
+2026-08-30 15:01:49 - INFO - New best model saved with accuracy: 0.81%
+2026-08-30 15:01:49 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:01:49 - INFO - Epoch 23: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:01:49 - INFO - Epoch 23: frequency augmentation probability=0.0000
+2026-08-30 15:02:22 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.025603 +/- 0.317351 | a3=1.004783 +/- 0.088769 | a5=0.969614 +/- 0.398349
+2026-08-30 15:02:22 - INFO - Residual FG-MSCB guidance strength=0.111621 (bounded to [0, 0.5])
+2026-08-30 15:02:25 - INFO - Epoch 23/200: Train Loss: 0.2544, Test Loss: 0.1927, Test Dice: 0.9008, Test IoU: 0.8200, EMA: True
+2026-08-30 15:02:26 - INFO - New best model saved with accuracy: 0.82%
+2026-08-30 15:02:26 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:02:26 - INFO - Epoch 24: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:02:26 - INFO - Epoch 24: frequency augmentation probability=0.0000
+2026-08-30 15:03:00 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.151750 +/- 0.348623 | a3=1.026931 +/- 0.060504 | a5=0.821319 +/- 0.392807
+2026-08-30 15:03:00 - INFO - Residual FG-MSCB guidance strength=0.118811 (bounded to [0, 0.5])
+2026-08-30 15:03:02 - INFO - Epoch 24/200: Train Loss: 0.2517, Test Loss: 0.1897, Test Dice: 0.9031, Test IoU: 0.8239, EMA: True
+2026-08-30 15:03:03 - INFO - New best model saved with accuracy: 0.82%
+2026-08-30 15:03:03 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:03:04 - INFO - Epoch 25: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:03:04 - INFO - Epoch 25: frequency augmentation probability=0.0000
+2026-08-30 15:03:37 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.284913 +/- 0.502956 | a3=0.992409 +/- 0.105704 | a5=0.722678 +/- 0.493179
+2026-08-30 15:03:37 - INFO - Residual FG-MSCB guidance strength=0.121002 (bounded to [0, 0.5])
+2026-08-30 15:03:40 - INFO - Epoch 25/200: Train Loss: 0.2490, Test Loss: 0.1849, Test Dice: 0.9056, Test IoU: 0.8281, EMA: True
+2026-08-30 15:03:40 - INFO - New best model saved with accuracy: 0.83%
+2026-08-30 15:03:40 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:03:41 - INFO - Epoch 26: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:03:41 - INFO - Epoch 26: frequency augmentation probability=0.0000
+2026-08-30 15:04:14 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.106992 +/- 0.470507 | a3=1.023848 +/- 0.108133 | a5=0.869160 +/- 0.538022
+2026-08-30 15:04:14 - INFO - Residual FG-MSCB guidance strength=0.125992 (bounded to [0, 0.5])
+2026-08-30 15:04:17 - INFO - Epoch 26/200: Train Loss: 0.2494, Test Loss: 0.1814, Test Dice: 0.9078, Test IoU: 0.8317, EMA: True
+2026-08-30 15:04:17 - INFO - New best model saved with accuracy: 0.83%
+2026-08-30 15:04:17 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:04:18 - INFO - Epoch 27: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:04:18 - INFO - Epoch 27: frequency augmentation probability=0.0000
+2026-08-30 15:04:51 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.737797 +/- 0.692445 | a3=0.816331 +/- 0.282367 | a5=0.445872 +/- 0.508647
+2026-08-30 15:04:51 - INFO - Residual FG-MSCB guidance strength=0.141521 (bounded to [0, 0.5])
+2026-08-30 15:04:54 - INFO - Epoch 27/200: Train Loss: 0.2437, Test Loss: 0.1790, Test Dice: 0.9090, Test IoU: 0.8337, EMA: True
+2026-08-30 15:04:54 - INFO - New best model saved with accuracy: 0.83%
+2026-08-30 15:04:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:04:55 - INFO - Epoch 28: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:04:55 - INFO - Epoch 28: frequency augmentation probability=0.0000
+2026-08-30 15:05:28 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.555233 +/- 0.897045 | a3=0.720151 +/- 0.289489 | a5=0.724615 +/- 0.776717
+2026-08-30 15:05:28 - INFO - Residual FG-MSCB guidance strength=0.144776 (bounded to [0, 0.5])
+2026-08-30 15:05:31 - INFO - Epoch 28/200: Train Loss: 0.2353, Test Loss: 0.1768, Test Dice: 0.9105, Test IoU: 0.8363, EMA: True
+2026-08-30 15:05:32 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:05:32 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:05:32 - INFO - Epoch 29: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:05:32 - INFO - Epoch 29: frequency augmentation probability=0.0000
+2026-08-30 15:06:05 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.584494 +/- 0.918430 | a3=0.674409 +/- 0.296710 | a5=0.741097 +/- 0.849887
+2026-08-30 15:06:05 - INFO - Residual FG-MSCB guidance strength=0.148180 (bounded to [0, 0.5])
+2026-08-30 15:06:08 - INFO - Epoch 29/200: Train Loss: 0.2327, Test Loss: 0.1748, Test Dice: 0.9112, Test IoU: 0.8374, EMA: True
+2026-08-30 15:06:09 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:06:09 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:06:09 - INFO - Epoch 30: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:06:09 - INFO - Epoch 30: frequency augmentation probability=0.0000
+2026-08-30 15:06:42 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.667013 +/- 1.006176 | a3=0.572272 +/- 0.323965 | a5=0.760715 +/- 0.946162
+2026-08-30 15:06:42 - INFO - Residual FG-MSCB guidance strength=0.149063 (bounded to [0, 0.5])
+2026-08-30 15:06:45 - INFO - Epoch 30/200: Train Loss: 0.2326, Test Loss: 0.1729, Test Dice: 0.9124, Test IoU: 0.8394, EMA: True
+2026-08-30 15:06:46 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:06:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:06:46 - INFO - Epoch 31: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:06:46 - INFO - Epoch 31: frequency augmentation probability=0.0000
+2026-08-30 15:07:20 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.454589 +/- 0.978877 | a3=0.626802 +/- 0.307002 | a5=0.918609 +/- 1.009658
+2026-08-30 15:07:20 - INFO - Residual FG-MSCB guidance strength=0.151055 (bounded to [0, 0.5])
+2026-08-30 15:07:22 - INFO - Epoch 31/200: Train Loss: 0.2286, Test Loss: 0.1719, Test Dice: 0.9120, Test IoU: 0.8389, EMA: True
+2026-08-30 15:07:23 - INFO - Epoch 32: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:07:23 - INFO - Epoch 32: frequency augmentation probability=0.0000
+2026-08-30 15:07:56 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.465080 +/- 1.068784 | a3=0.532742 +/- 0.316079 | a5=1.002178 +/- 1.087450
+2026-08-30 15:07:56 - INFO - Residual FG-MSCB guidance strength=0.150757 (bounded to [0, 0.5])
+2026-08-30 15:07:58 - INFO - Epoch 32/200: Train Loss: 0.2318, Test Loss: 0.1712, Test Dice: 0.9130, Test IoU: 0.8405, EMA: True
+2026-08-30 15:07:59 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:07:59 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:07:59 - INFO - Epoch 33: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:07:59 - INFO - Epoch 33: frequency augmentation probability=0.0000
+2026-08-30 15:08:32 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.654900 +/- 1.057530 | a3=0.513766 +/- 0.326580 | a5=0.831333 +/- 1.004520
+2026-08-30 15:08:32 - INFO - Residual FG-MSCB guidance strength=0.151094 (bounded to [0, 0.5])
+2026-08-30 15:08:35 - INFO - Epoch 33/200: Train Loss: 0.2194, Test Loss: 0.1707, Test Dice: 0.9140, Test IoU: 0.8421, EMA: True
+2026-08-30 15:08:36 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:08:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:08:36 - INFO - Epoch 34: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:08:36 - INFO - Epoch 34: frequency augmentation probability=0.0000
+2026-08-30 15:09:10 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.730099 +/- 1.075197 | a3=0.478983 +/- 0.329307 | a5=0.790918 +/- 1.010413
+2026-08-30 15:09:10 - INFO - Residual FG-MSCB guidance strength=0.155272 (bounded to [0, 0.5])
+2026-08-30 15:09:13 - INFO - Epoch 34/200: Train Loss: 0.2244, Test Loss: 0.1691, Test Dice: 0.9147, Test IoU: 0.8433, EMA: True
+2026-08-30 15:09:13 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:09:13 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:09:14 - INFO - Epoch 35: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:09:14 - INFO - Epoch 35: frequency augmentation probability=0.0000
+2026-08-30 15:09:47 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.563574 +/- 1.130499 | a3=0.456977 +/- 0.334315 | a5=0.979449 +/- 1.134824
+2026-08-30 15:09:47 - INFO - Residual FG-MSCB guidance strength=0.158505 (bounded to [0, 0.5])
+2026-08-30 15:09:50 - INFO - Epoch 35/200: Train Loss: 0.2168, Test Loss: 0.1672, Test Dice: 0.9152, Test IoU: 0.8440, EMA: True
+2026-08-30 15:09:51 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:09:51 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:09:51 - INFO - Epoch 36: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:09:51 - INFO - Epoch 36: frequency augmentation probability=0.0000
+2026-08-30 15:10:24 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.921107 +/- 1.048688 | a3=0.442247 +/- 0.338416 | a5=0.636646 +/- 0.942505
+2026-08-30 15:10:24 - INFO - Residual FG-MSCB guidance strength=0.156061 (bounded to [0, 0.5])
+2026-08-30 15:10:27 - INFO - Epoch 36/200: Train Loss: 0.2189, Test Loss: 0.1664, Test Dice: 0.9156, Test IoU: 0.8447, EMA: True
+2026-08-30 15:10:28 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:10:28 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:10:28 - INFO - Epoch 37: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:10:28 - INFO - Epoch 37: frequency augmentation probability=0.0000
+2026-08-30 15:11:01 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.302082 +/- 0.889816 | a3=0.353871 +/- 0.334063 | a5=0.344046 +/- 0.714767
+2026-08-30 15:11:01 - INFO - Residual FG-MSCB guidance strength=0.161905 (bounded to [0, 0.5])
+2026-08-30 15:11:04 - INFO - Epoch 37/200: Train Loss: 0.2188, Test Loss: 0.1662, Test Dice: 0.9157, Test IoU: 0.8449, EMA: True
+2026-08-30 15:11:05 - INFO - New best model saved with accuracy: 0.84%
+2026-08-30 15:11:05 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:11:05 - INFO - Epoch 38: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:11:05 - INFO - Epoch 38: frequency augmentation probability=0.0000
+2026-08-30 15:11:39 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.422149 +/- 0.833177 | a3=0.292067 +/- 0.310585 | a5=0.285784 +/- 0.655249
+2026-08-30 15:11:39 - INFO - Residual FG-MSCB guidance strength=0.162090 (bounded to [0, 0.5])
+2026-08-30 15:11:41 - INFO - Epoch 38/200: Train Loss: 0.2124, Test Loss: 0.1651, Test Dice: 0.9160, Test IoU: 0.8454, EMA: True
+2026-08-30 15:11:42 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:11:42 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:11:43 - INFO - Epoch 39: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:11:43 - INFO - Epoch 39: frequency augmentation probability=0.0000
+2026-08-30 15:12:16 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.296200 +/- 0.890685 | a3=0.347750 +/- 0.329940 | a5=0.356050 +/- 0.717901
+2026-08-30 15:12:16 - INFO - Residual FG-MSCB guidance strength=0.158936 (bounded to [0, 0.5])
+2026-08-30 15:12:18 - INFO - Epoch 39/200: Train Loss: 0.2083, Test Loss: 0.1644, Test Dice: 0.9167, Test IoU: 0.8466, EMA: True
+2026-08-30 15:12:19 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:12:19 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:12:20 - INFO - Epoch 40: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:12:20 - INFO - Epoch 40: frequency augmentation probability=0.0000
+2026-08-30 15:12:53 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.206309 +/- 0.934140 | a3=0.382247 +/- 0.331137 | a5=0.411445 +/- 0.768984
+2026-08-30 15:12:53 - INFO - Residual FG-MSCB guidance strength=0.161673 (bounded to [0, 0.5])
+2026-08-30 15:12:55 - INFO - Epoch 40/200: Train Loss: 0.2117, Test Loss: 0.1622, Test Dice: 0.9175, Test IoU: 0.8481, EMA: True
+2026-08-30 15:12:56 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:12:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:12:57 - INFO - Epoch 41: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:12:57 - INFO - Epoch 41: frequency augmentation probability=0.0000
+2026-08-30 15:13:30 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.161727 +/- 0.922686 | a3=0.417168 +/- 0.336139 | a5=0.421105 +/- 0.759395
+2026-08-30 15:13:30 - INFO - Residual FG-MSCB guidance strength=0.161628 (bounded to [0, 0.5])
+2026-08-30 15:13:32 - INFO - Epoch 41/200: Train Loss: 0.2116, Test Loss: 0.1598, Test Dice: 0.9184, Test IoU: 0.8496, EMA: True
+2026-08-30 15:13:33 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:13:33 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:13:34 - INFO - Epoch 42: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:13:34 - INFO - Epoch 42: frequency augmentation probability=0.0000
+2026-08-30 15:14:07 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.990330 +/- 0.964604 | a3=0.482607 +/- 0.337492 | a5=0.527063 +/- 0.827789
+2026-08-30 15:14:07 - INFO - Residual FG-MSCB guidance strength=0.163803 (bounded to [0, 0.5])
+2026-08-30 15:14:10 - INFO - Epoch 42/200: Train Loss: 0.2022, Test Loss: 0.1578, Test Dice: 0.9195, Test IoU: 0.8514, EMA: True
+2026-08-30 15:14:11 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:14:11 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:14:11 - INFO - Epoch 43: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:14:11 - INFO - Epoch 43: frequency augmentation probability=0.0000
+2026-08-30 15:14:45 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.881269 +/- 1.101134 | a3=0.408223 +/- 0.329224 | a5=0.710508 +/- 0.989530
+2026-08-30 15:14:45 - INFO - Residual FG-MSCB guidance strength=0.166132 (bounded to [0, 0.5])
+2026-08-30 15:14:47 - INFO - Epoch 43/200: Train Loss: 0.2059, Test Loss: 0.1569, Test Dice: 0.9197, Test IoU: 0.8517, EMA: True
+2026-08-30 15:14:48 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:14:48 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:14:49 - INFO - Epoch 44: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:14:49 - INFO - Epoch 44: frequency augmentation probability=0.0000
+2026-08-30 15:15:22 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.013097 +/- 1.044750 | a3=0.395447 +/- 0.331841 | a5=0.591457 +/- 0.915845
+2026-08-30 15:15:22 - INFO - Residual FG-MSCB guidance strength=0.170711 (bounded to [0, 0.5])
+2026-08-30 15:15:24 - INFO - Epoch 44/200: Train Loss: 0.1969, Test Loss: 0.1571, Test Dice: 0.9191, Test IoU: 0.8508, EMA: True
+2026-08-30 15:15:25 - INFO - Epoch 45: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:15:25 - INFO - Epoch 45: frequency augmentation probability=0.0000
+2026-08-30 15:15:58 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.975107 +/- 1.073938 | a3=0.384068 +/- 0.325683 | a5=0.640825 +/- 0.957857
+2026-08-30 15:15:58 - INFO - Residual FG-MSCB guidance strength=0.173359 (bounded to [0, 0.5])
+2026-08-30 15:16:00 - INFO - Epoch 45/200: Train Loss: 0.2039, Test Loss: 0.1564, Test Dice: 0.9192, Test IoU: 0.8510, EMA: True
+2026-08-30 15:16:01 - INFO - Epoch 46: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:16:01 - INFO - Epoch 46: frequency augmentation probability=0.0000
+2026-08-30 15:16:34 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.959238 +/- 1.085822 | a3=0.383901 +/- 0.327258 | a5=0.656861 +/- 0.974552
+2026-08-30 15:16:34 - INFO - Residual FG-MSCB guidance strength=0.172280 (bounded to [0, 0.5])
+2026-08-30 15:16:37 - INFO - Epoch 46/200: Train Loss: 0.1999, Test Loss: 0.1563, Test Dice: 0.9182, Test IoU: 0.8494, EMA: True
+2026-08-30 15:16:37 - INFO - Epoch 47: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:16:37 - INFO - Epoch 47: frequency augmentation probability=0.0000
+2026-08-30 15:17:10 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.028761 +/- 1.074831 | a3=0.366123 +/- 0.331175 | a5=0.605116 +/- 0.947634
+2026-08-30 15:17:10 - INFO - Residual FG-MSCB guidance strength=0.174172 (bounded to [0, 0.5])
+2026-08-30 15:17:13 - INFO - Epoch 47/200: Train Loss: 0.1952, Test Loss: 0.1558, Test Dice: 0.9181, Test IoU: 0.8492, EMA: True
+2026-08-30 15:17:13 - INFO - Epoch 48: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:17:13 - INFO - Epoch 48: frequency augmentation probability=0.0000
+2026-08-30 15:17:46 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.970891 +/- 1.102392 | a3=0.369891 +/- 0.337821 | a5=0.659218 +/- 0.983447
+2026-08-30 15:17:46 - INFO - Residual FG-MSCB guidance strength=0.171915 (bounded to [0, 0.5])
+2026-08-30 15:17:49 - INFO - Epoch 48/200: Train Loss: 0.2009, Test Loss: 0.1551, Test Dice: 0.9182, Test IoU: 0.8495, EMA: True
+2026-08-30 15:17:49 - INFO - Epoch 49: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:17:49 - INFO - Epoch 49: frequency augmentation probability=0.0000
+2026-08-30 15:18:22 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.068186 +/- 1.047313 | a3=0.367487 +/- 0.327734 | a5=0.564327 +/- 0.909595
+2026-08-30 15:18:22 - INFO - Residual FG-MSCB guidance strength=0.169402 (bounded to [0, 0.5])
+2026-08-30 15:18:25 - INFO - Epoch 49/200: Train Loss: 0.1944, Test Loss: 0.1546, Test Dice: 0.9182, Test IoU: 0.8495, EMA: True
+2026-08-30 15:18:25 - INFO - Epoch 50: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:18:25 - INFO - Epoch 50: frequency augmentation probability=0.0000
+2026-08-30 15:18:59 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.278106 +/- 0.940572 | a3=0.323982 +/- 0.325984 | a5=0.397912 +/- 0.763218
+2026-08-30 15:18:59 - INFO - Residual FG-MSCB guidance strength=0.170817 (bounded to [0, 0.5])
+2026-08-30 15:19:01 - INFO - Epoch 50/200: Train Loss: 0.1947, Test Loss: 0.1545, Test Dice: 0.9184, Test IoU: 0.8498, EMA: True
+2026-08-30 15:19:02 - INFO - Epoch 51: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:19:02 - INFO - Epoch 51: frequency augmentation probability=0.0000
+2026-08-30 15:19:35 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.318887 +/- 0.906997 | a3=0.316721 +/- 0.318880 | a5=0.364393 +/- 0.755799
+2026-08-30 15:19:35 - INFO - Residual FG-MSCB guidance strength=0.169616 (bounded to [0, 0.5])
+2026-08-30 15:19:37 - INFO - Epoch 51/200: Train Loss: 0.1989, Test Loss: 0.1544, Test Dice: 0.9190, Test IoU: 0.8508, EMA: True
+2026-08-30 15:19:38 - INFO - Epoch 52: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:19:38 - INFO - Epoch 52: frequency augmentation probability=0.0000
+2026-08-30 15:20:11 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.162578 +/- 0.959626 | a3=0.386035 +/- 0.336876 | a5=0.451388 +/- 0.803736
+2026-08-30 15:20:11 - INFO - Residual FG-MSCB guidance strength=0.172106 (bounded to [0, 0.5])
+2026-08-30 15:20:13 - INFO - Epoch 52/200: Train Loss: 0.1988, Test Loss: 0.1550, Test Dice: 0.9196, Test IoU: 0.8517, EMA: True
+2026-08-30 15:20:14 - INFO - Epoch 53: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:20:14 - INFO - Epoch 53: frequency augmentation probability=0.0000
+2026-08-30 15:20:47 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.196290 +/- 0.950704 | a3=0.371617 +/- 0.340991 | a5=0.432093 +/- 0.765669
+2026-08-30 15:20:47 - INFO - Residual FG-MSCB guidance strength=0.173166 (bounded to [0, 0.5])
+2026-08-30 15:20:49 - INFO - Epoch 53/200: Train Loss: 0.1937, Test Loss: 0.1542, Test Dice: 0.9202, Test IoU: 0.8527, EMA: True
+2026-08-30 15:20:50 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:20:50 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:20:51 - INFO - Epoch 54: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:20:51 - INFO - Epoch 54: frequency augmentation probability=0.0000
+2026-08-30 15:21:23 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.203876 +/- 0.945791 | a3=0.370270 +/- 0.336650 | a5=0.425853 +/- 0.769016
+2026-08-30 15:21:23 - INFO - Residual FG-MSCB guidance strength=0.174494 (bounded to [0, 0.5])
+2026-08-30 15:21:26 - INFO - Epoch 54/200: Train Loss: 0.1888, Test Loss: 0.1536, Test Dice: 0.9206, Test IoU: 0.8535, EMA: True
+2026-08-30 15:21:27 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:21:27 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:21:27 - INFO - Epoch 55: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:21:27 - INFO - Epoch 55: frequency augmentation probability=0.0000
+2026-08-30 15:22:01 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.115002 +/- 0.948893 | a3=0.421474 +/- 0.338304 | a5=0.463524 +/- 0.788579
+2026-08-30 15:22:01 - INFO - Residual FG-MSCB guidance strength=0.174249 (bounded to [0, 0.5])
+2026-08-30 15:22:03 - INFO - Epoch 55/200: Train Loss: 0.1927, Test Loss: 0.1534, Test Dice: 0.9207, Test IoU: 0.8537, EMA: True
+2026-08-30 15:22:04 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:22:04 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:22:05 - INFO - Epoch 56: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:22:05 - INFO - Epoch 56: frequency augmentation probability=0.0000
+2026-08-30 15:22:38 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.175194 +/- 0.972048 | a3=0.366880 +/- 0.331199 | a5=0.457926 +/- 0.828598
+2026-08-30 15:22:38 - INFO - Residual FG-MSCB guidance strength=0.175768 (bounded to [0, 0.5])
+2026-08-30 15:22:40 - INFO - Epoch 56/200: Train Loss: 0.1913, Test Loss: 0.1542, Test Dice: 0.9205, Test IoU: 0.8532, EMA: True
+2026-08-30 15:22:41 - INFO - Epoch 57: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:22:41 - INFO - Epoch 57: frequency augmentation probability=0.0000
+2026-08-30 15:23:14 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.191921 +/- 1.008069 | a3=0.332242 +/- 0.323580 | a5=0.475836 +/- 0.870420
+2026-08-30 15:23:14 - INFO - Residual FG-MSCB guidance strength=0.175307 (bounded to [0, 0.5])
+2026-08-30 15:23:16 - INFO - Epoch 57/200: Train Loss: 0.1864, Test Loss: 0.1550, Test Dice: 0.9198, Test IoU: 0.8523, EMA: True
+2026-08-30 15:23:17 - INFO - Epoch 58: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:23:17 - INFO - Epoch 58: frequency augmentation probability=0.0000
+2026-08-30 15:23:50 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.071854 +/- 1.052044 | a3=0.367814 +/- 0.336832 | a5=0.560332 +/- 0.921568
+2026-08-30 15:23:50 - INFO - Residual FG-MSCB guidance strength=0.175070 (bounded to [0, 0.5])
+2026-08-30 15:23:53 - INFO - Epoch 58/200: Train Loss: 0.1836, Test Loss: 0.1562, Test Dice: 0.9188, Test IoU: 0.8505, EMA: True
+2026-08-30 15:23:53 - INFO - Epoch 59: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:23:53 - INFO - Epoch 59: frequency augmentation probability=0.0000
+2026-08-30 15:24:26 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.040849 +/- 1.063336 | a3=0.375807 +/- 0.341762 | a5=0.583345 +/- 0.938422
+2026-08-30 15:24:26 - INFO - Residual FG-MSCB guidance strength=0.176349 (bounded to [0, 0.5])
+2026-08-30 15:24:29 - INFO - Epoch 59/200: Train Loss: 0.1800, Test Loss: 0.1560, Test Dice: 0.9188, Test IoU: 0.8507, EMA: True
+2026-08-30 15:24:30 - INFO - Epoch 60: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:24:30 - INFO - Epoch 60: frequency augmentation probability=0.0000
+2026-08-30 15:25:02 - INFO - FG-MSCB alpha over 1450 training samples: a1=1.877494 +/- 1.111631 | a3=0.409724 +/- 0.341556 | a5=0.712782 +/- 1.021142
+2026-08-30 15:25:02 - INFO - Residual FG-MSCB guidance strength=0.176577 (bounded to [0, 0.5])
+2026-08-30 15:25:05 - INFO - Epoch 60/200: Train Loss: 0.1835, Test Loss: 0.1560, Test Dice: 0.9184, Test IoU: 0.8498, EMA: True
+2026-08-30 15:25:05 - INFO - Epoch 61: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:25:05 - INFO - Epoch 61: frequency augmentation probability=0.0000
+2026-08-30 15:25:38 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.148834 +/- 1.067549 | a3=0.318620 +/- 0.334681 | a5=0.532546 +/- 0.908547
+2026-08-30 15:25:38 - INFO - Residual FG-MSCB guidance strength=0.178410 (bounded to [0, 0.5])
+2026-08-30 15:25:41 - INFO - Epoch 61/200: Train Loss: 0.1826, Test Loss: 0.1554, Test Dice: 0.9188, Test IoU: 0.8506, EMA: True
+2026-08-30 15:25:41 - INFO - Epoch 62: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:25:41 - INFO - Epoch 62: frequency augmentation probability=0.0000
+2026-08-30 15:26:15 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.270032 +/- 0.989580 | a3=0.298587 +/- 0.329872 | a5=0.431381 +/- 0.834227
+2026-08-30 15:26:15 - INFO - Residual FG-MSCB guidance strength=0.179718 (bounded to [0, 0.5])
+2026-08-30 15:26:17 - INFO - Epoch 62/200: Train Loss: 0.1831, Test Loss: 0.1549, Test Dice: 0.9189, Test IoU: 0.8508, EMA: True
+2026-08-30 15:26:18 - INFO - Epoch 63: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:26:18 - INFO - Epoch 63: frequency augmentation probability=0.0000
+2026-08-30 15:26:51 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.347464 +/- 0.966373 | a3=0.259482 +/- 0.314955 | a5=0.393055 +/- 0.806823
+2026-08-30 15:26:51 - INFO - Residual FG-MSCB guidance strength=0.180392 (bounded to [0, 0.5])
+2026-08-30 15:26:53 - INFO - Epoch 63/200: Train Loss: 0.1890, Test Loss: 0.1539, Test Dice: 0.9198, Test IoU: 0.8521, EMA: True
+2026-08-30 15:26:54 - INFO - Epoch 64: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:26:54 - INFO - Epoch 64: frequency augmentation probability=0.0000
+2026-08-30 15:27:27 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.509552 +/- 0.870419 | a3=0.198800 +/- 0.287917 | a5=0.291649 +/- 0.711731
+2026-08-30 15:27:27 - INFO - Residual FG-MSCB guidance strength=0.183559 (bounded to [0, 0.5])
+2026-08-30 15:27:30 - INFO - Epoch 64/200: Train Loss: 0.1748, Test Loss: 0.1541, Test Dice: 0.9201, Test IoU: 0.8527, EMA: True
+2026-08-30 15:27:30 - INFO - Epoch 65: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:27:30 - INFO - Epoch 65: frequency augmentation probability=0.0000
+2026-08-30 15:28:03 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.457193 +/- 0.915693 | a3=0.210553 +/- 0.298070 | a5=0.332255 +/- 0.761690
+2026-08-30 15:28:03 - INFO - Residual FG-MSCB guidance strength=0.185432 (bounded to [0, 0.5])
+2026-08-30 15:28:06 - INFO - Epoch 65/200: Train Loss: 0.1848, Test Loss: 0.1535, Test Dice: 0.9212, Test IoU: 0.8545, EMA: True
+2026-08-30 15:28:07 - INFO - New best model saved with accuracy: 0.85%
+2026-08-30 15:28:07 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:28:07 - INFO - Epoch 66: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:28:07 - INFO - Epoch 66: frequency augmentation probability=0.0000
+2026-08-30 15:28:41 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.384811 +/- 0.964976 | a3=0.232250 +/- 0.307408 | a5=0.382940 +/- 0.810213
+2026-08-30 15:28:41 - INFO - Residual FG-MSCB guidance strength=0.184418 (bounded to [0, 0.5])
+2026-08-30 15:28:43 - INFO - Epoch 66/200: Train Loss: 0.1749, Test Loss: 0.1530, Test Dice: 0.9216, Test IoU: 0.8552, EMA: True
+2026-08-30 15:28:44 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:28:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:28:45 - INFO - Epoch 67: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:28:45 - INFO - Epoch 67: frequency augmentation probability=0.0000
+2026-08-30 15:29:18 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.359720 +/- 0.980608 | a3=0.244267 +/- 0.313631 | a5=0.396013 +/- 0.801136
+2026-08-30 15:29:18 - INFO - Residual FG-MSCB guidance strength=0.185519 (bounded to [0, 0.5])
+2026-08-30 15:29:20 - INFO - Epoch 67/200: Train Loss: 0.1799, Test Loss: 0.1509, Test Dice: 0.9232, Test IoU: 0.8580, EMA: True
+2026-08-30 15:29:21 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:29:21 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:29:22 - INFO - Epoch 68: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:29:22 - INFO - Epoch 68: frequency augmentation probability=0.0000
+2026-08-30 15:29:55 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.325790 +/- 0.976749 | a3=0.272430 +/- 0.326955 | a5=0.401779 +/- 0.793699
+2026-08-30 15:29:55 - INFO - Residual FG-MSCB guidance strength=0.186715 (bounded to [0, 0.5])
+2026-08-30 15:29:58 - INFO - Epoch 68/200: Train Loss: 0.1815, Test Loss: 0.1503, Test Dice: 0.9235, Test IoU: 0.8585, EMA: True
+2026-08-30 15:29:59 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:29:59 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:29:59 - INFO - Epoch 69: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:29:59 - INFO - Epoch 69: frequency augmentation probability=0.0000
+2026-08-30 15:30:32 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.347245 +/- 0.965078 | a3=0.263218 +/- 0.316658 | a5=0.389537 +/- 0.799739
+2026-08-30 15:30:32 - INFO - Residual FG-MSCB guidance strength=0.187295 (bounded to [0, 0.5])
+2026-08-30 15:30:35 - INFO - Epoch 69/200: Train Loss: 0.1770, Test Loss: 0.1503, Test Dice: 0.9231, Test IoU: 0.8580, EMA: True
+2026-08-30 15:30:35 - INFO - Epoch 70: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:30:35 - INFO - Epoch 70: frequency augmentation probability=0.0000
+2026-08-30 15:31:09 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.316795 +/- 0.959072 | a3=0.291064 +/- 0.324438 | a5=0.392141 +/- 0.788055
+2026-08-30 15:31:09 - INFO - Residual FG-MSCB guidance strength=0.186488 (bounded to [0, 0.5])
+2026-08-30 15:31:11 - INFO - Epoch 70/200: Train Loss: 0.1729, Test Loss: 0.1492, Test Dice: 0.9241, Test IoU: 0.8598, EMA: True
+2026-08-30 15:31:12 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:31:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:31:13 - INFO - Epoch 71: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:31:13 - INFO - Epoch 71: frequency augmentation probability=0.0000
+2026-08-30 15:31:46 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.140384 +/- 1.037784 | a3=0.345329 +/- 0.343857 | a5=0.514287 +/- 0.876267
+2026-08-30 15:31:46 - INFO - Residual FG-MSCB guidance strength=0.184922 (bounded to [0, 0.5])
+2026-08-30 15:31:48 - INFO - Epoch 71/200: Train Loss: 0.1715, Test Loss: 0.1487, Test Dice: 0.9250, Test IoU: 0.8613, EMA: True
+2026-08-30 15:31:49 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:31:49 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:31:50 - INFO - Epoch 72: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:31:50 - INFO - Epoch 72: frequency augmentation probability=0.0000
+2026-08-30 15:32:23 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.170071 +/- 1.004498 | a3=0.360443 +/- 0.355680 | a5=0.469486 +/- 0.819495
+2026-08-30 15:32:23 - INFO - Residual FG-MSCB guidance strength=0.185198 (bounded to [0, 0.5])
+2026-08-30 15:32:26 - INFO - Epoch 72/200: Train Loss: 0.1727, Test Loss: 0.1489, Test Dice: 0.9248, Test IoU: 0.8609, EMA: True
+2026-08-30 15:32:26 - INFO - Epoch 73: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:32:26 - INFO - Epoch 73: frequency augmentation probability=0.0000
+2026-08-30 15:32:59 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.297549 +/- 0.923221 | a3=0.338655 +/- 0.353879 | a5=0.363796 +/- 0.705150
+2026-08-30 15:32:59 - INFO - Residual FG-MSCB guidance strength=0.185306 (bounded to [0, 0.5])
+2026-08-30 15:33:02 - INFO - Epoch 73/200: Train Loss: 0.1699, Test Loss: 0.1485, Test Dice: 0.9250, Test IoU: 0.8612, EMA: True
+2026-08-30 15:33:03 - INFO - Epoch 74: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:33:03 - INFO - Epoch 74: frequency augmentation probability=0.0000
+2026-08-30 15:33:36 - WARNING - Skipped 1/61 batches.
+2026-08-30 15:33:36 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.357387 +/- 0.868097 | a3=0.338613 +/- 0.364075 | a5=0.304001 +/- 0.603313
+2026-08-30 15:33:36 - INFO - Residual FG-MSCB guidance strength=0.184596 (bounded to [0, 0.5])
+2026-08-30 15:33:39 - INFO - Epoch 74/200: Train Loss: 0.1714, Test Loss: 0.1480, Test Dice: 0.9249, Test IoU: 0.8611, EMA: True
+2026-08-30 15:33:39 - INFO - Epoch 75: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:33:39 - INFO - Epoch 75: frequency augmentation probability=0.0000
+2026-08-30 15:34:12 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.390234 +/- 0.843935 | a3=0.324356 +/- 0.353973 | a5=0.285409 +/- 0.605323
+2026-08-30 15:34:12 - INFO - Residual FG-MSCB guidance strength=0.185227 (bounded to [0, 0.5])
+2026-08-30 15:34:15 - INFO - Epoch 75/200: Train Loss: 0.1774, Test Loss: 0.1472, Test Dice: 0.9256, Test IoU: 0.8623, EMA: True
+2026-08-30 15:34:16 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:34:16 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:34:16 - INFO - Epoch 76: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:34:16 - INFO - Epoch 76: frequency augmentation probability=0.0000
+2026-08-30 15:34:50 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.328415 +/- 0.887723 | a3=0.340938 +/- 0.349642 | a5=0.330646 +/- 0.675663
+2026-08-30 15:34:50 - INFO - Residual FG-MSCB guidance strength=0.186350 (bounded to [0, 0.5])
+2026-08-30 15:34:52 - INFO - Epoch 76/200: Train Loss: 0.1692, Test Loss: 0.1469, Test Dice: 0.9253, Test IoU: 0.8617, EMA: True
+2026-08-30 15:34:53 - INFO - Epoch 77: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:34:53 - INFO - Epoch 77: frequency augmentation probability=0.0000
+2026-08-30 15:35:26 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.286020 +/- 0.926329 | a3=0.347265 +/- 0.354563 | a5=0.366715 +/- 0.704117
+2026-08-30 15:35:26 - INFO - Residual FG-MSCB guidance strength=0.187049 (bounded to [0, 0.5])
+2026-08-30 15:35:28 - INFO - Epoch 77/200: Train Loss: 0.1759, Test Loss: 0.1473, Test Dice: 0.9248, Test IoU: 0.8609, EMA: True
+2026-08-30 15:35:29 - INFO - Epoch 78: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:35:29 - INFO - Epoch 78: frequency augmentation probability=0.0000
+2026-08-30 15:36:02 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.272276 +/- 0.934995 | a3=0.353793 +/- 0.357509 | a5=0.373931 +/- 0.702292
+2026-08-30 15:36:02 - INFO - Residual FG-MSCB guidance strength=0.187810 (bounded to [0, 0.5])
+2026-08-30 15:36:05 - INFO - Epoch 78/200: Train Loss: 0.1713, Test Loss: 0.1469, Test Dice: 0.9245, Test IoU: 0.8605, EMA: True
+2026-08-30 15:36:05 - INFO - Epoch 79: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:36:05 - INFO - Epoch 79: frequency augmentation probability=0.0000
+2026-08-30 15:36:38 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.299286 +/- 0.946183 | a3=0.325613 +/- 0.357308 | a5=0.375102 +/- 0.715654
+2026-08-30 15:36:38 - INFO - Residual FG-MSCB guidance strength=0.188789 (bounded to [0, 0.5])
+2026-08-30 15:36:41 - INFO - Epoch 79/200: Train Loss: 0.1669, Test Loss: 0.1471, Test Dice: 0.9243, Test IoU: 0.8601, EMA: True
+2026-08-30 15:36:42 - INFO - Epoch 80: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:36:42 - INFO - Epoch 80: frequency augmentation probability=0.0000
+2026-08-30 15:37:15 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.252732 +/- 1.001607 | a3=0.314819 +/- 0.348909 | a5=0.432449 +/- 0.796650
+2026-08-30 15:37:15 - INFO - Residual FG-MSCB guidance strength=0.187832 (bounded to [0, 0.5])
+2026-08-30 15:37:17 - INFO - Epoch 80/200: Train Loss: 0.1720, Test Loss: 0.1471, Test Dice: 0.9251, Test IoU: 0.8615, EMA: True
+2026-08-30 15:37:18 - INFO - Epoch 81: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:37:18 - INFO - Epoch 81: frequency augmentation probability=0.0000
+2026-08-30 15:37:51 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.379637 +/- 0.892179 | a3=0.304364 +/- 0.356697 | a5=0.315998 +/- 0.651329
+2026-08-30 15:37:51 - INFO - Residual FG-MSCB guidance strength=0.185539 (bounded to [0, 0.5])
+2026-08-30 15:37:54 - INFO - Epoch 81/200: Train Loss: 0.1717, Test Loss: 0.1467, Test Dice: 0.9268, Test IoU: 0.8642, EMA: True
+2026-08-30 15:37:55 - INFO - New best model saved with accuracy: 0.86%
+2026-08-30 15:37:55 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:37:55 - INFO - Epoch 82: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:37:55 - INFO - Epoch 82: frequency augmentation probability=0.0000
+2026-08-30 15:38:29 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.395787 +/- 0.875800 | a3=0.304076 +/- 0.351158 | a5=0.300137 +/- 0.625727
+2026-08-30 15:38:29 - INFO - Residual FG-MSCB guidance strength=0.184785 (bounded to [0, 0.5])
+2026-08-30 15:38:31 - INFO - Epoch 82/200: Train Loss: 0.1683, Test Loss: 0.1460, Test Dice: 0.9276, Test IoU: 0.8656, EMA: True
+2026-08-30 15:38:32 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:38:32 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:38:33 - INFO - Epoch 83: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:38:33 - INFO - Epoch 83: frequency augmentation probability=0.0000
+2026-08-30 15:39:06 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.424414 +/- 0.868520 | a3=0.283436 +/- 0.346594 | a5=0.292150 +/- 0.642425
+2026-08-30 15:39:06 - INFO - Residual FG-MSCB guidance strength=0.186219 (bounded to [0, 0.5])
+2026-08-30 15:39:08 - INFO - Epoch 83/200: Train Loss: 0.1702, Test Loss: 0.1457, Test Dice: 0.9286, Test IoU: 0.8673, EMA: True
+2026-08-30 15:39:09 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:39:09 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:39:10 - INFO - Epoch 84: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:39:10 - INFO - Epoch 84: frequency augmentation probability=0.0000
+2026-08-30 15:39:43 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.436757 +/- 0.847835 | a3=0.282417 +/- 0.338224 | a5=0.280827 +/- 0.635331
+2026-08-30 15:39:43 - INFO - Residual FG-MSCB guidance strength=0.188666 (bounded to [0, 0.5])
+2026-08-30 15:39:46 - INFO - Epoch 84/200: Train Loss: 0.1649, Test Loss: 0.1450, Test Dice: 0.9294, Test IoU: 0.8688, EMA: True
+2026-08-30 15:39:46 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:39:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:39:47 - INFO - Epoch 85: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:39:47 - INFO - Epoch 85: frequency augmentation probability=0.0000
+2026-08-30 15:40:20 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.467772 +/- 0.852231 | a3=0.255462 +/- 0.326554 | a5=0.276766 +/- 0.648896
+2026-08-30 15:40:20 - INFO - Residual FG-MSCB guidance strength=0.190428 (bounded to [0, 0.5])
+2026-08-30 15:40:23 - INFO - Epoch 85/200: Train Loss: 0.1738, Test Loss: 0.1446, Test Dice: 0.9293, Test IoU: 0.8685, EMA: True
+2026-08-30 15:40:24 - INFO - Epoch 86: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:40:24 - INFO - Epoch 86: frequency augmentation probability=0.0000
+2026-08-30 15:40:57 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.496638 +/- 0.841137 | a3=0.241549 +/- 0.326140 | a5=0.261813 +/- 0.624529
+2026-08-30 15:40:57 - INFO - Residual FG-MSCB guidance strength=0.191056 (bounded to [0, 0.5])
+2026-08-30 15:41:00 - INFO - Epoch 86/200: Train Loss: 0.1736, Test Loss: 0.1432, Test Dice: 0.9298, Test IoU: 0.8694, EMA: True
+2026-08-30 15:41:00 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:41:00 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:41:01 - INFO - Epoch 87: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:41:01 - INFO - Epoch 87: frequency augmentation probability=0.0000
+2026-08-30 15:41:34 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.403658 +/- 0.875932 | a3=0.289728 +/- 0.345550 | a5=0.306614 +/- 0.671965
+2026-08-30 15:41:34 - INFO - Residual FG-MSCB guidance strength=0.190906 (bounded to [0, 0.5])
+2026-08-30 15:41:37 - INFO - Epoch 87/200: Train Loss: 0.1645, Test Loss: 0.1424, Test Dice: 0.9306, Test IoU: 0.8708, EMA: True
+2026-08-30 15:41:38 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:41:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:41:38 - INFO - Epoch 88: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:41:38 - INFO - Epoch 88: frequency augmentation probability=0.0000
+2026-08-30 15:42:12 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.372910 +/- 0.883855 | a3=0.308982 +/- 0.343490 | a5=0.318108 +/- 0.678480
+2026-08-30 15:42:12 - INFO - Residual FG-MSCB guidance strength=0.190492 (bounded to [0, 0.5])
+2026-08-30 15:42:14 - INFO - Epoch 88/200: Train Loss: 0.1614, Test Loss: 0.1424, Test Dice: 0.9312, Test IoU: 0.8718, EMA: True
+2026-08-30 15:42:15 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:42:15 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:42:16 - INFO - Epoch 89: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:42:16 - INFO - Epoch 89: frequency augmentation probability=0.0000
+2026-08-30 15:42:48 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.409771 +/- 0.880984 | a3=0.281174 +/- 0.334484 | a5=0.309055 +/- 0.679931
+2026-08-30 15:42:48 - INFO - Residual FG-MSCB guidance strength=0.190537 (bounded to [0, 0.5])
+2026-08-30 15:42:51 - INFO - Epoch 89/200: Train Loss: 0.1651, Test Loss: 0.1422, Test Dice: 0.9313, Test IoU: 0.8719, EMA: True
+2026-08-30 15:42:52 - INFO - New best model saved with accuracy: 0.87%
+2026-08-30 15:42:52 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\46_fafem_residual_frequency_guided_deformable_mscb_stage3_warmup_cosine\seed_42\best_checkpoint.pth
+2026-08-30 15:42:52 - INFO - Epoch 90: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:42:52 - INFO - Epoch 90: frequency augmentation probability=0.0000
+2026-08-30 15:43:26 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.512643 +/- 0.841239 | a3=0.222997 +/- 0.310679 | a5=0.264361 +/- 0.657574
+2026-08-30 15:43:26 - INFO - Residual FG-MSCB guidance strength=0.189207 (bounded to [0, 0.5])
+2026-08-30 15:43:28 - INFO - Epoch 90/200: Train Loss: 0.1634, Test Loss: 0.1432, Test Dice: 0.9305, Test IoU: 0.8706, EMA: True
+2026-08-30 15:43:29 - INFO - Epoch 91: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:43:29 - INFO - Epoch 91: frequency augmentation probability=0.0000
+2026-08-30 15:44:02 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.527503 +/- 0.820964 | a3=0.220827 +/- 0.310575 | a5=0.251670 +/- 0.643390
+2026-08-30 15:44:02 - INFO - Residual FG-MSCB guidance strength=0.189680 (bounded to [0, 0.5])
+2026-08-30 15:44:05 - INFO - Epoch 91/200: Train Loss: 0.1600, Test Loss: 0.1441, Test Dice: 0.9298, Test IoU: 0.8694, EMA: True
+2026-08-30 15:44:05 - INFO - Epoch 92: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:44:05 - INFO - Epoch 92: frequency augmentation probability=0.0000
+2026-08-30 15:44:38 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.418621 +/- 0.931479 | a3=0.237116 +/- 0.311877 | a5=0.344262 +/- 0.759479
+2026-08-30 15:44:38 - INFO - Residual FG-MSCB guidance strength=0.192105 (bounded to [0, 0.5])
+2026-08-30 15:44:41 - INFO - Epoch 92/200: Train Loss: 0.1643, Test Loss: 0.1440, Test Dice: 0.9302, Test IoU: 0.8700, EMA: True
+2026-08-30 15:44:42 - INFO - Epoch 93: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:44:42 - INFO - Epoch 93: frequency augmentation probability=0.0000
+2026-08-30 15:45:15 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.529409 +/- 0.857524 | a3=0.196921 +/- 0.304399 | a5=0.273669 +/- 0.671082
+2026-08-30 15:45:15 - INFO - Residual FG-MSCB guidance strength=0.193359 (bounded to [0, 0.5])
+2026-08-30 15:45:17 - INFO - Epoch 93/200: Train Loss: 0.1655, Test Loss: 0.1438, Test Dice: 0.9302, Test IoU: 0.8701, EMA: True
+2026-08-30 15:45:18 - INFO - Epoch 94: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:45:18 - INFO - Epoch 94: frequency augmentation probability=0.0000
+2026-08-30 15:45:51 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.518395 +/- 0.865552 | a3=0.202619 +/- 0.302593 | a5=0.278986 +/- 0.679076
+2026-08-30 15:45:51 - INFO - Residual FG-MSCB guidance strength=0.195675 (bounded to [0, 0.5])
+2026-08-30 15:45:54 - INFO - Epoch 94/200: Train Loss: 0.1601, Test Loss: 0.1438, Test Dice: 0.9298, Test IoU: 0.8693, EMA: True
+2026-08-30 15:45:54 - INFO - Epoch 95: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:45:54 - INFO - Epoch 95: frequency augmentation probability=0.0000
+2026-08-30 15:46:27 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.422054 +/- 0.918882 | a3=0.247081 +/- 0.325258 | a5=0.330865 +/- 0.715320
+2026-08-30 15:46:27 - INFO - Residual FG-MSCB guidance strength=0.194660 (bounded to [0, 0.5])
+2026-08-30 15:46:30 - INFO - Epoch 95/200: Train Loss: 0.1636, Test Loss: 0.1436, Test Dice: 0.9297, Test IoU: 0.8692, EMA: True
+2026-08-30 15:46:31 - INFO - Epoch 96: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:46:31 - INFO - Epoch 96: frequency augmentation probability=0.0000
+2026-08-30 15:47:04 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.458344 +/- 0.864116 | a3=0.253261 +/- 0.329506 | a5=0.288395 +/- 0.652449
+2026-08-30 15:47:04 - INFO - Residual FG-MSCB guidance strength=0.194503 (bounded to [0, 0.5])
+2026-08-30 15:47:06 - INFO - Epoch 96/200: Train Loss: 0.1588, Test Loss: 0.1444, Test Dice: 0.9294, Test IoU: 0.8687, EMA: True
+2026-08-30 15:47:07 - INFO - Epoch 97: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:47:07 - INFO - Epoch 97: frequency augmentation probability=0.0000
+2026-08-30 15:47:40 - WARNING - Skipped 1/61 batches.
+2026-08-30 15:47:40 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.483390 +/- 0.850766 | a3=0.244403 +/- 0.326688 | a5=0.272207 +/- 0.631933
+2026-08-30 15:47:40 - INFO - Residual FG-MSCB guidance strength=0.194372 (bounded to [0, 0.5])
+2026-08-30 15:47:43 - INFO - Epoch 97/200: Train Loss: 0.1648, Test Loss: 0.1451, Test Dice: 0.9294, Test IoU: 0.8688, EMA: True
+2026-08-30 15:47:43 - INFO - Epoch 98: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:47:43 - INFO - Epoch 98: frequency augmentation probability=0.0000
+2026-08-30 15:48:16 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.449303 +/- 0.863180 | a3=0.266458 +/- 0.338878 | a5=0.284238 +/- 0.634793
+2026-08-30 15:48:16 - INFO - Residual FG-MSCB guidance strength=0.195285 (bounded to [0, 0.5])
+2026-08-30 15:48:19 - INFO - Epoch 98/200: Train Loss: 0.1569, Test Loss: 0.1452, Test Dice: 0.9293, Test IoU: 0.8687, EMA: True
+2026-08-30 15:48:20 - INFO - Epoch 99: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:48:20 - INFO - Epoch 99: frequency augmentation probability=0.0000
+2026-08-30 15:48:53 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.446756 +/- 0.860128 | a3=0.270505 +/- 0.341476 | a5=0.282739 +/- 0.630991
+2026-08-30 15:48:53 - INFO - Residual FG-MSCB guidance strength=0.195208 (bounded to [0, 0.5])
+2026-08-30 15:48:55 - INFO - Epoch 99/200: Train Loss: 0.1606, Test Loss: 0.1458, Test Dice: 0.9293, Test IoU: 0.8686, EMA: True
+2026-08-30 15:48:56 - INFO - Epoch 100: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:48:56 - INFO - Epoch 100: frequency augmentation probability=0.0000
+2026-08-30 15:49:30 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.452803 +/- 0.860404 | a3=0.264687 +/- 0.338673 | a5=0.282510 +/- 0.645051
+2026-08-30 15:49:30 - INFO - Residual FG-MSCB guidance strength=0.195810 (bounded to [0, 0.5])
+2026-08-30 15:49:32 - INFO - Epoch 100/200: Train Loss: 0.1543, Test Loss: 0.1461, Test Dice: 0.9290, Test IoU: 0.8681, EMA: True
+2026-08-30 15:49:33 - INFO - Epoch 101: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:49:33 - INFO - Epoch 101: frequency augmentation probability=0.0000
+2026-08-30 15:50:06 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.443557 +/- 0.831131 | a3=0.291988 +/- 0.349590 | a5=0.264455 +/- 0.602539
+2026-08-30 15:50:06 - INFO - Residual FG-MSCB guidance strength=0.195502 (bounded to [0, 0.5])
+2026-08-30 15:50:08 - INFO - Epoch 101/200: Train Loss: 0.1538, Test Loss: 0.1468, Test Dice: 0.9281, Test IoU: 0.8666, EMA: True
+2026-08-30 15:50:09 - INFO - Epoch 102: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:50:09 - INFO - Epoch 102: frequency augmentation probability=0.0000
+2026-08-30 15:50:42 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.417409 +/- 0.855356 | a3=0.300633 +/- 0.353337 | a5=0.281958 +/- 0.632673
+2026-08-30 15:50:42 - INFO - Residual FG-MSCB guidance strength=0.196031 (bounded to [0, 0.5])
+2026-08-30 15:50:45 - INFO - Epoch 102/200: Train Loss: 0.1590, Test Loss: 0.1472, Test Dice: 0.9277, Test IoU: 0.8660, EMA: True
+2026-08-30 15:50:46 - INFO - Epoch 103: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:50:46 - INFO - Epoch 103: frequency augmentation probability=0.0000
+2026-08-30 15:51:19 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.369345 +/- 0.916207 | a3=0.289747 +/- 0.339278 | a5=0.340908 +/- 0.741613
+2026-08-30 15:51:19 - INFO - Residual FG-MSCB guidance strength=0.197024 (bounded to [0, 0.5])
+2026-08-30 15:51:22 - INFO - Epoch 103/200: Train Loss: 0.1534, Test Loss: 0.1469, Test Dice: 0.9277, Test IoU: 0.8660, EMA: True
+2026-08-30 15:51:22 - INFO - Epoch 104: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:51:22 - INFO - Epoch 104: frequency augmentation probability=0.0000
+2026-08-30 15:51:56 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.398536 +/- 0.895221 | a3=0.284091 +/- 0.344510 | a5=0.317372 +/- 0.708410
+2026-08-30 15:51:56 - INFO - Residual FG-MSCB guidance strength=0.197125 (bounded to [0, 0.5])
+2026-08-30 15:51:58 - INFO - Epoch 104/200: Train Loss: 0.1595, Test Loss: 0.1459, Test Dice: 0.9284, Test IoU: 0.8672, EMA: True
+2026-08-30 15:51:59 - INFO - Epoch 105: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:51:59 - INFO - Epoch 105: frequency augmentation probability=0.0000
+2026-08-30 15:52:32 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.383804 +/- 0.894139 | a3=0.298351 +/- 0.347072 | a5=0.317845 +/- 0.689804
+2026-08-30 15:52:32 - INFO - Residual FG-MSCB guidance strength=0.197361 (bounded to [0, 0.5])
+2026-08-30 15:52:34 - INFO - Epoch 105/200: Train Loss: 0.1609, Test Loss: 0.1451, Test Dice: 0.9287, Test IoU: 0.8677, EMA: True
+2026-08-30 15:52:35 - INFO - Epoch 106: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:52:35 - INFO - Epoch 106: frequency augmentation probability=0.0000
+2026-08-30 15:53:08 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.449412 +/- 0.858210 | a3=0.272864 +/- 0.345635 | a5=0.277724 +/- 0.636084
+2026-08-30 15:53:08 - INFO - Residual FG-MSCB guidance strength=0.197826 (bounded to [0, 0.5])
+2026-08-30 15:53:11 - INFO - Epoch 106/200: Train Loss: 0.1535, Test Loss: 0.1443, Test Dice: 0.9298, Test IoU: 0.8697, EMA: True
+2026-08-30 15:53:11 - INFO - Epoch 107: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:53:11 - INFO - Epoch 107: frequency augmentation probability=0.0000
+2026-08-30 15:53:44 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.495086 +/- 0.817983 | a3=0.257712 +/- 0.333809 | a5=0.247202 +/- 0.605415
+2026-08-30 15:53:44 - INFO - Residual FG-MSCB guidance strength=0.197987 (bounded to [0, 0.5])
+2026-08-30 15:53:47 - INFO - Epoch 107/200: Train Loss: 0.1524, Test Loss: 0.1439, Test Dice: 0.9301, Test IoU: 0.8702, EMA: True
+2026-08-30 15:53:48 - INFO - Epoch 108: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:53:48 - INFO - Epoch 108: frequency augmentation probability=0.0000
+2026-08-30 15:54:23 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.517804 +/- 0.801267 | a3=0.245559 +/- 0.326335 | a5=0.236636 +/- 0.601022
+2026-08-30 15:54:23 - INFO - Residual FG-MSCB guidance strength=0.200430 (bounded to [0, 0.5])
+2026-08-30 15:54:26 - INFO - Epoch 108/200: Train Loss: 0.1537, Test Loss: 0.1435, Test Dice: 0.9302, Test IoU: 0.8702, EMA: True
+2026-08-30 15:54:27 - INFO - Epoch 109: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:54:27 - INFO - Epoch 109: frequency augmentation probability=0.0000
+2026-08-30 15:55:02 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.404037 +/- 0.888110 | a3=0.283459 +/- 0.344801 | a5=0.312504 +/- 0.687041
+2026-08-30 15:55:02 - INFO - Residual FG-MSCB guidance strength=0.200229 (bounded to [0, 0.5])
+2026-08-30 15:55:05 - INFO - Epoch 109/200: Train Loss: 0.1534, Test Loss: 0.1437, Test Dice: 0.9300, Test IoU: 0.8700, EMA: True
+2026-08-30 15:55:05 - INFO - Epoch 110: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:55:05 - INFO - Epoch 110: frequency augmentation probability=0.0000
+2026-08-30 15:55:39 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.480867 +/- 0.802459 | a3=0.276425 +/- 0.338918 | a5=0.242708 +/- 0.603266
+2026-08-30 15:55:39 - INFO - Residual FG-MSCB guidance strength=0.200461 (bounded to [0, 0.5])
+2026-08-30 15:55:41 - INFO - Epoch 110/200: Train Loss: 0.1480, Test Loss: 0.1436, Test Dice: 0.9300, Test IoU: 0.8700, EMA: True
+2026-08-30 15:55:42 - INFO - Epoch 111: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:55:42 - INFO - Epoch 111: frequency augmentation probability=0.0000
+2026-08-30 15:56:15 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.456582 +/- 0.832326 | a3=0.276766 +/- 0.336643 | a5=0.266652 +/- 0.635941
+2026-08-30 15:56:15 - INFO - Residual FG-MSCB guidance strength=0.200978 (bounded to [0, 0.5])
+2026-08-30 15:56:17 - INFO - Epoch 111/200: Train Loss: 0.1544, Test Loss: 0.1428, Test Dice: 0.9308, Test IoU: 0.8713, EMA: True
+2026-08-30 15:56:18 - INFO - Epoch 112: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:56:18 - INFO - Epoch 112: frequency augmentation probability=0.0000
+2026-08-30 15:56:51 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.460977 +/- 0.860512 | a3=0.258187 +/- 0.336433 | a5=0.280836 +/- 0.658260
+2026-08-30 15:56:51 - INFO - Residual FG-MSCB guidance strength=0.201014 (bounded to [0, 0.5])
+2026-08-30 15:56:54 - INFO - Epoch 112/200: Train Loss: 0.1571, Test Loss: 0.1427, Test Dice: 0.9305, Test IoU: 0.8707, EMA: True
+2026-08-30 15:56:54 - INFO - Epoch 113: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:56:54 - INFO - Epoch 113: frequency augmentation probability=0.0000
+2026-08-30 15:57:27 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.505661 +/- 0.802239 | a3=0.257200 +/- 0.337392 | a5=0.237138 +/- 0.582460
+2026-08-30 15:57:27 - INFO - Residual FG-MSCB guidance strength=0.200836 (bounded to [0, 0.5])
+2026-08-30 15:57:30 - INFO - Epoch 113/200: Train Loss: 0.1588, Test Loss: 0.1432, Test Dice: 0.9298, Test IoU: 0.8695, EMA: True
+2026-08-30 15:57:31 - INFO - Epoch 114: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:57:31 - INFO - Epoch 114: frequency augmentation probability=0.0000
+2026-08-30 15:58:04 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.527097 +/- 0.762429 | a3=0.261692 +/- 0.335588 | a5=0.211211 +/- 0.544394
+2026-08-30 15:58:04 - INFO - Residual FG-MSCB guidance strength=0.201364 (bounded to [0, 0.5])
+2026-08-30 15:58:07 - INFO - Epoch 114/200: Train Loss: 0.1496, Test Loss: 0.1440, Test Dice: 0.9291, Test IoU: 0.8682, EMA: True
+2026-08-30 15:58:08 - INFO - Epoch 115: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:58:08 - INFO - Epoch 115: frequency augmentation probability=0.0000
+2026-08-30 15:58:44 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.479973 +/- 0.814760 | a3=0.270584 +/- 0.342393 | a5=0.249443 +/- 0.613903
+2026-08-30 15:58:44 - INFO - Residual FG-MSCB guidance strength=0.202061 (bounded to [0, 0.5])
+2026-08-30 15:58:47 - INFO - Epoch 115/200: Train Loss: 0.1544, Test Loss: 0.1441, Test Dice: 0.9292, Test IoU: 0.8683, EMA: True
+2026-08-30 15:58:47 - INFO - Epoch 116: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:58:47 - INFO - Epoch 116: frequency augmentation probability=0.0000
+2026-08-30 15:59:22 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.513767 +/- 0.750866 | a3=0.282178 +/- 0.348704 | a5=0.204056 +/- 0.522741
+2026-08-30 15:59:22 - INFO - Residual FG-MSCB guidance strength=0.201844 (bounded to [0, 0.5])
+2026-08-30 15:59:25 - INFO - Epoch 116/200: Train Loss: 0.1521, Test Loss: 0.1437, Test Dice: 0.9299, Test IoU: 0.8696, EMA: True
+2026-08-30 15:59:26 - INFO - Epoch 117: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 15:59:26 - INFO - Epoch 117: frequency augmentation probability=0.0000
+2026-08-30 16:00:02 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.479283 +/- 0.770131 | a3=0.300122 +/- 0.351327 | a5=0.220595 +/- 0.538623
+2026-08-30 16:00:02 - INFO - Residual FG-MSCB guidance strength=0.202871 (bounded to [0, 0.5])
+2026-08-30 16:00:05 - INFO - Epoch 117/200: Train Loss: 0.1531, Test Loss: 0.1434, Test Dice: 0.9302, Test IoU: 0.8701, EMA: True
+2026-08-30 16:00:05 - INFO - Epoch 118: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 16:00:05 - INFO - Epoch 118: frequency augmentation probability=0.0000
+2026-08-30 16:00:39 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.487754 +/- 0.792673 | a3=0.277859 +/- 0.340124 | a5=0.234388 +/- 0.584622
+2026-08-30 16:00:39 - INFO - Residual FG-MSCB guidance strength=0.202158 (bounded to [0, 0.5])
+2026-08-30 16:00:42 - INFO - Epoch 118/200: Train Loss: 0.1519, Test Loss: 0.1439, Test Dice: 0.9295, Test IoU: 0.8690, EMA: True
+2026-08-30 16:00:42 - INFO - Epoch 119: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 16:00:42 - INFO - Epoch 119: frequency augmentation probability=0.0000
+2026-08-30 16:01:15 - INFO - FG-MSCB alpha over 1450 training samples: a1=2.491775 +/- 0.797227 | a3=0.273835 +/- 0.340154 | a5=0.234391 +/- 0.586024
+2026-08-30 16:01:15 - INFO - Residual FG-MSCB guidance strength=0.201022 (bounded to [0, 0.5])
+2026-08-30 16:01:18 - INFO - Epoch 119/200: Train Loss: 0.1484, Test Loss: 0.1427, Test Dice: 0.9310, Test IoU: 0.8715, EMA: True
+2026-08-30 16:01:18 - INFO - Early stopping at epoch 119: no validation IoU improvement for 30 epochs.
+2026-08-30 16:01:19 - INFO - Training stopped after epoch 119; best checkpoint retained.
