@@ -559,6 +559,8 @@ def set_training_stage(model, stage):
         "mscb_lite_stage3.",
         "mscb_lite_stage2.",
         "mscb_lite_stage1.",
+        "fg_mscb_lite_stage3.",
+        "residual_fg_mscb_lite_stage3.",
         "lka_lite_stage3.",
         "uncertainty_refinement.",
     )
@@ -723,6 +725,21 @@ def create_warmup_cosine_scheduler(optimizer, warmup_epochs, total_epochs, min_l
     )
 
 
+def summarize_fg_mscb_alpha(alpha):
+    """Compute per-branch sample statistics over all FG-MSCB training samples."""
+    if alpha.ndim != 2 or alpha.shape[1] != 3 or alpha.shape[0] < 2:
+        raise ValueError("FG-MSCB alpha statistics require at least two [N, 3] samples")
+    alpha = alpha.detach().to(dtype=torch.float64)
+    mean = alpha.mean(dim=0)
+    std = alpha.std(dim=0, correction=1)
+    return {
+        "alpha1_mean": mean[0].item(), "alpha1_std": std[0].item(),
+        "alpha3_mean": mean[1].item(), "alpha3_std": std[1].item(),
+        "alpha5_mean": mean[2].item(), "alpha5_std": std[2].item(),
+        "sample_count": alpha.shape[0],
+    }
+
+
 def count_parameters(model):
     total = sum(param.numel() for param in model.parameters())
     trainable = sum(param.numel() for param in model.parameters() if param.requires_grad)
@@ -842,6 +859,7 @@ def train_epoch_segmentation(
     frequency_max_mix=0.5,
     frequency_region_min=0.01,
     frequency_region_max=0.05,
+    collect_fg_mscb_alpha=False,
 ):
     import random
     import numpy as np
@@ -873,6 +891,7 @@ def train_epoch_segmentation(
     mask_area_sum = 0.0
 
     valid_batches = 0
+    fg_alpha_samples = []
 
     def grad_norm(module):
         total = 0.0
@@ -931,6 +950,16 @@ def train_epoch_segmentation(
             skipped_batches += 1
             optimizer.zero_grad(set_to_none=True)
             continue
+
+        if collect_fg_mscb_alpha:
+            fg_mscb = (
+                getattr(model, "fg_mscb_lite_stage3", None)
+                or getattr(model, "residual_fg_mscb_lite_stage3", None)
+            )
+            alpha = None if fg_mscb is None else fg_mscb.last_alpha
+            if alpha is None:
+                raise RuntimeError("FG-MSCB alpha was not produced during training")
+            fg_alpha_samples.append(alpha.detach().to(device="cpu", dtype=torch.float64))
 
         # ----------------------------
         # Backward
@@ -1075,7 +1104,29 @@ def train_epoch_segmentation(
 
 
 
-    return running_loss / max(valid_batches, 1)
+    train_loss = running_loss / max(valid_batches, 1)
+    if not collect_fg_mscb_alpha:
+        return train_loss
+    if not fg_alpha_samples:
+        raise RuntimeError("FG-MSCB alpha was not collected during training")
+    alpha_statistics = summarize_fg_mscb_alpha(torch.cat(fg_alpha_samples, dim=0))
+    residual_fg_mscb = getattr(model, "residual_fg_mscb_lite_stage3", None)
+    if residual_fg_mscb is not None:
+        alpha_statistics["guidance_strength"] = residual_fg_mscb.effective_guidance_strength().detach().item()
+    logging.info(
+        "FG-MSCB alpha over %d training samples: "
+        "a1=%.6f +/- %.6f | a3=%.6f +/- %.6f | a5=%.6f +/- %.6f",
+        alpha_statistics["sample_count"],
+        alpha_statistics["alpha1_mean"], alpha_statistics["alpha1_std"],
+        alpha_statistics["alpha3_mean"], alpha_statistics["alpha3_std"],
+        alpha_statistics["alpha5_mean"], alpha_statistics["alpha5_std"],
+    )
+    if "guidance_strength" in alpha_statistics:
+        logging.info(
+            "Residual FG-MSCB guidance strength=%.6f (bounded to [0, 0.5])",
+            alpha_statistics["guidance_strength"],
+        )
+    return train_loss, alpha_statistics
 
 def dice_coefficient(pred, target, smooth=1e-6):
     """Calculate Dice coefficient."""
@@ -2845,6 +2896,31 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_mscb_lite_stage3 does not match the registered experiment"
                     )
+                if (bool(args.enable_fg_mscb_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_fg_mscb_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_fg_mscb_lite_stage3 does not match the registered experiment"
+                    )
+                if (bool(args.enable_residual_fg_mscb_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_residual_fg_mscb_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_residual_fg_mscb_lite_stage3 does not match the registered experiment"
+                    )
+                if (args.residual_fg_mscb_guidance_init_std !=
+                        getattr(experiment_config, "residual_fg_mscb_guidance_init_std", 1e-3)):
+                    raise ValueError(
+                        "--residual_fg_mscb_guidance_init_std does not match the registered experiment"
+                    )
+                if (bool(args.residual_fg_mscb_signed_strength) !=
+                        bool(getattr(experiment_config, "residual_fg_mscb_signed_strength", False))):
+                    raise ValueError(
+                        "--residual_fg_mscb_signed_strength does not match the registered experiment"
+                    )
+                if (args.residual_fg_mscb_initial_strength !=
+                        getattr(experiment_config, "residual_fg_mscb_initial_strength", 0.0)):
+                    raise ValueError(
+                        "--residual_fg_mscb_initial_strength does not match the registered experiment"
+                    )
                 if (bool(args.enable_mscb_lite_stage2) !=
                         bool(getattr(experiment_config, "enable_mscb_lite_stage2", False))):
                     raise ValueError(
@@ -2903,6 +2979,11 @@ if __name__ == "__main__":
                     enable_geometry_conv_stage3=args.enable_geometry_conv_stage3,
                     decoder_highres_width=args.decoder_highres_width,
                     enable_mscb_lite_stage3=args.enable_mscb_lite_stage3,
+                    enable_fg_mscb_lite_stage3=args.enable_fg_mscb_lite_stage3,
+                    enable_residual_fg_mscb_lite_stage3=args.enable_residual_fg_mscb_lite_stage3,
+                    residual_fg_mscb_guidance_init_std=args.residual_fg_mscb_guidance_init_std,
+                    residual_fg_mscb_signed_strength=args.residual_fg_mscb_signed_strength,
+                    residual_fg_mscb_initial_strength=args.residual_fg_mscb_initial_strength,
                     enable_mscb_lite_stage2=args.enable_mscb_lite_stage2,
                     enable_mscb_lite_stage1=args.enable_mscb_lite_stage1,
                     enable_lka_lite_stage3=args.enable_lka_lite_stage3,
@@ -3099,6 +3180,26 @@ if __name__ == "__main__":
         geometry_params = sum(parameter.numel() for parameter in geometry_module.parameters())
         logging.info("Geometry Conv Stage3: ON")
         logging.info(f"Geometry Conv Stage3 parameters: {geometry_params:,}")
+    fg_mscb_module = getattr(model, "fg_mscb_lite_stage3", None)
+    if fg_mscb_module is not None:
+        fg_mscb_params = sum(parameter.numel() for parameter in fg_mscb_module.parameters())
+        guidance_params = sum(
+            parameter.numel() for parameter in fg_mscb_module.guidance_mlp.parameters()
+        )
+        logging.info("Frequency-guided MSCB-lite Stage3: ON")
+        logging.info(f"FG-MSCB-lite parameters: {fg_mscb_params:,}")
+        logging.info(f"FG-MSCB guidance MLP parameters: {guidance_params:,}")
+    residual_fg_mscb_module = getattr(model, "residual_fg_mscb_lite_stage3", None)
+    if residual_fg_mscb_module is not None:
+        residual_fg_mscb_params = sum(
+            parameter.numel() for parameter in residual_fg_mscb_module.parameters()
+        )
+        logging.info("Residual frequency-guided MSCB-lite Stage3: ON")
+        logging.info(f"Residual FG-MSCB-lite parameters: {residual_fg_mscb_params:,}")
+        logging.info(
+            "Residual FG-MSCB guidance strength: %.6f (bounded to [0, 0.5])",
+            residual_fg_mscb_module.effective_guidance_strength().item(),
+        )
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
     if args.experiment_name and args.experiment_name.startswith("one_seed_"):
@@ -3754,7 +3855,7 @@ if __name__ == "__main__":
                 #     
                 #     logging.info(f"Epoch {epoch}: Backbone unfrozen, all params training")
                 if 'Kvasir' in args.data_name:
-                    train_loss = train_epoch_segmentation(
+                    train_result = train_epoch_segmentation(
                         model, train_loader, optimizer, criterion, device, scheduler,
                         threshold=best_threshold, ema=ema, amp_enabled=amp_enabled,
                         scaler=scaler,
@@ -3770,7 +3871,17 @@ if __name__ == "__main__":
                         frequency_max_mix=args.frequency_max_mix,
                         frequency_region_min=args.frequency_region_min,
                         frequency_region_max=args.frequency_region_max,
+                        collect_fg_mscb_alpha=bool(
+                            args.enable_fg_mscb_lite_stage3 or
+                            args.enable_residual_fg_mscb_lite_stage3
+                        ),
                     )
+                    if (args.enable_fg_mscb_lite_stage3 or
+                            args.enable_residual_fg_mscb_lite_stage3):
+                        train_loss, fg_alpha_statistics = train_result
+                    else:
+                        train_loss = train_result
+                        fg_alpha_statistics = None
                     if ema is not None:
                         ema.store(model)
                         ema.copy_to(model)
@@ -3837,7 +3948,7 @@ if __name__ == "__main__":
                         )
                 elapsed_seconds_total = elapsed_seconds_before_resume + (time.time() - start_time)
                 if args.training_history_path:
-                    append_history_row(args.training_history_path, {
+                    history_row = {
                         "epoch": epoch + 1,
                         "train_loss": train_loss,
                         "validation_dice": test_dice,
@@ -3846,7 +3957,14 @@ if __name__ == "__main__":
                         "decoder_lr": optimizer_lr(optimizer, "decoder", fallback_idx=-1),
                         "elapsed_seconds": elapsed_seconds_total,
                         "is_best": is_best,
-                    })
+                    }
+                    if fg_alpha_statistics is not None:
+                        history_row.update({
+                            f"fg_mscb_{name}": value
+                            for name, value in fg_alpha_statistics.items()
+                            if name != "sample_count"
+                        })
+                    append_history_row(args.training_history_path, history_row)
                 if is_best:
                     best_acc = test_acc
                     best_epoch = epoch

@@ -36,6 +36,11 @@ class ExperimentConfig:
     enable_lka_lite_stage3: bool = False
     enable_mscb_lite_stage2: bool = False
     enable_mscb_lite_stage1: bool = False
+    enable_fg_mscb_lite_stage3: bool = False
+    enable_residual_fg_mscb_lite_stage3: bool = False
+    residual_fg_mscb_guidance_init_std: float = 1e-3
+    residual_fg_mscb_signed_strength: bool = False
+    residual_fg_mscb_initial_strength: float = 0.0
 
     def to_dict(self):
         values = asdict(self)
@@ -72,6 +77,17 @@ class ExperimentConfig:
             values.pop("decoder_highres_width")
         if not self.enable_mscb_lite_stage3:
             values.pop("enable_mscb_lite_stage3")
+        if not self.enable_fg_mscb_lite_stage3:
+            values.pop("enable_fg_mscb_lite_stage3")
+        if not self.enable_residual_fg_mscb_lite_stage3:
+            values.pop("enable_residual_fg_mscb_lite_stage3")
+            values.pop("residual_fg_mscb_guidance_init_std")
+        elif self.residual_fg_mscb_guidance_init_std == 1e-3:
+            values.pop("residual_fg_mscb_guidance_init_std")
+        if not self.residual_fg_mscb_signed_strength:
+            values.pop("residual_fg_mscb_signed_strength")
+        if self.residual_fg_mscb_initial_strength == 0.0:
+            values.pop("residual_fg_mscb_initial_strength")
         if not self.enable_lka_lite_stage3:
             values.pop("enable_lka_lite_stage3")
         if not self.enable_mscb_lite_stage2:
@@ -142,6 +158,9 @@ _EXPERIMENTS = {
         ("one_seed_40_fafem_lka_lite_stage3_mscb_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, True),
         ("one_seed_41_fafem_mscb_lite_stage3_stage2_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, False, True),
         ("one_seed_42_fafem_mscb_lite_stage3_stage2_stage1_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, False, True, True),
+        ("one_seed_43_fafem_frequency_guided_mscb_stage3_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, True),
+        ("one_seed_44_fafem_residual_frequency_guided_mscb_stage3_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, True),
+        ("one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, True, 0.0, False, 5e-2),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

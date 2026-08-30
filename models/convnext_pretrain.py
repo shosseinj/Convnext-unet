@@ -390,6 +390,83 @@ class MSCBLite(nn.Module):
         return x + refined
 
 
+class FrequencyGuidedMSCBLite(MSCBLite):
+    """MSCB-lite whose scale branches are guided by the bottleneck FAFEM descriptor."""
+    def __init__(self, channels, descriptor_channels, reduction=16):
+        super().__init__(channels)
+        hidden_channels = max(8, descriptor_channels // (2 * reduction))
+        self.guidance_mlp = nn.Sequential(
+            nn.Linear(descriptor_channels, hidden_channels),
+            nn.GELU(),
+            nn.Linear(hidden_channels, len(self.dwconvs)),
+        )
+        self.last_alpha = None
+
+    def reset_guidance(self):
+        final_layer = self.guidance_mlp[-1]
+        nn.init.zeros_(final_layer.weight)
+        nn.init.zeros_(final_layer.bias)
+
+    def branch_weights(self, descriptor):
+        return 3.0 * torch.softmax(self.guidance_mlp(descriptor), dim=1)
+
+    def forward(self, x, frequency_descriptor):
+        alpha = self.branch_weights(frequency_descriptor)
+        self.last_alpha = alpha.detach()
+        expanded = self.pconv1(x)
+        branches = [branch(expanded) for branch in self.dwconvs]
+        multi_scale = sum(
+            alpha[:, index].view(-1, 1, 1, 1) * branch
+            for index, branch in enumerate(branches)
+        )
+        refined = self.pconv2(channel_shuffle(multi_scale, self.shuffle_groups))
+        return x + refined
+
+
+class ResidualFrequencyGuidedMSCBLite(FrequencyGuidedMSCBLite):
+    """Bounded residual frequency guidance that starts as ordinary MSCB-lite."""
+    def __init__(self, channels, descriptor_channels, reduction=16,
+                 guidance_init_std=1e-3, signed_strength=False,
+                 initial_guidance_strength=0.0):
+        super().__init__(channels, descriptor_channels, reduction)
+        if not 0.0 <= initial_guidance_strength <= 0.5:
+            raise ValueError("initial_guidance_strength must be in [0, 0.5]")
+        self.guidance_strength = nn.Parameter(torch.tensor([initial_guidance_strength]))
+        self.guidance_init_std = float(guidance_init_std)
+        self.signed_strength = bool(signed_strength)
+
+    def effective_guidance_strength(self):
+        if self.signed_strength:
+            return 0.5 * torch.tanh(self.guidance_strength)
+        return self.guidance_strength.clamp(0.0, 0.5)
+
+    def reset_guidance(self):
+        # Strength starts at zero, so the forward path is exactly ordinary MSCB.
+        # A positive strength with uniform alpha keeps the initial output identical
+        # to ordinary MSCB while letting the MLP receive gradients immediately.
+        final_layer = self.guidance_mlp[-1]
+        if self.guidance_init_std:
+            nn.init.normal_(final_layer.weight, mean=0.0, std=self.guidance_init_std)
+        else:
+            nn.init.zeros_(final_layer.weight)
+        nn.init.zeros_(final_layer.bias)
+
+    def forward(self, x, frequency_descriptor):
+        alpha = self.branch_weights(frequency_descriptor)
+        self.last_alpha = alpha.detach()
+        expanded = self.pconv1(x)
+        branches = [branch(expanded) for branch in self.dwconvs]
+        ordinary_sum = sum(branches)
+        guided_sum = sum(
+            alpha[:, index].view(-1, 1, 1, 1) * branch
+            for index, branch in enumerate(branches)
+        )
+        strength = self.effective_guidance_strength()
+        multi_scale = ordinary_sum + strength * (guided_sum - ordinary_sum)
+        refined = self.pconv2(channel_shuffle(multi_scale, self.shuffle_groups))
+        return x + refined
+
+
 class LKALiteStage3(nn.Module):
     """Identity-safe large-kernel attention for the 384-channel Stage-3 skip."""
     def __init__(self, channels):
@@ -636,6 +713,11 @@ class ConvNeXtUNet(nn.Module):
                  enable_geometry_conv_stage3=False,
                  decoder_highres_width=96,
                  enable_mscb_lite_stage3=False,
+                 enable_fg_mscb_lite_stage3=False,
+                 enable_residual_fg_mscb_lite_stage3=False,
+                 residual_fg_mscb_guidance_init_std=1e-3,
+                 residual_fg_mscb_signed_strength=False,
+                 residual_fg_mscb_initial_strength=0.0,
                  enable_lka_lite_stage3=False,
                  enable_mscb_lite_stage2=False,
                  enable_mscb_lite_stage1=False):
@@ -664,6 +746,14 @@ class ConvNeXtUNet(nn.Module):
             )
         if decoder_highres_width < 96:
             raise ValueError("decoder_highres_width must be at least 96")
+        if enable_fg_mscb_lite_stage3 or enable_residual_fg_mscb_lite_stage3:
+            if not enable_fafem:
+                raise ValueError("FG-MSCB requires bottleneck FAFEM")
+            if (enable_mscb_lite_stage3 or enable_mscb_lite_stage2 or
+                    enable_mscb_lite_stage1):
+                raise ValueError("FG-MSCB cannot coexist with ordinary MSCB-lite blocks")
+        if enable_fg_mscb_lite_stage3 and enable_residual_fg_mscb_lite_stage3:
+            raise ValueError("Only one frequency-guided MSCB-lite variant may be enabled")
         self.variant_config = {
             "enable_msc": bool(enable_msc),
             "skip_mode": skip_mode,
@@ -685,6 +775,11 @@ class ConvNeXtUNet(nn.Module):
             "enable_geometry_conv_stage3": bool(enable_geometry_conv_stage3),
             "decoder_highres_width": int(decoder_highres_width),
             "enable_mscb_lite_stage3": bool(enable_mscb_lite_stage3),
+            "enable_fg_mscb_lite_stage3": bool(enable_fg_mscb_lite_stage3),
+            "enable_residual_fg_mscb_lite_stage3": bool(enable_residual_fg_mscb_lite_stage3),
+            "residual_fg_mscb_guidance_init_std": float(residual_fg_mscb_guidance_init_std),
+            "residual_fg_mscb_signed_strength": bool(residual_fg_mscb_signed_strength),
+            "residual_fg_mscb_initial_strength": float(residual_fg_mscb_initial_strength),
             "enable_lka_lite_stage3": bool(enable_lka_lite_stage3),
             "enable_mscb_lite_stage2": bool(enable_mscb_lite_stage2),
             "enable_mscb_lite_stage1": bool(enable_mscb_lite_stage1),
@@ -832,6 +927,19 @@ class ConvNeXtUNet(nn.Module):
         self.mscb_lite_stage3 = (
             MSCBLite(dims[2]) if enable_mscb_lite_stage3 else None
         )
+        self.fg_mscb_lite_stage3 = (
+            FrequencyGuidedMSCBLite(dims[2], encoder_channels[3] * 2)
+            if enable_fg_mscb_lite_stage3 else None
+        )
+        self.residual_fg_mscb_lite_stage3 = (
+            ResidualFrequencyGuidedMSCBLite(
+                dims[2], encoder_channels[3] * 2,
+                guidance_init_std=residual_fg_mscb_guidance_init_std,
+                signed_strength=residual_fg_mscb_signed_strength,
+                initial_guidance_strength=residual_fg_mscb_initial_strength,
+            )
+            if enable_residual_fg_mscb_lite_stage3 else None
+        )
         self.mscb_lite_stage2 = (
             MSCBLite(dims[1]) if enable_mscb_lite_stage2 else None
         )
@@ -845,6 +953,10 @@ class ConvNeXtUNet(nn.Module):
         
         # Initialize decoder
         self._init_decoder()
+        if self.fg_mscb_lite_stage3 is not None:
+            self.fg_mscb_lite_stage3.reset_guidance()
+        if self.residual_fg_mscb_lite_stage3 is not None:
+            self.residual_fg_mscb_lite_stage3.reset_guidance()
     
     def _init_decoder(self):
         for name, module in self.named_modules():
@@ -872,8 +984,15 @@ class ConvNeXtUNet(nn.Module):
         if self.fafem_stage3 is not None:
             f3 = self.fafem_stage3(f3)
         fafem_applied = False
+        frequency_descriptor = None
+        frequency_guided_mscb = (
+            self.fg_mscb_lite_stage3 or self.residual_fg_mscb_lite_stage3
+        )
         if self.fafem is not None and self.variant_config["csaf_version"] == "v2":
-            f4 = self.fafem(f4)
+            if frequency_guided_mscb is not None:
+                f4, frequency_descriptor = self.fafem.forward_with_frequency_descriptor(f4)
+            else:
+                f4 = self.fafem(f4)
             fafem_applied = True
         if self.csaf is not None:
             encoder_features = (f1, f2, f3, f4)
@@ -887,7 +1006,10 @@ class ConvNeXtUNet(nn.Module):
         if self.lka_lite_stage3 is not None:
             f3 = self.lka_lite_stage3(f3)
         if self.fafem is not None and not fafem_applied:
-            f4 = self.fafem(f4)
+            if frequency_guided_mscb is not None:
+                f4, frequency_descriptor = self.fafem.forward_with_frequency_descriptor(f4)
+            else:
+                f4 = self.fafem(f4)
         
         # Bottleneck
         b = self.bottleneck(f4)
@@ -902,6 +1024,10 @@ class ConvNeXtUNet(nn.Module):
               else self.bsei4(torch.cat([d4, f3], dim=1)))
         if self.mscb_lite_stage3 is not None:
             d4 = self.mscb_lite_stage3(d4)
+        if frequency_guided_mscb is not None:
+            if frequency_descriptor is None:
+                raise RuntimeError("FG-MSCB requires the bottleneck FAFEM descriptor")
+            d4 = frequency_guided_mscb(d4, frequency_descriptor)
         
         d3 = self.decoder3(d4)
         d3 = resize_like(d3, f2)

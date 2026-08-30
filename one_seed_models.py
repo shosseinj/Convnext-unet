@@ -111,6 +111,17 @@ def build_experiment_model(config, encoder_weights, device=None):
         enable_geometry_conv_stage3=getattr(config, "enable_geometry_conv_stage3", False),
         decoder_highres_width=getattr(config, "decoder_highres_width", 96),
         enable_mscb_lite_stage3=getattr(config, "enable_mscb_lite_stage3", False),
+        enable_fg_mscb_lite_stage3=getattr(config, "enable_fg_mscb_lite_stage3", False),
+        enable_residual_fg_mscb_lite_stage3=getattr(config, "enable_residual_fg_mscb_lite_stage3", False),
+        residual_fg_mscb_guidance_init_std=getattr(
+            config, "residual_fg_mscb_guidance_init_std", 1e-3
+        ),
+        residual_fg_mscb_signed_strength=getattr(
+            config, "residual_fg_mscb_signed_strength", False
+        ),
+        residual_fg_mscb_initial_strength=getattr(
+            config, "residual_fg_mscb_initial_strength", 0.0
+        ),
         enable_mscb_lite_stage2=getattr(config, "enable_mscb_lite_stage2", False),
         enable_mscb_lite_stage1=getattr(config, "enable_mscb_lite_stage1", False),
         enable_lka_lite_stage3=getattr(config, "enable_lka_lite_stage3", False),

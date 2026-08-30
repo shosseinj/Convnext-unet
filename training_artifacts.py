@@ -19,13 +19,21 @@ def append_history_row(path, row):
     if path.is_file():
         with path.open(newline="", encoding="utf-8") as handle:
             rows = list(csv.DictReader(handle))
-    normalized = {field: row[field] for field in HISTORY_FIELDS}
+    extra_fields = tuple(field for field in row if field not in HISTORY_FIELDS)
+    existing_extra_fields = tuple(
+        field for field in (rows[0].keys() if rows else ())
+        if field not in HISTORY_FIELDS
+    )
+    fieldnames = HISTORY_FIELDS + tuple(
+        dict.fromkeys(existing_extra_fields + extra_fields)
+    )
+    normalized = {field: row.get(field, "") for field in fieldnames}
     rows = [existing for existing in rows if int(existing["epoch"]) != int(row["epoch"])]
     rows.append(normalized)
     rows.sort(key=lambda item: int(item["epoch"]))
     temporary = path.with_name(path.name + ".tmp")
     with temporary.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=HISTORY_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
     temporary.replace(path)
