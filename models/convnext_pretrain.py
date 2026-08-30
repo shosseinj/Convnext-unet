@@ -1,3 +1,5 @@
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -339,6 +341,71 @@ class Stage3GatedSkipFusion(nn.Module):
         return skip * gate
 
 
+def channel_shuffle(x, groups):
+    """EMCAD channel shuffle for a channels-first tensor."""
+    batch_size, channels, height, width = x.shape
+    if channels % groups:
+        raise ValueError("channels must be divisible by channel-shuffle groups")
+    x = x.view(batch_size, groups, channels // groups, height, width)
+    x = x.transpose(1, 2).contiguous()
+    return x.view(batch_size, channels, height, width)
+
+
+class MSCBLite(nn.Module):
+    """Single residual MSCB using the official EMCAD block topology at C=384."""
+    def __init__(self, channels, kernel_sizes=(1, 3, 5), expansion_factor=2):
+        super().__init__()
+        expanded_channels = channels * expansion_factor
+        self.shuffle_groups = math.gcd(expanded_channels, channels)
+        self.pconv1 = nn.Sequential(
+            nn.Conv2d(channels, expanded_channels, kernel_size=1, bias=False),
+            nn.BatchNorm2d(expanded_channels),
+            nn.ReLU6(inplace=True),
+        )
+        self.dwconvs = nn.ModuleList(
+            nn.Sequential(
+                nn.Conv2d(
+                    expanded_channels,
+                    expanded_channels,
+                    kernel_size=kernel_size,
+                    stride=1,
+                    padding=kernel_size // 2,
+                    groups=expanded_channels,
+                    bias=False,
+                ),
+                nn.BatchNorm2d(expanded_channels),
+                nn.ReLU6(inplace=True),
+            )
+            for kernel_size in kernel_sizes
+        )
+        self.pconv2 = nn.Sequential(
+            nn.Conv2d(expanded_channels, channels, kernel_size=1, bias=False),
+            nn.BatchNorm2d(channels),
+        )
+
+    def forward(self, x):
+        expanded = self.pconv1(x)
+        multi_scale = sum(branch(expanded) for branch in self.dwconvs)
+        refined = self.pconv2(channel_shuffle(multi_scale, self.shuffle_groups))
+        return x + refined
+
+
+class LKALiteStage3(nn.Module):
+    """Identity-safe large-kernel attention for the 384-channel Stage-3 skip."""
+    def __init__(self, channels):
+        super().__init__()
+        self.dwconv5 = nn.Conv2d(channels, channels, 5, padding=2, groups=channels)
+        self.dwconv7_dilated = nn.Conv2d(
+            channels, channels, 7, padding=9, dilation=3, groups=channels
+        )
+        self.pwconv = nn.Conv2d(channels, channels, 1)
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+    def forward(self, x):
+        attention = self.pwconv(self.dwconv7_dilated(self.dwconv5(x)))
+        return x + self.gamma * (x * attention)
+
+
 # ============================================================================
 # DECODER BLOCK (LayerNorm + GELU)
 # ============================================================================
@@ -567,7 +634,9 @@ class ConvNeXtUNet(nn.Module):
                  enable_cross_level_fusion=False,
                  cross_level_fusion_version="v1",
                  enable_geometry_conv_stage3=False,
-                 decoder_highres_width=96):
+                 decoder_highres_width=96,
+                 enable_mscb_lite_stage3=False,
+                 enable_lka_lite_stage3=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -613,6 +682,8 @@ class ConvNeXtUNet(nn.Module):
             "cross_level_fusion_version": cross_level_fusion_version,
             "enable_geometry_conv_stage3": bool(enable_geometry_conv_stage3),
             "decoder_highres_width": int(decoder_highres_width),
+            "enable_mscb_lite_stage3": bool(enable_mscb_lite_stage3),
+            "enable_lka_lite_stage3": bool(enable_lka_lite_stage3),
         }
         
         # Encoder
@@ -754,6 +825,12 @@ class ConvNeXtUNet(nn.Module):
             GeometryDeformableConv(encoder_channels[2])
             if enable_geometry_conv_stage3 else None
         )
+        self.mscb_lite_stage3 = (
+            MSCBLite(dims[2]) if enable_mscb_lite_stage3 else None
+        )
+        self.lka_lite_stage3 = (
+            LKALiteStage3(encoder_channels[2]) if enable_lka_lite_stage3 else None
+        )
         torch.set_rng_state(rng_state)
         
         # Initialize decoder
@@ -797,6 +874,8 @@ class ConvNeXtUNet(nn.Module):
             f1, f2, f3 = self.cross_level_fusion(f1, f2, f3)
         if self.geometry_conv_stage3 is not None:
             f3 = self.geometry_conv_stage3(f3)
+        if self.lka_lite_stage3 is not None:
+            f3 = self.lka_lite_stage3(f3)
         if self.fafem is not None and not fafem_applied:
             f4 = self.fafem(f4)
         
@@ -811,6 +890,8 @@ class ConvNeXtUNet(nn.Module):
             f3 = self.gated_skip_stage3(d4, f3)
         d4 = (self.bsei4(d4, f3) if self.variant_config["skip_mode"] == "attention_gate"
               else self.bsei4(torch.cat([d4, f3], dim=1)))
+        if self.mscb_lite_stage3 is not None:
+            d4 = self.mscb_lite_stage3(d4)
         
         d3 = self.decoder3(d4)
         d3 = resize_like(d3, f2)

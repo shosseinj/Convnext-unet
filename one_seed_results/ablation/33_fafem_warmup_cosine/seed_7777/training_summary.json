@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\33_fafem_warmup_cosine\\seed_7777\\best_checkpoint.pth",
+  "best_epoch": 139,
+  "best_validation_metric": 0.8758956449372428,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_33_fafem_warmup_cosine",
+  "final_epoch": 169,
+  "seed": 7777,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4315.037293434143
+}

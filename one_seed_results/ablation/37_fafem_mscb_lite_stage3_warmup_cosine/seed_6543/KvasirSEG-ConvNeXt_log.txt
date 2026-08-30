@@ -1,0 +1,763 @@
+2026-08-29 14:15:27 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\KvasirSEG-ConvNeXt_log.txt
+2026-08-29 14:15:34 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-29 14:15:34 - INFO - Parameter count: total=29.98M, encoder=27.82M, decoder_head=2.16M, trainable=29.98M
+2026-08-29 14:15:34 - INFO - Experiment name: one_seed_37_fafem_mscb_lite_stage3_warmup_cosine
+2026-08-29 14:15:34 - INFO - Seed: 6543
+2026-08-29 14:15:34 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-29 14:15:34 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-29 14:15:34 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-29 14:15:34 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-29 14:15:34 - INFO - FAFEM parameter count: 169,777
+2026-08-29 14:15:34 - INFO - Total parameter count: 29,983,491
+2026-08-29 14:15:34 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543
+2026-08-29 14:15:34 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-29 14:15:34 - INFO - Optimizer: AdamW | refine_lr=4.50e-04, encoder_lr=3.00e-05, decoder_lr=3.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=warmup_cosine(warmup_epochs=5,eta_min=1.00e-06)
+2026-08-29 14:15:34 - INFO - Optimizer group refine: parameters=15,889, max_lr=4.500000e-04, weight_decay=1.00e-02
+2026-08-29 14:15:34 - INFO - Optimizer group decoder: parameters=2,149,010, max_lr=3.000000e-04, weight_decay=1.00e-04
+2026-08-29 14:15:34 - INFO - Optimizer group encoder_stage4: parameters=15,470,592, max_lr=3.000000e-05, weight_decay=5.00e-02
+2026-08-29 14:15:34 - INFO - Optimizer group encoder_stage3: parameters=11,112,960, max_lr=2.400000e-05, weight_decay=5.00e-02
+2026-08-29 14:15:34 - INFO - Optimizer group encoder_stage2: parameters=992,256, max_lr=1.920000e-05, weight_decay=5.00e-02
+2026-08-29 14:15:34 - INFO - Optimizer group encoder_stage1_stem: parameters=242,784, max_lr=1.536000e-05, weight_decay=5.00e-02
+2026-08-29 14:15:34 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-29 14:15:34 - INFO - Deep supervision: heads=0, schedule=constant, anneal=96-128 | sampling=uniform
+2026-08-29 14:15:34 - INFO - Frequency augmentation: OFF | max_probability=0.5, region=1-5%, max_mix=0.5, anneal=70-80%
+2026-08-29 14:15:34 - INFO - Uncertainty refinement: none
+2026-08-29 14:15:34 - INFO - Checkpoint decision: resume - Training is incomplete
+2026-08-29 14:15:35 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-29 14:15:35 - INFO - Loaded 281/281 compatible model tensors from checkpoint.
+2026-08-29 14:15:35 - INFO - warmup_cosine state resumed from checkpoint.
+2026-08-29 14:15:35 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-29 14:15:35 - INFO - Resumed from epoch 2
+2026-08-29 14:15:35 - INFO - Previous best IoU: 0.1281
+2026-08-29 14:15:35 - INFO - Training sampler generator state resumed from checkpoint.
+2026-08-29 14:15:35 - INFO - Frequency augmentation generator state resumed from checkpoint.
+2026-08-29 14:15:35 - INFO - Python, NumPy, Torch and CUDA RNG states resumed from checkpoint.
+2026-08-29 14:15:35 - INFO - Loaded 276 compatible EMA tensors from checkpoint.
+2026-08-29 14:15:35 - INFO - EMA enabled with decay=0.995.
+2026-08-29 14:15:35 - INFO - Training stage 'all' starts at epoch 4 (29,983,491/29,983,491 parameters trainable).
+2026-08-29 14:15:35 - INFO - #### Training ####
+2026-08-29 14:15:35 - INFO - initial LR: refine=0.000288, encoder=0.000019, decoder=0.000192
+2026-08-29 14:15:35 - INFO - Epoch 4: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:15:35 - INFO - Epoch 4: frequency augmentation probability=0.0000
+2026-08-29 14:16:01 - INFO - Epoch 4/200: Train Loss: 0.7682, Test Loss: 0.8273, Test Dice: 0.3400, Test IoU: 0.2053, EMA: True
+2026-08-29 14:16:01 - INFO - New best model saved with accuracy: 0.21%
+2026-08-29 14:16:01 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:16:02 - INFO - Epoch 5: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:16:02 - INFO - Epoch 5: frequency augmentation probability=0.0000
+2026-08-29 14:16:28 - INFO - Epoch 5/200: Train Loss: 0.6758, Test Loss: 0.7998, Test Dice: 0.3681, Test IoU: 0.2261, EMA: True
+2026-08-29 14:16:29 - INFO - New best model saved with accuracy: 0.23%
+2026-08-29 14:16:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:16:29 - INFO - Epoch 6: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:16:29 - INFO - Epoch 6: frequency augmentation probability=0.0000
+2026-08-29 14:16:52 - WARNING - Skipped 1/61 batches.
+2026-08-29 14:16:55 - INFO - Epoch 6/200: Train Loss: 0.5123, Test Loss: 0.7223, Test Dice: 0.4448, Test IoU: 0.2867, EMA: True
+2026-08-29 14:16:56 - INFO - New best model saved with accuracy: 0.29%
+2026-08-29 14:16:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:16:56 - INFO - Epoch 7: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:16:56 - INFO - Epoch 7: frequency augmentation probability=0.0000
+2026-08-29 14:17:22 - INFO - Epoch 7/200: Train Loss: 0.4353, Test Loss: 0.5783, Test Dice: 0.6022, Test IoU: 0.4333, EMA: True
+2026-08-29 14:17:23 - INFO - New best model saved with accuracy: 0.43%
+2026-08-29 14:17:23 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:17:23 - INFO - Epoch 8: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:17:23 - INFO - Epoch 8: frequency augmentation probability=0.0000
+2026-08-29 14:17:49 - INFO - Epoch 8/200: Train Loss: 0.3958, Test Loss: 0.5165, Test Dice: 0.6311, Test IoU: 0.4639, EMA: True
+2026-08-29 14:17:50 - INFO - New best model saved with accuracy: 0.46%
+2026-08-29 14:17:50 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:17:50 - INFO - Epoch 9: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:17:50 - INFO - Epoch 9: frequency augmentation probability=0.0000
+2026-08-29 14:18:16 - INFO - Epoch 9/200: Train Loss: 0.3830, Test Loss: 0.4506, Test Dice: 0.7002, Test IoU: 0.5407, EMA: True
+2026-08-29 14:18:17 - INFO - New best model saved with accuracy: 0.54%
+2026-08-29 14:18:17 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:18:17 - INFO - Epoch 10: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:18:17 - INFO - Epoch 10: frequency augmentation probability=0.0000
+2026-08-29 14:18:43 - INFO - Epoch 10/200: Train Loss: 0.3696, Test Loss: 0.3798, Test Dice: 0.7705, Test IoU: 0.6281, EMA: True
+2026-08-29 14:18:44 - INFO - New best model saved with accuracy: 0.63%
+2026-08-29 14:18:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:18:44 - INFO - Epoch 11: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:18:44 - INFO - Epoch 11: frequency augmentation probability=0.0000
+2026-08-29 14:19:10 - INFO - Epoch 11/200: Train Loss: 0.3551, Test Loss: 0.3278, Test Dice: 0.8128, Test IoU: 0.6859, EMA: True
+2026-08-29 14:19:11 - INFO - New best model saved with accuracy: 0.69%
+2026-08-29 14:19:11 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:19:11 - INFO - Epoch 12: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:19:11 - INFO - Epoch 12: frequency augmentation probability=0.0000
+2026-08-29 14:19:37 - INFO - Epoch 12/200: Train Loss: 0.3415, Test Loss: 0.2939, Test Dice: 0.8370, Test IoU: 0.7208, EMA: True
+2026-08-29 14:19:38 - INFO - New best model saved with accuracy: 0.72%
+2026-08-29 14:19:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:19:38 - INFO - Epoch 13: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:19:38 - INFO - Epoch 13: frequency augmentation probability=0.0000
+2026-08-29 14:20:04 - INFO - Epoch 13/200: Train Loss: 0.3222, Test Loss: 0.2720, Test Dice: 0.8514, Test IoU: 0.7423, EMA: True
+2026-08-29 14:20:05 - INFO - New best model saved with accuracy: 0.74%
+2026-08-29 14:20:05 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:20:05 - INFO - Epoch 14: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:20:05 - INFO - Epoch 14: frequency augmentation probability=0.0000
+2026-08-29 14:20:31 - INFO - Epoch 14/200: Train Loss: 0.3237, Test Loss: 0.2564, Test Dice: 0.8622, Test IoU: 0.7589, EMA: True
+2026-08-29 14:20:32 - INFO - New best model saved with accuracy: 0.76%
+2026-08-29 14:20:32 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:20:32 - INFO - Epoch 15: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:20:32 - INFO - Epoch 15: frequency augmentation probability=0.0000
+2026-08-29 14:20:58 - INFO - Epoch 15/200: Train Loss: 0.3113, Test Loss: 0.2457, Test Dice: 0.8685, Test IoU: 0.7687, EMA: True
+2026-08-29 14:20:59 - INFO - New best model saved with accuracy: 0.77%
+2026-08-29 14:20:59 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:20:59 - INFO - Epoch 16: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:20:59 - INFO - Epoch 16: frequency augmentation probability=0.0000
+2026-08-29 14:21:25 - INFO - Epoch 16/200: Train Loss: 0.3025, Test Loss: 0.2377, Test Dice: 0.8729, Test IoU: 0.7756, EMA: True
+2026-08-29 14:21:26 - INFO - New best model saved with accuracy: 0.78%
+2026-08-29 14:21:26 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:21:27 - INFO - Epoch 17: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:21:27 - INFO - Epoch 17: frequency augmentation probability=0.0000
+2026-08-29 14:21:51 - INFO - Epoch 17/200: Train Loss: 0.2893, Test Loss: 0.2310, Test Dice: 0.8765, Test IoU: 0.7813, EMA: True
+2026-08-29 14:21:52 - INFO - New best model saved with accuracy: 0.78%
+2026-08-29 14:21:52 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:21:53 - INFO - Epoch 18: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:21:53 - INFO - Epoch 18: frequency augmentation probability=0.0000
+2026-08-29 14:22:17 - INFO - Epoch 18/200: Train Loss: 0.2848, Test Loss: 0.2254, Test Dice: 0.8793, Test IoU: 0.7858, EMA: True
+2026-08-29 14:22:18 - INFO - New best model saved with accuracy: 0.79%
+2026-08-29 14:22:18 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:22:19 - INFO - Epoch 19: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:22:19 - INFO - Epoch 19: frequency augmentation probability=0.0000
+2026-08-29 14:22:43 - INFO - Epoch 19/200: Train Loss: 0.2851, Test Loss: 0.2201, Test Dice: 0.8816, Test IoU: 0.7894, EMA: True
+2026-08-29 14:22:44 - INFO - New best model saved with accuracy: 0.79%
+2026-08-29 14:22:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:22:45 - INFO - Epoch 20: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:22:45 - INFO - Epoch 20: frequency augmentation probability=0.0000
+2026-08-29 14:23:09 - INFO - Epoch 20/200: Train Loss: 0.2743, Test Loss: 0.2135, Test Dice: 0.8853, Test IoU: 0.7954, EMA: True
+2026-08-29 14:23:10 - INFO - New best model saved with accuracy: 0.80%
+2026-08-29 14:23:10 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:23:11 - INFO - Epoch 21: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:23:11 - INFO - Epoch 21: frequency augmentation probability=0.0000
+2026-08-29 14:23:35 - INFO - Epoch 21/200: Train Loss: 0.2627, Test Loss: 0.2075, Test Dice: 0.8888, Test IoU: 0.8008, EMA: True
+2026-08-29 14:23:36 - INFO - New best model saved with accuracy: 0.80%
+2026-08-29 14:23:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:23:37 - INFO - Epoch 22: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:23:37 - INFO - Epoch 22: frequency augmentation probability=0.0000
+2026-08-29 14:24:01 - INFO - Epoch 22/200: Train Loss: 0.2644, Test Loss: 0.2020, Test Dice: 0.8933, Test IoU: 0.8081, EMA: True
+2026-08-29 14:24:02 - INFO - New best model saved with accuracy: 0.81%
+2026-08-29 14:24:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:24:03 - INFO - Epoch 23: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:24:03 - INFO - Epoch 23: frequency augmentation probability=0.0000
+2026-08-29 14:24:27 - INFO - Epoch 23/200: Train Loss: 0.2601, Test Loss: 0.1978, Test Dice: 0.8970, Test IoU: 0.8140, EMA: True
+2026-08-29 14:24:28 - INFO - New best model saved with accuracy: 0.81%
+2026-08-29 14:24:28 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:24:29 - INFO - Epoch 24: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:24:29 - INFO - Epoch 24: frequency augmentation probability=0.0000
+2026-08-29 14:24:53 - INFO - Epoch 24/200: Train Loss: 0.2572, Test Loss: 0.1952, Test Dice: 0.8992, Test IoU: 0.8177, EMA: True
+2026-08-29 14:24:54 - INFO - New best model saved with accuracy: 0.82%
+2026-08-29 14:24:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:24:55 - INFO - Epoch 25: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:24:55 - INFO - Epoch 25: frequency augmentation probability=0.0000
+2026-08-29 14:25:19 - INFO - Epoch 25/200: Train Loss: 0.2536, Test Loss: 0.1922, Test Dice: 0.9026, Test IoU: 0.8233, EMA: True
+2026-08-29 14:25:20 - INFO - New best model saved with accuracy: 0.82%
+2026-08-29 14:25:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:25:21 - INFO - Epoch 26: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:25:21 - INFO - Epoch 26: frequency augmentation probability=0.0000
+2026-08-29 14:25:45 - INFO - Epoch 26/200: Train Loss: 0.2396, Test Loss: 0.1906, Test Dice: 0.9042, Test IoU: 0.8259, EMA: True
+2026-08-29 14:25:46 - INFO - New best model saved with accuracy: 0.83%
+2026-08-29 14:25:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:25:46 - INFO - Epoch 27: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:25:46 - INFO - Epoch 27: frequency augmentation probability=0.0000
+2026-08-29 14:26:11 - INFO - Epoch 27/200: Train Loss: 0.2445, Test Loss: 0.1887, Test Dice: 0.9056, Test IoU: 0.8284, EMA: True
+2026-08-29 14:26:12 - INFO - New best model saved with accuracy: 0.83%
+2026-08-29 14:26:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:26:13 - INFO - Epoch 28: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:26:13 - INFO - Epoch 28: frequency augmentation probability=0.0000
+2026-08-29 14:26:37 - INFO - Epoch 28/200: Train Loss: 0.2416, Test Loss: 0.1873, Test Dice: 0.9067, Test IoU: 0.8302, EMA: True
+2026-08-29 14:26:38 - INFO - New best model saved with accuracy: 0.83%
+2026-08-29 14:26:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:26:38 - INFO - Epoch 29: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:26:38 - INFO - Epoch 29: frequency augmentation probability=0.0000
+2026-08-29 14:27:03 - INFO - Epoch 29/200: Train Loss: 0.2386, Test Loss: 0.1863, Test Dice: 0.9065, Test IoU: 0.8299, EMA: True
+2026-08-29 14:27:04 - INFO - Epoch 30: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:27:04 - INFO - Epoch 30: frequency augmentation probability=0.0000
+2026-08-29 14:27:28 - INFO - Epoch 30/200: Train Loss: 0.2300, Test Loss: 0.1858, Test Dice: 0.9055, Test IoU: 0.8281, EMA: True
+2026-08-29 14:27:29 - INFO - Epoch 31: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:27:29 - INFO - Epoch 31: frequency augmentation probability=0.0000
+2026-08-29 14:27:53 - INFO - Epoch 31/200: Train Loss: 0.2292, Test Loss: 0.1852, Test Dice: 0.9054, Test IoU: 0.8279, EMA: True
+2026-08-29 14:27:54 - INFO - Epoch 32: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:27:54 - INFO - Epoch 32: frequency augmentation probability=0.0000
+2026-08-29 14:28:18 - INFO - Epoch 32/200: Train Loss: 0.2178, Test Loss: 0.1842, Test Dice: 0.9052, Test IoU: 0.8277, EMA: True
+2026-08-29 14:28:19 - INFO - Epoch 33: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:28:19 - INFO - Epoch 33: frequency augmentation probability=0.0000
+2026-08-29 14:28:43 - INFO - Epoch 33/200: Train Loss: 0.2271, Test Loss: 0.1807, Test Dice: 0.9069, Test IoU: 0.8304, EMA: True
+2026-08-29 14:28:44 - INFO - New best model saved with accuracy: 0.83%
+2026-08-29 14:28:44 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:28:45 - INFO - Epoch 34: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:28:45 - INFO - Epoch 34: frequency augmentation probability=0.0000
+2026-08-29 14:29:09 - INFO - Epoch 34/200: Train Loss: 0.2211, Test Loss: 0.1787, Test Dice: 0.9076, Test IoU: 0.8314, EMA: True
+2026-08-29 14:29:10 - INFO - New best model saved with accuracy: 0.83%
+2026-08-29 14:29:10 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:29:11 - INFO - Epoch 35: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:29:11 - INFO - Epoch 35: frequency augmentation probability=0.0000
+2026-08-29 14:29:36 - INFO - Epoch 35/200: Train Loss: 0.2254, Test Loss: 0.1770, Test Dice: 0.9083, Test IoU: 0.8325, EMA: True
+2026-08-29 14:29:37 - INFO - New best model saved with accuracy: 0.83%
+2026-08-29 14:29:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:29:37 - INFO - Epoch 36: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:29:37 - INFO - Epoch 36: frequency augmentation probability=0.0000
+2026-08-29 14:30:02 - INFO - Epoch 36/200: Train Loss: 0.2189, Test Loss: 0.1719, Test Dice: 0.9112, Test IoU: 0.8375, EMA: True
+2026-08-29 14:30:02 - INFO - New best model saved with accuracy: 0.84%
+2026-08-29 14:30:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:30:03 - INFO - Epoch 37: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:30:03 - INFO - Epoch 37: frequency augmentation probability=0.0000
+2026-08-29 14:30:28 - INFO - Epoch 37/200: Train Loss: 0.2239, Test Loss: 0.1690, Test Dice: 0.9138, Test IoU: 0.8419, EMA: True
+2026-08-29 14:30:29 - INFO - New best model saved with accuracy: 0.84%
+2026-08-29 14:30:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:30:29 - INFO - Epoch 38: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:30:29 - INFO - Epoch 38: frequency augmentation probability=0.0000
+2026-08-29 14:30:54 - INFO - Epoch 38/200: Train Loss: 0.2111, Test Loss: 0.1665, Test Dice: 0.9155, Test IoU: 0.8448, EMA: True
+2026-08-29 14:30:54 - INFO - New best model saved with accuracy: 0.84%
+2026-08-29 14:30:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:30:55 - INFO - Epoch 39: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:30:55 - INFO - Epoch 39: frequency augmentation probability=0.0000
+2026-08-29 14:31:17 - WARNING - Skipped 1/61 batches.
+2026-08-29 14:31:19 - INFO - Epoch 39/200: Train Loss: 0.2100, Test Loss: 0.1656, Test Dice: 0.9156, Test IoU: 0.8449, EMA: True
+2026-08-29 14:31:20 - INFO - New best model saved with accuracy: 0.84%
+2026-08-29 14:31:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:31:21 - INFO - Epoch 40: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:31:21 - INFO - Epoch 40: frequency augmentation probability=0.0000
+2026-08-29 14:31:46 - INFO - Epoch 40/200: Train Loss: 0.2106, Test Loss: 0.1655, Test Dice: 0.9159, Test IoU: 0.8454, EMA: True
+2026-08-29 14:31:46 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:31:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:31:47 - INFO - Epoch 41: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:31:47 - INFO - Epoch 41: frequency augmentation probability=0.0000
+2026-08-29 14:32:12 - INFO - Epoch 41/200: Train Loss: 0.2095, Test Loss: 0.1634, Test Dice: 0.9179, Test IoU: 0.8487, EMA: True
+2026-08-29 14:32:12 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:32:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:32:13 - INFO - Epoch 42: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:32:13 - INFO - Epoch 42: frequency augmentation probability=0.0000
+2026-08-29 14:32:37 - INFO - Epoch 42/200: Train Loss: 0.2001, Test Loss: 0.1625, Test Dice: 0.9183, Test IoU: 0.8494, EMA: True
+2026-08-29 14:32:38 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:32:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:32:39 - INFO - Epoch 43: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:32:39 - INFO - Epoch 43: frequency augmentation probability=0.0000
+2026-08-29 14:33:04 - INFO - Epoch 43/200: Train Loss: 0.2041, Test Loss: 0.1611, Test Dice: 0.9184, Test IoU: 0.8495, EMA: True
+2026-08-29 14:33:04 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:33:04 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:33:05 - INFO - Epoch 44: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:33:05 - INFO - Epoch 44: frequency augmentation probability=0.0000
+2026-08-29 14:33:30 - INFO - Epoch 44/200: Train Loss: 0.2076, Test Loss: 0.1606, Test Dice: 0.9182, Test IoU: 0.8492, EMA: True
+2026-08-29 14:33:30 - INFO - Epoch 45: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:33:30 - INFO - Epoch 45: frequency augmentation probability=0.0000
+2026-08-29 14:33:55 - INFO - Epoch 45/200: Train Loss: 0.1913, Test Loss: 0.1596, Test Dice: 0.9185, Test IoU: 0.8497, EMA: True
+2026-08-29 14:33:56 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:33:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:33:56 - INFO - Epoch 46: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:33:56 - INFO - Epoch 46: frequency augmentation probability=0.0000
+2026-08-29 14:34:21 - INFO - Epoch 46/200: Train Loss: 0.2042, Test Loss: 0.1587, Test Dice: 0.9190, Test IoU: 0.8506, EMA: True
+2026-08-29 14:34:22 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:34:22 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:34:22 - INFO - Epoch 47: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:34:22 - INFO - Epoch 47: frequency augmentation probability=0.0000
+2026-08-29 14:34:47 - INFO - Epoch 47/200: Train Loss: 0.1984, Test Loss: 0.1567, Test Dice: 0.9204, Test IoU: 0.8530, EMA: True
+2026-08-29 14:34:48 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:34:48 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:34:48 - INFO - Epoch 48: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:34:48 - INFO - Epoch 48: frequency augmentation probability=0.0000
+2026-08-29 14:35:13 - INFO - Epoch 48/200: Train Loss: 0.1978, Test Loss: 0.1557, Test Dice: 0.9209, Test IoU: 0.8539, EMA: True
+2026-08-29 14:35:14 - INFO - New best model saved with accuracy: 0.85%
+2026-08-29 14:35:14 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:35:14 - INFO - Epoch 49: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:35:14 - INFO - Epoch 49: frequency augmentation probability=0.0000
+2026-08-29 14:35:39 - INFO - Epoch 49/200: Train Loss: 0.1985, Test Loss: 0.1546, Test Dice: 0.9218, Test IoU: 0.8555, EMA: True
+2026-08-29 14:35:40 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:35:40 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:35:40 - INFO - Epoch 50: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:35:40 - INFO - Epoch 50: frequency augmentation probability=0.0000
+2026-08-29 14:36:05 - INFO - Epoch 50/200: Train Loss: 0.1924, Test Loss: 0.1535, Test Dice: 0.9229, Test IoU: 0.8573, EMA: True
+2026-08-29 14:36:06 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:36:06 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:36:06 - INFO - Epoch 51: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:36:06 - INFO - Epoch 51: frequency augmentation probability=0.0000
+2026-08-29 14:36:31 - INFO - Epoch 51/200: Train Loss: 0.1903, Test Loss: 0.1531, Test Dice: 0.9224, Test IoU: 0.8564, EMA: True
+2026-08-29 14:36:31 - INFO - Epoch 52: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:36:31 - INFO - Epoch 52: frequency augmentation probability=0.0000
+2026-08-29 14:36:56 - INFO - Epoch 52/200: Train Loss: 0.1896, Test Loss: 0.1534, Test Dice: 0.9211, Test IoU: 0.8541, EMA: True
+2026-08-29 14:36:57 - INFO - Epoch 53: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:36:57 - INFO - Epoch 53: frequency augmentation probability=0.0000
+2026-08-29 14:37:21 - INFO - Epoch 53/200: Train Loss: 0.1876, Test Loss: 0.1530, Test Dice: 0.9211, Test IoU: 0.8541, EMA: True
+2026-08-29 14:37:22 - INFO - Epoch 54: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:37:22 - INFO - Epoch 54: frequency augmentation probability=0.0000
+2026-08-29 14:37:46 - INFO - Epoch 54/200: Train Loss: 0.1889, Test Loss: 0.1517, Test Dice: 0.9222, Test IoU: 0.8560, EMA: True
+2026-08-29 14:37:47 - INFO - Epoch 55: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:37:47 - INFO - Epoch 55: frequency augmentation probability=0.0000
+2026-08-29 14:38:11 - INFO - Epoch 55/200: Train Loss: 0.1891, Test Loss: 0.1508, Test Dice: 0.9235, Test IoU: 0.8582, EMA: True
+2026-08-29 14:38:12 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:38:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:38:13 - INFO - Epoch 56: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:38:13 - INFO - Epoch 56: frequency augmentation probability=0.0000
+2026-08-29 14:38:37 - INFO - Epoch 56/200: Train Loss: 0.1870, Test Loss: 0.1501, Test Dice: 0.9250, Test IoU: 0.8609, EMA: True
+2026-08-29 14:38:38 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:38:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:38:39 - INFO - Epoch 57: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:38:39 - INFO - Epoch 57: frequency augmentation probability=0.0000
+2026-08-29 14:39:04 - INFO - Epoch 57/200: Train Loss: 0.1902, Test Loss: 0.1501, Test Dice: 0.9250, Test IoU: 0.8608, EMA: True
+2026-08-29 14:39:05 - INFO - Epoch 58: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:39:05 - INFO - Epoch 58: frequency augmentation probability=0.0000
+2026-08-29 14:39:30 - INFO - Epoch 58/200: Train Loss: 0.1851, Test Loss: 0.1499, Test Dice: 0.9253, Test IoU: 0.8613, EMA: True
+2026-08-29 14:39:31 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:39:31 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:39:31 - INFO - Epoch 59: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:39:31 - INFO - Epoch 59: frequency augmentation probability=0.0000
+2026-08-29 14:39:56 - INFO - Epoch 59/200: Train Loss: 0.1835, Test Loss: 0.1499, Test Dice: 0.9263, Test IoU: 0.8631, EMA: True
+2026-08-29 14:39:57 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:39:57 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:39:58 - INFO - Epoch 60: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:39:58 - INFO - Epoch 60: frequency augmentation probability=0.0000
+2026-08-29 14:40:22 - INFO - Epoch 60/200: Train Loss: 0.1838, Test Loss: 0.1503, Test Dice: 0.9253, Test IoU: 0.8613, EMA: True
+2026-08-29 14:40:23 - INFO - Epoch 61: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:40:23 - INFO - Epoch 61: frequency augmentation probability=0.0000
+2026-08-29 14:40:47 - INFO - Epoch 61/200: Train Loss: 0.1832, Test Loss: 0.1499, Test Dice: 0.9249, Test IoU: 0.8605, EMA: True
+2026-08-29 14:40:48 - INFO - Epoch 62: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:40:48 - INFO - Epoch 62: frequency augmentation probability=0.0000
+2026-08-29 14:41:13 - INFO - Epoch 62/200: Train Loss: 0.1804, Test Loss: 0.1501, Test Dice: 0.9240, Test IoU: 0.8589, EMA: True
+2026-08-29 14:41:13 - INFO - Epoch 63: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:41:13 - INFO - Epoch 63: frequency augmentation probability=0.0000
+2026-08-29 14:41:38 - INFO - Epoch 63/200: Train Loss: 0.1863, Test Loss: 0.1501, Test Dice: 0.9240, Test IoU: 0.8589, EMA: True
+2026-08-29 14:41:38 - INFO - Epoch 64: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:41:38 - INFO - Epoch 64: frequency augmentation probability=0.0000
+2026-08-29 14:42:03 - INFO - Epoch 64/200: Train Loss: 0.1776, Test Loss: 0.1500, Test Dice: 0.9243, Test IoU: 0.8594, EMA: True
+2026-08-29 14:42:04 - INFO - Epoch 65: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:42:04 - INFO - Epoch 65: frequency augmentation probability=0.0000
+2026-08-29 14:42:28 - INFO - Epoch 65/200: Train Loss: 0.1866, Test Loss: 0.1487, Test Dice: 0.9245, Test IoU: 0.8598, EMA: True
+2026-08-29 14:42:29 - INFO - Epoch 66: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:42:29 - INFO - Epoch 66: frequency augmentation probability=0.0000
+2026-08-29 14:42:54 - INFO - Epoch 66/200: Train Loss: 0.1854, Test Loss: 0.1492, Test Dice: 0.9237, Test IoU: 0.8584, EMA: True
+2026-08-29 14:42:54 - INFO - Epoch 67: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:42:54 - INFO - Epoch 67: frequency augmentation probability=0.0000
+2026-08-29 14:43:19 - INFO - Epoch 67/200: Train Loss: 0.1739, Test Loss: 0.1487, Test Dice: 0.9252, Test IoU: 0.8612, EMA: True
+2026-08-29 14:43:19 - INFO - Epoch 68: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:43:19 - INFO - Epoch 68: frequency augmentation probability=0.0000
+2026-08-29 14:43:44 - INFO - Epoch 68/200: Train Loss: 0.1838, Test Loss: 0.1490, Test Dice: 0.9259, Test IoU: 0.8622, EMA: True
+2026-08-29 14:43:45 - INFO - Epoch 69: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:43:45 - INFO - Epoch 69: frequency augmentation probability=0.0000
+2026-08-29 14:44:09 - INFO - Epoch 69/200: Train Loss: 0.1765, Test Loss: 0.1485, Test Dice: 0.9272, Test IoU: 0.8646, EMA: True
+2026-08-29 14:44:10 - INFO - New best model saved with accuracy: 0.86%
+2026-08-29 14:44:10 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:44:10 - INFO - Epoch 70: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:44:10 - INFO - Epoch 70: frequency augmentation probability=0.0000
+2026-08-29 14:44:35 - INFO - Epoch 70/200: Train Loss: 0.1732, Test Loss: 0.1475, Test Dice: 0.9281, Test IoU: 0.8661, EMA: True
+2026-08-29 14:44:36 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:44:36 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:44:36 - INFO - Epoch 71: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:44:36 - INFO - Epoch 71: frequency augmentation probability=0.0000
+2026-08-29 14:45:01 - INFO - Epoch 71/200: Train Loss: 0.1710, Test Loss: 0.1469, Test Dice: 0.9282, Test IoU: 0.8664, EMA: True
+2026-08-29 14:45:02 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:45:02 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:45:02 - INFO - Epoch 72: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:45:02 - INFO - Epoch 72: frequency augmentation probability=0.0000
+2026-08-29 14:45:24 - WARNING - Skipped 1/61 batches.
+2026-08-29 14:45:27 - INFO - Epoch 72/200: Train Loss: 0.1759, Test Loss: 0.1463, Test Dice: 0.9282, Test IoU: 0.8663, EMA: True
+2026-08-29 14:45:27 - INFO - Epoch 73: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:45:27 - INFO - Epoch 73: frequency augmentation probability=0.0000
+2026-08-29 14:45:52 - INFO - Epoch 73/200: Train Loss: 0.1663, Test Loss: 0.1451, Test Dice: 0.9285, Test IoU: 0.8669, EMA: True
+2026-08-29 14:45:53 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:45:53 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:45:53 - INFO - Epoch 74: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:45:53 - INFO - Epoch 74: frequency augmentation probability=0.0000
+2026-08-29 14:46:18 - INFO - Epoch 74/200: Train Loss: 0.1668, Test Loss: 0.1438, Test Dice: 0.9296, Test IoU: 0.8689, EMA: True
+2026-08-29 14:46:19 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:46:19 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:46:19 - INFO - Epoch 75: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:46:19 - INFO - Epoch 75: frequency augmentation probability=0.0000
+2026-08-29 14:46:44 - INFO - Epoch 75/200: Train Loss: 0.1716, Test Loss: 0.1427, Test Dice: 0.9301, Test IoU: 0.8697, EMA: True
+2026-08-29 14:46:45 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:46:45 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:46:46 - INFO - Epoch 76: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:46:46 - INFO - Epoch 76: frequency augmentation probability=0.0000
+2026-08-29 14:47:10 - INFO - Epoch 76/200: Train Loss: 0.1724, Test Loss: 0.1426, Test Dice: 0.9303, Test IoU: 0.8700, EMA: True
+2026-08-29 14:47:11 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:47:11 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:47:12 - INFO - Epoch 77: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:47:12 - INFO - Epoch 77: frequency augmentation probability=0.0000
+2026-08-29 14:47:36 - INFO - Epoch 77/200: Train Loss: 0.1667, Test Loss: 0.1440, Test Dice: 0.9303, Test IoU: 0.8700, EMA: True
+2026-08-29 14:47:37 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:47:37 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:47:38 - INFO - Epoch 78: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:47:38 - INFO - Epoch 78: frequency augmentation probability=0.0000
+2026-08-29 14:48:02 - INFO - Epoch 78/200: Train Loss: 0.1674, Test Loss: 0.1439, Test Dice: 0.9306, Test IoU: 0.8705, EMA: True
+2026-08-29 14:48:03 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:48:03 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:48:04 - INFO - Epoch 79: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:48:04 - INFO - Epoch 79: frequency augmentation probability=0.0000
+2026-08-29 14:48:29 - INFO - Epoch 79/200: Train Loss: 0.1665, Test Loss: 0.1428, Test Dice: 0.9310, Test IoU: 0.8712, EMA: True
+2026-08-29 14:48:29 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:48:29 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:48:30 - INFO - Epoch 80: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:48:30 - INFO - Epoch 80: frequency augmentation probability=0.0000
+2026-08-29 14:48:55 - INFO - Epoch 80/200: Train Loss: 0.1648, Test Loss: 0.1428, Test Dice: 0.9296, Test IoU: 0.8685, EMA: True
+2026-08-29 14:48:55 - INFO - Epoch 81: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:48:55 - INFO - Epoch 81: frequency augmentation probability=0.0000
+2026-08-29 14:49:20 - INFO - Epoch 81/200: Train Loss: 0.1651, Test Loss: 0.1432, Test Dice: 0.9285, Test IoU: 0.8666, EMA: True
+2026-08-29 14:49:20 - INFO - Epoch 82: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:49:20 - INFO - Epoch 82: frequency augmentation probability=0.0000
+2026-08-29 14:49:45 - INFO - Epoch 82/200: Train Loss: 0.1720, Test Loss: 0.1421, Test Dice: 0.9294, Test IoU: 0.8682, EMA: True
+2026-08-29 14:49:46 - INFO - Epoch 83: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:49:46 - INFO - Epoch 83: frequency augmentation probability=0.0000
+2026-08-29 14:50:10 - INFO - Epoch 83/200: Train Loss: 0.1643, Test Loss: 0.1417, Test Dice: 0.9299, Test IoU: 0.8691, EMA: True
+2026-08-29 14:50:11 - INFO - Epoch 84: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:50:11 - INFO - Epoch 84: frequency augmentation probability=0.0000
+2026-08-29 14:50:37 - INFO - Epoch 84/200: Train Loss: 0.1660, Test Loss: 0.1424, Test Dice: 0.9290, Test IoU: 0.8675, EMA: True
+2026-08-29 14:50:38 - INFO - Epoch 85: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:50:38 - INFO - Epoch 85: frequency augmentation probability=0.0000
+2026-08-29 14:51:03 - INFO - Epoch 85/200: Train Loss: 0.1645, Test Loss: 0.1415, Test Dice: 0.9306, Test IoU: 0.8703, EMA: True
+2026-08-29 14:51:03 - INFO - Epoch 86: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:51:03 - INFO - Epoch 86: frequency augmentation probability=0.0000
+2026-08-29 14:51:28 - INFO - Epoch 86/200: Train Loss: 0.1616, Test Loss: 0.1417, Test Dice: 0.9309, Test IoU: 0.8709, EMA: True
+2026-08-29 14:51:29 - INFO - Epoch 87: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:51:29 - INFO - Epoch 87: frequency augmentation probability=0.0000
+2026-08-29 14:51:53 - INFO - Epoch 87/200: Train Loss: 0.1582, Test Loss: 0.1408, Test Dice: 0.9327, Test IoU: 0.8740, EMA: True
+2026-08-29 14:51:54 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:51:54 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:51:55 - INFO - Epoch 88: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:51:55 - INFO - Epoch 88: frequency augmentation probability=0.0000
+2026-08-29 14:52:19 - INFO - Epoch 88/200: Train Loss: 0.1639, Test Loss: 0.1409, Test Dice: 0.9327, Test IoU: 0.8741, EMA: True
+2026-08-29 14:52:20 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:52:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:52:21 - INFO - Epoch 89: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:52:21 - INFO - Epoch 89: frequency augmentation probability=0.0000
+2026-08-29 14:52:46 - INFO - Epoch 89/200: Train Loss: 0.1638, Test Loss: 0.1414, Test Dice: 0.9327, Test IoU: 0.8741, EMA: True
+2026-08-29 14:52:47 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:52:47 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:52:48 - INFO - Epoch 90: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:52:48 - INFO - Epoch 90: frequency augmentation probability=0.0000
+2026-08-29 14:53:13 - INFO - Epoch 90/200: Train Loss: 0.1582, Test Loss: 0.1412, Test Dice: 0.9330, Test IoU: 0.8745, EMA: True
+2026-08-29 14:53:14 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:53:14 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:53:15 - INFO - Epoch 91: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:53:15 - INFO - Epoch 91: frequency augmentation probability=0.0000
+2026-08-29 14:53:40 - INFO - Epoch 91/200: Train Loss: 0.1570, Test Loss: 0.1415, Test Dice: 0.9328, Test IoU: 0.8742, EMA: True
+2026-08-29 14:53:40 - INFO - Epoch 92: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:53:40 - INFO - Epoch 92: frequency augmentation probability=0.0000
+2026-08-29 14:54:05 - INFO - Epoch 92/200: Train Loss: 0.1577, Test Loss: 0.1416, Test Dice: 0.9326, Test IoU: 0.8738, EMA: True
+2026-08-29 14:54:05 - INFO - Epoch 93: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:54:05 - INFO - Epoch 93: frequency augmentation probability=0.0000
+2026-08-29 14:54:30 - INFO - Epoch 93/200: Train Loss: 0.1641, Test Loss: 0.1420, Test Dice: 0.9326, Test IoU: 0.8739, EMA: True
+2026-08-29 14:54:30 - INFO - Epoch 94: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:54:30 - INFO - Epoch 94: frequency augmentation probability=0.0000
+2026-08-29 14:54:55 - INFO - Epoch 94/200: Train Loss: 0.1575, Test Loss: 0.1424, Test Dice: 0.9323, Test IoU: 0.8734, EMA: True
+2026-08-29 14:54:56 - INFO - Epoch 95: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:54:56 - INFO - Epoch 95: frequency augmentation probability=0.0000
+2026-08-29 14:55:20 - INFO - Epoch 95/200: Train Loss: 0.1568, Test Loss: 0.1442, Test Dice: 0.9312, Test IoU: 0.8714, EMA: True
+2026-08-29 14:55:21 - INFO - Epoch 96: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:55:21 - INFO - Epoch 96: frequency augmentation probability=0.0000
+2026-08-29 14:55:46 - INFO - Epoch 96/200: Train Loss: 0.1579, Test Loss: 0.1449, Test Dice: 0.9298, Test IoU: 0.8689, EMA: True
+2026-08-29 14:55:46 - INFO - Epoch 97: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:55:46 - INFO - Epoch 97: frequency augmentation probability=0.0000
+2026-08-29 14:56:12 - INFO - Epoch 97/200: Train Loss: 0.1601, Test Loss: 0.1444, Test Dice: 0.9302, Test IoU: 0.8697, EMA: True
+2026-08-29 14:56:12 - INFO - Epoch 98: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:56:12 - INFO - Epoch 98: frequency augmentation probability=0.0000
+2026-08-29 14:56:37 - INFO - Epoch 98/200: Train Loss: 0.1534, Test Loss: 0.1441, Test Dice: 0.9301, Test IoU: 0.8696, EMA: True
+2026-08-29 14:56:38 - INFO - Epoch 99: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:56:38 - INFO - Epoch 99: frequency augmentation probability=0.0000
+2026-08-29 14:57:03 - INFO - Epoch 99/200: Train Loss: 0.1573, Test Loss: 0.1429, Test Dice: 0.9318, Test IoU: 0.8725, EMA: True
+2026-08-29 14:57:04 - INFO - Epoch 100: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:57:04 - INFO - Epoch 100: frequency augmentation probability=0.0000
+2026-08-29 14:57:26 - WARNING - Skipped 1/61 batches.
+2026-08-29 14:57:29 - INFO - Epoch 100/200: Train Loss: 0.1593, Test Loss: 0.1424, Test Dice: 0.9320, Test IoU: 0.8729, EMA: True
+2026-08-29 14:57:29 - INFO - Epoch 101: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:57:29 - INFO - Epoch 101: frequency augmentation probability=0.0000
+2026-08-29 14:57:54 - INFO - Epoch 101/200: Train Loss: 0.1571, Test Loss: 0.1417, Test Dice: 0.9324, Test IoU: 0.8735, EMA: True
+2026-08-29 14:57:55 - INFO - Epoch 102: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:57:55 - INFO - Epoch 102: frequency augmentation probability=0.0000
+2026-08-29 14:58:19 - INFO - Epoch 102/200: Train Loss: 0.1530, Test Loss: 0.1399, Test Dice: 0.9330, Test IoU: 0.8746, EMA: True
+2026-08-29 14:58:20 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:58:20 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:58:21 - INFO - Epoch 103: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:58:21 - INFO - Epoch 103: frequency augmentation probability=0.0000
+2026-08-29 14:58:45 - INFO - Epoch 103/200: Train Loss: 0.1509, Test Loss: 0.1400, Test Dice: 0.9330, Test IoU: 0.8746, EMA: True
+2026-08-29 14:58:46 - INFO - New best model saved with accuracy: 0.87%
+2026-08-29 14:58:46 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:58:47 - INFO - Epoch 104: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:58:47 - INFO - Epoch 104: frequency augmentation probability=0.0000
+2026-08-29 14:59:11 - INFO - Epoch 104/200: Train Loss: 0.1572, Test Loss: 0.1399, Test Dice: 0.9333, Test IoU: 0.8751, EMA: True
+2026-08-29 14:59:12 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 14:59:12 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:59:13 - INFO - Epoch 105: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:59:13 - INFO - Epoch 105: frequency augmentation probability=0.0000
+2026-08-29 14:59:37 - INFO - Epoch 105/200: Train Loss: 0.1574, Test Loss: 0.1396, Test Dice: 0.9334, Test IoU: 0.8753, EMA: True
+2026-08-29 14:59:38 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 14:59:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 14:59:39 - INFO - Epoch 106: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 14:59:39 - INFO - Epoch 106: frequency augmentation probability=0.0000
+2026-08-29 15:00:03 - INFO - Epoch 106/200: Train Loss: 0.1496, Test Loss: 0.1397, Test Dice: 0.9335, Test IoU: 0.8754, EMA: True
+2026-08-29 15:00:04 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:00:04 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:00:05 - INFO - Epoch 107: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:00:05 - INFO - Epoch 107: frequency augmentation probability=0.0000
+2026-08-29 15:00:29 - INFO - Epoch 107/200: Train Loss: 0.1529, Test Loss: 0.1398, Test Dice: 0.9333, Test IoU: 0.8752, EMA: True
+2026-08-29 15:00:30 - INFO - Epoch 108: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:00:30 - INFO - Epoch 108: frequency augmentation probability=0.0000
+2026-08-29 15:00:55 - INFO - Epoch 108/200: Train Loss: 0.1513, Test Loss: 0.1397, Test Dice: 0.9333, Test IoU: 0.8752, EMA: True
+2026-08-29 15:00:55 - INFO - Epoch 109: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:00:55 - INFO - Epoch 109: frequency augmentation probability=0.0000
+2026-08-29 15:01:20 - INFO - Epoch 109/200: Train Loss: 0.1492, Test Loss: 0.1393, Test Dice: 0.9337, Test IoU: 0.8759, EMA: True
+2026-08-29 15:01:21 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:01:21 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:01:21 - INFO - Epoch 110: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:01:21 - INFO - Epoch 110: frequency augmentation probability=0.0000
+2026-08-29 15:01:45 - INFO - Epoch 110/200: Train Loss: 0.1572, Test Loss: 0.1395, Test Dice: 0.9334, Test IoU: 0.8753, EMA: True
+2026-08-29 15:01:46 - INFO - Epoch 111: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:01:46 - INFO - Epoch 111: frequency augmentation probability=0.0000
+2026-08-29 15:02:11 - INFO - Epoch 111/200: Train Loss: 0.1550, Test Loss: 0.1392, Test Dice: 0.9336, Test IoU: 0.8756, EMA: True
+2026-08-29 15:02:11 - INFO - Epoch 112: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:02:11 - INFO - Epoch 112: frequency augmentation probability=0.0000
+2026-08-29 15:02:36 - INFO - Epoch 112/200: Train Loss: 0.1561, Test Loss: 0.1401, Test Dice: 0.9333, Test IoU: 0.8751, EMA: True
+2026-08-29 15:02:36 - INFO - Epoch 113: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:02:36 - INFO - Epoch 113: frequency augmentation probability=0.0000
+2026-08-29 15:03:01 - INFO - Epoch 113/200: Train Loss: 0.1477, Test Loss: 0.1405, Test Dice: 0.9334, Test IoU: 0.8753, EMA: True
+2026-08-29 15:03:02 - INFO - Epoch 114: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:03:02 - INFO - Epoch 114: frequency augmentation probability=0.0000
+2026-08-29 15:03:26 - INFO - Epoch 114/200: Train Loss: 0.1534, Test Loss: 0.1408, Test Dice: 0.9333, Test IoU: 0.8750, EMA: True
+2026-08-29 15:03:27 - INFO - Epoch 115: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:03:27 - INFO - Epoch 115: frequency augmentation probability=0.0000
+2026-08-29 15:03:52 - INFO - Epoch 115/200: Train Loss: 0.1494, Test Loss: 0.1409, Test Dice: 0.9330, Test IoU: 0.8747, EMA: True
+2026-08-29 15:03:52 - INFO - Epoch 116: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:03:52 - INFO - Epoch 116: frequency augmentation probability=0.0000
+2026-08-29 15:04:17 - INFO - Epoch 116/200: Train Loss: 0.1559, Test Loss: 0.1410, Test Dice: 0.9330, Test IoU: 0.8746, EMA: True
+2026-08-29 15:04:18 - INFO - Epoch 117: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:04:18 - INFO - Epoch 117: frequency augmentation probability=0.0000
+2026-08-29 15:04:42 - INFO - Epoch 117/200: Train Loss: 0.1493, Test Loss: 0.1412, Test Dice: 0.9331, Test IoU: 0.8748, EMA: True
+2026-08-29 15:04:43 - INFO - Epoch 118: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:04:43 - INFO - Epoch 118: frequency augmentation probability=0.0000
+2026-08-29 15:05:07 - INFO - Epoch 118/200: Train Loss: 0.1517, Test Loss: 0.1414, Test Dice: 0.9333, Test IoU: 0.8750, EMA: True
+2026-08-29 15:05:08 - INFO - Epoch 119: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:05:08 - INFO - Epoch 119: frequency augmentation probability=0.0000
+2026-08-29 15:05:33 - INFO - Epoch 119/200: Train Loss: 0.1467, Test Loss: 0.1412, Test Dice: 0.9332, Test IoU: 0.8750, EMA: True
+2026-08-29 15:05:33 - INFO - Epoch 120: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:05:33 - INFO - Epoch 120: frequency augmentation probability=0.0000
+2026-08-29 15:05:58 - INFO - Epoch 120/200: Train Loss: 0.1510, Test Loss: 0.1420, Test Dice: 0.9313, Test IoU: 0.8716, EMA: True
+2026-08-29 15:05:59 - INFO - Epoch 121: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:05:59 - INFO - Epoch 121: frequency augmentation probability=0.0000
+2026-08-29 15:06:23 - INFO - Epoch 121/200: Train Loss: 0.1515, Test Loss: 0.1423, Test Dice: 0.9306, Test IoU: 0.8704, EMA: True
+2026-08-29 15:06:24 - INFO - Epoch 122: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:06:24 - INFO - Epoch 122: frequency augmentation probability=0.0000
+2026-08-29 15:06:49 - INFO - Epoch 122/200: Train Loss: 0.1518, Test Loss: 0.1427, Test Dice: 0.9312, Test IoU: 0.8715, EMA: True
+2026-08-29 15:06:49 - INFO - Epoch 123: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:06:49 - INFO - Epoch 123: frequency augmentation probability=0.0000
+2026-08-29 15:07:14 - INFO - Epoch 123/200: Train Loss: 0.1478, Test Loss: 0.1432, Test Dice: 0.9325, Test IoU: 0.8737, EMA: True
+2026-08-29 15:07:14 - INFO - Epoch 124: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:07:14 - INFO - Epoch 124: frequency augmentation probability=0.0000
+2026-08-29 15:07:39 - INFO - Epoch 124/200: Train Loss: 0.1484, Test Loss: 0.1427, Test Dice: 0.9330, Test IoU: 0.8746, EMA: True
+2026-08-29 15:07:39 - INFO - Epoch 125: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:07:39 - INFO - Epoch 125: frequency augmentation probability=0.0000
+2026-08-29 15:08:04 - INFO - Epoch 125/200: Train Loss: 0.1493, Test Loss: 0.1422, Test Dice: 0.9335, Test IoU: 0.8754, EMA: True
+2026-08-29 15:08:05 - INFO - Epoch 126: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:08:05 - INFO - Epoch 126: frequency augmentation probability=0.0000
+2026-08-29 15:08:29 - INFO - Epoch 126/200: Train Loss: 0.1501, Test Loss: 0.1414, Test Dice: 0.9338, Test IoU: 0.8761, EMA: True
+2026-08-29 15:08:30 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:08:30 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:08:31 - INFO - Epoch 127: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:08:31 - INFO - Epoch 127: frequency augmentation probability=0.0000
+2026-08-29 15:08:56 - INFO - Epoch 127/200: Train Loss: 0.1448, Test Loss: 0.1416, Test Dice: 0.9339, Test IoU: 0.8761, EMA: True
+2026-08-29 15:08:56 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:08:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:08:57 - INFO - Epoch 128: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:08:57 - INFO - Epoch 128: frequency augmentation probability=0.0000
+2026-08-29 15:09:21 - INFO - Epoch 128/200: Train Loss: 0.1458, Test Loss: 0.1420, Test Dice: 0.9336, Test IoU: 0.8757, EMA: True
+2026-08-29 15:09:22 - INFO - Epoch 129: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:09:22 - INFO - Epoch 129: frequency augmentation probability=0.0000
+2026-08-29 15:09:47 - INFO - Epoch 129/200: Train Loss: 0.1482, Test Loss: 0.1412, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:09:47 - INFO - Epoch 130: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:09:47 - INFO - Epoch 130: frequency augmentation probability=0.0000
+2026-08-29 15:10:12 - INFO - Epoch 130/200: Train Loss: 0.1534, Test Loss: 0.1410, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:10:13 - INFO - Epoch 131: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:10:13 - INFO - Epoch 131: frequency augmentation probability=0.0000
+2026-08-29 15:10:37 - INFO - Epoch 131/200: Train Loss: 0.1462, Test Loss: 0.1396, Test Dice: 0.9345, Test IoU: 0.8772, EMA: True
+2026-08-29 15:10:38 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:10:38 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:10:39 - INFO - Epoch 132: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:10:39 - INFO - Epoch 132: frequency augmentation probability=0.0000
+2026-08-29 15:11:03 - INFO - Epoch 132/200: Train Loss: 0.1492, Test Loss: 0.1396, Test Dice: 0.9345, Test IoU: 0.8773, EMA: True
+2026-08-29 15:11:04 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:11:04 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:11:05 - INFO - Epoch 133: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:11:05 - INFO - Epoch 133: frequency augmentation probability=0.0000
+2026-08-29 15:11:29 - INFO - Epoch 133/200: Train Loss: 0.1471, Test Loss: 0.1392, Test Dice: 0.9343, Test IoU: 0.8770, EMA: True
+2026-08-29 15:11:30 - INFO - Epoch 134: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:11:30 - INFO - Epoch 134: frequency augmentation probability=0.0000
+2026-08-29 15:11:54 - INFO - Epoch 134/200: Train Loss: 0.1493, Test Loss: 0.1393, Test Dice: 0.9343, Test IoU: 0.8769, EMA: True
+2026-08-29 15:11:55 - INFO - Epoch 135: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:11:55 - INFO - Epoch 135: frequency augmentation probability=0.0000
+2026-08-29 15:12:20 - INFO - Epoch 135/200: Train Loss: 0.1452, Test Loss: 0.1392, Test Dice: 0.9342, Test IoU: 0.8768, EMA: True
+2026-08-29 15:12:21 - INFO - Epoch 136: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:12:21 - INFO - Epoch 136: frequency augmentation probability=0.0000
+2026-08-29 15:12:45 - INFO - Epoch 136/200: Train Loss: 0.1467, Test Loss: 0.1389, Test Dice: 0.9344, Test IoU: 0.8770, EMA: True
+2026-08-29 15:12:46 - INFO - Epoch 137: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:12:46 - INFO - Epoch 137: frequency augmentation probability=0.0000
+2026-08-29 15:13:10 - INFO - Epoch 137/200: Train Loss: 0.1473, Test Loss: 0.1388, Test Dice: 0.9345, Test IoU: 0.8773, EMA: True
+2026-08-29 15:13:11 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:13:11 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:13:12 - INFO - Epoch 138: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:13:12 - INFO - Epoch 138: frequency augmentation probability=0.0000
+2026-08-29 15:13:36 - INFO - Epoch 138/200: Train Loss: 0.1442, Test Loss: 0.1390, Test Dice: 0.9344, Test IoU: 0.8771, EMA: True
+2026-08-29 15:13:37 - INFO - Epoch 139: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:13:37 - INFO - Epoch 139: frequency augmentation probability=0.0000
+2026-08-29 15:14:01 - INFO - Epoch 139/200: Train Loss: 0.1460, Test Loss: 0.1392, Test Dice: 0.9343, Test IoU: 0.8768, EMA: True
+2026-08-29 15:14:02 - INFO - Epoch 140: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:14:02 - INFO - Epoch 140: frequency augmentation probability=0.0000
+2026-08-29 15:14:27 - INFO - Epoch 140/200: Train Loss: 0.1507, Test Loss: 0.1392, Test Dice: 0.9343, Test IoU: 0.8768, EMA: True
+2026-08-29 15:14:27 - INFO - Epoch 141: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:14:27 - INFO - Epoch 141: frequency augmentation probability=0.0000
+2026-08-29 15:14:52 - INFO - Epoch 141/200: Train Loss: 0.1444, Test Loss: 0.1392, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-29 15:14:53 - INFO - Epoch 142: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:14:53 - INFO - Epoch 142: frequency augmentation probability=0.0000
+2026-08-29 15:15:17 - INFO - Epoch 142/200: Train Loss: 0.1444, Test Loss: 0.1394, Test Dice: 0.9339, Test IoU: 0.8761, EMA: True
+2026-08-29 15:15:18 - INFO - Epoch 143: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:15:18 - INFO - Epoch 143: frequency augmentation probability=0.0000
+2026-08-29 15:15:42 - INFO - Epoch 143/200: Train Loss: 0.1429, Test Loss: 0.1396, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:15:43 - INFO - Epoch 144: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:15:43 - INFO - Epoch 144: frequency augmentation probability=0.0000
+2026-08-29 15:16:07 - INFO - Epoch 144/200: Train Loss: 0.1434, Test Loss: 0.1396, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:16:08 - INFO - Epoch 145: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:16:08 - INFO - Epoch 145: frequency augmentation probability=0.0000
+2026-08-29 15:16:32 - INFO - Epoch 145/200: Train Loss: 0.1438, Test Loss: 0.1393, Test Dice: 0.9340, Test IoU: 0.8764, EMA: True
+2026-08-29 15:16:33 - INFO - Epoch 146: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:16:33 - INFO - Epoch 146: frequency augmentation probability=0.0000
+2026-08-29 15:16:58 - INFO - Epoch 146/200: Train Loss: 0.1457, Test Loss: 0.1390, Test Dice: 0.9341, Test IoU: 0.8766, EMA: True
+2026-08-29 15:16:58 - INFO - Epoch 147: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:16:58 - INFO - Epoch 147: frequency augmentation probability=0.0000
+2026-08-29 15:17:23 - INFO - Epoch 147/200: Train Loss: 0.1455, Test Loss: 0.1394, Test Dice: 0.9339, Test IoU: 0.8761, EMA: True
+2026-08-29 15:17:23 - INFO - Epoch 148: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:17:23 - INFO - Epoch 148: frequency augmentation probability=0.0000
+2026-08-29 15:17:48 - INFO - Epoch 148/200: Train Loss: 0.1425, Test Loss: 0.1396, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:17:49 - INFO - Epoch 149: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:17:49 - INFO - Epoch 149: frequency augmentation probability=0.0000
+2026-08-29 15:18:14 - INFO - Epoch 149/200: Train Loss: 0.1404, Test Loss: 0.1400, Test Dice: 0.9335, Test IoU: 0.8755, EMA: True
+2026-08-29 15:18:15 - INFO - Epoch 150: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:18:15 - INFO - Epoch 150: frequency augmentation probability=0.0000
+2026-08-29 15:18:40 - INFO - Epoch 150/200: Train Loss: 0.1451, Test Loss: 0.1403, Test Dice: 0.9332, Test IoU: 0.8750, EMA: True
+2026-08-29 15:18:41 - INFO - Epoch 151: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:18:41 - INFO - Epoch 151: frequency augmentation probability=0.0000
+2026-08-29 15:19:07 - INFO - Epoch 151/200: Train Loss: 0.1419, Test Loss: 0.1407, Test Dice: 0.9330, Test IoU: 0.8746, EMA: True
+2026-08-29 15:19:08 - INFO - Epoch 152: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:19:08 - INFO - Epoch 152: frequency augmentation probability=0.0000
+2026-08-29 15:19:33 - INFO - Epoch 152/200: Train Loss: 0.1445, Test Loss: 0.1406, Test Dice: 0.9330, Test IoU: 0.8746, EMA: True
+2026-08-29 15:19:34 - INFO - Epoch 153: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:19:34 - INFO - Epoch 153: frequency augmentation probability=0.0000
+2026-08-29 15:19:59 - INFO - Epoch 153/200: Train Loss: 0.1442, Test Loss: 0.1407, Test Dice: 0.9328, Test IoU: 0.8743, EMA: True
+2026-08-29 15:20:00 - INFO - Epoch 154: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:20:00 - INFO - Epoch 154: frequency augmentation probability=0.0000
+2026-08-29 15:20:26 - INFO - Epoch 154/200: Train Loss: 0.1437, Test Loss: 0.1405, Test Dice: 0.9331, Test IoU: 0.8748, EMA: True
+2026-08-29 15:20:26 - INFO - Epoch 155: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:20:26 - INFO - Epoch 155: frequency augmentation probability=0.0000
+2026-08-29 15:20:52 - INFO - Epoch 155/200: Train Loss: 0.1453, Test Loss: 0.1402, Test Dice: 0.9333, Test IoU: 0.8751, EMA: True
+2026-08-29 15:20:53 - INFO - Epoch 156: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:20:53 - INFO - Epoch 156: frequency augmentation probability=0.0000
+2026-08-29 15:21:18 - INFO - Epoch 156/200: Train Loss: 0.1394, Test Loss: 0.1402, Test Dice: 0.9334, Test IoU: 0.8753, EMA: True
+2026-08-29 15:21:19 - INFO - Epoch 157: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:21:19 - INFO - Epoch 157: frequency augmentation probability=0.0000
+2026-08-29 15:21:44 - INFO - Epoch 157/200: Train Loss: 0.1414, Test Loss: 0.1399, Test Dice: 0.9336, Test IoU: 0.8757, EMA: True
+2026-08-29 15:21:45 - INFO - Epoch 158: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:21:45 - INFO - Epoch 158: frequency augmentation probability=0.0000
+2026-08-29 15:22:10 - INFO - Epoch 158/200: Train Loss: 0.1419, Test Loss: 0.1396, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:22:11 - INFO - Epoch 159: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:22:11 - INFO - Epoch 159: frequency augmentation probability=0.0000
+2026-08-29 15:22:37 - INFO - Epoch 159/200: Train Loss: 0.1388, Test Loss: 0.1392, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-29 15:22:37 - INFO - Epoch 160: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:22:37 - INFO - Epoch 160: frequency augmentation probability=0.0000
+2026-08-29 15:23:03 - INFO - Epoch 160/200: Train Loss: 0.1451, Test Loss: 0.1389, Test Dice: 0.9342, Test IoU: 0.8768, EMA: True
+2026-08-29 15:23:04 - INFO - Epoch 161: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:23:04 - INFO - Epoch 161: frequency augmentation probability=0.0000
+2026-08-29 15:23:29 - INFO - Epoch 161/200: Train Loss: 0.1463, Test Loss: 0.1387, Test Dice: 0.9345, Test IoU: 0.8772, EMA: True
+2026-08-29 15:23:30 - INFO - Epoch 162: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:23:30 - INFO - Epoch 162: frequency augmentation probability=0.0000
+2026-08-29 15:23:56 - INFO - Epoch 162/200: Train Loss: 0.1443, Test Loss: 0.1384, Test Dice: 0.9347, Test IoU: 0.8776, EMA: True
+2026-08-29 15:23:56 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:23:56 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:23:57 - INFO - Epoch 163: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:23:57 - INFO - Epoch 163: frequency augmentation probability=0.0000
+2026-08-29 15:24:23 - INFO - Epoch 163/200: Train Loss: 0.1425, Test Loss: 0.1385, Test Dice: 0.9348, Test IoU: 0.8778, EMA: True
+2026-08-29 15:24:24 - INFO - New best model saved with accuracy: 0.88%
+2026-08-29 15:24:24 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_6543\best_checkpoint.pth
+2026-08-29 15:24:24 - INFO - Epoch 164: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:24:24 - INFO - Epoch 164: frequency augmentation probability=0.0000
+2026-08-29 15:24:50 - INFO - Epoch 164/200: Train Loss: 0.1391, Test Loss: 0.1394, Test Dice: 0.9346, Test IoU: 0.8774, EMA: True
+2026-08-29 15:24:51 - INFO - Epoch 165: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:24:51 - INFO - Epoch 165: frequency augmentation probability=0.0000
+2026-08-29 15:25:16 - INFO - Epoch 165/200: Train Loss: 0.1406, Test Loss: 0.1399, Test Dice: 0.9344, Test IoU: 0.8770, EMA: True
+2026-08-29 15:25:17 - INFO - Epoch 166: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:25:17 - INFO - Epoch 166: frequency augmentation probability=0.0000
+2026-08-29 15:25:40 - WARNING - Skipped 1/61 batches.
+2026-08-29 15:25:43 - INFO - Epoch 166/200: Train Loss: 0.1385, Test Loss: 0.1402, Test Dice: 0.9342, Test IoU: 0.8766, EMA: True
+2026-08-29 15:25:44 - INFO - Epoch 167: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:25:44 - INFO - Epoch 167: frequency augmentation probability=0.0000
+2026-08-29 15:26:09 - INFO - Epoch 167/200: Train Loss: 0.1435, Test Loss: 0.1406, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-29 15:26:10 - INFO - Epoch 168: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:26:10 - INFO - Epoch 168: frequency augmentation probability=0.0000
+2026-08-29 15:26:36 - INFO - Epoch 168/200: Train Loss: 0.1426, Test Loss: 0.1405, Test Dice: 0.9341, Test IoU: 0.8766, EMA: True
+2026-08-29 15:26:37 - INFO - Epoch 169: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:26:37 - INFO - Epoch 169: frequency augmentation probability=0.0000
+2026-08-29 15:27:04 - INFO - Epoch 169/200: Train Loss: 0.1391, Test Loss: 0.1405, Test Dice: 0.9340, Test IoU: 0.8764, EMA: True
+2026-08-29 15:27:04 - INFO - Epoch 170: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:27:04 - INFO - Epoch 170: frequency augmentation probability=0.0000
+2026-08-29 15:27:30 - INFO - Epoch 170/200: Train Loss: 0.1432, Test Loss: 0.1405, Test Dice: 0.9341, Test IoU: 0.8766, EMA: True
+2026-08-29 15:27:30 - INFO - Epoch 171: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:27:30 - INFO - Epoch 171: frequency augmentation probability=0.0000
+2026-08-29 15:27:56 - INFO - Epoch 171/200: Train Loss: 0.1385, Test Loss: 0.1406, Test Dice: 0.9341, Test IoU: 0.8766, EMA: True
+2026-08-29 15:27:57 - INFO - Epoch 172: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:27:57 - INFO - Epoch 172: frequency augmentation probability=0.0000
+2026-08-29 15:28:22 - INFO - Epoch 172/200: Train Loss: 0.1377, Test Loss: 0.1405, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-29 15:28:23 - INFO - Epoch 173: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:28:23 - INFO - Epoch 173: frequency augmentation probability=0.0000
+2026-08-29 15:28:49 - INFO - Epoch 173/200: Train Loss: 0.1376, Test Loss: 0.1404, Test Dice: 0.9343, Test IoU: 0.8768, EMA: True
+2026-08-29 15:28:50 - INFO - Epoch 174: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:28:50 - INFO - Epoch 174: frequency augmentation probability=0.0000
+2026-08-29 15:29:13 - WARNING - Skipped 1/61 batches.
+2026-08-29 15:29:15 - INFO - Epoch 174/200: Train Loss: 0.1419, Test Loss: 0.1403, Test Dice: 0.9344, Test IoU: 0.8770, EMA: True
+2026-08-29 15:29:16 - INFO - Epoch 175: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:29:16 - INFO - Epoch 175: frequency augmentation probability=0.0000
+2026-08-29 15:29:41 - INFO - Epoch 175/200: Train Loss: 0.1365, Test Loss: 0.1404, Test Dice: 0.9343, Test IoU: 0.8769, EMA: True
+2026-08-29 15:29:42 - INFO - Epoch 176: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:29:42 - INFO - Epoch 176: frequency augmentation probability=0.0000
+2026-08-29 15:30:07 - INFO - Epoch 176/200: Train Loss: 0.1393, Test Loss: 0.1406, Test Dice: 0.9342, Test IoU: 0.8767, EMA: True
+2026-08-29 15:30:08 - INFO - Epoch 177: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:30:08 - INFO - Epoch 177: frequency augmentation probability=0.0000
+2026-08-29 15:30:34 - INFO - Epoch 177/200: Train Loss: 0.1386, Test Loss: 0.1405, Test Dice: 0.9342, Test IoU: 0.8767, EMA: True
+2026-08-29 15:30:34 - INFO - Epoch 178: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:30:34 - INFO - Epoch 178: frequency augmentation probability=0.0000
+2026-08-29 15:31:00 - INFO - Epoch 178/200: Train Loss: 0.1406, Test Loss: 0.1406, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-29 15:31:01 - INFO - Epoch 179: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:31:01 - INFO - Epoch 179: frequency augmentation probability=0.0000
+2026-08-29 15:31:26 - INFO - Epoch 179/200: Train Loss: 0.1443, Test Loss: 0.1406, Test Dice: 0.9342, Test IoU: 0.8767, EMA: True
+2026-08-29 15:31:27 - INFO - Epoch 180: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:31:27 - INFO - Epoch 180: frequency augmentation probability=0.0000
+2026-08-29 15:31:53 - INFO - Epoch 180/200: Train Loss: 0.1417, Test Loss: 0.1408, Test Dice: 0.9341, Test IoU: 0.8765, EMA: True
+2026-08-29 15:31:53 - INFO - Epoch 181: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:31:53 - INFO - Epoch 181: frequency augmentation probability=0.0000
+2026-08-29 15:32:19 - INFO - Epoch 181/200: Train Loss: 0.1396, Test Loss: 0.1410, Test Dice: 0.9340, Test IoU: 0.8764, EMA: True
+2026-08-29 15:32:20 - INFO - Epoch 182: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:32:20 - INFO - Epoch 182: frequency augmentation probability=0.0000
+2026-08-29 15:32:46 - INFO - Epoch 182/200: Train Loss: 0.1475, Test Loss: 0.1410, Test Dice: 0.9340, Test IoU: 0.8764, EMA: True
+2026-08-29 15:32:47 - INFO - Epoch 183: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:32:47 - INFO - Epoch 183: frequency augmentation probability=0.0000
+2026-08-29 15:33:12 - INFO - Epoch 183/200: Train Loss: 0.1395, Test Loss: 0.1411, Test Dice: 0.9339, Test IoU: 0.8762, EMA: True
+2026-08-29 15:33:13 - INFO - Epoch 184: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:33:13 - INFO - Epoch 184: frequency augmentation probability=0.0000
+2026-08-29 15:33:39 - INFO - Epoch 184/200: Train Loss: 0.1420, Test Loss: 0.1410, Test Dice: 0.9340, Test IoU: 0.8763, EMA: True
+2026-08-29 15:33:40 - INFO - Epoch 185: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:33:40 - INFO - Epoch 185: frequency augmentation probability=0.0000
+2026-08-29 15:34:05 - INFO - Epoch 185/200: Train Loss: 0.1379, Test Loss: 0.1411, Test Dice: 0.9340, Test IoU: 0.8763, EMA: True
+2026-08-29 15:34:06 - INFO - Epoch 186: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:34:06 - INFO - Epoch 186: frequency augmentation probability=0.0000
+2026-08-29 15:34:32 - INFO - Epoch 186/200: Train Loss: 0.1410, Test Loss: 0.1411, Test Dice: 0.9339, Test IoU: 0.8761, EMA: True
+2026-08-29 15:34:33 - INFO - Epoch 187: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:34:33 - INFO - Epoch 187: frequency augmentation probability=0.0000
+2026-08-29 15:34:58 - INFO - Epoch 187/200: Train Loss: 0.1399, Test Loss: 0.1412, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:34:59 - INFO - Epoch 188: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:34:59 - INFO - Epoch 188: frequency augmentation probability=0.0000
+2026-08-29 15:35:25 - INFO - Epoch 188/200: Train Loss: 0.1391, Test Loss: 0.1412, Test Dice: 0.9337, Test IoU: 0.8758, EMA: True
+2026-08-29 15:35:26 - INFO - Epoch 189: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:35:26 - INFO - Epoch 189: frequency augmentation probability=0.0000
+2026-08-29 15:35:51 - INFO - Epoch 189/200: Train Loss: 0.1418, Test Loss: 0.1412, Test Dice: 0.9337, Test IoU: 0.8759, EMA: True
+2026-08-29 15:35:52 - INFO - Epoch 190: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:35:52 - INFO - Epoch 190: frequency augmentation probability=0.0000
+2026-08-29 15:36:17 - INFO - Epoch 190/200: Train Loss: 0.1383, Test Loss: 0.1411, Test Dice: 0.9338, Test IoU: 0.8761, EMA: True
+2026-08-29 15:36:18 - INFO - Epoch 191: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:36:18 - INFO - Epoch 191: frequency augmentation probability=0.0000
+2026-08-29 15:36:43 - INFO - Epoch 191/200: Train Loss: 0.1417, Test Loss: 0.1410, Test Dice: 0.9339, Test IoU: 0.8762, EMA: True
+2026-08-29 15:36:44 - INFO - Epoch 192: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:36:44 - INFO - Epoch 192: frequency augmentation probability=0.0000
+2026-08-29 15:37:10 - INFO - Epoch 192/200: Train Loss: 0.1369, Test Loss: 0.1410, Test Dice: 0.9338, Test IoU: 0.8760, EMA: True
+2026-08-29 15:37:11 - INFO - Epoch 193: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 15:37:11 - INFO - Epoch 193: frequency augmentation probability=0.0000
+2026-08-29 15:37:36 - INFO - Epoch 193/200: Train Loss: 0.1416, Test Loss: 0.1412, Test Dice: 0.9337, Test IoU: 0.8759, EMA: True
+2026-08-29 15:37:36 - INFO - Early stopping at epoch 193: no validation IoU improvement for 30 epochs.
+2026-08-29 15:37:38 - INFO - Training stopped after epoch 193; best checkpoint retained.

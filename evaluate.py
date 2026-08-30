@@ -40,6 +40,7 @@ def parse_args():
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--num_workers", type=int, default=0)
     parser.add_argument("--max_batches", type=int, default=0, help="Verification-only bounded evaluation")
+    parser.add_argument("--tta", action="store_true", help="Use the defined five-view TTA protocol")
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
 
@@ -66,13 +67,15 @@ def main():
     for dataset in DATASETS:
         loader, count = make_loader(args.data_path, dataset, args.batch_size, args.num_workers)
         metrics = evaluate_loader(model, loader, device, threshold=0.45,
-                                  max_batches=args.max_batches)
+                                  max_batches=args.max_batches, use_tta=args.tta)
         metrics["samples"] = min(count, args.batch_size * args.max_batches) if args.max_batches else count
         results[dataset] = metrics
         print(f"[{dataset}] mDice={metrics['mDice']:.4f} mIoU={metrics['mIoU']:.4f}", flush=True)
     payload = {
         "experiment_name": config.name,
         "seed": args.seed,
+        "tta": bool(args.tta),
+        "threshold": 0.45,
         "checkpoint": str(checkpoint_path.resolve()),
         "checkpoint_fingerprint": checkpoint_sha256(checkpoint_path),
         "trainable_parameters": trainable,

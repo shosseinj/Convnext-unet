@@ -1,0 +1,213 @@
+2026-08-29 18:13:26 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\38_fafem_mscb_lite_stage3_cosine_refinement\seed_7777\KvasirSEG-ConvNeXt_log.txt
+2026-08-29 18:13:32 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-29 18:13:32 - INFO - Parameter count: total=29.98M, encoder=27.82M, decoder_head=2.16M, trainable=29.98M
+2026-08-29 18:13:32 - INFO - Experiment name: one_seed_38_fafem_mscb_lite_stage3_cosine_refinement
+2026-08-29 18:13:32 - INFO - Seed: 7777
+2026-08-29 18:13:32 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-29 18:13:32 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-29 18:13:32 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-29 18:13:32 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-29 18:13:32 - INFO - FAFEM parameter count: 169,777
+2026-08-29 18:13:32 - INFO - Total parameter count: 29,983,491
+2026-08-29 18:13:32 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\38_fafem_mscb_lite_stage3_cosine_refinement\seed_7777
+2026-08-29 18:13:32 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-29 18:13:32 - INFO - Optimizer: AdamW | refine_lr=1.50e-04, encoder_lr=1.00e-05, decoder_lr=1.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=cosine_warm_restarts(T_0=8,T_mult=2,eta_min=1.00e-06)
+2026-08-29 18:13:32 - INFO - Optimizer group refine: parameters=15,889, max_lr=1.500000e-04, weight_decay=1.00e-02
+2026-08-29 18:13:32 - INFO - Optimizer group decoder: parameters=2,149,010, max_lr=1.000000e-04, weight_decay=1.00e-04
+2026-08-29 18:13:32 - INFO - Optimizer group encoder_stage4: parameters=15,470,592, max_lr=1.000000e-05, weight_decay=5.00e-02
+2026-08-29 18:13:32 - INFO - Optimizer group encoder_stage3: parameters=11,112,960, max_lr=8.000000e-06, weight_decay=5.00e-02
+2026-08-29 18:13:32 - INFO - Optimizer group encoder_stage2: parameters=992,256, max_lr=6.400000e-06, weight_decay=5.00e-02
+2026-08-29 18:13:32 - INFO - Optimizer group encoder_stage1_stem: parameters=242,784, max_lr=5.120000e-06, weight_decay=5.00e-02
+2026-08-29 18:13:32 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-29 18:13:32 - INFO - Deep supervision: heads=0, schedule=constant, anneal=96-128 | sampling=uniform
+2026-08-29 18:13:32 - INFO - Frequency augmentation: OFF | max_probability=0.5, region=1-5%, max_mix=0.5, anneal=70-80%
+2026-08-29 18:13:32 - INFO - Uncertainty refinement: none
+2026-08-29 18:13:32 - INFO - Initializing isolated refinement run from checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\37_fafem_mscb_lite_stage3_warmup_cosine\seed_7777\best_checkpoint.pth
+2026-08-29 18:13:33 - INFO - Loading model weights from checkpoint['raw_model_state_dict'].
+2026-08-29 18:13:33 - INFO - Loaded 281/281 compatible model tensors from checkpoint.
+2026-08-29 18:13:33 - INFO - Resumed optimizer moments with refinement LR override: refine=1.50e-04, encoder=1.00e-05, decoder=1.00e-04.
+2026-08-29 18:13:33 - INFO - cosine_warm_restarts state reset for isolated refinement.
+2026-08-29 18:13:33 - INFO - Optimizer/scheduler state resumed from checkpoint.
+2026-08-29 18:13:33 - INFO - Resumed from epoch 136
+2026-08-29 18:13:33 - INFO - Previous best IoU: 0.8787
+2026-08-29 18:13:33 - INFO - Training sampler generator state resumed from checkpoint.
+2026-08-29 18:13:33 - INFO - Frequency augmentation generator state resumed from checkpoint.
+2026-08-29 18:13:33 - INFO - Python, NumPy, Torch and CUDA RNG states resumed from checkpoint.
+2026-08-29 18:13:33 - INFO - Loaded 276 compatible EMA tensors from checkpoint.
+2026-08-29 18:13:33 - INFO - EMA enabled with decay=0.995.
+2026-08-29 18:13:34 - INFO - Seeded isolated refinement output with the source best checkpoint.
+2026-08-29 18:13:34 - INFO - Training stage 'all' starts at epoch 138 (29,983,491/29,983,491 parameters trainable).
+2026-08-29 18:13:34 - INFO - #### Training ####
+2026-08-29 18:13:34 - INFO - initial LR: refine=0.000150, encoder=0.000008, decoder=0.000100
+2026-08-29 18:13:34 - INFO - Epoch 138: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:13:34 - INFO - Epoch 138: frequency augmentation probability=0.0000
+2026-08-29 18:13:58 - INFO - Epoch 138/193: Train Loss: 0.1501, Test Loss: 0.1361, Test Dice: 0.9341, Test IoU: 0.8776, EMA: True
+2026-08-29 18:13:59 - INFO - Epoch 139: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:13:59 - INFO - Epoch 139: frequency augmentation probability=0.0000
+2026-08-29 18:14:23 - INFO - Epoch 139/193: Train Loss: 0.1433, Test Loss: 0.1363, Test Dice: 0.9338, Test IoU: 0.8771, EMA: True
+2026-08-29 18:14:24 - INFO - Epoch 140: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:14:24 - INFO - Epoch 140: frequency augmentation probability=0.0000
+2026-08-29 18:14:48 - INFO - Epoch 140/193: Train Loss: 0.1493, Test Loss: 0.1366, Test Dice: 0.9335, Test IoU: 0.8766, EMA: True
+2026-08-29 18:14:49 - INFO - Epoch 141: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:14:49 - INFO - Epoch 141: frequency augmentation probability=0.0000
+2026-08-29 18:15:13 - INFO - Epoch 141/193: Train Loss: 0.1473, Test Loss: 0.1370, Test Dice: 0.9330, Test IoU: 0.8758, EMA: True
+2026-08-29 18:15:14 - INFO - Epoch 142: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:15:14 - INFO - Epoch 142: frequency augmentation probability=0.0000
+2026-08-29 18:15:38 - INFO - Epoch 142/193: Train Loss: 0.1487, Test Loss: 0.1371, Test Dice: 0.9327, Test IoU: 0.8752, EMA: True
+2026-08-29 18:15:39 - INFO - Epoch 143: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:15:39 - INFO - Epoch 143: frequency augmentation probability=0.0000
+2026-08-29 18:16:01 - WARNING - Skipped 1/61 batches.
+2026-08-29 18:16:03 - INFO - Epoch 143/193: Train Loss: 0.1430, Test Loss: 0.1370, Test Dice: 0.9326, Test IoU: 0.8751, EMA: True
+2026-08-29 18:16:04 - INFO - Epoch 144: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:16:04 - INFO - Epoch 144: frequency augmentation probability=0.0000
+2026-08-29 18:16:28 - INFO - Epoch 144/193: Train Loss: 0.1466, Test Loss: 0.1370, Test Dice: 0.9328, Test IoU: 0.8754, EMA: True
+2026-08-29 18:16:29 - INFO - Epoch 145: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:16:29 - INFO - Epoch 145: frequency augmentation probability=0.0000
+2026-08-29 18:16:53 - INFO - Epoch 145/193: Train Loss: 0.1413, Test Loss: 0.1369, Test Dice: 0.9329, Test IoU: 0.8756, EMA: True
+2026-08-29 18:16:54 - INFO - Epoch 146: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:16:54 - INFO - Epoch 146: frequency augmentation probability=0.0000
+2026-08-29 18:17:18 - INFO - Epoch 146/193: Train Loss: 0.1470, Test Loss: 0.1373, Test Dice: 0.9326, Test IoU: 0.8752, EMA: True
+2026-08-29 18:17:19 - INFO - Epoch 147: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:17:19 - INFO - Epoch 147: frequency augmentation probability=0.0000
+2026-08-29 18:17:43 - INFO - Epoch 147/193: Train Loss: 0.1444, Test Loss: 0.1375, Test Dice: 0.9329, Test IoU: 0.8757, EMA: True
+2026-08-29 18:17:44 - INFO - Epoch 148: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:17:44 - INFO - Epoch 148: frequency augmentation probability=0.0000
+2026-08-29 18:18:06 - WARNING - Skipped 1/61 batches.
+2026-08-29 18:18:08 - INFO - Epoch 148/193: Train Loss: 0.1427, Test Loss: 0.1374, Test Dice: 0.9333, Test IoU: 0.8762, EMA: True
+2026-08-29 18:18:09 - INFO - Epoch 149: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:18:09 - INFO - Epoch 149: frequency augmentation probability=0.0000
+2026-08-29 18:18:33 - INFO - Epoch 149/193: Train Loss: 0.1464, Test Loss: 0.1369, Test Dice: 0.9336, Test IoU: 0.8768, EMA: True
+2026-08-29 18:18:34 - INFO - Epoch 150: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:18:34 - INFO - Epoch 150: frequency augmentation probability=0.0000
+2026-08-29 18:18:58 - INFO - Epoch 150/193: Train Loss: 0.1457, Test Loss: 0.1369, Test Dice: 0.9337, Test IoU: 0.8770, EMA: True
+2026-08-29 18:18:59 - INFO - Epoch 151: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:18:59 - INFO - Epoch 151: frequency augmentation probability=0.0000
+2026-08-29 18:19:23 - INFO - Epoch 151/193: Train Loss: 0.1435, Test Loss: 0.1366, Test Dice: 0.9340, Test IoU: 0.8774, EMA: True
+2026-08-29 18:19:24 - INFO - Epoch 152: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:19:24 - INFO - Epoch 152: frequency augmentation probability=0.0000
+2026-08-29 18:19:48 - INFO - Epoch 152/193: Train Loss: 0.1447, Test Loss: 0.1361, Test Dice: 0.9345, Test IoU: 0.8781, EMA: True
+2026-08-29 18:19:49 - INFO - Epoch 153: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:19:49 - INFO - Epoch 153: frequency augmentation probability=0.0000
+2026-08-29 18:20:16 - INFO - Epoch 153/193: Train Loss: 0.1402, Test Loss: 0.1362, Test Dice: 0.9343, Test IoU: 0.8778, EMA: True
+2026-08-29 18:20:16 - INFO - Epoch 154: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:20:16 - INFO - Epoch 154: frequency augmentation probability=0.0000
+2026-08-29 18:20:43 - INFO - Epoch 154/193: Train Loss: 0.1405, Test Loss: 0.1363, Test Dice: 0.9339, Test IoU: 0.8773, EMA: True
+2026-08-29 18:20:44 - INFO - Epoch 155: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:20:44 - INFO - Epoch 155: frequency augmentation probability=0.0000
+2026-08-29 18:21:11 - INFO - Epoch 155/193: Train Loss: 0.1424, Test Loss: 0.1365, Test Dice: 0.9336, Test IoU: 0.8768, EMA: True
+2026-08-29 18:21:11 - INFO - Epoch 156: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:21:11 - INFO - Epoch 156: frequency augmentation probability=0.0000
+2026-08-29 18:21:38 - INFO - Epoch 156/193: Train Loss: 0.1385, Test Loss: 0.1366, Test Dice: 0.9337, Test IoU: 0.8769, EMA: True
+2026-08-29 18:21:39 - INFO - Epoch 157: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:21:39 - INFO - Epoch 157: frequency augmentation probability=0.0000
+2026-08-29 18:22:04 - INFO - Epoch 157/193: Train Loss: 0.1409, Test Loss: 0.1369, Test Dice: 0.9335, Test IoU: 0.8766, EMA: True
+2026-08-29 18:22:05 - INFO - Epoch 158: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:22:05 - INFO - Epoch 158: frequency augmentation probability=0.0000
+2026-08-29 18:22:30 - INFO - Epoch 158/193: Train Loss: 0.1425, Test Loss: 0.1371, Test Dice: 0.9333, Test IoU: 0.8762, EMA: True
+2026-08-29 18:22:31 - INFO - Epoch 159: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:22:31 - INFO - Epoch 159: frequency augmentation probability=0.0000
+2026-08-29 18:22:56 - INFO - Epoch 159/193: Train Loss: 0.1435, Test Loss: 0.1372, Test Dice: 0.9333, Test IoU: 0.8762, EMA: True
+2026-08-29 18:22:57 - INFO - Epoch 160: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:22:57 - INFO - Epoch 160: frequency augmentation probability=0.0000
+2026-08-29 18:23:23 - INFO - Epoch 160/193: Train Loss: 0.1393, Test Loss: 0.1373, Test Dice: 0.9333, Test IoU: 0.8762, EMA: True
+2026-08-29 18:23:23 - INFO - Epoch 161: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:23:23 - INFO - Epoch 161: frequency augmentation probability=0.0000
+2026-08-29 18:23:49 - INFO - Epoch 161/193: Train Loss: 0.1395, Test Loss: 0.1374, Test Dice: 0.9332, Test IoU: 0.8761, EMA: True
+2026-08-29 18:23:49 - INFO - Epoch 162: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:23:49 - INFO - Epoch 162: frequency augmentation probability=0.0000
+2026-08-29 18:24:15 - INFO - Epoch 162/193: Train Loss: 0.1434, Test Loss: 0.1378, Test Dice: 0.9329, Test IoU: 0.8756, EMA: True
+2026-08-29 18:24:15 - INFO - Epoch 163: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:24:15 - INFO - Epoch 163: frequency augmentation probability=0.0000
+2026-08-29 18:24:41 - INFO - Epoch 163/193: Train Loss: 0.1394, Test Loss: 0.1375, Test Dice: 0.9332, Test IoU: 0.8760, EMA: True
+2026-08-29 18:24:42 - INFO - Epoch 164: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:24:42 - INFO - Epoch 164: frequency augmentation probability=0.0000
+2026-08-29 18:25:08 - INFO - Epoch 164/193: Train Loss: 0.1466, Test Loss: 0.1379, Test Dice: 0.9330, Test IoU: 0.8757, EMA: True
+2026-08-29 18:25:09 - INFO - Epoch 165: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:25:09 - INFO - Epoch 165: frequency augmentation probability=0.0000
+2026-08-29 18:25:35 - INFO - Epoch 165/193: Train Loss: 0.1452, Test Loss: 0.1383, Test Dice: 0.9327, Test IoU: 0.8753, EMA: True
+2026-08-29 18:25:36 - INFO - Epoch 166: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:25:36 - INFO - Epoch 166: frequency augmentation probability=0.0000
+2026-08-29 18:26:03 - INFO - Epoch 166/193: Train Loss: 0.1399, Test Loss: 0.1387, Test Dice: 0.9327, Test IoU: 0.8752, EMA: True
+2026-08-29 18:26:04 - INFO - Epoch 167: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:26:04 - INFO - Epoch 167: frequency augmentation probability=0.0000
+2026-08-29 18:26:31 - INFO - Epoch 167/193: Train Loss: 0.1402, Test Loss: 0.1385, Test Dice: 0.9329, Test IoU: 0.8756, EMA: True
+2026-08-29 18:26:32 - INFO - Epoch 168: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:26:32 - INFO - Epoch 168: frequency augmentation probability=0.0000
+2026-08-29 18:26:59 - INFO - Epoch 168/193: Train Loss: 0.1395, Test Loss: 0.1386, Test Dice: 0.9329, Test IoU: 0.8755, EMA: True
+2026-08-29 18:27:00 - INFO - Epoch 169: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:27:00 - INFO - Epoch 169: frequency augmentation probability=0.0000
+2026-08-29 18:27:27 - INFO - Epoch 169/193: Train Loss: 0.1430, Test Loss: 0.1391, Test Dice: 0.9325, Test IoU: 0.8747, EMA: True
+2026-08-29 18:27:28 - INFO - Epoch 170: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:27:28 - INFO - Epoch 170: frequency augmentation probability=0.0000
+2026-08-29 18:27:54 - INFO - Epoch 170/193: Train Loss: 0.1426, Test Loss: 0.1391, Test Dice: 0.9327, Test IoU: 0.8750, EMA: True
+2026-08-29 18:27:55 - INFO - Epoch 171: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:27:55 - INFO - Epoch 171: frequency augmentation probability=0.0000
+2026-08-29 18:28:22 - INFO - Epoch 171/193: Train Loss: 0.1401, Test Loss: 0.1396, Test Dice: 0.9324, Test IoU: 0.8746, EMA: True
+2026-08-29 18:28:22 - INFO - Epoch 172: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:28:22 - INFO - Epoch 172: frequency augmentation probability=0.0000
+2026-08-29 18:28:49 - INFO - Epoch 172/193: Train Loss: 0.1436, Test Loss: 0.1396, Test Dice: 0.9325, Test IoU: 0.8747, EMA: True
+2026-08-29 18:28:50 - INFO - Epoch 173: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:28:50 - INFO - Epoch 173: frequency augmentation probability=0.0000
+2026-08-29 18:29:17 - INFO - Epoch 173/193: Train Loss: 0.1443, Test Loss: 0.1395, Test Dice: 0.9324, Test IoU: 0.8746, EMA: True
+2026-08-29 18:29:17 - INFO - Epoch 174: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:29:17 - INFO - Epoch 174: frequency augmentation probability=0.0000
+2026-08-29 18:29:44 - INFO - Epoch 174/193: Train Loss: 0.1385, Test Loss: 0.1395, Test Dice: 0.9326, Test IoU: 0.8750, EMA: True
+2026-08-29 18:29:45 - INFO - Epoch 175: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:29:45 - INFO - Epoch 175: frequency augmentation probability=0.0000
+2026-08-29 18:30:11 - INFO - Epoch 175/193: Train Loss: 0.1392, Test Loss: 0.1395, Test Dice: 0.9323, Test IoU: 0.8746, EMA: True
+2026-08-29 18:30:12 - INFO - Epoch 176: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:30:12 - INFO - Epoch 176: frequency augmentation probability=0.0000
+2026-08-29 18:30:38 - INFO - Epoch 176/193: Train Loss: 0.1402, Test Loss: 0.1401, Test Dice: 0.9319, Test IoU: 0.8740, EMA: True
+2026-08-29 18:30:38 - INFO - Epoch 177: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:30:38 - INFO - Epoch 177: frequency augmentation probability=0.0000
+2026-08-29 18:31:05 - INFO - Epoch 177/193: Train Loss: 0.1398, Test Loss: 0.1404, Test Dice: 0.9317, Test IoU: 0.8736, EMA: True
+2026-08-29 18:31:06 - INFO - Epoch 178: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:31:06 - INFO - Epoch 178: frequency augmentation probability=0.0000
+2026-08-29 18:31:33 - INFO - Epoch 178/193: Train Loss: 0.1453, Test Loss: 0.1408, Test Dice: 0.9313, Test IoU: 0.8730, EMA: True
+2026-08-29 18:31:34 - INFO - Epoch 179: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:31:34 - INFO - Epoch 179: frequency augmentation probability=0.0000
+2026-08-29 18:31:58 - INFO - Epoch 179/193: Train Loss: 0.1408, Test Loss: 0.1409, Test Dice: 0.9311, Test IoU: 0.8727, EMA: True
+2026-08-29 18:31:59 - INFO - Epoch 180: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:31:59 - INFO - Epoch 180: frequency augmentation probability=0.0000
+2026-08-29 18:32:24 - INFO - Epoch 180/193: Train Loss: 0.1449, Test Loss: 0.1407, Test Dice: 0.9312, Test IoU: 0.8728, EMA: True
+2026-08-29 18:32:25 - INFO - Epoch 181: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:32:25 - INFO - Epoch 181: frequency augmentation probability=0.0000
+2026-08-29 18:32:50 - INFO - Epoch 181/193: Train Loss: 0.1397, Test Loss: 0.1409, Test Dice: 0.9311, Test IoU: 0.8726, EMA: True
+2026-08-29 18:32:50 - INFO - Epoch 182: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:32:50 - INFO - Epoch 182: frequency augmentation probability=0.0000
+2026-08-29 18:33:15 - INFO - Epoch 182/193: Train Loss: 0.1390, Test Loss: 0.1408, Test Dice: 0.9312, Test IoU: 0.8728, EMA: True
+2026-08-29 18:33:16 - INFO - Epoch 183: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:33:16 - INFO - Epoch 183: frequency augmentation probability=0.0000
+2026-08-29 18:33:41 - INFO - Epoch 183/193: Train Loss: 0.1419, Test Loss: 0.1407, Test Dice: 0.9312, Test IoU: 0.8729, EMA: True
+2026-08-29 18:33:41 - INFO - Epoch 184: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:33:41 - INFO - Epoch 184: frequency augmentation probability=0.0000
+2026-08-29 18:34:06 - INFO - Epoch 184/193: Train Loss: 0.1358, Test Loss: 0.1407, Test Dice: 0.9312, Test IoU: 0.8729, EMA: True
+2026-08-29 18:34:06 - INFO - Epoch 185: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:34:06 - INFO - Epoch 185: frequency augmentation probability=0.0000
+2026-08-29 18:34:31 - INFO - Epoch 185/193: Train Loss: 0.1389, Test Loss: 0.1406, Test Dice: 0.9313, Test IoU: 0.8731, EMA: True
+2026-08-29 18:34:32 - INFO - Epoch 186: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:34:32 - INFO - Epoch 186: frequency augmentation probability=0.0000
+2026-08-29 18:34:56 - INFO - Epoch 186/193: Train Loss: 0.1419, Test Loss: 0.1406, Test Dice: 0.9314, Test IoU: 0.8732, EMA: True
+2026-08-29 18:34:57 - INFO - Epoch 187: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:34:57 - INFO - Epoch 187: frequency augmentation probability=0.0000
+2026-08-29 18:35:21 - INFO - Epoch 187/193: Train Loss: 0.1362, Test Loss: 0.1404, Test Dice: 0.9315, Test IoU: 0.8734, EMA: True
+2026-08-29 18:35:22 - INFO - Epoch 188: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:35:22 - INFO - Epoch 188: frequency augmentation probability=0.0000
+2026-08-29 18:35:46 - INFO - Epoch 188/193: Train Loss: 0.1395, Test Loss: 0.1403, Test Dice: 0.9316, Test IoU: 0.8735, EMA: True
+2026-08-29 18:35:47 - INFO - Epoch 189: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:35:47 - INFO - Epoch 189: frequency augmentation probability=0.0000
+2026-08-29 18:36:09 - WARNING - Skipped 1/61 batches.
+2026-08-29 18:36:11 - INFO - Epoch 189/193: Train Loss: 0.1356, Test Loss: 0.1401, Test Dice: 0.9319, Test IoU: 0.8741, EMA: True
+2026-08-29 18:36:12 - INFO - Epoch 190: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:36:12 - INFO - Epoch 190: frequency augmentation probability=0.0000
+2026-08-29 18:36:37 - INFO - Epoch 190/193: Train Loss: 0.1395, Test Loss: 0.1399, Test Dice: 0.9320, Test IoU: 0.8743, EMA: True
+2026-08-29 18:36:37 - INFO - Epoch 191: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:36:37 - INFO - Epoch 191: frequency augmentation probability=0.0000
+2026-08-29 18:37:02 - INFO - Epoch 191/193: Train Loss: 0.1403, Test Loss: 0.1399, Test Dice: 0.9321, Test IoU: 0.8743, EMA: True
+2026-08-29 18:37:02 - INFO - Epoch 192: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:37:02 - INFO - Epoch 192: frequency augmentation probability=0.0000
+2026-08-29 18:37:27 - INFO - Epoch 192/193: Train Loss: 0.1383, Test Loss: 0.1399, Test Dice: 0.9319, Test IoU: 0.8740, EMA: True
+2026-08-29 18:37:27 - INFO - Epoch 193: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-29 18:37:27 - INFO - Epoch 193: frequency augmentation probability=0.0000
+2026-08-29 18:37:52 - INFO - Epoch 193/193: Train Loss: 0.1333, Test Loss: 0.1399, Test Dice: 0.9319, Test IoU: 0.8740, EMA: True
+2026-08-29 18:37:53 - INFO - Training stopped after epoch 193; best checkpoint retained.

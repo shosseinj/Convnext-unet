@@ -47,6 +47,8 @@ param(
     [ValidateSet("v1", "v2")][string] $CrossLevelFusionVersion = "v1",
     [bool] $EnableGeometryConvStage3 = $false,
     [ValidateSet(96, 120)][int] $DecoderHighresWidth = 96,
+    [bool] $EnableMSCBLiteStage3 = $false,
+    [bool] $EnableLKALiteStage3 = $false,
     [ValidateSet("v1", "v2")][string] $CSAFVersion = "v1",
     [ValidateSet("standard", "layerwise_convnext")][string] $OptimizerProfile = "standard",
     [double] $EncoderLayerDecay = 0.8,
@@ -101,6 +103,8 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--cross_level_fusion_version", $CrossLevelFusionVersion,
     "--enable_geometry_conv_stage3", ([string]$EnableGeometryConvStage3),
     "--decoder_highres_width", [string]$DecoderHighresWidth,
+    "--enable_mscb_lite_stage3", ([string]$EnableMSCBLiteStage3),
+    "--enable_lka_lite_stage3", ([string]$EnableLKALiteStage3),
     "--csaf_version", $CSAFVersion,
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
     "--deep_supervision_schedule", $DeepSupervisionSchedule,
@@ -168,6 +172,8 @@ Write-Host "[seed $Seed][$OutputName] FAFEM bottleneck: $(if ($EnableFAFEM) { 'O
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 3: $(if ($FAFEMStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Gated skip Stage 3: $(if ($EnableGatedSkipStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Decoder high-resolution width: $DecoderHighresWidth"
+Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-3 fusion: $(if ($EnableMSCBLiteStage3) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] LKA-lite on Stage-3 encoder skip: $(if ($EnableLKALiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 2: $(if ($FAFEMStage2) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 1: $(if ($FAFEMStage1) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Cross-Level Fusion: $(if ($EnableCrossLevelFusion) { 'ON' } else { 'OFF' })"

@@ -5,8 +5,8 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$experiment = "one_seed_33_fafem_warmup_cosine"
-$outputName = "33_fafem_warmup_cosine"
+$experiment = "one_seed_39_fafem_mscb_lite_detail_warmup_cosine"
+$outputName = "39_fafem_mscb_lite_detail_warmup_cosine"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectRoot = Split-Path -Parent $repoRoot
 $python = Join-Path $projectRoot ".venv\Scripts\python.exe"
@@ -75,32 +75,39 @@ try {
         }
 
         & (Join-Path $PSScriptRoot "Invoke-OneSeed-Ablation.ps1") `
-        -Experiment $experiment `
-        -OutputName $outputName `
-        -SkipMode normal `
-        -DeepSupervisionHeads 0 `
-        -BatchSize $BatchSize `
-        -Seed $seed `
-        -Epochs 200 `
-        -DecoderWarmupEpochs 0 `
-        -UnfreezeSchedule none `
-        -LrScheduler warmup_cosine `
-        -LrWarmupEpochs 5 `
-        -LearningRate 3e-4 `
-        -MinimumLearningRate 1e-6 `
-        -OptimizerProfile layerwise_convnext `
-        -EncoderLayerDecay 0.8 `
-        -WeightDecay 1e-4 `
-        -EncoderWeightDecay 5e-2 `
-        -NewLayerWeightDecay 1e-2 `
-        -MaxGradNorm 1.0 `
-        -EnableCSAF $false `
-        -EnableFAFEM $true `
-        -EnableMSC $false `
-        -EnableUGBR $false `
-        -EnableCrossLevelFusion $false `
-        -EnableGeometryConvStage3 $false `
-        -EnableFrequencyAugmentation $false `
+            -Experiment $experiment `
+            -OutputName $outputName `
+            -SkipMode normal `
+            -DeepSupervisionHeads 0 `
+            -BatchSize $BatchSize `
+            -Seed $seed `
+            -Epochs 200 `
+            -DecoderWarmupEpochs 0 `
+            -UnfreezeSchedule none `
+            -LrScheduler warmup_cosine `
+            -LrWarmupEpochs 5 `
+            -LearningRate 3e-4 `
+            -MinimumLearningRate 1e-6 `
+            -OptimizerProfile layerwise_convnext `
+            -EncoderLayerDecay 0.8 `
+            -WeightDecay 1e-4 `
+            -EncoderWeightDecay 5e-2 `
+            -NewLayerWeightDecay 1e-2 `
+            -MaxGradNorm 1.0 `
+            -EnableCSAF $false `
+            -EnableFAFEM $true `
+            -FAFEMStage1 $false `
+            -FAFEMStage2 $false `
+            -FAFEMStage3 $false `
+            -EnableMSC $false `
+            -EnableUGBR $false `
+            -EnableGatedSkipStage3 $false `
+            -EnableCrossLevelFusion $false `
+            -EnableGeometryConvStage3 $false `
+            -EnableMSCBLiteStage3 $true `
+            -DetailChannels 32 `
+            -DetailFusionMode concatenation `
+            -EnableFrequencyAugmentation $false `
             -UncertaintyRefinementVersion none `
             -DryRun:$DryRun
         if ($LASTEXITCODE -ne 0) { throw "Runner failed for seed $seed with exit code $LASTEXITCODE." }

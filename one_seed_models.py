@@ -110,6 +110,8 @@ def build_experiment_model(config, encoder_weights, device=None):
         cross_level_fusion_version=config.cross_level_fusion_version,
         enable_geometry_conv_stage3=getattr(config, "enable_geometry_conv_stage3", False),
         decoder_highres_width=getattr(config, "decoder_highres_width", 96),
+        enable_mscb_lite_stage3=getattr(config, "enable_mscb_lite_stage3", False),
+        enable_lka_lite_stage3=getattr(config, "enable_lka_lite_stage3", False),
     )
     if config.upsample_mode == "dysample":
         for decoder in (model.decoder4, model.decoder3, model.decoder2, model.decoder1):

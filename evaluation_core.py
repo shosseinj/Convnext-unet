@@ -10,6 +10,7 @@ import cv2
 import numpy as np
 import torch
 import torch.nn.functional as F
+import torchvision.transforms.functional as TF
 from torch.utils.data import DataLoader, Dataset
 
 
@@ -105,7 +106,28 @@ def _main_logits(output):
     return output
 
 
-def evaluate_loader(model, loader, device, threshold=0.45, max_batches=0):
+def tta_probability(model, images):
+    """Average original, horizontal/vertical flip, and +/-10 degree predictions."""
+    transforms = (
+        (lambda value: value, lambda value: value),
+        (lambda value: torch.flip(value, dims=[-1]), lambda value: torch.flip(value, dims=[-1])),
+        (lambda value: torch.flip(value, dims=[-2]), lambda value: torch.flip(value, dims=[-2])),
+        (
+            lambda value: TF.rotate(value, 10, interpolation=TF.InterpolationMode.BILINEAR),
+            lambda value: TF.rotate(value, -10, interpolation=TF.InterpolationMode.BILINEAR),
+        ),
+        (
+            lambda value: TF.rotate(value, -10, interpolation=TF.InterpolationMode.BILINEAR),
+            lambda value: TF.rotate(value, 10, interpolation=TF.InterpolationMode.BILINEAR),
+        ),
+    )
+    probabilities = []
+    for augment, invert in transforms:
+        probabilities.append(invert(torch.sigmoid(_main_logits(model(augment(images))))))
+    return torch.stack(probabilities, dim=0).mean(dim=0)
+
+
+def evaluate_loader(model, loader, device, threshold=0.45, max_batches=0, use_tta=False):
     import py_sod_metrics
 
     sm = py_sod_metrics.Smeasure()
@@ -119,10 +141,15 @@ def evaluate_loader(model, loader, device, threshold=0.45, max_batches=0):
             if max_batches and batch_index >= max_batches:
                 break
             images, masks = images.to(device), masks.to(device)
-            logits = _main_logits(model(images))
-            if logits.shape[-2:] != masks.shape[-2:]:
-                logits = F.interpolate(logits, size=masks.shape[-2:], mode="bilinear", align_corners=False)
-            probability = torch.sigmoid(logits)
+            if use_tta:
+                probability = tta_probability(model, images)
+            else:
+                logits = _main_logits(model(images))
+                probability = torch.sigmoid(logits)
+            if probability.shape[-2:] != masks.shape[-2:]:
+                probability = F.interpolate(
+                    probability, size=masks.shape[-2:], mode="bilinear", align_corners=False
+                )
             prediction = (probability > threshold).float()
             for index in range(images.shape[0]):
                 dice, iou = binary_metrics_per_image(prediction[index:index + 1], masks[index:index + 1])

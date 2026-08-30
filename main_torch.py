@@ -556,6 +556,8 @@ def set_training_stage(model, stage):
         "fafem_stage3.",
         "cross_level_fusion.",
         "geometry_conv_stage3.",
+        "mscb_lite_stage3.",
+        "lka_lite_stage3.",
         "uncertainty_refinement.",
     )
     if stage == "detail":
@@ -2836,6 +2838,16 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--decoder_highres_width does not match the registered experiment"
                     )
+                if (bool(args.enable_mscb_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_mscb_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_mscb_lite_stage3 does not match the registered experiment"
+                    )
+                if (bool(args.enable_lka_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_lka_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_lka_lite_stage3 does not match the registered experiment"
+                    )
                 if args.csaf_version != experiment_config.csaf_version:
                     raise ValueError(
                         "--csaf_version does not match the registered experiment"
@@ -2876,6 +2888,10 @@ if __name__ == "__main__":
                     enable_gated_skip_stage3=args.enable_gated_skip_stage3,
                     enable_cross_level_fusion=args.enable_cross_level_fusion,
                     cross_level_fusion_version=args.cross_level_fusion_version,
+                    enable_geometry_conv_stage3=args.enable_geometry_conv_stage3,
+                    decoder_highres_width=args.decoder_highres_width,
+                    enable_mscb_lite_stage3=args.enable_mscb_lite_stage3,
+                    enable_lka_lite_stage3=args.enable_lka_lite_stage3,
                 )
 
             print('loaded lightweight ConvNeXt-Tiny U-Net')

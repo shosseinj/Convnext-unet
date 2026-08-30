@@ -5,8 +5,8 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$experiment = "one_seed_33_fafem_warmup_cosine"
-$outputName = "33_fafem_warmup_cosine"
+$experiment = "one_seed_37_fafem_mscb_lite_stage3_warmup_cosine"
+$outputName = "37_fafem_mscb_lite_stage3_warmup_cosine"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $projectRoot = Split-Path -Parent $repoRoot
 $python = Join-Path $projectRoot ".venv\Scripts\python.exe"
@@ -60,7 +60,7 @@ if (-not $DryRun) {
     }
 }
 
-$runnerLease = $null
+ $runnerLease = $null
 if (-not $DryRun) {
     $runnerLease = Enter-TrainingRunnerLease -LeasePath (Join-Path $repoRoot ".one_seed_ablation_training.lock")
 }
@@ -96,10 +96,15 @@ try {
         -MaxGradNorm 1.0 `
         -EnableCSAF $false `
         -EnableFAFEM $true `
+        -FAFEMStage1 $false `
+        -FAFEMStage2 $false `
+        -FAFEMStage3 $false `
         -EnableMSC $false `
         -EnableUGBR $false `
+        -EnableGatedSkipStage3 $false `
         -EnableCrossLevelFusion $false `
         -EnableGeometryConvStage3 $false `
+        -EnableMSCBLiteStage3 $true `
         -EnableFrequencyAugmentation $false `
             -UncertaintyRefinementVersion none `
             -DryRun:$DryRun

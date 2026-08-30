@@ -32,6 +32,8 @@ class ExperimentConfig:
     uncertainty_refinement_version: str = "none"
     enable_geometry_conv_stage3: bool = False
     decoder_highres_width: int = 96
+    enable_mscb_lite_stage3: bool = False
+    enable_lka_lite_stage3: bool = False
 
     def to_dict(self):
         values = asdict(self)
@@ -66,6 +68,10 @@ class ExperimentConfig:
             values.pop("enable_geometry_conv_stage3")
         if self.decoder_highres_width == 96:
             values.pop("decoder_highres_width")
+        if not self.enable_mscb_lite_stage3:
+            values.pop("enable_mscb_lite_stage3")
+        if not self.enable_lka_lite_stage3:
+            values.pop("enable_lka_lite_stage3")
         return values
 
 
@@ -124,6 +130,10 @@ _EXPERIMENTS = {
         ("one_seed_34_fafem_gated_skip_stage3", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, True, False, "v1", "none", False, "none", False),
         ("one_seed_35_fafem_decoder_highres_wide", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 120),
         ("one_seed_36_fafem_bsei_warmup_cosine", False, "bsei", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96),
+        ("one_seed_37_fafem_mscb_lite_stage3_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True),
+        ("one_seed_38_fafem_mscb_lite_stage3_cosine_refinement", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True),
+        ("one_seed_39_fafem_mscb_lite_detail_warmup_cosine", False, "normal", 32, False, "concatenation", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True),
+        ("one_seed_40_fafem_lka_lite_stage3_mscb_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, True),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

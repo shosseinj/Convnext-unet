@@ -43,6 +43,8 @@ def add_ablation_arguments(parser):
     )
     parser.add_argument("--enable_geometry_conv_stage3", type=parse_bool, default=False)
     parser.add_argument("--decoder_highres_width", type=int, choices=(96, 120), default=96)
+    parser.add_argument("--enable_mscb_lite_stage3", type=parse_bool, default=False)
+    parser.add_argument("--enable_lka_lite_stage3", type=parse_bool, default=False)
     parser.add_argument("--csaf_version", choices=("v1", "v2"), default="v1")
     parser.add_argument(
         "--detail_fusion_mode",
