@@ -519,6 +519,30 @@ class DeformableResidualFrequencyGuidedMSCBLite(ResidualFrequencyGuidedMSCBLite)
             branch.reset_parameters()
 
 
+class PartialDeformableResidualFrequencyGuidedMSCBLite(ResidualFrequencyGuidedMSCBLite):
+    """Exp.45 FG-MSCB with deformable sampling only in the 3x3 and 5x5 branches."""
+
+    def __init__(self, channels, descriptor_channels, reduction=16,
+                 guidance_init_std=1e-3, signed_strength=False,
+                 initial_guidance_strength=0.0):
+        super().__init__(
+            channels, descriptor_channels, reduction,
+            guidance_init_std=guidance_init_std,
+            signed_strength=signed_strength,
+            initial_guidance_strength=initial_guidance_strength,
+        )
+        expanded_channels = self.pconv1[0].out_channels
+        self.dwconvs = nn.ModuleList((
+            self.dwconvs[0],
+            DeformableDepthwiseMSCBBranch(expanded_channels, 3),
+            DeformableDepthwiseMSCBBranch(expanded_channels, 5),
+        ))
+
+    def reset_deformable_branches(self):
+        for branch in self.dwconvs[1:]:
+            branch.reset_parameters()
+
+
 class LKALiteStage3(nn.Module):
     """Identity-safe large-kernel attention for the 384-channel Stage-3 skip."""
     def __init__(self, channels):
@@ -771,6 +795,8 @@ class ConvNeXtUNet(nn.Module):
                  residual_fg_mscb_signed_strength=False,
                  residual_fg_mscb_initial_strength=0.0,
                  enable_deformable_residual_fg_mscb_lite_stage3=False,
+                 enable_residual_fg_mscb_all_skips=False,
+                 enable_partial_deformable_residual_fg_mscb_lite_stage3=False,
                  enable_lka_lite_stage3=False,
                  enable_mscb_lite_stage2=False,
                  enable_mscb_lite_stage1=False):
@@ -800,14 +826,18 @@ class ConvNeXtUNet(nn.Module):
         if decoder_highres_width < 96:
             raise ValueError("decoder_highres_width must be at least 96")
         if (enable_fg_mscb_lite_stage3 or enable_residual_fg_mscb_lite_stage3 or
-                enable_deformable_residual_fg_mscb_lite_stage3):
+                enable_deformable_residual_fg_mscb_lite_stage3 or
+                enable_residual_fg_mscb_all_skips or
+                enable_partial_deformable_residual_fg_mscb_lite_stage3):
             if not enable_fafem:
                 raise ValueError("FG-MSCB requires bottleneck FAFEM")
             if (enable_mscb_lite_stage3 or enable_mscb_lite_stage2 or
                     enable_mscb_lite_stage1):
                 raise ValueError("FG-MSCB cannot coexist with ordinary MSCB-lite blocks")
         if sum((enable_fg_mscb_lite_stage3, enable_residual_fg_mscb_lite_stage3,
-                enable_deformable_residual_fg_mscb_lite_stage3)) > 1:
+                enable_deformable_residual_fg_mscb_lite_stage3,
+                enable_residual_fg_mscb_all_skips,
+                enable_partial_deformable_residual_fg_mscb_lite_stage3)) > 1:
             raise ValueError("Only one frequency-guided MSCB-lite variant may be enabled")
         self.variant_config = {
             "enable_msc": bool(enable_msc),
@@ -836,6 +866,8 @@ class ConvNeXtUNet(nn.Module):
             "residual_fg_mscb_signed_strength": bool(residual_fg_mscb_signed_strength),
             "residual_fg_mscb_initial_strength": float(residual_fg_mscb_initial_strength),
             "enable_deformable_residual_fg_mscb_lite_stage3": bool(enable_deformable_residual_fg_mscb_lite_stage3),
+            "enable_residual_fg_mscb_all_skips": bool(enable_residual_fg_mscb_all_skips),
+            "enable_partial_deformable_residual_fg_mscb_lite_stage3": bool(enable_partial_deformable_residual_fg_mscb_lite_stage3),
             "enable_lka_lite_stage3": bool(enable_lka_lite_stage3),
             "enable_mscb_lite_stage2": bool(enable_mscb_lite_stage2),
             "enable_mscb_lite_stage1": bool(enable_mscb_lite_stage1),
@@ -1004,6 +1036,38 @@ class ConvNeXtUNet(nn.Module):
                 initial_guidance_strength=residual_fg_mscb_initial_strength,
             ) if enable_deformable_residual_fg_mscb_lite_stage3 else None
         )
+        self.partial_deformable_residual_fg_mscb_lite_stage3 = (
+            PartialDeformableResidualFrequencyGuidedMSCBLite(
+                dims[2], encoder_channels[3] * 2,
+                guidance_init_std=residual_fg_mscb_guidance_init_std,
+                signed_strength=residual_fg_mscb_signed_strength,
+                initial_guidance_strength=residual_fg_mscb_initial_strength,
+            ) if enable_partial_deformable_residual_fg_mscb_lite_stage3 else None
+        )
+        self.residual_fg_mscb_lite_stage1 = (
+            ResidualFrequencyGuidedMSCBLite(
+                encoder_channels[0], encoder_channels[3] * 2,
+                guidance_init_std=residual_fg_mscb_guidance_init_std,
+                signed_strength=residual_fg_mscb_signed_strength,
+                initial_guidance_strength=residual_fg_mscb_initial_strength,
+            ) if enable_residual_fg_mscb_all_skips else None
+        )
+        self.residual_fg_mscb_lite_stage2 = (
+            ResidualFrequencyGuidedMSCBLite(
+                encoder_channels[1], encoder_channels[3] * 2,
+                guidance_init_std=residual_fg_mscb_guidance_init_std,
+                signed_strength=residual_fg_mscb_signed_strength,
+                initial_guidance_strength=residual_fg_mscb_initial_strength,
+            ) if enable_residual_fg_mscb_all_skips else None
+        )
+        self.residual_fg_mscb_lite_stage3_skip = (
+            ResidualFrequencyGuidedMSCBLite(
+                encoder_channels[2], encoder_channels[3] * 2,
+                guidance_init_std=residual_fg_mscb_guidance_init_std,
+                signed_strength=residual_fg_mscb_signed_strength,
+                initial_guidance_strength=residual_fg_mscb_initial_strength,
+            ) if enable_residual_fg_mscb_all_skips else None
+        )
         self.mscb_lite_stage2 = (
             MSCBLite(dims[1]) if enable_mscb_lite_stage2 else None
         )
@@ -1024,6 +1088,15 @@ class ConvNeXtUNet(nn.Module):
         if self.deformable_residual_fg_mscb_lite_stage3 is not None:
             self.deformable_residual_fg_mscb_lite_stage3.reset_deformable_branches()
             self.deformable_residual_fg_mscb_lite_stage3.reset_guidance()
+        if self.partial_deformable_residual_fg_mscb_lite_stage3 is not None:
+            self.partial_deformable_residual_fg_mscb_lite_stage3.reset_deformable_branches()
+            self.partial_deformable_residual_fg_mscb_lite_stage3.reset_guidance()
+        for module in (
+                self.residual_fg_mscb_lite_stage1,
+                self.residual_fg_mscb_lite_stage2,
+                self.residual_fg_mscb_lite_stage3_skip):
+            if module is not None:
+                module.reset_guidance()
     
     def _init_decoder(self):
         for name, module in self.named_modules():
@@ -1054,10 +1127,20 @@ class ConvNeXtUNet(nn.Module):
         frequency_descriptor = None
         frequency_guided_mscb = (
             self.fg_mscb_lite_stage3 or self.residual_fg_mscb_lite_stage3 or
-            self.deformable_residual_fg_mscb_lite_stage3
+            self.deformable_residual_fg_mscb_lite_stage3 or
+            self.partial_deformable_residual_fg_mscb_lite_stage3
+        )
+        frequency_guided_skip_modules = (
+            self.residual_fg_mscb_lite_stage1,
+            self.residual_fg_mscb_lite_stage2,
+            self.residual_fg_mscb_lite_stage3_skip,
+        )
+        requires_frequency_descriptor = (
+            frequency_guided_mscb is not None or
+            any(module is not None for module in frequency_guided_skip_modules)
         )
         if self.fafem is not None and self.variant_config["csaf_version"] == "v2":
-            if frequency_guided_mscb is not None:
+            if requires_frequency_descriptor:
                 f4, frequency_descriptor = self.fafem.forward_with_frequency_descriptor(f4)
             else:
                 f4 = self.fafem(f4)
@@ -1074,10 +1157,20 @@ class ConvNeXtUNet(nn.Module):
         if self.lka_lite_stage3 is not None:
             f3 = self.lka_lite_stage3(f3)
         if self.fafem is not None and not fafem_applied:
-            if frequency_guided_mscb is not None:
+            if requires_frequency_descriptor:
                 f4, frequency_descriptor = self.fafem.forward_with_frequency_descriptor(f4)
             else:
                 f4 = self.fafem(f4)
+
+        if any(module is not None for module in frequency_guided_skip_modules):
+            if frequency_descriptor is None:
+                raise RuntimeError("Skip FG-MSCB requires the bottleneck FAFEM descriptor")
+            if self.residual_fg_mscb_lite_stage1 is not None:
+                f1 = self.residual_fg_mscb_lite_stage1(f1, frequency_descriptor)
+            if self.residual_fg_mscb_lite_stage2 is not None:
+                f2 = self.residual_fg_mscb_lite_stage2(f2, frequency_descriptor)
+            if self.residual_fg_mscb_lite_stage3_skip is not None:
+                f3 = self.residual_fg_mscb_lite_stage3_skip(f3, frequency_descriptor)
         
         # Bottleneck
         b = self.bottleneck(f4)

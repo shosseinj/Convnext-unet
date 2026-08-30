@@ -1,0 +1,39 @@
+2026-08-30 17:05:08 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\49_fafem_residual_frequency_guided_mscb_all_skips_batch40\seed_42\KvasirSEG-ConvNeXt_log.txt
+2026-08-30 17:05:14 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\convnext_tiny_22k_1k_384.pth.
+2026-08-30 17:05:15 - INFO - Parameter count: total=30.41M, encoder=27.82M, decoder_head=2.60M, trainable=30.41M
+2026-08-30 17:05:15 - INFO - Experiment name: one_seed_49_fafem_residual_frequency_guided_mscb_all_skips_batch40
+2026-08-30 17:05:15 - INFO - Seed: 42
+2026-08-30 17:05:15 - INFO - FAFEM Bottleneck: ON | parameters=169,777
+2026-08-30 17:05:15 - INFO - FAFEM Stage 3: OFF | parameters=0
+2026-08-30 17:05:15 - INFO - FAFEM Stage 2: OFF | parameters=0
+2026-08-30 17:05:15 - INFO - FAFEM Stage 1: OFF | parameters=0
+2026-08-30 17:05:15 - INFO - FAFEM parameter count: 169,777
+2026-08-30 17:05:15 - INFO - Total parameter count: 30,414,927
+2026-08-30 17:05:15 - INFO - Output directory: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\49_fafem_residual_frequency_guided_mscb_all_skips_batch40\seed_42
+2026-08-30 17:05:15 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-30 17:05:15 - INFO - Optimizer: AdamW | refine_lr=4.50e-04, encoder_lr=3.00e-05, decoder_lr=3.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=warmup_cosine(warmup_epochs=5,eta_min=1.00e-06)
+2026-08-30 17:05:15 - INFO - Optimizer group refine: parameters=15,889, max_lr=4.500000e-04, weight_decay=1.00e-02
+2026-08-30 17:05:15 - INFO - Optimizer group decoder: parameters=2,580,446, max_lr=3.000000e-04, weight_decay=1.00e-04
+2026-08-30 17:05:15 - INFO - Optimizer group encoder_stage4: parameters=15,470,592, max_lr=3.000000e-05, weight_decay=5.00e-02
+2026-08-30 17:05:15 - INFO - Optimizer group encoder_stage3: parameters=11,112,960, max_lr=2.400000e-05, weight_decay=5.00e-02
+2026-08-30 17:05:15 - INFO - Optimizer group encoder_stage2: parameters=992,256, max_lr=1.920000e-05, weight_decay=5.00e-02
+2026-08-30 17:05:15 - INFO - Optimizer group encoder_stage1_stem: parameters=242,784, max_lr=1.536000e-05, weight_decay=5.00e-02
+2026-08-30 17:05:15 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-30 17:05:15 - INFO - Deep supervision: heads=0, schedule=constant, anneal=96-128 | sampling=uniform
+2026-08-30 17:05:15 - INFO - Frequency augmentation: OFF | max_probability=0.5, region=1-5%, max_mix=0.5, anneal=70-80%
+2026-08-30 17:05:15 - INFO - Uncertainty refinement: none
+2026-08-30 17:05:15 - INFO - EMA enabled with decay=0.995.
+2026-08-30 17:05:15 - INFO - Training stage 'all' starts at epoch 1 (30,414,927/30,414,927 parameters trainable).
+2026-08-30 17:05:15 - INFO - #### Training ####
+2026-08-30 17:05:15 - INFO - initial LR: refine=0.000045, encoder=0.000003, decoder=0.000030
+2026-08-30 17:05:15 - INFO - Epoch 1: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 17:05:15 - INFO - Epoch 1: frequency augmentation probability=0.0000
+2026-08-30 17:05:45 - WARNING - Skipped 3/37 batches.
+2026-08-30 17:05:45 - INFO - Stage1 FG-MSCB alpha over 1450 training samples: a1=0.999771 +/- 0.000123 | a3=1.000277 +/- 0.000150 | a5=0.999952 +/- 0.000064 | strength=0.050110
+2026-08-30 17:05:45 - INFO - Stage2 FG-MSCB alpha over 1450 training samples: a1=1.000092 +/- 0.000058 | a3=0.999646 +/- 0.000199 | a5=1.000263 +/- 0.000151 | strength=0.050110
+2026-08-30 17:05:45 - INFO - Stage3 FG-MSCB alpha over 1450 training samples: a1=1.000020 +/- 0.000025 | a3=1.000105 +/- 0.000062 | a5=0.999876 +/- 0.000070 | strength=0.049992
+2026-08-30 17:05:49 - INFO - Epoch 1/200: Train Loss: 1.3934, Test Loss: 1.6571, Test Dice: 0.2256, Test IoU: 0.1275, EMA: True
+2026-08-30 17:05:50 - INFO - New best model saved with accuracy: 0.13%
+2026-08-30 17:05:50 - INFO - Best checkpoint: C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\49_fafem_residual_frequency_guided_mscb_all_skips_batch40\seed_42\best_checkpoint.pth
+2026-08-30 17:05:50 - INFO - Epoch 2: deep-supervision weights main=1.0000, d2=0.1000, d3=0.0500
+2026-08-30 17:05:50 - INFO - Epoch 2: frequency augmentation probability=0.0000

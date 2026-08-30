@@ -891,7 +891,21 @@ def train_epoch_segmentation(
     mask_area_sum = 0.0
 
     valid_batches = 0
-    fg_alpha_samples = []
+    fg_alpha_samples = {}
+
+    def frequency_guided_modules():
+        modules = {
+            "stage1": getattr(model, "residual_fg_mscb_lite_stage1", None),
+            "stage2": getattr(model, "residual_fg_mscb_lite_stage2", None),
+            "stage3": (
+                getattr(model, "residual_fg_mscb_lite_stage3_skip", None) or
+                getattr(model, "fg_mscb_lite_stage3", None) or
+                getattr(model, "residual_fg_mscb_lite_stage3", None) or
+                getattr(model, "deformable_residual_fg_mscb_lite_stage3", None) or
+                getattr(model, "partial_deformable_residual_fg_mscb_lite_stage3", None)
+            ),
+        }
+        return {name: module for name, module in modules.items() if module is not None}
 
     def grad_norm(module):
         total = 0.0
@@ -952,15 +966,13 @@ def train_epoch_segmentation(
             continue
 
         if collect_fg_mscb_alpha:
-            fg_mscb = (
-                getattr(model, "fg_mscb_lite_stage3", None)
-                or getattr(model, "residual_fg_mscb_lite_stage3", None)
-                or getattr(model, "deformable_residual_fg_mscb_lite_stage3", None)
-            )
-            alpha = None if fg_mscb is None else fg_mscb.last_alpha
-            if alpha is None:
-                raise RuntimeError("FG-MSCB alpha was not produced during training")
-            fg_alpha_samples.append(alpha.detach().to(device="cpu", dtype=torch.float64))
+            for stage_name, fg_mscb in frequency_guided_modules().items():
+                alpha = fg_mscb.last_alpha
+                if alpha is None:
+                    raise RuntimeError(f"FG-MSCB alpha was not produced for {stage_name}")
+                fg_alpha_samples.setdefault(stage_name, []).append(
+                    alpha.detach().to(device="cpu", dtype=torch.float64)
+                )
 
         # ----------------------------
         # Backward
@@ -1110,27 +1122,30 @@ def train_epoch_segmentation(
         return train_loss
     if not fg_alpha_samples:
         raise RuntimeError("FG-MSCB alpha was not collected during training")
-    alpha_statistics = summarize_fg_mscb_alpha(torch.cat(fg_alpha_samples, dim=0))
-    residual_fg_mscb = (
-        getattr(model, "residual_fg_mscb_lite_stage3", None) or
-        getattr(model, "deformable_residual_fg_mscb_lite_stage3", None)
-    )
-    if residual_fg_mscb is not None:
-        alpha_statistics["guidance_strength"] = residual_fg_mscb.effective_guidance_strength().detach().item()
-    logging.info(
-        "FG-MSCB alpha over %d training samples: "
-        "a1=%.6f +/- %.6f | a3=%.6f +/- %.6f | a5=%.6f +/- %.6f",
-        alpha_statistics["sample_count"],
-        alpha_statistics["alpha1_mean"], alpha_statistics["alpha1_std"],
-        alpha_statistics["alpha3_mean"], alpha_statistics["alpha3_std"],
-        alpha_statistics["alpha5_mean"], alpha_statistics["alpha5_std"],
-    )
-    if "guidance_strength" in alpha_statistics:
-        logging.info(
-            "Residual FG-MSCB guidance strength=%.6f (bounded to [0, 0.5])",
-            alpha_statistics["guidance_strength"],
+    statistics_by_stage = {}
+    modules = frequency_guided_modules()
+    for stage_name, samples in fg_alpha_samples.items():
+        statistics = summarize_fg_mscb_alpha(torch.cat(samples, dim=0))
+        statistics["guidance_strength"] = (
+            modules[stage_name].effective_guidance_strength().detach().item()
         )
-    return train_loss, alpha_statistics
+        statistics_by_stage[stage_name] = statistics
+        logging.info(
+            "%s FG-MSCB alpha over %d training samples: "
+            "a1=%.6f +/- %.6f | a3=%.6f +/- %.6f | a5=%.6f +/- %.6f | strength=%.6f",
+            stage_name.capitalize(), statistics["sample_count"],
+            statistics["alpha1_mean"], statistics["alpha1_std"],
+            statistics["alpha3_mean"], statistics["alpha3_std"],
+            statistics["alpha5_mean"], statistics["alpha5_std"],
+            statistics["guidance_strength"],
+        )
+    if len(statistics_by_stage) == 1 and "stage3" in statistics_by_stage:
+        return train_loss, statistics_by_stage["stage3"]
+    return train_loss, {
+        f"{stage_name}_{name}": value
+        for stage_name, statistics in statistics_by_stage.items()
+        for name, value in statistics.items()
+    }
 
 def dice_coefficient(pred, target, smooth=1e-6):
     """Calculate Dice coefficient."""
@@ -2930,6 +2945,16 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_deformable_residual_fg_mscb_lite_stage3 does not match the registered experiment"
                     )
+                if (bool(args.enable_residual_fg_mscb_all_skips) !=
+                        bool(getattr(experiment_config, "enable_residual_fg_mscb_all_skips", False))):
+                    raise ValueError(
+                        "--enable_residual_fg_mscb_all_skips does not match the registered experiment"
+                    )
+                if (bool(args.enable_partial_deformable_residual_fg_mscb_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_partial_deformable_residual_fg_mscb_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_partial_deformable_residual_fg_mscb_lite_stage3 does not match the registered experiment"
+                    )
                 if (bool(args.enable_mscb_lite_stage2) !=
                         bool(getattr(experiment_config, "enable_mscb_lite_stage2", False))):
                     raise ValueError(
@@ -2994,6 +3019,8 @@ if __name__ == "__main__":
                     residual_fg_mscb_signed_strength=args.residual_fg_mscb_signed_strength,
                     residual_fg_mscb_initial_strength=args.residual_fg_mscb_initial_strength,
                     enable_deformable_residual_fg_mscb_lite_stage3=args.enable_deformable_residual_fg_mscb_lite_stage3,
+                    enable_residual_fg_mscb_all_skips=args.enable_residual_fg_mscb_all_skips,
+                    enable_partial_deformable_residual_fg_mscb_lite_stage3=args.enable_partial_deformable_residual_fg_mscb_lite_stage3,
                     enable_mscb_lite_stage2=args.enable_mscb_lite_stage2,
                     enable_mscb_lite_stage1=args.enable_mscb_lite_stage1,
                     enable_lka_lite_stage3=args.enable_lka_lite_stage3,
@@ -3884,12 +3911,16 @@ if __name__ == "__main__":
                         collect_fg_mscb_alpha=bool(
                             args.enable_fg_mscb_lite_stage3 or
                             args.enable_residual_fg_mscb_lite_stage3 or
-                            args.enable_deformable_residual_fg_mscb_lite_stage3
+                            args.enable_deformable_residual_fg_mscb_lite_stage3 or
+                            args.enable_residual_fg_mscb_all_skips or
+                            args.enable_partial_deformable_residual_fg_mscb_lite_stage3
                         ),
                     )
                     if (args.enable_fg_mscb_lite_stage3 or
                             args.enable_residual_fg_mscb_lite_stage3 or
-                            args.enable_deformable_residual_fg_mscb_lite_stage3):
+                            args.enable_deformable_residual_fg_mscb_lite_stage3 or
+                            args.enable_residual_fg_mscb_all_skips or
+                            args.enable_partial_deformable_residual_fg_mscb_lite_stage3):
                         train_loss, fg_alpha_statistics = train_result
                     else:
                         train_loss = train_result

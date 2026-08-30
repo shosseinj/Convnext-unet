@@ -50,6 +50,8 @@ def add_ablation_arguments(parser):
     parser.add_argument("--residual_fg_mscb_signed_strength", type=parse_bool, default=False)
     parser.add_argument("--residual_fg_mscb_initial_strength", type=float, default=0.0)
     parser.add_argument("--enable_deformable_residual_fg_mscb_lite_stage3", type=parse_bool, default=False)
+    parser.add_argument("--enable_residual_fg_mscb_all_skips", type=parse_bool, default=False)
+    parser.add_argument("--enable_partial_deformable_residual_fg_mscb_lite_stage3", type=parse_bool, default=False)
     parser.add_argument("--enable_mscb_lite_stage2", type=parse_bool, default=False)
     parser.add_argument("--enable_mscb_lite_stage1", type=parse_bool, default=False)
     parser.add_argument("--enable_lka_lite_stage3", type=parse_bool, default=False)
