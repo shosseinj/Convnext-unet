@@ -557,6 +557,8 @@ def set_training_stage(model, stage):
         "cross_level_fusion.",
         "geometry_conv_stage3.",
         "mscb_lite_stage3.",
+        "mscb_lite_stage2.",
+        "mscb_lite_stage1.",
         "lka_lite_stage3.",
         "uncertainty_refinement.",
     )
@@ -2843,6 +2845,16 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_mscb_lite_stage3 does not match the registered experiment"
                     )
+                if (bool(args.enable_mscb_lite_stage2) !=
+                        bool(getattr(experiment_config, "enable_mscb_lite_stage2", False))):
+                    raise ValueError(
+                        "--enable_mscb_lite_stage2 does not match the registered experiment"
+                    )
+                if (bool(args.enable_mscb_lite_stage1) !=
+                        bool(getattr(experiment_config, "enable_mscb_lite_stage1", False))):
+                    raise ValueError(
+                        "--enable_mscb_lite_stage1 does not match the registered experiment"
+                    )
                 if (bool(args.enable_lka_lite_stage3) !=
                         bool(getattr(experiment_config, "enable_lka_lite_stage3", False))):
                     raise ValueError(
@@ -2891,6 +2903,8 @@ if __name__ == "__main__":
                     enable_geometry_conv_stage3=args.enable_geometry_conv_stage3,
                     decoder_highres_width=args.decoder_highres_width,
                     enable_mscb_lite_stage3=args.enable_mscb_lite_stage3,
+                    enable_mscb_lite_stage2=args.enable_mscb_lite_stage2,
+                    enable_mscb_lite_stage1=args.enable_mscb_lite_stage1,
                     enable_lka_lite_stage3=args.enable_lka_lite_stage3,
                 )
 

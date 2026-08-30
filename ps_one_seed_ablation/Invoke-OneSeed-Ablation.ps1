@@ -48,6 +48,8 @@ param(
     [bool] $EnableGeometryConvStage3 = $false,
     [ValidateSet(96, 120)][int] $DecoderHighresWidth = 96,
     [bool] $EnableMSCBLiteStage3 = $false,
+    [bool] $EnableMSCBLiteStage2 = $false,
+    [bool] $EnableMSCBLiteStage1 = $false,
     [bool] $EnableLKALiteStage3 = $false,
     [ValidateSet("v1", "v2")][string] $CSAFVersion = "v1",
     [ValidateSet("standard", "layerwise_convnext")][string] $OptimizerProfile = "standard",
@@ -104,6 +106,8 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_geometry_conv_stage3", ([string]$EnableGeometryConvStage3),
     "--decoder_highres_width", [string]$DecoderHighresWidth,
     "--enable_mscb_lite_stage3", ([string]$EnableMSCBLiteStage3),
+    "--enable_mscb_lite_stage2", ([string]$EnableMSCBLiteStage2),
+    "--enable_mscb_lite_stage1", ([string]$EnableMSCBLiteStage1),
     "--enable_lka_lite_stage3", ([string]$EnableLKALiteStage3),
     "--csaf_version", $CSAFVersion,
     "--deep_supervision_heads", [string]$DeepSupervisionHeads,
@@ -173,6 +177,8 @@ Write-Host "[seed $Seed][$OutputName] FAFEM Stage 3: $(if ($FAFEMStage3) { 'ON' 
 Write-Host "[seed $Seed][$OutputName] Gated skip Stage 3: $(if ($EnableGatedSkipStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Decoder high-resolution width: $DecoderHighresWidth"
 Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-3 fusion: $(if ($EnableMSCBLiteStage3) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-2 fusion: $(if ($EnableMSCBLiteStage2) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-1 fusion: $(if ($EnableMSCBLiteStage1) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] LKA-lite on Stage-3 encoder skip: $(if ($EnableLKALiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 2: $(if ($FAFEMStage2) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] FAFEM Stage 1: $(if ($FAFEMStage1) { 'ON' } else { 'OFF' })"

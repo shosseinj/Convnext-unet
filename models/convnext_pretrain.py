@@ -636,7 +636,9 @@ class ConvNeXtUNet(nn.Module):
                  enable_geometry_conv_stage3=False,
                  decoder_highres_width=96,
                  enable_mscb_lite_stage3=False,
-                 enable_lka_lite_stage3=False):
+                 enable_lka_lite_stage3=False,
+                 enable_mscb_lite_stage2=False,
+                 enable_mscb_lite_stage1=False):
         super(ConvNeXtUNet, self).__init__()
         if skip_mode not in {"normal", "attention_gate", "bsei"}:
             raise ValueError(f"Unsupported skip_mode: {skip_mode}")
@@ -684,6 +686,8 @@ class ConvNeXtUNet(nn.Module):
             "decoder_highres_width": int(decoder_highres_width),
             "enable_mscb_lite_stage3": bool(enable_mscb_lite_stage3),
             "enable_lka_lite_stage3": bool(enable_lka_lite_stage3),
+            "enable_mscb_lite_stage2": bool(enable_mscb_lite_stage2),
+            "enable_mscb_lite_stage1": bool(enable_mscb_lite_stage1),
         }
         
         # Encoder
@@ -828,6 +832,12 @@ class ConvNeXtUNet(nn.Module):
         self.mscb_lite_stage3 = (
             MSCBLite(dims[2]) if enable_mscb_lite_stage3 else None
         )
+        self.mscb_lite_stage2 = (
+            MSCBLite(dims[1]) if enable_mscb_lite_stage2 else None
+        )
+        self.mscb_lite_stage1 = (
+            MSCBLite(dims[0]) if enable_mscb_lite_stage1 else None
+        )
         self.lka_lite_stage3 = (
             LKALiteStage3(encoder_channels[2]) if enable_lka_lite_stage3 else None
         )
@@ -897,11 +907,15 @@ class ConvNeXtUNet(nn.Module):
         d3 = resize_like(d3, f2)
         d3 = (self.bsei3(d3, f2) if self.variant_config["skip_mode"] == "attention_gate"
               else self.bsei3(torch.cat([d3, f2], dim=1)))
+        if self.mscb_lite_stage2 is not None:
+            d3 = self.mscb_lite_stage2(d3)
         
         d2 = self.decoder2(d3)
         d2 = resize_like(d2, f1)
         d2 = (self.bsei2(d2, f1) if self.variant_config["skip_mode"] == "attention_gate"
               else self.bsei2(torch.cat([d2, f1], dim=1)))
+        if self.mscb_lite_stage1 is not None:
+            d2 = self.mscb_lite_stage1(d2)
 
         d1 = self.decoder1(d2)
         d1 = self.bsei1(d1)

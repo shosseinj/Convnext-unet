@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\41_fafem_mscb_lite_stage3_stage2_warmup_cosine\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 107,
+  "best_validation_metric": 0.8766009892736163,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_41_fafem_mscb_lite_stage3_stage2_warmup_cosine",
+  "final_epoch": 137,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 3525.760367155075
+}

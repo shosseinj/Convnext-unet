@@ -34,6 +34,8 @@ class ExperimentConfig:
     decoder_highres_width: int = 96
     enable_mscb_lite_stage3: bool = False
     enable_lka_lite_stage3: bool = False
+    enable_mscb_lite_stage2: bool = False
+    enable_mscb_lite_stage1: bool = False
 
     def to_dict(self):
         values = asdict(self)
@@ -72,6 +74,10 @@ class ExperimentConfig:
             values.pop("enable_mscb_lite_stage3")
         if not self.enable_lka_lite_stage3:
             values.pop("enable_lka_lite_stage3")
+        if not self.enable_mscb_lite_stage2:
+            values.pop("enable_mscb_lite_stage2")
+        if not self.enable_mscb_lite_stage1:
+            values.pop("enable_mscb_lite_stage1")
         return values
 
 
@@ -134,6 +140,8 @@ _EXPERIMENTS = {
         ("one_seed_38_fafem_mscb_lite_stage3_cosine_refinement", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True),
         ("one_seed_39_fafem_mscb_lite_detail_warmup_cosine", False, "normal", 32, False, "concatenation", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True),
         ("one_seed_40_fafem_lka_lite_stage3_mscb_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, True),
+        ("one_seed_41_fafem_mscb_lite_stage3_stage2_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, False, True),
+        ("one_seed_42_fafem_mscb_lite_stage3_stage2_stage1_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, True, False, True, True),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
