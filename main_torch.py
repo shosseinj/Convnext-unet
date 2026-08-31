@@ -902,7 +902,8 @@ def train_epoch_segmentation(
                 getattr(model, "fg_mscb_lite_stage3", None) or
                 getattr(model, "residual_fg_mscb_lite_stage3", None) or
                 getattr(model, "deformable_residual_fg_mscb_lite_stage3", None) or
-                getattr(model, "partial_deformable_residual_fg_mscb_lite_stage3", None)
+                getattr(model, "partial_deformable_residual_fg_mscb_lite_stage3", None) or
+                getattr(model, "f4_f3_context_guided_mscb_lite_stage3", None)
             ),
         }
         return {name: module for name, module in modules.items() if module is not None}
@@ -2955,6 +2956,16 @@ if __name__ == "__main__":
                     raise ValueError(
                         "--enable_partial_deformable_residual_fg_mscb_lite_stage3 does not match the registered experiment"
                     )
+                if (bool(args.enable_f4_f3_context_guided_mscb_lite_stage3) !=
+                        bool(getattr(experiment_config, "enable_f4_f3_context_guided_mscb_lite_stage3", False))):
+                    raise ValueError(
+                        "--enable_f4_f3_context_guided_mscb_lite_stage3 does not match the registered experiment"
+                    )
+                if (bool(args.enable_mixstyle_stage1_stage2) !=
+                        bool(getattr(experiment_config, "enable_mixstyle_stage1_stage2", False))):
+                    raise ValueError(
+                        "--enable_mixstyle_stage1_stage2 does not match the registered experiment"
+                    )
                 if (bool(args.enable_mscb_lite_stage2) !=
                         bool(getattr(experiment_config, "enable_mscb_lite_stage2", False))):
                     raise ValueError(
@@ -3021,6 +3032,8 @@ if __name__ == "__main__":
                     enable_deformable_residual_fg_mscb_lite_stage3=args.enable_deformable_residual_fg_mscb_lite_stage3,
                     enable_residual_fg_mscb_all_skips=args.enable_residual_fg_mscb_all_skips,
                     enable_partial_deformable_residual_fg_mscb_lite_stage3=args.enable_partial_deformable_residual_fg_mscb_lite_stage3,
+                    enable_f4_f3_context_guided_mscb_lite_stage3=args.enable_f4_f3_context_guided_mscb_lite_stage3,
+                    enable_mixstyle_stage1_stage2=args.enable_mixstyle_stage1_stage2,
                     enable_mscb_lite_stage2=args.enable_mscb_lite_stage2,
                     enable_mscb_lite_stage1=args.enable_mscb_lite_stage1,
                     enable_lka_lite_stage3=args.enable_lka_lite_stage3,
@@ -3236,6 +3249,15 @@ if __name__ == "__main__":
         logging.info(
             "Residual FG-MSCB guidance strength: %.6f (bounded to [0, 0.5])",
             residual_fg_mscb_module.effective_guidance_strength().item(),
+        )
+    f4_f3_context_module = getattr(model, "f4_f3_context_guided_mscb_lite_stage3", None)
+    if f4_f3_context_module is not None:
+        logging.info("F4+F3 context-guided residual FG-MSCB-lite Stage3: ON")
+        logging.info("Descriptor shapes: f4_frequency_descriptor=[B,1536], f3_local_descriptor=[B,384], combined_descriptor=[B,1920]")
+        logging.info("F4+F3 guidance MLP: 1920 -> 48 -> 3")
+        logging.info(
+            "F4+F3 residual FG-MSCB guidance strength: %.6f (bounded to [0, 0.5])",
+            f4_f3_context_module.effective_guidance_strength().item(),
         )
     amp_enabled = bool(args.amp and device.type == "cuda")
     scaler = create_grad_scaler(amp_enabled, device.type)
@@ -3914,13 +3936,15 @@ if __name__ == "__main__":
                             args.enable_deformable_residual_fg_mscb_lite_stage3 or
                             args.enable_residual_fg_mscb_all_skips or
                             args.enable_partial_deformable_residual_fg_mscb_lite_stage3
+                            or args.enable_f4_f3_context_guided_mscb_lite_stage3
                         ),
                     )
                     if (args.enable_fg_mscb_lite_stage3 or
                             args.enable_residual_fg_mscb_lite_stage3 or
                             args.enable_deformable_residual_fg_mscb_lite_stage3 or
                             args.enable_residual_fg_mscb_all_skips or
-                            args.enable_partial_deformable_residual_fg_mscb_lite_stage3):
+                            args.enable_partial_deformable_residual_fg_mscb_lite_stage3 or
+                            args.enable_f4_f3_context_guided_mscb_lite_stage3):
                         train_loss, fg_alpha_statistics = train_result
                     else:
                         train_loss = train_result

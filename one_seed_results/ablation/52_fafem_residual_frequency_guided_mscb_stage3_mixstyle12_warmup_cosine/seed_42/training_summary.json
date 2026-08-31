@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\52_fafem_residual_frequency_guided_mscb_stage3_mixstyle12_warmup_cosine\\seed_42\\best_checkpoint.pth",
+  "best_epoch": 113,
+  "best_validation_metric": 0.8696069887706211,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_52_fafem_residual_frequency_guided_mscb_stage3_mixstyle12_warmup_cosine",
+  "final_epoch": 143,
+  "seed": 42,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 3759.578192472458
+}

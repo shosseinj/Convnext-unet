@@ -1,0 +1,66 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\52_fafem_residual_frequency_guided_mscb_stage3_mixstyle12_warmup_cosine\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "5f4efd93c13b4e10dd75417d8e02b08b6216a7e7d1ce6d3091c1d42a7c40a4ef",
+  "experiment_name": "one_seed_52_fafem_residual_frequency_guided_mscb_stage3_mixstyle12_warmup_cosine",
+  "flops": 27818488992,
+  "gflops": 27.818488992,
+  "gmacs": 13.909244496,
+  "macs": 13909244496,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8517805374609481,
+      "MAE": 0.007573968662217197,
+      "S_alpha": 0.9287607155607545,
+      "mDice": 0.8782439738512039,
+      "mE_phi": 0.9492633070025887,
+      "mIoU": 0.8059097742040952,
+      "maxE_phi": 0.9645434772350705,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9264862616452744,
+      "MAE": 0.010790281015285688,
+      "S_alpha": 0.9480618205081071,
+      "mDice": 0.9381476587826206,
+      "mE_phi": 0.9784337407041285,
+      "mIoU": 0.8893415062658249,
+      "maxE_phi": 0.9838709799396168,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.764990887656634,
+      "MAE": 0.03568903807114118,
+      "S_alpha": 0.8591078714112532,
+      "mDice": 0.7889495403410494,
+      "mE_phi": 0.8913008328097032,
+      "mIoU": 0.7078237214238646,
+      "maxE_phi": 0.9000213127578903,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7413982060629215,
+      "MAE": 0.014139388999776582,
+      "S_alpha": 0.8739625288311069,
+      "mDice": 0.7787597224751835,
+      "mE_phi": 0.897589598684962,
+      "mIoU": 0.700553524308736,
+      "maxE_phi": 0.9208914737285104,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.9040247913183174,
+      "MAE": 0.02595904004421,
+      "S_alpha": 0.9298789856459699,
+      "mDice": 0.9261156451702118,
+      "mE_phi": 0.954689077445414,
+      "mIoU": 0.876190257370472,
+      "maxE_phi": 0.9619100644668187,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "threshold": 0.45,
+  "total_parameters": 30057415,
+  "trainable_parameters": 30057415,
+  "tta": false
+}

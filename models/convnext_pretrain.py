@@ -87,6 +87,36 @@ class Block(nn.Module):
 # CONVNEXT ENCODER
 # ============================================================================
 
+class MixStyle(nn.Module):
+    """Mix instance statistics across batch samples during training only."""
+
+    def __init__(self, probability=0.5, alpha=0.1, eps=1e-6):
+        super().__init__()
+        if not 0.0 <= probability <= 1.0:
+            raise ValueError("MixStyle probability must be in [0, 1]")
+        if alpha <= 0.0:
+            raise ValueError("MixStyle alpha must be positive")
+        self.probability = float(probability)
+        self.alpha = float(alpha)
+        self.eps = float(eps)
+
+    def forward(self, x):
+        if not self.training or self.probability == 0.0:
+            return x
+        if torch.rand((), device=x.device) > self.probability:
+            return x
+        mean = x.mean(dim=(2, 3), keepdim=True)
+        std = (x.var(dim=(2, 3), keepdim=True, unbiased=False) + self.eps).sqrt()
+        normalized = (x - mean) / std
+        permutation = torch.randperm(x.shape[0], device=x.device)
+        mix = torch.distributions.Beta(self.alpha, self.alpha).sample(
+            (x.shape[0],)
+        ).to(device=x.device, dtype=x.dtype).view(-1, 1, 1, 1)
+        mixed_mean = mix * mean + (1.0 - mix) * mean[permutation]
+        mixed_std = mix * std + (1.0 - mix) * std[permutation]
+        return normalized * mixed_std + mixed_mean
+
+
 class ConvNeXtEncoder(nn.Module):
     def __init__(
         self,
@@ -497,6 +527,39 @@ class ResidualFrequencyGuidedMSCBLite(FrequencyGuidedMSCBLite):
         return x + refined
 
 
+class F4F3ContextResidualFrequencyGuidedMSCBLite(ResidualFrequencyGuidedMSCBLite):
+    """Residual FG-MSCB guided jointly by FAFEM f4 and raw Stage-3 f3 context."""
+
+    def __init__(self, channels, frequency_descriptor_channels, reduction=16,
+                 guidance_init_std=0.0, signed_strength=False,
+                 initial_guidance_strength=0.0):
+        combined_channels = frequency_descriptor_channels + channels
+        super().__init__(channels, combined_channels, reduction,
+                         guidance_init_std=guidance_init_std,
+                         signed_strength=signed_strength,
+                         initial_guidance_strength=initial_guidance_strength)
+        self.frequency_descriptor_channels = frequency_descriptor_channels
+        self.local_descriptor_channels = channels
+        self.guidance_mlp = nn.Sequential(
+            nn.Linear(combined_channels, 48), nn.GELU(), nn.Linear(48, 3)
+        )
+        self.last_descriptor_shapes = None
+        self.reset_guidance()
+
+    def combined_descriptor(self, frequency_descriptor, f3):
+        local = torch.flatten(F.adaptive_avg_pool2d(f3, 1), start_dim=1)
+        combined = torch.cat((frequency_descriptor, local), dim=1)
+        self.last_descriptor_shapes = {
+            "f4_frequency_descriptor": tuple(frequency_descriptor.shape),
+            "f3_local_descriptor": tuple(local.shape),
+            "combined_descriptor": tuple(combined.shape),
+        }
+        return combined
+
+    def forward(self, x, frequency_descriptor, f3):
+        return super().forward(x, self.combined_descriptor(frequency_descriptor, f3))
+
+
 class DeformableResidualFrequencyGuidedMSCBLite(ResidualFrequencyGuidedMSCBLite):
     """Exp.45 residual FG-MSCB with deformable sampling in each spatial branch."""
 
@@ -797,6 +860,8 @@ class ConvNeXtUNet(nn.Module):
                  enable_deformable_residual_fg_mscb_lite_stage3=False,
                  enable_residual_fg_mscb_all_skips=False,
                  enable_partial_deformable_residual_fg_mscb_lite_stage3=False,
+                 enable_f4_f3_context_guided_mscb_lite_stage3=False,
+                 enable_mixstyle_stage1_stage2=False,
                  enable_lka_lite_stage3=False,
                  enable_mscb_lite_stage2=False,
                  enable_mscb_lite_stage1=False):
@@ -828,7 +893,8 @@ class ConvNeXtUNet(nn.Module):
         if (enable_fg_mscb_lite_stage3 or enable_residual_fg_mscb_lite_stage3 or
                 enable_deformable_residual_fg_mscb_lite_stage3 or
                 enable_residual_fg_mscb_all_skips or
-                enable_partial_deformable_residual_fg_mscb_lite_stage3):
+                enable_partial_deformable_residual_fg_mscb_lite_stage3 or
+                enable_f4_f3_context_guided_mscb_lite_stage3):
             if not enable_fafem:
                 raise ValueError("FG-MSCB requires bottleneck FAFEM")
             if (enable_mscb_lite_stage3 or enable_mscb_lite_stage2 or
@@ -837,7 +903,8 @@ class ConvNeXtUNet(nn.Module):
         if sum((enable_fg_mscb_lite_stage3, enable_residual_fg_mscb_lite_stage3,
                 enable_deformable_residual_fg_mscb_lite_stage3,
                 enable_residual_fg_mscb_all_skips,
-                enable_partial_deformable_residual_fg_mscb_lite_stage3)) > 1:
+                enable_partial_deformable_residual_fg_mscb_lite_stage3,
+                enable_f4_f3_context_guided_mscb_lite_stage3)) > 1:
             raise ValueError("Only one frequency-guided MSCB-lite variant may be enabled")
         self.variant_config = {
             "enable_msc": bool(enable_msc),
@@ -868,6 +935,8 @@ class ConvNeXtUNet(nn.Module):
             "enable_deformable_residual_fg_mscb_lite_stage3": bool(enable_deformable_residual_fg_mscb_lite_stage3),
             "enable_residual_fg_mscb_all_skips": bool(enable_residual_fg_mscb_all_skips),
             "enable_partial_deformable_residual_fg_mscb_lite_stage3": bool(enable_partial_deformable_residual_fg_mscb_lite_stage3),
+            "enable_f4_f3_context_guided_mscb_lite_stage3": bool(enable_f4_f3_context_guided_mscb_lite_stage3),
+            "enable_mixstyle_stage1_stage2": bool(enable_mixstyle_stage1_stage2),
             "enable_lka_lite_stage3": bool(enable_lka_lite_stage3),
             "enable_mscb_lite_stage2": bool(enable_mscb_lite_stage2),
             "enable_mscb_lite_stage1": bool(enable_mscb_lite_stage1),
@@ -998,6 +1067,8 @@ class ConvNeXtUNet(nn.Module):
             FrequencyAwareFeatureEnhancement(encoder_channels[2])
             if fafem_stage3 else None
         )
+        self.mixstyle_stage1 = MixStyle(probability=0.5, alpha=0.1) if enable_mixstyle_stage1_stage2 else None
+        self.mixstyle_stage2 = MixStyle(probability=0.5, alpha=0.1) if enable_mixstyle_stage1_stage2 else None
         self.gated_skip_stage3 = (
             Stage3GatedSkipFusion(dims[2], encoder_channels[2])
             if enable_gated_skip_stage3 else None
@@ -1043,6 +1114,14 @@ class ConvNeXtUNet(nn.Module):
                 signed_strength=residual_fg_mscb_signed_strength,
                 initial_guidance_strength=residual_fg_mscb_initial_strength,
             ) if enable_partial_deformable_residual_fg_mscb_lite_stage3 else None
+        )
+        self.f4_f3_context_guided_mscb_lite_stage3 = (
+            F4F3ContextResidualFrequencyGuidedMSCBLite(
+                dims[2], encoder_channels[3] * 2,
+                guidance_init_std=residual_fg_mscb_guidance_init_std,
+                signed_strength=residual_fg_mscb_signed_strength,
+                initial_guidance_strength=residual_fg_mscb_initial_strength,
+            ) if enable_f4_f3_context_guided_mscb_lite_stage3 else None
         )
         self.residual_fg_mscb_lite_stage1 = (
             ResidualFrequencyGuidedMSCBLite(
@@ -1091,6 +1170,8 @@ class ConvNeXtUNet(nn.Module):
         if self.partial_deformable_residual_fg_mscb_lite_stage3 is not None:
             self.partial_deformable_residual_fg_mscb_lite_stage3.reset_deformable_branches()
             self.partial_deformable_residual_fg_mscb_lite_stage3.reset_guidance()
+        if self.f4_f3_context_guided_mscb_lite_stage3 is not None:
+            self.f4_f3_context_guided_mscb_lite_stage3.reset_guidance()
         for module in (
                 self.residual_fg_mscb_lite_stage1,
                 self.residual_fg_mscb_lite_stage2,
@@ -1117,6 +1198,11 @@ class ConvNeXtUNet(nn.Module):
         # Encoder
         encoder_x = (x - self.encoder_mean) / self.encoder_std
         f1, f2, f3, f4 = self.encoder(encoder_x)
+        if self.mixstyle_stage1 is not None:
+            f1 = self.mixstyle_stage1(f1)
+        if self.mixstyle_stage2 is not None:
+            f2 = self.mixstyle_stage2(f2)
+        raw_f3_for_context = f3
         if self.fafem_stage1 is not None:
             f1 = self.fafem_stage1(f1)
         if self.fafem_stage2 is not None:
@@ -1128,7 +1214,8 @@ class ConvNeXtUNet(nn.Module):
         frequency_guided_mscb = (
             self.fg_mscb_lite_stage3 or self.residual_fg_mscb_lite_stage3 or
             self.deformable_residual_fg_mscb_lite_stage3 or
-            self.partial_deformable_residual_fg_mscb_lite_stage3
+            self.partial_deformable_residual_fg_mscb_lite_stage3 or
+            self.f4_f3_context_guided_mscb_lite_stage3
         )
         frequency_guided_skip_modules = (
             self.residual_fg_mscb_lite_stage1,
@@ -1188,7 +1275,10 @@ class ConvNeXtUNet(nn.Module):
         if frequency_guided_mscb is not None:
             if frequency_descriptor is None:
                 raise RuntimeError("FG-MSCB requires the bottleneck FAFEM descriptor")
-            d4 = frequency_guided_mscb(d4, frequency_descriptor)
+            if self.f4_f3_context_guided_mscb_lite_stage3 is not None:
+                d4 = frequency_guided_mscb(d4, frequency_descriptor, raw_f3_for_context)
+            else:
+                d4 = frequency_guided_mscb(d4, frequency_descriptor)
         
         d3 = self.decoder3(d4)
         d3 = resize_like(d3, f2)

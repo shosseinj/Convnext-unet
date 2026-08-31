@@ -44,6 +44,8 @@ class ExperimentConfig:
     enable_deformable_residual_fg_mscb_lite_stage3: bool = False
     enable_residual_fg_mscb_all_skips: bool = False
     enable_partial_deformable_residual_fg_mscb_lite_stage3: bool = False
+    enable_f4_f3_context_guided_mscb_lite_stage3: bool = False
+    enable_mixstyle_stage1_stage2: bool = False
 
     def to_dict(self):
         values = asdict(self)
@@ -86,7 +88,8 @@ class ExperimentConfig:
             self.enable_residual_fg_mscb_lite_stage3 or
             self.enable_deformable_residual_fg_mscb_lite_stage3 or
             self.enable_residual_fg_mscb_all_skips or
-            self.enable_partial_deformable_residual_fg_mscb_lite_stage3
+            self.enable_partial_deformable_residual_fg_mscb_lite_stage3 or
+            self.enable_f4_f3_context_guided_mscb_lite_stage3
         )
         if not self.enable_residual_fg_mscb_lite_stage3:
             values.pop("enable_residual_fg_mscb_lite_stage3")
@@ -104,6 +107,10 @@ class ExperimentConfig:
             values.pop("enable_residual_fg_mscb_all_skips")
         if not self.enable_partial_deformable_residual_fg_mscb_lite_stage3:
             values.pop("enable_partial_deformable_residual_fg_mscb_lite_stage3")
+        if not self.enable_f4_f3_context_guided_mscb_lite_stage3:
+            values.pop("enable_f4_f3_context_guided_mscb_lite_stage3")
+        if not self.enable_mixstyle_stage1_stage2:
+            values.pop("enable_mixstyle_stage1_stage2")
         if not self.enable_lka_lite_stage3:
             values.pop("enable_lka_lite_stage3")
         if not self.enable_mscb_lite_stage2:
@@ -182,6 +189,8 @@ _EXPERIMENTS = {
         ("one_seed_48_fafem_residual_frequency_guided_mscb_all_skips_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, False, 0.0, False, 5e-2, False, True),
         ("one_seed_49_fafem_residual_frequency_guided_mscb_all_skips_batch32", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, False, 0.0, False, 5e-2, False, True),
         ("one_seed_50_fafem_residual_frequency_guided_partial_deformable_mscb_stage3_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, False, 0.0, False, 5e-2, False, False, True),
+        ("one_seed_51_fafem_f4_f3_context_guided_mscb_stage3_batch32", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, False, 0.0, False, 5e-2, False, False, False, True),
+        ("one_seed_52_fafem_residual_frequency_guided_mscb_stage3_mixstyle12_warmup_cosine", False, "normal", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 0, False, True, "v1", False, False, False, False, False, "v1", "none", False, "none", False, 96, False, False, False, False, False, True, 0.0, False, 5e-2, False, False, False, False, True),
         ("one_seed_02_add_ugbr", False, "normal", 0, False, "none", 0, True, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_03_gated_skips", False, "attention_gate", 0, False, "none", 0, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),
         ("one_seed_04_deep_supervision", False, "normal", 0, False, "none", 2, False, "bilinear", "convnext_tiny", "amp_fp16", 200, 20),

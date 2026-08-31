@@ -56,6 +56,8 @@ param(
     [bool] $EnableDeformableResidualFGMSCBLiteStage3 = $false,
     [bool] $EnableResidualFGMSCBAllSkips = $false,
     [bool] $EnablePartialDeformableResidualFGMSCBLiteStage3 = $false,
+    [bool] $EnableF4F3ContextGuidedMSCBLiteStage3 = $false,
+    [bool] $EnableMixStyleStage1Stage2 = $false,
     [bool] $EnableMSCBLiteStage2 = $false,
     [bool] $EnableMSCBLiteStage1 = $false,
     [bool] $EnableLKALiteStage3 = $false,
@@ -122,6 +124,8 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--enable_deformable_residual_fg_mscb_lite_stage3", ([string]$EnableDeformableResidualFGMSCBLiteStage3),
     "--enable_residual_fg_mscb_all_skips", ([string]$EnableResidualFGMSCBAllSkips),
     "--enable_partial_deformable_residual_fg_mscb_lite_stage3", ([string]$EnablePartialDeformableResidualFGMSCBLiteStage3),
+    "--enable_f4_f3_context_guided_mscb_lite_stage3", ([string]$EnableF4F3ContextGuidedMSCBLiteStage3),
+    "--enable_mixstyle_stage1_stage2", ([string]$EnableMixStyleStage1Stage2),
     "--enable_mscb_lite_stage2", ([string]$EnableMSCBLiteStage2),
     "--enable_mscb_lite_stage1", ([string]$EnableMSCBLiteStage1),
     "--enable_lka_lite_stage3", ([string]$EnableLKALiteStage3),
@@ -197,6 +201,7 @@ Write-Host "[seed $Seed][$OutputName] Frequency-guided MSCB-lite after Stage-3 f
 Write-Host "[seed $Seed][$OutputName] Residual frequency-guided MSCB-lite after Stage-3 fusion: $(if ($EnableResidualFGMSCBLiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Deformable residual FG-MSCB-lite after Stage-3 fusion: $(if ($EnableDeformableResidualFGMSCBLiteStage3) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] Residual FG-MSCB-lite on all encoder skips: $(if ($EnableResidualFGMSCBAllSkips) { 'ON' } else { 'OFF' })"
+Write-Host "[seed $Seed][$OutputName] MixStyle after encoder Stages 1+2: $(if ($EnableMixStyleStage1Stage2) { 'ON (p=0.5, alpha=0.1; train only)' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-2 fusion: $(if ($EnableMSCBLiteStage2) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] MSCB-lite after Stage-1 fusion: $(if ($EnableMSCBLiteStage1) { 'ON' } else { 'OFF' })"
 Write-Host "[seed $Seed][$OutputName] LKA-lite on Stage-3 encoder skip: $(if ($EnableLKALiteStage3) { 'ON' } else { 'OFF' })"
