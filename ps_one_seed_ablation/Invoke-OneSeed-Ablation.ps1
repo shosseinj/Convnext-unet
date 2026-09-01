@@ -68,6 +68,8 @@ param(
     [double] $EncoderWeightDecay = -1,
     [double] $NewLayerWeightDecay = 1e-3,
     [double] $MaxGradNorm = 0,
+    [ValidateSet("legacy_90_10", "pranet_seen_test_internal_validation_v1")][string] $SplitProtocol = "legacy_90_10",
+    [string] $SplitManifestPath = "",
     [switch] $ContinueTraining,
     [string] $RefinementCheckpointPath = "",
     [switch] $ResumeLrOverride,
@@ -87,6 +89,7 @@ $seedDir = Join-Path $repoRoot "one_seed_results\ablation\$OutputName\seed_$Seed
 $loggingDir = $seedDir + [IO.Path]::DirectorySeparatorChar
 $bestCheckpoint = Join-Path $seedDir "best_checkpoint.pth"
 $evaluationSummary = Join-Path $seedDir "evaluation_summary.json"
+$splitReport = Join-Path $seedDir "split_membership.json"
 $encoderWeights = Join-Path $repoRoot "convnext_tiny_22k_1k_384.pth"
 $stateCommand = @($python, (Join-Path $repoRoot "ablation_state.py"),
     "--experiment_name", $Experiment, "--seed", [string]$Seed, "--seed_dir", $seedDir,
@@ -98,6 +101,8 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--best_checkpoint_path", $bestCheckpoint,
     "--training_history_path", (Join-Path $seedDir "training_history.csv"),
     "--training_summary_path", (Join-Path $seedDir "training_summary.json"),
+    "--split_protocol", $SplitProtocol,
+    "--split_report_path", $splitReport,
     "--encoder_weights", $encoderWeights, "--logging_dir", $loggingDir,
     "--enable_msc", ([string]$EnableMSC), "--skip_mode", $SkipMode,
     "--unfreeze_schedule", $UnfreezeSchedule,
@@ -170,6 +175,9 @@ $trainCommand = @($python, (Join-Path $repoRoot "main_torch.py"),
     "--reset_plateau_scheduler", ([string][bool]$ResetPlateauScheduler),
     "--refinement_force_all_trainable", ([string][bool]$RefinementForceAllTrainable),
     "--allow_completed_resume", ([string][bool]$ContinueTraining))
+if ($SplitManifestPath) {
+    $trainCommand += @("--split_manifest_path", $SplitManifestPath)
+}
 if ($RefinementCheckpointPath) {
     $trainCommand += @("--refinement_checkpoint_path", $RefinementCheckpointPath)
 }
@@ -177,6 +185,11 @@ $evaluateCommand = @($python, (Join-Path $repoRoot "evaluate.py"),
     "--experiment_name", $Experiment, "--seed", [string]$Seed, "--seed_dir", $seedDir,
     "--data_path", (Join-Path $repoRoot "data"), "--encoder_weights", $encoderWeights,
     "--batch_size", "8", "--num_workers", "0", "--output", $evaluationSummary)
+if ($SplitManifestPath) {
+    $evaluateCommand += @("--split_protocol", $SplitProtocol, "--split_manifest_path", $SplitManifestPath)
+} elseif ($SplitProtocol -ne "legacy_90_10") {
+    throw "SplitProtocol $SplitProtocol requires -SplitManifestPath."
+}
 
 if ($DryRun) {
     @{ experiment = $Experiment; output_name = $OutputName; seed_dir = $seedDir;
@@ -214,6 +227,8 @@ if ($EnableCrossLevelFusion) {
 Write-Host "[seed $Seed][$OutputName] MSC: $(if ($EnableMSC) { 'ON' } else { 'OFF' }) | UGBR: $(if ($EnableUGBR) { 'ON' } else { 'OFF' }) | Upsampling: $UpsampleMode | Detail channels: $DetailChannels"
 Write-Host "[seed $Seed][$OutputName] Encoder unfreeze schedule: $UnfreezeSchedule$(if ($UnfreezeSchedule -eq 'fixed') { ' (epochs ' + ($FixedUnfreezeEpochs -join ',') + ')' } else { '' })"
 Write-Host "[seed $Seed][$OutputName] Output directory: $seedDir"
+Write-Host "[seed $Seed][$OutputName] Dataset split protocol: $SplitProtocol"
+if ($SplitManifestPath) { Write-Host "[seed $Seed][$OutputName] Split manifest: $SplitManifestPath" }
 if ($ContinueTraining) {
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
     $backupDir = Join-Path $seedDir "continuation_backups\$timestamp"

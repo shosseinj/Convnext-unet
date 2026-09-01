@@ -13,13 +13,6 @@ import torch.nn.functional as F
 import torchvision.transforms.functional as TF
 from torch.utils.data import DataLoader, Dataset
 
-from pranet_seen_test_split import (
-    SPLIT_PROTOCOL,
-    build_seen_test_split,
-    discover_paired_filenames,
-    filenames_for_partition,
-)
-
 
 DATASET_DIRECTORIES = {
     "Kvasir-SEG": "Kvasir-SEG",
@@ -44,7 +37,7 @@ class PolypEvalDataset(Dataset):
         ).float().unsqueeze(0)
 
 
-def read_dataset(data_path, dataset_key, input_size=352, selected_filenames=None):
+def read_dataset(data_path, dataset_key, input_size=352):
     directory = DATASET_DIRECTORIES[dataset_key]
     image_dir = os.path.join(data_path, directory, "images")
     mask_dir = os.path.join(data_path, directory, "masks")
@@ -53,8 +46,6 @@ def read_dataset(data_path, dataset_key, input_size=352, selected_filenames=None
         image_files.extend(glob.glob(os.path.join(image_dir, extension)))
     images, masks = [], []
     for image_path in sorted(image_files):
-        if selected_filenames is not None and os.path.basename(image_path) not in selected_filenames:
-            continue
         mask_path = os.path.join(mask_dir, os.path.basename(image_path))
         if not os.path.isfile(mask_path):
             continue
@@ -88,27 +79,9 @@ def validation_subset(images, masks):
         return images[selected], masks[selected]
 
 
-def make_loader(data_path, dataset_key, batch_size=8, num_workers=0, input_size=352,
-                split_protocol="legacy_90_10", split_manifest_path=None):
-    if split_protocol not in {"legacy_90_10", SPLIT_PROTOCOL}:
-        raise ValueError(f"Unknown split protocol: {split_protocol}")
-
-    selected_filenames = None
-    if split_protocol == SPLIT_PROTOCOL and dataset_key in {"Kvasir-SEG", "CVC-ClinicDB"}:
-        if split_manifest_path is None:
-            raise ValueError(f"{SPLIT_PROTOCOL} evaluation requires a split manifest")
-        split = build_seen_test_split(
-            split_manifest_path,
-            {
-                "Kvasir-SEG": discover_paired_filenames(data_path, "Kvasir-SEG"),
-                "CVC-ClinicDB": discover_paired_filenames(data_path, "CVC-ClinicDB"),
-            },
-            internal_validation_seed=42,
-        )
-        selected_filenames = set(filenames_for_partition(split, dataset_key, "final_seen_test"))
-
-    images, masks = read_dataset(data_path, dataset_key, input_size, selected_filenames)
-    if split_protocol == "legacy_90_10" and dataset_key in {"Kvasir-SEG", "CVC-ClinicDB"}:
+def make_loader(data_path, dataset_key, batch_size=8, num_workers=0, input_size=352):
+    images, masks = read_dataset(data_path, dataset_key, input_size)
+    if dataset_key in {"Kvasir-SEG", "CVC-ClinicDB"}:
         images, masks = validation_subset(images, masks)
     dataset = PolypEvalDataset(images, masks)
     return DataLoader(dataset, batch_size=batch_size, shuffle=False,

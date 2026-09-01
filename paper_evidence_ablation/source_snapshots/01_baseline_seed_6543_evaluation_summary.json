@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_6543\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "4920db1b3e344b115a015b339c15098a9a9cf6df5cd5150f40f11f10d5212a88",
+  "experiment_name": "one_seed_01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8489636215231413,
+      "MAE": 0.008067667762492231,
+      "S_alpha": 0.9225665594083605,
+      "mDice": 0.8693655361731847,
+      "mE_phi": 0.9435682238110881,
+      "mIoU": 0.7972456231713295,
+      "maxE_phi": 0.9482389370737951,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9313015850771265,
+      "MAE": 0.010208101022962119,
+      "S_alpha": 0.9512167855863762,
+      "mDice": 0.942186826659787,
+      "mE_phi": 0.9828660241267997,
+      "mIoU": 0.8923261598233254,
+      "maxE_phi": 0.9882133910761451,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7082686251079776,
+      "MAE": 0.035707094585238824,
+      "S_alpha": 0.8205050745934169,
+      "mDice": 0.7202405412082806,
+      "mE_phi": 0.8428120982838943,
+      "mIoU": 0.6388425882990302,
+      "maxE_phi": 0.855973711642787,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.6473506962071617,
+      "MAE": 0.015668375190661256,
+      "S_alpha": 0.8102367987120043,
+      "mDice": 0.6552655384058912,
+      "mE_phi": 0.7919023658507722,
+      "mIoU": 0.5892051057869035,
+      "maxE_phi": 0.8073109579408244,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.891395213327898,
+      "MAE": 0.029693257251232348,
+      "S_alpha": 0.9207582328038397,
+      "mDice": 0.9138404920697212,
+      "mE_phi": 0.9509885987562632,
+      "mIoU": 0.8554086926579475,
+      "maxE_phi": 0.9584410002073231,
+      "samples": 100
+    }
+  },
+  "seed": 6543,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}

@@ -10,7 +10,6 @@ from ablation_registry import get_experiment
 from checkpoint_management import load_checkpoint_file, strip_thop_state
 from evaluation_core import count_parameters, evaluate_loader, make_loader, measure_complexity
 from models.convnext_pretrain import ConvNeXtUNet
-from pranet_seen_test_split import SPLIT_PROTOCOL
 
 
 def build_model(config, encoder_weights, device):
@@ -42,8 +41,6 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, default=0)
     parser.add_argument("--max_batches", type=int, default=0, help="Verification-only bounded evaluation")
     parser.add_argument("--tta", action="store_true", help="Use the defined five-view TTA protocol")
-    parser.add_argument("--split_protocol", choices=["legacy_90_10", SPLIT_PROTOCOL], default="legacy_90_10")
-    parser.add_argument("--split_manifest_path", type=Path)
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
 
@@ -68,11 +65,7 @@ def main():
     complexity = measure_complexity(model)
     results = {}
     for dataset in DATASETS:
-        loader, count = make_loader(
-            args.data_path, dataset, args.batch_size, args.num_workers,
-            split_protocol=args.split_protocol,
-            split_manifest_path=args.split_manifest_path,
-        )
+        loader, count = make_loader(args.data_path, dataset, args.batch_size, args.num_workers)
         metrics = evaluate_loader(model, loader, device, threshold=0.45,
                                   max_batches=args.max_batches, use_tta=args.tta)
         metrics["samples"] = min(count, args.batch_size * args.max_batches) if args.max_batches else count
@@ -83,8 +76,6 @@ def main():
         "seed": args.seed,
         "tta": bool(args.tta),
         "threshold": 0.45,
-        "split_protocol": args.split_protocol,
-        "split_manifest_path": str(args.split_manifest_path) if args.split_manifest_path else None,
         "checkpoint": str(checkpoint_path.resolve()),
         "checkpoint_fingerprint": checkpoint_sha256(checkpoint_path),
         "trainable_parameters": trainable,

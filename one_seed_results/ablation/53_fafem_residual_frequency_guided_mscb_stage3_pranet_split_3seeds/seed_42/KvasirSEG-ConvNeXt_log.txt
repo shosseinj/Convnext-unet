@@ -1,0 +1,1 @@
+2026-09-01 23:30:21 - INFO - Logging initialized to C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\one_seed_results\ablation\53_fafem_residual_frequency_guided_mscb_stage3_pranet_split_3seeds\seed_42\KvasirSEG-ConvNeXt_log.txt

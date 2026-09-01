@@ -1,0 +1,64 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "e6aae1c02457a93e6a00abf5a3a7a22c8b7fa5e7b35d7eb72f0f170a87b6721a",
+  "experiment_name": "one_seed_01_baseline",
+  "flops": 27202116480,
+  "gflops": 27.20211648,
+  "gmacs": 13.60105824,
+  "macs": 13601058240,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8531094875497083,
+      "MAE": 0.007844848195910881,
+      "S_alpha": 0.9274045150690287,
+      "mDice": 0.8740633100271225,
+      "mE_phi": 0.9449910279012195,
+      "mIoU": 0.8026355358461539,
+      "maxE_phi": 0.9517515636536416,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9301858865986615,
+      "MAE": 0.010904646740691984,
+      "S_alpha": 0.9494406157140339,
+      "mDice": 0.9384957513501567,
+      "mE_phi": 0.9809897944134894,
+      "mIoU": 0.8868693478645817,
+      "maxE_phi": 0.9857922003563984,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7233134463331105,
+      "MAE": 0.03301921060501568,
+      "S_alpha": 0.8310473839302739,
+      "mDice": 0.7353472457850229,
+      "mE_phi": 0.8579143456909464,
+      "mIoU": 0.6566418849940509,
+      "maxE_phi": 0.8659374983719776,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.648431495709609,
+      "MAE": 0.01784024233087507,
+      "S_alpha": 0.8153477741733761,
+      "mDice": 0.6672346924369477,
+      "mE_phi": 0.7993958746485885,
+      "mIoU": 0.6000457569495495,
+      "maxE_phi": 0.8049048134588748,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8994665766933295,
+      "MAE": 0.027584425915720377,
+      "S_alpha": 0.925880750799045,
+      "mDice": 0.9197451975941658,
+      "mE_phi": 0.9526707980521569,
+      "mIoU": 0.8666093710064888,
+      "maxE_phi": 0.9586983156102967,
+      "samples": 100
+    }
+  },
+  "seed": 42,
+  "total_parameters": 29190098,
+  "trainable_parameters": 29190098
+}

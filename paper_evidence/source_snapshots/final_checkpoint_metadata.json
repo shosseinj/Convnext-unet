@@ -1,0 +1,22 @@
+{
+  "experiment_name": "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
+  "seed": 42,
+  "epoch": 184,
+  "best_epoch": 184,
+  "final_epoch": 199,
+  "best_validation_metric": 0.8780511021614075,
+  "test_dice": 0.9348011783191136,
+  "test_iou": 0.8780511021614075,
+  "training_complete": true,
+  "completion_reason": "max_epochs",
+  "training_precision": "amp_fp16",
+  "optimizer_profile": "layerwise_convnext",
+  "optimizer_max_lrs": {"decoder": 0.0003, "refine": 0.00045, "encoder_stage4": 0.000029999999999999997, "encoder_stage3": 0.000024, "encoder_stage2": 0.000019200000000000003, "encoder_stage1_stem": 0.000015360000000000002},
+  "encoder_layer_decay": 0.8,
+  "lr_scheduler": "warmup_cosine",
+  "scheduler_type": "warmup_cosine",
+  "deep_supervision_schedule": "constant",
+  "enable_frequency_augmentation": false,
+  "sampling_mode": "uniform",
+  "architecture": {"backbone": "convnext_tiny", "enable_fafem": true, "enable_residual_fg_mscb_lite_stage3": true, "residual_fg_mscb_guidance_init_std": 0.0, "residual_fg_mscb_initial_strength": 0.05, "skip_mode": "normal", "deep_supervision_heads": 0, "unfreeze_schedule": "none", "upsample_mode": "bilinear"}
+}

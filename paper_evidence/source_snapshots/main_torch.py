@@ -30,12 +30,6 @@ import glob
 import cv2
 from ablation_cli import add_ablation_arguments
 from ablation_registry import get_experiment
-from pranet_seen_test_split import (
-    SPLIT_PROTOCOL,
-    build_seen_test_split,
-    combined_partition_filenames,
-    write_split_report,
-)
 from amp_training import (
     add_scaler_state, autocast_context, create_grad_scaler,
     finish_optimizer_step, restore_scaler_state,
@@ -45,16 +39,6 @@ from checkpoint_management import (
     mark_training_complete, prepare_best_checkpoint, prepare_checkpoint,
 )
 from training_artifacts import append_history_row, write_training_summary
-
-
-def make_progress_bar(iterable, **kwargs):
-    """Keep tqdm redraws separate from line-oriented training logs."""
-    from tqdm import tqdm
-
-    kwargs.setdefault("file", sys.stderr)
-    kwargs.setdefault("dynamic_ncols", True)
-    kwargs.setdefault("mininterval", 0.5)
-    return tqdm(iterable, **kwargs)
 
 
 import numpy as np
@@ -82,10 +66,7 @@ class Dataset:
         ttfs_noise=0,
         data_path='./dataset/',
         input_size=(256, 256),
-        evaluate_dataset='kvasir',
-        split_protocol='legacy_90_10',
-        split_manifest_path=None,
-        split_report_path=None,
+        evaluate_dataset='kvasir'
     ):
 
         self.name = data_name
@@ -95,9 +76,6 @@ class Dataset:
         self.input_size = input_size
         self.logging_dir = logging_dir
         self.evaluate_dataset = evaluate_dataset
-        self.split_protocol = split_protocol
-        self.split_manifest_path = split_manifest_path
-        self.split_report_path = split_report_path
 
 
         # disable OpenCV warnings
@@ -145,7 +123,6 @@ class Dataset:
         
         kvasir_images = []
         kvasir_masks = []
-        kvasir_filenames = []
         
         kvasir_image_dir = os.path.join(self.data_path, "Kvasir-SEG", "images")
         kvasir_mask_dir = os.path.join(self.data_path, "Kvasir-SEG", "masks")
@@ -178,7 +155,6 @@ class Dataset:
             
             kvasir_images.append(img)
             kvasir_masks.append(mask)
-            kvasir_filenames.append(filename)
         
         print(f"Loaded Kvasir-SEG: {len(kvasir_images)} images")
         
@@ -191,7 +167,6 @@ class Dataset:
         
         clinicdb_images = []
         clinicdb_masks = []
-        clinicdb_filenames = []
         
         clinicdb_image_dir = os.path.join(self.data_path, "CVC-ClinicDB", "images")
         clinicdb_mask_dir = os.path.join(self.data_path, "CVC-ClinicDB", "masks")
@@ -224,7 +199,6 @@ class Dataset:
             
             clinicdb_images.append(img)
             clinicdb_masks.append(mask)
-            clinicdb_filenames.append(filename)
         
         print(f"Loaded CVC-ClinicDB: {len(clinicdb_images)} images")
         
@@ -233,62 +207,6 @@ class Dataset:
         # ==========================================
         from sklearn.model_selection import train_test_split
         
-        if self.split_protocol == SPLIT_PROTOCOL:
-            if not self.split_manifest_path:
-                raise ValueError(f"{SPLIT_PROTOCOL} requires --split_manifest_path")
-            split = build_seen_test_split(
-                self.split_manifest_path,
-                {
-                    "Kvasir-SEG": kvasir_filenames,
-                    "CVC-ClinicDB": clinicdb_filenames,
-                },
-                internal_validation_seed=42,
-            )
-            if self.split_report_path:
-                write_split_report(split, self.split_report_path)
-
-            def select(dataset_images, dataset_masks, dataset_names, selected_names):
-                positions = {name: index for index, name in enumerate(dataset_names)}
-                selected_indices = [positions[name] for name in selected_names]
-                return (
-                    np.asarray([dataset_images[index] for index in selected_indices], dtype=np.float32),
-                    np.asarray([dataset_masks[index] for index in selected_indices], dtype=np.float32),
-                )
-
-            kvasir_train_x, kvasir_train_y = select(
-                kvasir_images, kvasir_masks, kvasir_filenames,
-                combined_partition_filenames(split, "Kvasir-SEG", "train"),
-            )
-            clinic_train_x, clinic_train_y = select(
-                clinicdb_images, clinicdb_masks, clinicdb_filenames,
-                combined_partition_filenames(split, "CVC-ClinicDB", "train"),
-            )
-            kvasir_val_x, kvasir_val_y = select(
-                kvasir_images, kvasir_masks, kvasir_filenames,
-                combined_partition_filenames(split, "Kvasir-SEG", "internal_validation"),
-            )
-            clinic_val_x, clinic_val_y = select(
-                clinicdb_images, clinicdb_masks, clinicdb_filenames,
-                combined_partition_filenames(split, "CVC-ClinicDB", "internal_validation"),
-            )
-            self.x_train = np.concatenate([kvasir_train_x, clinic_train_x], axis=0)
-            self.y_train = np.concatenate([kvasir_train_y, clinic_train_y], axis=0)
-            self.x_test = np.concatenate([kvasir_val_x, clinic_val_x], axis=0)
-            self.y_test = np.concatenate([kvasir_val_y, clinic_val_y], axis=0)
-            if len(self.x_train) != 1305 or len(self.x_test) != 145:
-                raise ValueError("Seen-test split produced incorrect internal train/validation counts")
-            train_indices = np.random.permutation(len(self.x_train))
-            validation_indices = np.random.permutation(len(self.x_test))
-            self.x_train = self.x_train[train_indices].astype(np.float32)
-            self.y_train = self.y_train[train_indices].astype(np.float32)
-            self.x_test = self.x_test[validation_indices].astype(np.float32)
-            self.y_test = self.y_test[validation_indices].astype(np.float32)
-            print("Seen-test split protocol: Kvasir pool=900/test=100, ClinicDB pool=550/test=62, internal train=1305/validation=145")
-            return
-
-        if self.split_protocol != 'legacy_90_10':
-            raise ValueError(f"Unknown split protocol: {self.split_protocol}")
-
         # Kvasir split (90% train, 10% val)
         kvasir_x_train, kvasir_x_val, kvasir_y_train, kvasir_y_val = train_test_split(
             np.array(kvasir_images, dtype=np.float32),
@@ -946,6 +864,7 @@ def train_epoch_segmentation(
     import random
     import numpy as np
     import logging
+    from tqdm import tqdm
     import torch
     import torch.nn.functional as F
 
@@ -996,7 +915,7 @@ def train_epoch_segmentation(
                 total += p.grad.detach().norm(2).item() ** 2
         return total ** 0.5
 
-    pbar = make_progress_bar(train_loader, desc="Training")
+    pbar = tqdm(train_loader, desc="Training", file=sys.stdout, dynamic_ncols=True)
 
     for batch_idx, (data, target) in enumerate(pbar):
 
@@ -1293,7 +1212,9 @@ def evaluate_with_tta(model, test_loader, device, threshold=0.40):
     MAE = py_sod_metrics.MAE()
     
     with torch.no_grad():
-        for data, target in make_progress_bar(test_loader, desc='TTA'):
+        for data, target in tqdm(
+            test_loader, desc='TTA', file=sys.stdout, dynamic_ncols=True
+        ):
             data = data.to(device)
             
             # Original
@@ -1423,7 +1344,9 @@ def test_segmentation(model, test_loader, criterion, device, threshold=0.3,
     MAE = py_sod_metrics.MAE()
     
     with torch.no_grad():
-        for data, target in make_progress_bar(test_loader, desc='Testing'):
+        for data, target in tqdm(
+            test_loader, desc='Testing', file=sys.stdout, dynamic_ncols=True
+        ):
             data, target = data.to(device), target.to(device)
             
             if target.dim() == 3:
@@ -1663,7 +1586,9 @@ def evaluate_model(
 
     with torch.no_grad():
 
-        for data, target in make_progress_bar(loader, desc="Evaluating"):
+        for data, target in tqdm(
+            loader, desc="Evaluating", file=sys.stdout, dynamic_ncols=True
+        ):
 
             data = data.to(device)
             target = target.to(device)
@@ -2760,9 +2685,6 @@ if __name__ == "__main__":
     parser.add_argument('--logging_dir', type=str, default='./logs/ablation/baseline+MSC/', help='Directory for logging')
     parser.add_argument('--data_path', type=str, default='./data/', help='Directory for logging')
     parser.add_argument('--eval_dataset', type=str, default='both', choices=['kvasir', 'clinicdb', 'both', 'CVC-300', 'CVC-ColonDB', 'ETIS-LARIBPOLYPDB'], help='Validation/test split or external test dataset')
-    parser.add_argument('--split_protocol', choices=['legacy_90_10', SPLIT_PROTOCOL], default='legacy_90_10', help='Dataset partition protocol')
-    parser.add_argument('--split_manifest_path', type=str, default='', help='Fixed seen-test manifest required by the selected split protocol')
-    parser.add_argument('--split_report_path', type=str, default='', help='Where to persist exact training/internal-validation/final-test IDs')
     parser.add_argument('--checkpoint_path', type=str, default='./logs/ablation/baseline+MSC/checkpoints_KvasirSEG-ConvNeXt/179-test0.86.pth', help='Checkpoint path used only when --load True')
     # parser.add_argument('--checkpoint_path', type=str, default='./logs/ConvNeXt-pretrain-lightweight/start-100/checkpoints_KvasirSEG-ConvNeXt/126-test0.88.pth', help='Checkpoint path used only when --load True')
     # parser.add_argument('--checkpoint_path', type=str, default=None, help='Checkpoint path used only when --load True')
@@ -2860,10 +2782,7 @@ if __name__ == "__main__":
         ttfs_noise=args.noise,
         data_path= args.data_path,
         input_size= args.input_size,
-        evaluate_dataset=args.eval_dataset,
-        split_protocol=args.split_protocol,
-        split_manifest_path=args.split_manifest_path or None,
-        split_report_path=args.split_report_path or None,
+        evaluate_dataset=args.eval_dataset
     )
 
     train_dataset = KvasirSEGDataset(data.x_train, data.y_train, is_train=True, target_size=args.input_size[0])  # Pass target size to dataset

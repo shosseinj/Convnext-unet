@@ -1,0 +1,19 @@
+Source: one_seed_results/ablation/45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine/seed_42/KvasirSEG-ConvNeXt_log.txt
+Purpose: compact, human-readable evidence excerpt. It is not a replacement for the excluded full log.
+
+2026-08-30 12:54:50 - INFO - Loading ConvNeXt-Tiny ImageNet encoder weights from convnext_tiny_22k_1k_384.pth.
+2026-08-30 12:54:50 - INFO - Experiment name: one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine
+2026-08-30 12:54:50 - INFO - Seed: 42
+2026-08-30 12:54:50 - INFO - Total parameter count: 30,057,415
+2026-08-30 12:54:50 - INFO - Residual frequency-guided MSCB-lite Stage3: ON
+2026-08-30 12:54:50 - INFO - Residual FG-MSCB-lite parameters: 697,540
+2026-08-30 12:54:50 - INFO - Residual FG-MSCB guidance strength: 0.050000 (bounded to [0, 0.5])
+2026-08-30 12:54:50 - INFO - Training precision: amp_fp16 | GradScaler enabled=True
+2026-08-30 12:54:50 - INFO - Optimizer: AdamW | refine_lr=4.50e-04, encoder_lr=3.00e-05, decoder_lr=3.00e-04, eta_min=1.00e-06, weight_decay=1.00e-04, encoder_weight_decay=5.00e-02, new_layer_weight_decay=1.00e-02, optimizer_profile=layerwise_convnext, scheduler=warmup_cosine(warmup_epochs=5,eta_min=1.00e-06)
+2026-08-30 12:54:50 - INFO - Gradient clipping: fixed max_grad_norm=1.00
+2026-08-30 12:54:50 - INFO - Deep supervision: heads=0, schedule=constant, anneal=96-128 | sampling=uniform
+2026-08-30 12:54:50 - INFO - Frequency augmentation: OFF | max_probability=0.5, region=1-5%, max_mix=0.5, anneal=70-80%
+2026-08-30 12:54:50 - INFO - EMA enabled with decay=0.995.
+2026-08-30 12:54:50 - INFO - Training stage 'all' starts at epoch 1 (30,057,415/30,057,415 parameters trainable).
+2026-08-30 14:13:31 - INFO - Epoch 184/200: Train Loss: 0.1351, Test Loss: 0.1409, Test Dice: 0.9347, Test IoU: 0.8779, EMA: True
+2026-08-30 14:20:27 - INFO - Training stopped after epoch 200; best checkpoint retained.

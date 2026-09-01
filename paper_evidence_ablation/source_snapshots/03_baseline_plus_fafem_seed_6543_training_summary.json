@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\03_baseline_plus_fafem\\seed_6543\\best_checkpoint.pth",
+  "best_epoch": 132,
+  "best_validation_metric": 0.8426180822508675,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_03_baseline_plus_fafem",
+  "final_epoch": 185,
+  "seed": 6543,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 4212.239115953445
+}
