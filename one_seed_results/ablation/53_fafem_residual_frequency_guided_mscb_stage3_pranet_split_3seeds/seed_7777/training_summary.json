@@ -1,0 +1,12 @@
+{
+  "best_checkpoint_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\53_fafem_residual_frequency_guided_mscb_stage3_pranet_split_3seeds\\seed_7777\\best_checkpoint.pth",
+  "best_epoch": 132,
+  "best_validation_metric": 0.8833145499229431,
+  "completion_reason": "early_stopping",
+  "experiment_name": "one_seed_53_fafem_residual_frequency_guided_mscb_stage3_pranet_split_3seeds",
+  "final_epoch": 162,
+  "seed": 7777,
+  "training_complete": true,
+  "training_precision": "amp_fp16",
+  "training_time_seconds": 3739.37353348732
+}

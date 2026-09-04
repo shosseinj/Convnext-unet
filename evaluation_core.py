@@ -153,8 +153,22 @@ def tta_probability(model, images):
         probabilities.append(invert(torch.sigmoid(_main_logits(model(augment(images))))))
     return torch.stack(probabilities, dim=0).mean(dim=0)
 
+def tta_probability_ten(model, images):
+    """Ten views: five-view set plus horizontal/vertical flips of rotated views."""
+    views = (0, 1, 2, 3, 4)
+    probabilities = [tta_probability(model, images)]
+    extra = (lambda x: torch.flip(x, dims=[-1]), lambda x: torch.flip(x, dims=[-2]))
+    for angle in (10, -10):
+        rotated = TF.rotate(images, angle, interpolation=TF.InterpolationMode.BILINEAR)
+        for flip in extra:
+            pred = torch.sigmoid(_main_logits(model(flip(rotated))))
+            pred = flip(pred)
+            pred = TF.rotate(pred, -angle, interpolation=TF.InterpolationMode.BILINEAR)
+            probabilities.append(pred)
+    return torch.stack(probabilities, dim=0).mean(dim=0)
 
-def evaluate_loader(model, loader, device, threshold=0.45, max_batches=0, use_tta=False):
+
+def evaluate_loader(model, loader, device, threshold=0.45, max_batches=0, use_tta=False, tta_views=5):
     import py_sod_metrics
 
     sm = py_sod_metrics.Smeasure()
@@ -169,7 +183,7 @@ def evaluate_loader(model, loader, device, threshold=0.45, max_batches=0, use_tt
                 break
             images, masks = images.to(device), masks.to(device)
             if use_tta:
-                probability = tta_probability(model, images)
+                probability = tta_probability_ten(model, images) if tta_views == 10 else tta_probability(model, images)
             else:
                 logits = _main_logits(model(images))
                 probability = torch.sigmoid(logits)

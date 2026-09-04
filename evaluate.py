@@ -42,6 +42,8 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, default=0)
     parser.add_argument("--max_batches", type=int, default=0, help="Verification-only bounded evaluation")
     parser.add_argument("--tta", action="store_true", help="Use the defined five-view TTA protocol")
+    parser.add_argument("--tta_views", type=int, choices=[5, 10], default=5)
+    parser.add_argument("--threshold", type=float, default=0.45)
     parser.add_argument("--split_protocol", choices=["legacy_90_10", SPLIT_PROTOCOL], default="legacy_90_10")
     parser.add_argument("--split_manifest_path", type=Path)
     parser.add_argument("--output", type=Path)
@@ -73,8 +75,8 @@ def main():
             split_protocol=args.split_protocol,
             split_manifest_path=args.split_manifest_path,
         )
-        metrics = evaluate_loader(model, loader, device, threshold=0.45,
-                                  max_batches=args.max_batches, use_tta=args.tta)
+        metrics = evaluate_loader(model, loader, device, threshold=args.threshold,
+                                  max_batches=args.max_batches, use_tta=args.tta, tta_views=args.tta_views)
         metrics["samples"] = min(count, args.batch_size * args.max_batches) if args.max_batches else count
         results[dataset] = metrics
         print(f"[{dataset}] mDice={metrics['mDice']:.4f} mIoU={metrics['mIoU']:.4f}", flush=True)
@@ -82,7 +84,8 @@ def main():
         "experiment_name": config.name,
         "seed": args.seed,
         "tta": bool(args.tta),
-        "threshold": 0.45,
+        "tta_views": args.tta_views if args.tta else 0,
+        "threshold": args.threshold,
         "split_protocol": args.split_protocol,
         "split_manifest_path": str(args.split_manifest_path) if args.split_manifest_path else None,
         "checkpoint": str(checkpoint_path.resolve()),

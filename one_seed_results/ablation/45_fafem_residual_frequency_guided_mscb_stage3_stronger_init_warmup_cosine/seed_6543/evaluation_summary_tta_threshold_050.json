@@ -1,0 +1,68 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine\\seed_6543\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "f5ce08583c37f847420aa0ed3f6d5f4bed809a74b6c9681787fcb7381aa74793",
+  "experiment_name": "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
+  "flops": 27818488992,
+  "gflops": 27.818488992,
+  "gmacs": 13.909244496,
+  "macs": 13909244496,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8414460547960019,
+      "MAE": 0.0076150840172935505,
+      "S_alpha": 0.9235698105912279,
+      "mDice": 0.8823626558009992,
+      "mE_phi": 0.9559422881000323,
+      "mIoU": 0.8116990106825241,
+      "maxE_phi": 0.9695782517515672,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.9232090852582623,
+      "MAE": 0.01065403711755341,
+      "S_alpha": 0.9507031681056598,
+      "mDice": 0.9414335585409596,
+      "mE_phi": 0.9776594004606299,
+      "mIoU": 0.8942803009863822,
+      "maxE_phi": 0.9854850454880172,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7607526605794821,
+      "MAE": 0.035795049765291284,
+      "S_alpha": 0.8582813216426911,
+      "mDice": 0.7850235628825254,
+      "mE_phi": 0.8931368462837236,
+      "mIoU": 0.7055574113892426,
+      "maxE_phi": 0.9071237438507673,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.7378443673842655,
+      "MAE": 0.016465063726906506,
+      "S_alpha": 0.8778281264084509,
+      "mDice": 0.7959636164080706,
+      "mE_phi": 0.8984433969259327,
+      "mIoU": 0.7167771752023245,
+      "maxE_phi": 0.9259212639264883,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8983358000923393,
+      "MAE": 0.025022628008679312,
+      "S_alpha": 0.9314983143853355,
+      "mDice": 0.9277791947126388,
+      "mE_phi": 0.9550358478045449,
+      "mIoU": 0.877851642370224,
+      "maxE_phi": 0.9653891904078595,
+      "samples": 100
+    }
+  },
+  "seed": 6543,
+  "split_manifest_path": null,
+  "split_protocol": "legacy_90_10",
+  "threshold": 0.5,
+  "total_parameters": 30057415,
+  "trainable_parameters": 30057415,
+  "tta": true
+}

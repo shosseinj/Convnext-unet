@@ -1,0 +1,68 @@
+{
+  "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\53_fafem_residual_frequency_guided_mscb_stage3_pranet_split_3seeds\\seed_7777\\best_checkpoint.pth",
+  "checkpoint_fingerprint": "aa406aa6768bd67bc7c2bfce2ee39dca1b237b888101e97c6f59c6f02502bf94",
+  "experiment_name": "one_seed_53_fafem_residual_frequency_guided_mscb_stage3_pranet_split_3seeds",
+  "flops": 27818488992,
+  "gflops": 27.818488992,
+  "gmacs": 13.909244496,
+  "macs": 13909244496,
+  "results": {
+    "CVC-300": {
+      "F_beta_w": 0.8765891821214418,
+      "MAE": 0.006430271433577905,
+      "S_alpha": 0.9360538511663741,
+      "mDice": 0.8983828137318294,
+      "mE_phi": 0.968487343759221,
+      "mIoU": 0.8263016963998476,
+      "maxE_phi": 0.980026117156493,
+      "samples": 60
+    },
+    "CVC-ClinicDB": {
+      "F_beta_w": 0.898011656225595,
+      "MAE": 0.013462024874075572,
+      "S_alpha": 0.932510784580186,
+      "mDice": 0.9122629877107324,
+      "mE_phi": 0.9623017772633443,
+      "mIoU": 0.8578691482591579,
+      "maxE_phi": 0.9701914152161877,
+      "samples": 62
+    },
+    "CVC-ColonDB": {
+      "F_beta_w": 0.7707746618610752,
+      "MAE": 0.03389880661569502,
+      "S_alpha": 0.862948848493031,
+      "mDice": 0.7934885652900318,
+      "mE_phi": 0.8983134365461269,
+      "mIoU": 0.7141876374893509,
+      "maxE_phi": 0.9037343329132981,
+      "samples": 380
+    },
+    "ETIS-LaribPolypDB": {
+      "F_beta_w": 0.744983266501267,
+      "MAE": 0.014988234655676433,
+      "S_alpha": 0.87330892121973,
+      "mDice": 0.7794225702866342,
+      "mE_phi": 0.8860600424872246,
+      "mIoU": 0.7019040534582711,
+      "maxE_phi": 0.906309251575277,
+      "samples": 196
+    },
+    "Kvasir-SEG": {
+      "F_beta_w": 0.8869782687532042,
+      "MAE": 0.034580631321887,
+      "S_alpha": 0.9150791522687125,
+      "mDice": 0.9078100411593915,
+      "mE_phi": 0.9398778601271247,
+      "mIoU": 0.8525810343772173,
+      "maxE_phi": 0.9462789846539232,
+      "samples": 100
+    }
+  },
+  "seed": 7777,
+  "split_manifest_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\configs\\splits\\development_seed_42.json",
+  "split_protocol": "pranet_seen_test_internal_validation_v1",
+  "threshold": 0.45,
+  "total_parameters": 30057415,
+  "trainable_parameters": 30057415,
+  "tta": false
+}

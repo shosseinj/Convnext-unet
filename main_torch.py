@@ -807,6 +807,107 @@ def create_warmup_cosine_scheduler(optimizer, warmup_epochs, total_epochs, min_l
     )
 
 
+class TwoStageWarmupCosineRestart:
+    """One warmup, one low-amplitude restart, and checkpoint-safe LR state."""
+
+    def __init__(
+        self,
+        optimizer,
+        warmup_epochs,
+        restart_epoch,
+        total_epochs,
+        min_lr,
+        first_cycle_min_factor=0.1,
+        restart_factor=1.0 / 3.0,
+    ):
+        if not (0 < warmup_epochs < restart_epoch < total_epochs):
+            raise ValueError("Require 0 < warmup_epochs < restart_epoch < total_epochs")
+        if not (0.0 < first_cycle_min_factor <= 1.0):
+            raise ValueError("first_cycle_min_factor must be in (0, 1]")
+        if not (0.0 < restart_factor <= 1.0):
+            raise ValueError("restart_factor must be in (0, 1]")
+        self.optimizer = optimizer
+        self.warmup_epochs = warmup_epochs
+        self.restart_epoch = restart_epoch
+        self.total_epochs = total_epochs
+        self.min_lr = min_lr
+        self.first_cycle_min_factor = first_cycle_min_factor
+        self.restart_factor = restart_factor
+        self.base_lrs = [group["lr"] for group in optimizer.param_groups]
+        self.epoch = 1
+        self._apply_lrs()
+
+    def _lr_at_epoch(self, base_lr, epoch):
+        import math
+
+        if epoch <= self.warmup_epochs:
+            if self.warmup_epochs == 1:
+                return base_lr
+            fraction = (epoch - 1) / (self.warmup_epochs - 1)
+            return base_lr * (0.1 + 0.9 * fraction)
+        if epoch <= self.restart_epoch:
+            start_epoch = self.warmup_epochs + 1
+            fraction = (epoch - start_epoch) / (self.restart_epoch - start_epoch)
+            minimum = max(self.min_lr, base_lr * self.first_cycle_min_factor)
+            return minimum + 0.5 * (base_lr - minimum) * (1.0 + math.cos(math.pi * fraction))
+        if epoch >= self.total_epochs:
+            return self.min_lr
+        start_epoch = self.restart_epoch + 1
+        fraction = (epoch - start_epoch) / (self.total_epochs - start_epoch)
+        maximum = base_lr * self.restart_factor
+        return self.min_lr + 0.5 * (maximum - self.min_lr) * (1.0 + math.cos(math.pi * fraction))
+
+    def _apply_lrs(self):
+        for group, base_lr in zip(self.optimizer.param_groups, self.base_lrs):
+            group["lr"] = self._lr_at_epoch(base_lr, self.epoch)
+
+    def step(self):
+        self.epoch += 1
+        self._apply_lrs()
+
+    def state_dict(self):
+        return {
+            "epoch": self.epoch,
+            "base_lrs": list(self.base_lrs),
+            "warmup_epochs": self.warmup_epochs,
+            "restart_epoch": self.restart_epoch,
+            "total_epochs": self.total_epochs,
+            "min_lr": self.min_lr,
+            "first_cycle_min_factor": self.first_cycle_min_factor,
+            "restart_factor": self.restart_factor,
+        }
+
+    def load_state_dict(self, state_dict):
+        expected = {
+            "warmup_epochs": self.warmup_epochs,
+            "restart_epoch": self.restart_epoch,
+            "total_epochs": self.total_epochs,
+            "min_lr": self.min_lr,
+            "first_cycle_min_factor": self.first_cycle_min_factor,
+            "restart_factor": self.restart_factor,
+        }
+        for key, value in expected.items():
+            if state_dict.get(key) != value:
+                raise ValueError(f"Two-stage scheduler mismatch for {key}")
+        self.epoch = state_dict["epoch"]
+        self.base_lrs = list(state_dict["base_lrs"])
+        self._apply_lrs()
+
+
+def describe_scheduler(args, scheduler_type, scheduler):
+    if scheduler_type == 'cosine_warm_restarts':
+        return f"T_0={args.cosine_t0},T_mult={args.cosine_t_mult},eta_min={args.min_lr:.2e})"
+    if scheduler_type == 'warmup_cosine':
+        return f"warmup_epochs={args.warmup_epochs},eta_min={args.min_lr:.2e})"
+    if scheduler_type == 'two_stage_warmup_cosine_restart':
+        return (
+            f"warmup_epochs={args.warmup_epochs},restart_epoch={args.restart_epoch},"
+            f"first_cycle_min_factor={args.first_cycle_min_factor},"
+            f"restart_factor={args.restart_factor},eta_min={args.min_lr:.2e})"
+        )
+    return f"mode=max,factor={scheduler.factor},patience={scheduler.patience})"
+
+
 def summarize_fg_mscb_alpha(alpha):
     """Compute per-branch sample statistics over all FG-MSCB training samples."""
     if alpha.ndim != 2 or alpha.shape[1] != 3 or alpha.shape[0] < 2:
@@ -2782,9 +2883,12 @@ if __name__ == "__main__":
     parser.add_argument('--fixed_unfreeze_epochs', type=str, default='16,46,76,106,136', help='Five cumulative fixed-unfreeze milestones')
     parser.add_argument('--lr_plateau_patience', type=int, default=5, help='Validation-IoU plateau epochs before reducing learning rates')
     parser.add_argument('--lr_plateau_factor', type=float, default=0.9, help='ReduceLROnPlateau multiplicative LR reduction factor')
-    parser.add_argument('--lr_scheduler', choices=['plateau', 'cosine_warm_restarts', 'warmup_cosine'], default='plateau', help='Learning-rate scheduler; plateau preserves the standard training protocol')
+    parser.add_argument('--lr_scheduler', choices=['plateau', 'cosine_warm_restarts', 'warmup_cosine', 'two_stage_warmup_cosine_restart'], default='plateau', help='Learning-rate scheduler; plateau preserves the standard training protocol')
     parser.add_argument('--cosine_t0', type=int, default=8, help='First CosineAnnealingWarmRestarts cycle length')
     parser.add_argument('--cosine_t_mult', type=int, default=2, help='CosineAnnealingWarmRestarts cycle-length multiplier')
+    parser.add_argument('--restart_epoch', type=int, default=120, help='Epoch at which the two-stage cosine schedule starts its one controlled restart')
+    parser.add_argument('--first_cycle_min_factor', type=float, default=0.1, help='Two-stage schedule first-cycle minimum as a fraction of each group base LR')
+    parser.add_argument('--restart_factor', type=float, default=1.0 / 3.0, help='Two-stage schedule restart maximum as a fraction of each group base LR')
     parser.add_argument('--focal_tversky_after_warmup', type=strtobool, default=True, help='Enable Focal Tversky loss after detail warmup')
     parser.add_argument('--focal_tversky_w', type=float, default=0.05, help='Focal Tversky loss weight after detail warmup')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Decoder weight decay')
@@ -3255,6 +3359,17 @@ if __name__ == "__main__":
             optimizer, args.warmup_epochs, args.epochs, args.min_lr
         )
         scheduler_type = 'warmup_cosine'
+    elif args.lr_scheduler == 'two_stage_warmup_cosine_restart':
+        scheduler = TwoStageWarmupCosineRestart(
+            optimizer,
+            warmup_epochs=args.warmup_epochs,
+            restart_epoch=args.restart_epoch,
+            total_epochs=args.epochs,
+            min_lr=args.min_lr,
+            first_cycle_min_factor=args.first_cycle_min_factor,
+            restart_factor=args.restart_factor,
+        )
+        scheduler_type = 'two_stage_warmup_cosine_restart'
     elif args.lr_scheduler == 'cosine_warm_restarts':
         if args.cosine_t0 <= 0 or args.cosine_t_mult < 1:
             raise ValueError("Cosine warm-restart periods must satisfy T_0 > 0 and T_mult >= 1")
@@ -3360,15 +3475,7 @@ if __name__ == "__main__":
         f"new_layer_weight_decay={args.new_layer_weight_decay:.2e}, "
         f"optimizer_profile={args.optimizer_profile}, "
         f"scheduler={scheduler_type}("
-        + (
-            f"T_0={args.cosine_t0},T_mult={args.cosine_t_mult},eta_min={args.min_lr:.2e})"
-            if scheduler_type == 'cosine_warm_restarts'
-            else (
-                f"warmup_epochs={args.warmup_epochs},eta_min={args.min_lr:.2e})"
-                if scheduler_type == 'warmup_cosine'
-                else f"mode=max,factor={scheduler.factor},patience={scheduler.patience})"
-            )
-        )
+        + describe_scheduler(args, scheduler_type, scheduler)
     )
     for group in optimizer.param_groups:
         logging.info(
@@ -4039,7 +4146,7 @@ if __name__ == "__main__":
                     )
                     if ema is not None:
                         ema.restore(model)
-                    if scheduler_type in {'cosine_warm_restarts', 'warmup_cosine'}:
+                    if scheduler_type in {'cosine_warm_restarts', 'warmup_cosine', 'two_stage_warmup_cosine_restart'}:
                         scheduler.step()
                     elif epoch >= full_train_start_epoch:
                         scheduler.step(test_iou)
