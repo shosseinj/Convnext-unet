@@ -98,3 +98,20 @@ Troubleshooting:
 - MP4 writer failure: try `--codec mp4v` and ensure OpenCV has video codec support.
 - Incorrect mask dimensions: keep the default `--input-size 352`; probability
   masks are always resized back to the decoded frame dimensions before drawing.
+
+## Qualitative ablation examples
+
+Generate two deterministic, common-ID comparisons per dataset from three
+prediction roots:
+
+```powershell
+python tools/generate_qualitative_ablation_examples.py --data-root data `
+  --baseline-root predictions/baseline --second-ablation-root predictions/second_ablation `
+  --third-ablation-root predictions/third_ablation
+```
+
+See `docs/QUALITATIVE_ABLATION.md` for the input layout, JSON-config support,
+ground-truth panels, validation behavior, and overwrite protection.
+
+The helper `tools/export_qualitative_predictions.py` prepares the seed-42
+Exp01/Exp33/Exp45 masks from their validated checkpoints.

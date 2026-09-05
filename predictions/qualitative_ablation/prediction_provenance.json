@@ -1,0 +1,23 @@
+{
+  "threshold": 0.45,
+  "tta": false,
+  "input_size": [
+    352,
+    352
+  ],
+  "seed": 42,
+  "models": {
+    "baseline": {
+      "experiment": "one_seed_01_baseline",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth"
+    },
+    "second_ablation": {
+      "experiment": "one_seed_33_fafem_warmup_cosine",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\33_fafem_warmup_cosine\\seed_42\\best_checkpoint.pth"
+    },
+    "third_ablation": {
+      "experiment": "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine\\seed_42\\best_checkpoint.pth"
+    }
+  }
+}

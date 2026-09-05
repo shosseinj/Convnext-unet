@@ -1,15 +1,14 @@
-Status: READY - Experiment 31 implemented; training not started
-Experiment: one_seed_31_fafem_mild_fal
-Comparison: FAFEM-only vs FAFEM-only + mild FAL
-Seed: 42
-Architecture: ConvNeXt-Tiny + decoder + bottleneck FAFEM only
-Disabled: uncertainty, CLF, Detail, DySample, MSC, DS, UGBR, gated/FAFEM skips
-FAL: probability 0.25; mix <=0.25; region 1-3%
-FAL schedule: constant through 60%; anneal to zero at 70%
-Protocol: batch 24; plateau scheduler; adaptive unfreeze; maximum 350 epochs
-Encoder weights: convnext_tiny_22k_1k_384.pth
-Output: one_seed_results/ablation/31_fafem_mild_fal/seed_42
-Resume: isolated latest checkpoint with optimizer/scheduler/RNG state
-Forward: 1x3x352x352 -> 1x1x352x352; FAFEM-only max diff 0
-Verification: 18 focused tests passed; dry-run passed
-Runner: ps_one_seed_ablation/31_fafem_mild_fal_seed42.ps1
+Status: QUALITATIVE ABLATION PACKAGE COMPLETE
+Datasets: Kvasir-SEG, CVC-ClinicDB, CVC-300, CVC-ColonDB, ETIS-LaribPolypDB
+Samples: exactly 2 valid common IDs per dataset
+Selection: deterministic GT-area quantiles; prediction scores are not used
+Models: seed-42 Exp01 baseline, Exp33 second, Exp45 third
+Validation: matching IDs, readable files, and equal native dimensions
+Individual outputs: RGB original plus three binary masks per sample
+Expected count: 2 x 5 x 4 = 40 individual PNGs
+Panels: 10 four-column panels; optional 10 five-column GT panels
+Manifest: qualitative_ablation_outputs/manifest.csv
+Generator: tools/generate_qualitative_ablation_examples.py
+Instructions: docs/QUALITATIVE_ABLATION.md
+Generated: 40 individual PNGs, 10 panels, 10 GT panels, 10 manifest rows
+Master paper figure: all_datasets_comparison_panel_with_gt.png (4088x5955, 300 DPI)
