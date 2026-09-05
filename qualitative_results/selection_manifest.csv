@@ -1,0 +1,7 @@
+category,dataset,filename,area,contrast,sharpness,irregularity,background
+small polyp,Kvasir-SEG,cju2rmd2rsw9g09888hh1efu0.jpg,0.006912,0.091007,985.178711,0.000000,0.206017
+large polyp,CVC-ClinicDB,25.png,0.458804,0.436400,774.480713,0.000000,0.261290
+low contrast,Kvasir-SEG,cju31w6goazci0799n014ly1q.jpg,0.125901,0.015362,424.675720,0.000000,0.212419
+blurred/ambiguous boundary,CVC-ClinicDB,374.png,0.011737,0.387268,300.116364,0.000000,0.313965
+irregular shape,Kvasir-SEG,cju2yo1j1v0qz09934o0e683p.jpg,0.305957,0.193096,710.052368,1.273966,0.279790
+difficult background,CVC-ClinicDB,80.png,0.011664,0.371506,642.983276,0.000000,0.371235
