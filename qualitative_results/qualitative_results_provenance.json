@@ -1,0 +1,100 @@
+{
+  "timestamp_utc": "2026-09-07T06:58:24.631880+00:00",
+  "threshold": 0.45,
+  "input_size": [
+    352,
+    352
+  ],
+  "tta": false,
+  "selected_rows": [
+    {
+      "dataset": "Kvasir-SEG",
+      "image_name": "cju2rmd2rsw9g09888hh1efu0.jpg",
+      "image_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\images\\cju2rmd2rsw9g09888hh1efu0.jpg",
+      "gt_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\gt\\cju2rmd2rsw9g09888hh1efu0.png",
+      "case_type": "small polyp"
+    },
+    {
+      "dataset": "CVC-ClinicDB",
+      "image_name": "25.png",
+      "image_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\images\\25.png",
+      "gt_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\gt\\25.png",
+      "case_type": "large polyp"
+    },
+    {
+      "dataset": "Kvasir-SEG",
+      "image_name": "cju31w6goazci0799n014ly1q.jpg",
+      "image_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\images\\cju31w6goazci0799n014ly1q.jpg",
+      "gt_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\gt\\cju31w6goazci0799n014ly1q.png",
+      "case_type": "low contrast"
+    },
+    {
+      "dataset": "CVC-ClinicDB",
+      "image_name": "374.png",
+      "image_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\images\\374.png",
+      "gt_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\gt\\374.png",
+      "case_type": "blurred or ambiguous boundary"
+    },
+    {
+      "dataset": "Kvasir-SEG",
+      "image_name": "cju2yo1j1v0qz09934o0e683p.jpg",
+      "image_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\images\\cju2yo1j1v0qz09934o0e683p.jpg",
+      "gt_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\gt\\cju2yo1j1v0qz09934o0e683p.png",
+      "case_type": "irregular polyp"
+    },
+    {
+      "dataset": "CVC-ClinicDB",
+      "image_name": "80.png",
+      "image_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\images\\80.png",
+      "gt_path": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\qualitative_results\\gt\\80.png",
+      "case_type": "confusing background / difficult case"
+    }
+  ],
+  "external_models": {
+    "CTNet": {
+      "repo": "https://github.com/Fhujinwu/CTNet",
+      "source": "result_map.zip from the official repository",
+      "artifact": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\external_models\\CTNet\\result_map.zip",
+      "artifact_sha256": "3e63a6afc2cd17cf943a9ad92a94b35d880dde951c07ab7bd2f95346cd4db4bf"
+    },
+    "MEGANet": {
+      "repo": "https://github.com/UARK-AICV/MEGANet",
+      "source": "official MEGANet-Res2Net precomputed prediction maps",
+      "artifact": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\external_models\\_official_artifacts\\MEGANet_Res2Net_predictions.zip",
+      "artifact_sha256": "db8f9e3ac8bbc4dd1474d70c52e03241be42d0803dcedb88b6bf6817e88d6cae"
+    },
+    "EnFormer": {
+      "repo": "https://github.com/HuangDLab/EnFormer",
+      "source": "official pre-computed maps, enformer/ variant",
+      "artifact": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\external_models\\_official_artifacts\\EnFormer_prediction_maps.zip",
+      "artifact_sha256": "7e33a8a692dfb65f0001537e2fb514025b0445926424409edc9371cd8a96adbf"
+    }
+  },
+  "internal_models": {
+    "Baseline": {
+      "experiment": "one_seed_01_baseline",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth",
+      "checkpoint_sha256": "e6aae1c02457a93e6a00abf5a3a7a22c8b7fa5e7b35d7eb72f0f170a87b6721a",
+      "epoch": 120,
+      "best_epoch": 120,
+      "best_validation_metric": 0.85905921459198
+    },
+    "Ours_Exp45": {
+      "experiment": "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine\\seed_42\\best_checkpoint.pth",
+      "checkpoint_sha256": "b979d16f4eff133af95f6d4cc0a4f86ce838837bbb99bf07f69a8154a4ae714b",
+      "epoch": 184,
+      "best_epoch": 184,
+      "best_validation_metric": 0.8780511021614075
+    }
+  },
+  "column_order": [
+    "Input",
+    "GT",
+    "Baseline",
+    "CTNet",
+    "MEGANet",
+    "EnFormer",
+    "Ours (Exp45)"
+  ]
+}
