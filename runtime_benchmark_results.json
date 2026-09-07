@@ -1,0 +1,396 @@
+{
+  "timestamp_utc": "2026-09-05T16:26:54.057625+00:00",
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_capability": [
+      8,
+      9
+    ],
+    "pytorch": "2.5.1+cu124",
+    "cuda_runtime": "12.4",
+    "python": "3.10.4",
+    "precision": "fp16",
+    "batch_size": 1,
+    "input_shape": [
+      1,
+      3,
+      352,
+      352
+    ]
+  },
+  "protocol": {
+    "scope": "model forward pass only; no data loading, disk I/O, post-processing, or TTA",
+    "timing": "per-iteration torch.cuda.Event with end-event synchronization",
+    "warmup_iterations_per_repetition": 100,
+    "measured_iterations_per_repetition": 500,
+    "repetitions": 3,
+    "aggregation": "mean and sample SD of repetition means",
+    "peak_memory": "maximum torch.cuda.max_memory_allocated after post-warmup reset; model + input + activations",
+    "complexity": "project evaluation_core.measure_complexity; THOP MACs and FLOPs = 2 x MACs"
+  },
+  "results": [
+    {
+      "model": "Baseline",
+      "experiment_name": "one_seed_01_baseline",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth",
+      "checkpoint_sha256": "e6aae1c02457a93e6a00abf5a3a7a22c8b7fa5e7b35d7eb72f0f170a87b6721a",
+      "parameters": 29190098,
+      "parameters_m": 29.190098,
+      "trainable_parameters": 29190098,
+      "macs": 13601058240,
+      "flops": 27202116480,
+      "gmacs": 13.60105824,
+      "gflops": 27.20211648,
+      "repetition_results": [
+        {
+          "mean_latency_ms": 10.779995140075684,
+          "iteration_sd_ms": 0.35394904639361313,
+          "median_latency_ms": 10.778351783752441,
+          "p95_latency_ms": 11.382783889770508,
+          "peak_vram_mib": 248.85888671875,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 1,
+          "order_position": 1
+        },
+        {
+          "mean_latency_ms": 10.38940683555603,
+          "iteration_sd_ms": 0.17674803968454575,
+          "median_latency_ms": 10.363391876220703,
+          "p95_latency_ms": 10.684351921081543,
+          "peak_vram_mib": 248.85888671875,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 2,
+          "order_position": 4
+        },
+        {
+          "mean_latency_ms": 10.548101049423218,
+          "iteration_sd_ms": 0.3152103122929379,
+          "median_latency_ms": 10.41971206665039,
+          "p95_latency_ms": 11.1463041305542,
+          "peak_vram_mib": 248.85888671875,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 3,
+          "order_position": 3
+        }
+      ],
+      "latency_mean_ms": 10.572501008351644,
+      "latency_sample_sd_ms": 0.1964340204844008,
+      "median_latency_ms": 10.520485242207846,
+      "p95_latency_ms": 11.071146647135416,
+      "fps": 94.58499925514879,
+      "aggregate_fps": 94.58499925514879,
+      "peak_vram_mib": 248.85888671875,
+      "output_shape": [
+        1,
+        1,
+        352,
+        352
+      ]
+    },
+    {
+      "model": "FAFEM",
+      "experiment_name": "one_seed_03_baseline_plus_fafem",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\03_baseline_plus_fafem\\seed_42\\best_checkpoint.pth",
+      "checkpoint_sha256": "d9fb71f785943140a17613c9c9f181fa988532f18b2912146afcf6d01a6e505c",
+      "parameters": 29359875,
+      "parameters_m": 29.359875,
+      "trainable_parameters": 29359875,
+      "macs": 13603995072,
+      "flops": 27207990144,
+      "gmacs": 13.603995072,
+      "gflops": 27.207990144,
+      "repetition_results": [
+        {
+          "mean_latency_ms": 11.171966781616211,
+          "iteration_sd_ms": 0.26481357323046517,
+          "median_latency_ms": 11.166240215301514,
+          "p95_latency_ms": 11.671520233154297,
+          "peak_vram_mib": 249.83154296875,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 1,
+          "order_position": 2
+        },
+        {
+          "mean_latency_ms": 10.94180933380127,
+          "iteration_sd_ms": 0.2101997910880434,
+          "median_latency_ms": 10.903535842895508,
+          "p95_latency_ms": 11.238304138183594,
+          "peak_vram_mib": 249.83154296875,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 2,
+          "order_position": 1
+        },
+        {
+          "mean_latency_ms": 10.928210565567017,
+          "iteration_sd_ms": 0.17022489739918953,
+          "median_latency_ms": 10.893840312957764,
+          "p95_latency_ms": 11.289600372314453,
+          "peak_vram_mib": 249.83154296875,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 3,
+          "order_position": 4
+        }
+      ],
+      "latency_mean_ms": 11.013995560328167,
+      "latency_sample_sd_ms": 0.1369759529654734,
+      "median_latency_ms": 10.987872123718262,
+      "p95_latency_ms": 11.399808247884115,
+      "fps": 90.79357209857133,
+      "aggregate_fps": 90.79357209857136,
+      "peak_vram_mib": 249.83154296875,
+      "output_shape": [
+        1,
+        1,
+        352,
+        352
+      ]
+    },
+    {
+      "model": "FAFEM + MSCB",
+      "experiment_name": "one_seed_37_fafem_mscb_lite_stage3_warmup_cosine",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\37_fafem_mscb_lite_stage3_warmup_cosine\\seed_42\\best_checkpoint.pth",
+      "checkpoint_sha256": "1ca5bc0a117695cef959ea5643570ba60035a08e7f78444900a2eb9b9f2a129b",
+      "parameters": 29983491,
+      "parameters_m": 29.983491,
+      "trainable_parameters": 29983491,
+      "macs": 13909170624,
+      "flops": 27818341248,
+      "gmacs": 13.909170624,
+      "gflops": 27.818341248,
+      "repetition_results": [
+        {
+          "mean_latency_ms": 11.614639680862426,
+          "iteration_sd_ms": 0.41203199699148435,
+          "median_latency_ms": 11.454864025115967,
+          "p95_latency_ms": 12.480640411376953,
+          "peak_vram_mib": 252.87646484375,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 1,
+          "order_position": 3
+        },
+        {
+          "mean_latency_ms": 11.773645683288574,
+          "iteration_sd_ms": 0.9255431159331388,
+          "median_latency_ms": 11.521023750305176,
+          "p95_latency_ms": 12.78054428100586,
+          "peak_vram_mib": 252.87646484375,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 2,
+          "order_position": 2
+        },
+        {
+          "mean_latency_ms": 11.500917308807374,
+          "iteration_sd_ms": 0.2306034624661982,
+          "median_latency_ms": 11.450368404388428,
+          "p95_latency_ms": 11.910400390625,
+          "peak_vram_mib": 252.87646484375,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 3,
+          "order_position": 1
+        }
+      ],
+      "latency_mean_ms": 11.629734224319458,
+      "latency_sample_sd_ms": 0.13698932620252446,
+      "median_latency_ms": 11.47541872660319,
+      "p95_latency_ms": 12.390528361002604,
+      "fps": 85.98648780028482,
+      "aggregate_fps": 85.98648780028482,
+      "peak_vram_mib": 252.87646484375,
+      "output_shape": [
+        1,
+        1,
+        352,
+        352
+      ]
+    },
+    {
+      "model": "Residual RFG-MSCB (Ours)",
+      "experiment_name": "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
+      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine\\seed_42\\best_checkpoint.pth",
+      "checkpoint_sha256": "b979d16f4eff133af95f6d4cc0a4f86ce838837bbb99bf07f69a8154a4ae714b",
+      "parameters": 30057415,
+      "parameters_m": 30.057415,
+      "trainable_parameters": 30057415,
+      "macs": 13909244496,
+      "flops": 27818488992,
+      "gmacs": 13.909244496,
+      "gflops": 27.818488992,
+      "repetition_results": [
+        {
+          "mean_latency_ms": 11.780271005630492,
+          "iteration_sd_ms": 0.22974079771288006,
+          "median_latency_ms": 11.735039710998535,
+          "p95_latency_ms": 12.193792343139648,
+          "peak_vram_mib": 253.3056640625,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 1,
+          "order_position": 4
+        },
+        {
+          "mean_latency_ms": 11.822714435577392,
+          "iteration_sd_ms": 0.1749203880751812,
+          "median_latency_ms": 11.786719799041748,
+          "p95_latency_ms": 12.194815635681152,
+          "peak_vram_mib": 253.3056640625,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 2,
+          "order_position": 3
+        },
+        {
+          "mean_latency_ms": 11.81571748161316,
+          "iteration_sd_ms": 0.1969547059649319,
+          "median_latency_ms": 11.776031970977783,
+          "p95_latency_ms": 12.230719566345215,
+          "peak_vram_mib": 253.3056640625,
+          "output_shape": [
+            1,
+            1,
+            352,
+            352
+          ],
+          "repetition": 3,
+          "order_position": 2
+        }
+      ],
+      "latency_mean_ms": 11.806234307607014,
+      "latency_sample_sd_ms": 0.022755419757443773,
+      "median_latency_ms": 11.76593049367269,
+      "p95_latency_ms": 12.206442515055338,
+      "fps": 84.70101252824351,
+      "aggregate_fps": 84.70101252824351,
+      "peak_vram_mib": 253.3056640625,
+      "output_shape": [
+        1,
+        1,
+        352,
+        352
+      ]
+    }
+  ],
+  "relative_overhead": [
+    {
+      "transition": "Baseline -> FAFEM",
+      "parameters": {
+        "delta": 169777,
+        "percent": 0.5816253169139755
+      },
+      "gflops": {
+        "delta": 0.0058736639999992235,
+        "percent": 0.021592672777200103
+      },
+      "latency_mean_ms": {
+        "delta": 0.44149455197652365,
+        "percent": 4.175876186985174
+      },
+      "fps": {
+        "delta": -3.7914271565774555,
+        "percent": -4.008486743600695
+      },
+      "peak_vram_mib": {
+        "delta": 0.97265625,
+        "percent": 0.3908465005307429
+      }
+    },
+    {
+      "transition": "FAFEM -> FAFEM + MSCB",
+      "parameters": {
+        "delta": 623616,
+        "percent": 2.1240417406409255
+      },
+      "gflops": {
+        "delta": 0.6103511039999994,
+        "percent": 2.2432789072977375
+      },
+      "latency_mean_ms": {
+        "delta": 0.6157386639912907,
+        "percent": 5.590511278297124
+      },
+      "fps": {
+        "delta": -4.807084298286512,
+        "percent": -5.294520511945088
+      },
+      "peak_vram_mib": {
+        "delta": 3.044921875,
+        "percent": 1.218790004983827
+      }
+    },
+    {
+      "transition": "FAFEM + MSCB -> Residual RFG-MSCB (Ours)",
+      "parameters": {
+        "delta": 73924,
+        "percent": 0.24654900925312534
+      },
+      "gflops": {
+        "delta": 0.0001477439999995056,
+        "percent": 0.0005311028385278999
+      },
+      "latency_mean_ms": {
+        "delta": 0.1765000832875554,
+        "percent": 1.5176622258354637
+      },
+      "fps": {
+        "delta": -1.2854752720413103,
+        "percent": -1.4949735765775194
+      },
+      "peak_vram_mib": {
+        "delta": 0.42919921875,
+        "percent": 0.16972683441110195
+      }
+    }
+  ]
+}
