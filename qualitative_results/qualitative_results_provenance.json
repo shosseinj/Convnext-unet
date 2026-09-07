@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-09-07T06:58:24.631880+00:00",
+  "timestamp_utc": "2026-09-07T07:22:47.251075+00:00",
   "threshold": 0.45,
   "input_size": [
     352,
@@ -71,14 +71,6 @@
     }
   },
   "internal_models": {
-    "Baseline": {
-      "experiment": "one_seed_01_baseline",
-      "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\01_baseline\\seed_42\\best_checkpoint.pth",
-      "checkpoint_sha256": "e6aae1c02457a93e6a00abf5a3a7a22c8b7fa5e7b35d7eb72f0f170a87b6721a",
-      "epoch": 120,
-      "best_epoch": 120,
-      "best_validation_metric": 0.85905921459198
-    },
     "Ours_Exp45": {
       "experiment": "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
       "checkpoint": "C:\\Users\\jafari.h\\Desktop\\ai_project\\ConvNeXt_Unet\\one_seed_results\\ablation\\45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine\\seed_42\\best_checkpoint.pth",
@@ -91,7 +83,6 @@
   "column_order": [
     "Input",
     "GT",
-    "Baseline",
     "CTNet",
     "MEGANet",
     "EnFormer",

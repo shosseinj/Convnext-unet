@@ -61,17 +61,13 @@ EXTERNALS = {
     },
 }
 INTERNALS = {
-    "Baseline": (
-        "one_seed_01_baseline",
-        ROOT / "one_seed_results/ablation/01_baseline/seed_42/best_checkpoint.pth",
-    ),
     "Ours_Exp45": (
         "one_seed_45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine",
         ROOT / "one_seed_results/ablation/45_fafem_residual_frequency_guided_mscb_stage3_stronger_init_warmup_cosine/seed_42/best_checkpoint.pth",
     ),
 }
-COLUMN_KEYS = ("Input", "GT", "Baseline", "CTNet", "MEGANet", "EnFormer", "Ours_Exp45")
-COLUMN_LABELS = ("Input", "GT", "Baseline", "CTNet", "MEGANet", "EnFormer", "Ours (Exp45)")
+COLUMN_KEYS = ("Input", "GT", "CTNet", "MEGANet", "EnFormer", "Ours_Exp45")
+COLUMN_LABELS = ("Input", "GT", "CTNet", "MEGANet", "EnFormer", "Ours (Exp45)")
 
 
 def sha256(path: Path) -> str:
@@ -138,7 +134,7 @@ def predict(model, image_path: Path, device: torch.device) -> np.ndarray:
 
 def render(rows: list[dict[str, str]], error: bool = False) -> Path:
     dpi = 400
-    fig, axes = plt.subplots(len(rows), len(COLUMN_KEYS), figsize=(12.0, 9.3), facecolor="white")
+    fig, axes = plt.subplots(len(rows), len(COLUMN_KEYS), figsize=(10.4, 9.3), facecolor="white")
     for r, row in enumerate(rows):
         rgb = read(Path(row["image_path"]))
         gt = read(Path(row["gt_path"]), grayscale=True) >= 128
@@ -168,11 +164,11 @@ def render(rows: list[dict[str, str]], error: bool = False) -> Path:
         fig.text(0.5, 0.002, "Error colors: white = TP, red = FP, cyan = FN",
                  ha="center", va="bottom", fontsize=8.5)
         fig.subplots_adjust(bottom=0.025)
-    name = "qualitative_results_exp45_errors.png" if error else "qualitative_results_exp45.png"
+    name = "qualitative_results_exp45_final_errors.png" if error else "qualitative_results_exp45_final.png"
     path = OUT / name
     fig.savefig(path, dpi=dpi, facecolor="white")
     if not error:
-        fig.savefig(OUT / "qualitative_results_exp45.pdf", dpi=dpi, facecolor="white")
+        fig.savefig(OUT / "qualitative_results_exp45_final.pdf", dpi=dpi, facecolor="white")
     plt.close(fig)
     return path
 
