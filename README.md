@@ -47,3 +47,23 @@ The repository contains experiment-specific scripts, checkpoints/configuration c
 ## Related Work
 
 The later RFG-MSCB research branch and manuscript are available in [RFG-MSCB](https://github.com/shosseinj/RFG-MSCB).
+
+
+## Goal
+
+The repository provides the implementation and experiment controls used to compare ConvNeXt U-Net polyp-segmentation variants under a consistent dataset split, checkpoint-selection rule, and evaluation pipeline.
+
+## Installation
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python main_torch.py --help
+```
+
+Install a CUDA-enabled PyTorch build separately when GPU training is required. Dataset paths and any encoder checkpoint must be supplied locally; the repository does not redistribute the five source datasets.
+
+## Working with the Repository
+
+Read `ABLATION_TRAINING_PROTOCOL.md` and `CURRENT_STATE.md` before starting an experiment. Model definitions are under `models/`, training entry points include `main_torch.py`, and `inference_video.py` handles video evaluation. Use a new output directory for each configuration and retain its checkpoint, seed, arguments, and summary together. Historical result directories contain evidence from earlier runs and are not substitutes for rerunning the code.
