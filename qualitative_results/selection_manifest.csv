@@ -1,7 +1,0 @@
-dataset,image_name,image_path,gt_path,case_type
-Kvasir-SEG,cju2rmd2rsw9g09888hh1efu0.jpg,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\images\cju2rmd2rsw9g09888hh1efu0.jpg,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\gt\cju2rmd2rsw9g09888hh1efu0.png,small polyp
-CVC-ClinicDB,25.png,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\images\25.png,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\gt\25.png,large polyp
-Kvasir-SEG,cju31w6goazci0799n014ly1q.jpg,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\images\cju31w6goazci0799n014ly1q.jpg,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\gt\cju31w6goazci0799n014ly1q.png,low contrast
-CVC-ClinicDB,374.png,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\images\374.png,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\gt\374.png,blurred or ambiguous boundary
-Kvasir-SEG,cju2yo1j1v0qz09934o0e683p.jpg,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\images\cju2yo1j1v0qz09934o0e683p.jpg,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\gt\cju2yo1j1v0qz09934o0e683p.png,irregular polyp
-CVC-ClinicDB,80.png,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\images\80.png,C:\Users\jafari.h\Desktop\ai_project\ConvNeXt_Unet\qualitative_results\gt\80.png,confusing background / difficult case
